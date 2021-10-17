@@ -1,0 +1,68 @@
+How to Program the Wonderswan's Real Time Clock (e.g. w/ Wonderwitch)
+v0.1
+
+by zalas
+
+Overview:
+
+The RTC for the Wonderswan contains information about the current date/time, etc.
+
+Ports:
+
+0xCA - this is the command port, when commands get written here, they get executed immediately
+	when read, this port will yield an asserted high bit for acknowledgement, the argument
+	byte must be in 0xCB upon writing a command to 0xCA or else it will miss it
+0xCB - this is the data port, for passing arguments and for reading, etc.
+
+Commands:
+
+0x10 - Reset
+
+Write 0x10 to port 0xCA
+Wait for ACK from 0xCA
+
+0x12 - Write Timer Settings
+
+Write timer setting byte to 0xCB
+Write 0x12 to port 0xCA
+Wait for ACK from 0xCA
+
+0x13 - Read Timer Settings
+
+Write 0x13 to port 0xCA
+Wait for ACK from 0xCA
+Read timer settings byte from 0xCB
+
+0x14 - Set Time/Date
+
+Write first byte of time/date structure into 0xCB
+Write 0x14 into 0xCA
+Wait for ACK
+Write second byte into 0xCB
+Wait for ACK
+repeat until all 7 bytes have been entered
+
+0x15 - Get Time/Date
+
+Write 0x15 into 0xCA
+Wait for ACK
+Read byte from 0xCB
+Repeat above 2 steps 7 times
+
+Data Structure:
+
+Time Settings Byte:
+MSB  LSB
+xwaxxxxx
+	w - should always be set?
+	a - should be set to enable RTC alarm (in addition to interrupt enable)
+
+Time/Date Structure (all of the following fields are in BCD format)
+
+0000 - Year (in addition to 2000)
+0001 - Month
+0002 - Day
+0003 - Day of the Week
+0004 - Hour (high bit denotes PM, e.g. 0x00 to 0x11 for 00:00 to 11:00 and 0x92 to 0xA3 for 12:00 to 23:00)
+0005 - Minute
+0006 - Second

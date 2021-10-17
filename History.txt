@@ -1,0 +1,12 @@
+NitroSwan revision history
+-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+V0.1.1 - 2021-10-17 (FluBBa)
+	Started port to Nintendo DS & dekitPro.
+
+V0.1.0 - 2006-07-28 (FluBBa)
+   Initial release.
+
+V0.0.0 - 2006-07-23 (FluBBa)
+   Started Coding.

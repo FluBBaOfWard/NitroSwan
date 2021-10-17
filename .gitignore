@@ -1,0 +1,8 @@
+UserInterfaceState.xcuserstate
+contents.xcworkspacedata
+build
+*.elf
+*.nds
+*.zip
+*.ws
+*.wsc

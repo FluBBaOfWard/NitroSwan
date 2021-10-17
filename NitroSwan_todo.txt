@@ -1,0 +1,214 @@
+NGPDS Todo
+
+	Use CLZ for memory mapping.
+	Fix cpu stuff.
+	Connect NDS battery level to NGP battery level?
+	Timers? http://forum.fobby.net/index.php?t=msg&th=796&start=0&
+	Push instructions might write to 32bit address.
+	Add another jump table for reg opcodes?
+	Optimize dst opcodes, "and r12,r0,#0x07" in fetch.
+	Save settings for Swap A-B.
+	Emulate second flash chip!
+
+	Add SWI & Interrupt to BiosHLE.
+	Rewrite BiosHLE to asm?
+	Rewrite bios FLASHWRITE function to use GBA SRAM directly? Game reads directly from flash...
+	Keep disassemblying Bios from 0xFF476C.
+
+	Convert bios font to png. Done.
+
+GFX:
+	Optimize color transfer?
+
+GUI:
+	Remove... Done.
+
+Mem:
+
+CPU:
+	See TLCS900H Todo.
+
+Sound T6W28:
+	Add sample playing?
+	Sample Darkarms from HW.
+
+
+Misc:
+	Starting at 0xFF1800 Skips power button check.
+	...
+
+Games Non Working:
+
+Games With Glitches:
+	Super Real Mahjong - Premium Collection: Graphic bugs on intro.
+	Memories of - Pure: Glitches everywhere.
+	Sonic first boss disapears.
+	...
+
+Speedhacks:
+	"Bakumatsu Rouman Tokubetsu"		- JR (0x65,0xF8) @0x2002
+	"Baseball Stars"					- JR (0x67,0xF4) @0x2001
+	"Baseball Stars Color"				- JR (0x67,0xF4) @0x2001
+	"Big Bang Pro Wrestling"			- JR (0x66,0xF7) @0x2001	???
+	"Bikkuriman 2000"					- JR (0x7E,0xFFF4) @0x2001	???
+	"Bio Motor Unitron"					- JR (0x6E,0xF9) @0x2001
+	"Bust a Move Pocket"				- JR (0x66,0xF8) @0x2001
+	"Cool Boarders Pocket"				- ???
+	"Cool Cool Jam"						- JR (0x6F,0xF9) @0x2001
+	"Cool Cool Jam Sample"				- JR (0x68,0xF7) @0x2001
+	"Crush Roller"						- JR (0x6B,0xF3) @0x2001
+	"Dark Arms"							- JR (0x61,0xF4) @0x200
+	"Delta Warp"						- ???
+	"Densetsu no Ogre Battle Gaiden"	- JR (0x66,0xF9) @0x2001
+	"Densha de Go 2"					- JR (0x66,0xFA) @0x2001
+	"Dive Alert"						- ???
+	"Dokodemo Mahjong"					- JR (0x66,0xF9) @0x200
+	"Dynamite Slugger"					- JR (0x66,0xF6) @0x200
+	"Evolution Eternal Dungeons"		- JR (0x66,0xF5) @0x200
+	"Faselei"							- JR (0x66,0xF8) @0x200
+	"Fatal Fury"						- JR (0x66,0xF8) @0x200
+	"Ganbare Neo Poke-kun"				- JR (0x66,0xF9) @0x20021A
+	"Infinity Cure"						- JR (0x66,0xF8) @0x200
+	"Kikou Seiki Unitron"				- JR (0x6E,0xF9) @0x200
+	"King of Fighter R1"				- JR (0x6E,0xF8) @0x200152
+	"King of Fighter R2"				- JR (0x6E,0xF8) @0x200170
+	"KoF, Battle De Paradise"			- JR (0x61,0xF8) @0x20052D
+										- JR (0x67,0xF9) @0x203495
+	"Koi Koi Mahjong"					- JR (0x66,0xF9) @0x200
+	"Last Blade"						- JR (0x65,0xF8) @0x20021F
+	"Magical Drop Pocket"				- JR (0x66,0xF8) @0x200
+	"Melon-chan no Seichou Nikki"		- JR (0x76,0xFFF5) @0x200	???
+	"Memories of Pure"					- JR (0x68,0xF5) @0x200
+										- JR (0x61,0xF7) @0x200		???
+	"Metal Slug 1st"					- JR (0x6E,0xF9) @0x2001
+										- JR (0x6A,0xF9) @0x200
+	"Metal Slug - 2nd Mission"			- JR (0x66,0xF9) @0x2001
+	"Mezase! Kanji Ou"					- JR (0x66,0xF9) @0x2001
+	"Mizuki Shigeru no Youkai Shas"		- JR (0x66,0xF9) @0x2001
+										- JR (0x6A,0xF9) @0x2001
+	"Neo 21 - Real Casino Series"		- JR (0x68,0xF8) @0x2001
+	"Neo Baccarat - Real Casino Series"	- JR (0x6E,0xF8) @0x2001
+	"Neo Cherry Master - Real Casino S"	- JR (0x68,0xF8) @0x2001
+	"Neo Cherry Master Color - Real Ca"	- JR (0x68,0xF8) @0x2001
+	"Neo Derby Champ Daiyosou"			- JR (0x67,0xF8) @0x2001
+	"Neo Dragons Wild"					- JR (0x66,0xFC) @0x2001
+	"Neo Geo Cup '98 Special"			- JR (0x66,0xF3) @0x2001
+	"Neo Mystery Bonus - Real Casino S"	- JR (0x68,0xF8) @0x2001
+	"Neo Poke Pro Yakyuu"				- JR (0x66,0xF6) @0x200
+	"Neo Turf Masters"					- JR (0x65,0xF8) @0x200
+	"Nigeronpa"							- JR (0x6E,0xF8) @0x200
+	"Oekaki Puzzle"						- JR (0x66,0xF5) @0x200
+	"Pachinko Hisshou Guide - Pocket"	- JR (0x66,0xF9) @0x200
+	"Pachi-slot Aruze Oukoku Pocket "	- JR (0x66,0xF9) @0x200
+	"Pacman"							- JP (0xF2,0x20018F)
+	"Party Mail"						- JR (0x66,0xF6) @0x200
+	"Picture Puzzle"					- JR (0x66,0xF5) @0x200
+	"Pocket Love If"					- JR (0x66,0xF8) @0x200
+	"Pocket Reversi"					- JR (0x66,0xF5) @0x200
+	"Pocket Tennis"						- JP (0xF2,0x2001EA)
+	"Pocket Tennis Color"				- JP (0xF2,0x200050)
+	"Puyo Pop"							- JR (0x66,0xF9) @0x200
+	"Puzzle Booble Mini (V1.09)"		- JR (0x66,0xF8) @0x200
+	"Puzzle Booble Mini (V1.10)"		- JR (0x65,0xF8) @0x200
+	"Rockman Battle & Fighters"			- JR (0x66,0xF8) @0x200
+	"Samurai Shodown! - Pocket Fightin"	- JR (0x66,0xF9) @0x200
+	"Samurai Shodown! 2 - Pocket Fight"	- JR (0x67,0xF8) @0x200
+	"Shanghai Mini"						- JR (0x66,0xF5) @0x200
+	"Shinki Sekai Evolution - Hate"		- JR (0x66,0xF5) @0x200
+	"Shougi no Tatsujin"				- JR (0x66,0xF8) @0x200
+	"Shougi no Tatsujin Color"			- JR (0x66,0xF8) @0x200
+	"SNK Gals Fighters"					- JR (0x66,0xF8) @0x200
+	"SNK vs Capcom - Card Fighters Cap"	- JR (0x6E,0xF9) @0x200
+	"SNK vs Capcom - Card Fighters SNK"	- JR (0x6E,0xF9) @0x200
+	"SNK vs Capcom - Card Fighters 2"	- JR (0x6E,0xF9) @0x200100
+	"SNK vs Capcom - The Match of The "	- JR (0x6E,0xF8) @0x200
+	"Sonic The Hedgehog - Pocket Adven"	- JR (0x66,0xF9) @0x200
+	"Sonic The Hedgehog - Poc - Sample"	- JR (0x67,0xFA) @0x200
+	"Soreike!! Hanafuda Doujou"			- JR (0x66,0xF8) @0x200
+	"Super Real Mahjong - Premium"		- JR (0x61,0xF8) @0x200
+	"Tsunagete Pon! 2"					- JR (0x6E,0xF9) @0x200
+	"Wrestling Madness"					- ???
+
+	"Bios"								- JR (0x67,0xF9) @0xFF
+										- JR (0x6E,0xF9) @0xFF
+
+Metal Slug - 2nd Mission:
+See 0x28dd04
+It checks for a 64 byte long pattern (SNK logo) in VRAM.
+
+
+Puyo Pop:
+See 0x215BE9
+Loads value from 0xFFFE40 (0xFF2BBD)
+VECT_COMINIT
+VECT_COMRECEIVESTART
+VECT_COMOFFRTS
+VECT_COMONRTS
+VBLIRQ_Entry
+
+
+
+	i = 0x2772;
+	ngpc_bios[i] = 0x17; i++; ngpc_bios[i] = 0x03; i++;		// ldf 3
+	ngpc_bios[i] = 0x3C; i++;								// push XIX
+	ngpc_bios[i] = 0xC8; i++; ngpc_bios[i] = 0xCC; i++;		// and w,1F
+	ngpc_bios[i] = 0x1F; i++;
+	ngpc_bios[i] = 0xC8; i++; ngpc_bios[i] = 0x80; i++;		// add w,w
+	ngpc_bios[i] = 0xC8; i++; ngpc_bios[i] = 0x80; i++;		// add w,w
+	ngpc_bios[i] = 0x44; i++; ngpc_bios[i] = 0x00; i++;		// ld XIX,0x00FFFE00
+	ngpc_bios[i] = 0xFE; i++; ngpc_bios[i] = 0xFF; i++;		//
+	ngpc_bios[i] = 0x00; i++;								//
+	ngpc_bios[i] = 0xE3; i++; ngpc_bios[i] = 0x03; i++;		// ld XIX,(XIX+W)
+	ngpc_bios[i] = 0xF0; i++; ngpc_bios[i] = 0xE1; i++;		//
+	ngpc_bios[i] = 0x24; i++;								//
+	ngpc_bios[i] = 0xB4; i++; ngpc_bios[i] = 0xE8; i++;		// call XIX
+	ngpc_bios[i] = 0x5C; i++;								// pop XIX
+	ngpc_bios[i] = 0x07; i++;								// reti
+
+
+
+
+	orr r0,r0,r0,lsl#10
+	ldr r1,=0x2211000
+	and r2,r1,r0,lsl#9				;@ bit __6___2___3___7
+	and r0,r1,r0,lsl#11				;@ bit __4___0___5___1
+	orr r0,r2,r0,lsl#2				;@ bit 4_6_0_2_5_3_1_7
+	add r2,r0,r0,lsl#8
+	add r2,r2,r0,lsl#16
+	mov r0,r2,lsr#24
+
+	orr r0,r0,r0,lsl#10
+	mov r1,r0,lsl#17
+	orr r0,r1,r0,lsr#3
+	ldr r1,=0x88442211
+	and r0,r1,r0
+	orr r0,r0,r0,ror#16
+	orr r0,r0,r0,ror#8
+	mov r0,r0,lsr#4
+
+	orr r0,r0,r0,lsl#8
+	and r1,r0,#0x330
+	and r2,r0,#0xCC0
+	orr r0,r1,r2,lsr#4
+	and r1,r0,#0x154
+	and r2,r0,#0x2A8
+	orr r0,r1,r2,lsr#2
+	mov r0,r0,lsr#1
+
+
+unsigned char b; // reverse this byte
+
+b = ((b * 0x80200802ULL) & 0x884422110ULL) * 0x0101010101ULL >> 32;
+
+b = ((b * 0x40100401ULL) & 0x442211088UL) * 0x0202020202ULL >> 32;
+
+
+43210__76543210__76543210__76543
+OoooOooooOoooOooooOoooOooooOoooO
+
+43210__76543210__76543210__76543210
+OoooOooooOoooOooooOoooOooooOoooO
+       .       .       .       .
+
+
+

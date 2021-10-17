@@ -1,0 +1,12 @@
+[submodule "source/Shared"]
+	path = source/Shared
+	url = https://github.com/FluBBaOfWard/NDS_Shared.git
+[submodule "source/ARMV30MZ"]
+	path = source/ARMV30MZ
+	url = https://github.com/FluBBaOfWard/ARMV30MZ.git
+[submodule "source/WSVideo"]
+	path = source/WSVideo
+	url = https://github.com/FluBBaOfWard/WSVideo.git
+[submodule "source/WSAudio"]
+	path = source/WSAudio
+	url = https://github.com/FluBBaOfWard/WSAudio.git
