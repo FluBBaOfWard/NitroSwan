@@ -3,15 +3,12 @@
 #include "Equates.h"
 #include "WSVideo/WSVideo.i"
 
-	.extern reset				;@ from bios.c
-
 	.global machineInit
 	.global loadCart
 	.global emuFlags
 	.global romNum
 	.global cartFlags
 	.global romStart
-	.global isBiosLoaded
 	.global BankSwitch4_F_W
 	.global BankSwitch4_F_R
 	.global BankSwitch2_W
@@ -89,12 +86,37 @@ loadCart: 		;@ Called from C:  r0=emuflags
 	stmfd sp!,{r4-r11,lr}
 	str r0,emuFlags
 
-	ldr r0,g_romSize
-	ldr r1,romSpacePtr
+	ldr r0,romSize
+	movs r2,r0,lsr#16		;@ 64kB blocks.
+	subne r2,r2,#1
+	str r2,romMask			;@ romMask=romBlocks-1
+
+	ldr r7,romSpacePtr		;@ r7=rombase til end of loadcart
+
+	ldr r4,=MEMMAPTBL_
+	mov r0,#4
+	mov r5,#0xF4
+tbLoop1:
+	and r1,r5,r2
+	add r1,r7,r1,lsl#16		;@ 64kB blocks.
+	str r1,[r4,r0,lsl#2]
+	add r0,r0,#1
+	add r5,r5,#1
+	cmp r5,#0x100
+	bne tbLoop1
+
+	ldr r1,=wsRAM
+	str r1,[r4,#0x0*4]		;@ 0 RAM
+	ldr r1,=wsSRAM
+	str r1,[r4,#0x1*4]		;@ 1 SRAM
+	ldr r1,[r4,#0xF*4]		;@ MemMap
+	str r1,[r4,#0x2*4]		;@ 2 ROM
+	str r1,[r4,#0x3*4]		;@ 3 ROM
+
 
 	ldr r0,g_BIOSBASE_COLOR
 	cmp r0,#0
-	bne skipHWSetup
+//	bne skipHWSetup
 
 	bl gfxReset
 	bl ioReset
@@ -108,7 +130,7 @@ skipHWSetup:
 ;@----------------------------------------------------------------------------
 BankSwitch4_F_R:					;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	ldr r0,=IO_regs
+	ldr r1,=IO_regs
 	ldrb r0,[r1,#0xC0]
 	and r0,r0,#0x0F
 	orr r0,r0,#0x20
@@ -129,13 +151,13 @@ BankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 	ldr r0,romMask
 	ldr r2,romSpacePtr
 	ldr r12,=MEMMAPTBL_+4*4
-tbloop1:
+tbLoop2:
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	str r3,[r12],#4
 	add r1,r1,#1
 	cmp r1,#0x100
-	bne tbloop1
+	bne tbLoop2
 
 	bx lr
 ;@----------------------------------------------------------------------------
@@ -198,9 +220,7 @@ g_lang:
 	.byte 1						;@ language
 g_paletteBank:
 	.byte 0						;@ palettebank
-isBiosLoaded:
-	.byte 0
-	.space 2					;@ alignment.
+	.space 3					;@ alignment.
 
 ngpHeader:
 romSpacePtr:
@@ -219,7 +239,7 @@ romMask:
 
 	.section .bss
 MEMMAPTBL_:
-	.space 8*4
+	.space 16*4
 wsRAM:
 	.space 0x10000
 wsSRAM:

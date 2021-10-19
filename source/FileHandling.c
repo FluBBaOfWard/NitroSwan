@@ -179,17 +179,17 @@ void loadNVRAM() {
 		return;
 	}
 	strlcpy(saveName, currentFilename, sizeof(saveName));
-	strlcat(saveName, ".fla", sizeof(saveName));
+	strlcat(saveName, ".wss", sizeof(saveName));
 	if ( (wssFile = fopen(saveName, "r")) ) {
-		if (fread(&wsSRAM, 1, 0x8000, wssFile) != 0x8000) {
+		if (fread(&wsSRAM, 1, sizeof(wsSRAM), wssFile) != sizeof(wsSRAM)) {
 			infoOutput("Bad flash file:");
 			infoOutput(saveName);
 		}
 		fclose(wssFile);
-		infoOutput("Loaded flash.");
+		infoOutput("Loaded SRAM.");
 	}
 	else {
-		infoOutput("Couldn't open flash file:");
+		infoOutput("Couldn't open save file:");
 		infoOutput(saveName);
 	}
 }
@@ -199,21 +199,20 @@ void saveNVRAM() {
 	FILE *wssFile;
 	char saveName[FILENAMEMAXLENGTH];
 
-
-
 	if (findFolder(folderName)) {
 		return;
 	}
 	strlcpy(saveName, currentFilename, sizeof(saveName));
-	strlcat(saveName, ".fla", sizeof(saveName));
+	strlcat(saveName, ".wss", sizeof(saveName));
 	if ( (wssFile = fopen(saveName, "w")) ) {
-		if (fwrite(&wsSRAM, 1, 0x8000, wssFile) != 0x8000) {
+		if (fwrite(&wsSRAM, 1, sizeof(wsSRAM), wssFile) != sizeof(wsSRAM)) {
 			infoOutput("Couldn't write correct number of bytes.");
 		}
 		fclose(wssFile);
+		infoOutput("Saved SRAM.");
 	}
 	else {
-		infoOutput("Couldn't open file:");
+		infoOutput("Couldn't open save file:");
 		infoOutput(saveName);
 	}
 }
@@ -360,7 +359,7 @@ static bool selectBios(char *dest, const char *fileTypes) {
 
 void selectColorBios() {
 	pauseEmulation = true;
-	if ( selectBios(cfg.biosPath, ".ngp.ngc.zip") ) {
+	if ( selectBios(cfg.biosPath, ".ngp.ngc.rom.zip") ) {
 		loadColorBIOS();
 		machineInit();
 	}
@@ -368,7 +367,7 @@ void selectColorBios() {
 }
 
 void selectBWBios() {
-	if ( selectBios(cfg.biosPath, ".ngp.ngc.zip") ) {
+	if ( selectBios(cfg.biosPath, ".ngp.ngc.rom.zip") ) {
 		loadBWBIOS();
 		machineInit();
 	}

@@ -11,7 +11,6 @@
 	.global paletteTxAll
 	.global refreshGfx
 	.global endFrameGfx
-	.global VCounter_R
 
 	.global gfxState
 	.global g_gammaValue
@@ -456,9 +455,6 @@ k2GE_0W:					;@ K2GE write, 0x8000-0x8FFF
 	bl k2GE_W
 	ldmfd sp!,{geptr,lr}
 	bx lr
-VCounter_R:
-	adr geptr,k2GE_0
-	b wsvVCountR
 k2GE_0:
 	.space k2GESize
 ;@----------------------------------------------------------------------------
@@ -493,9 +489,9 @@ k2geRAM:
 	.space 0x3360				;@ 0x3000+0x200+0x140+0x20
 	.space 0x3000				;@ backbuffer
 DIRTYTILES:
-	.space 0x300
+	.space 0x400
 DIRTYTILES2:
-	.space 0x300
+	.space 0x400
 
 ;@----------------------------------------------------------------------------
 	.end

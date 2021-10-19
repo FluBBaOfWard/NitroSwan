@@ -22,7 +22,6 @@
 	.global updateSlowIO
 	.global g_subBatteryLevel
 	.global batteryLevel
-	.global commByte
 	.global systemMemory
 	.global IO_regs
 
@@ -267,14 +266,16 @@ checkForAlarm:
 
 ;@----------------------------------------------------------------------------
 ioReadByte:
+	.type ioReadByte STT_FUNC
 ;@----------------------------------------------------------------------------
+	ldr geptr,=k2GE_0
 	and r0,r0,#0xFF
 	ldr pc,[pc,r0,lsl#2]
 	.long 0
 IN_Table:
 	.long IO_reg_R				;@ 0x00
 	.long IO_reg_R
-	.long VCounter_R
+	.long wsvVCountR
 	.long IO_reg_R
 	.long IO_reg_R
 	.long IO_reg_R
@@ -547,6 +548,7 @@ IN_Table:
 
 ;@----------------------------------------------------------------------------
 ioWriteByte:				;@ r0=adr, r1=val
+	.type ioWriteByte STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldr geptr,=k2GE_0
 	and r0,r0,#0xFF
@@ -894,7 +896,6 @@ dma_loop:
 	strb r0,[r7,#0x48]
 
 
-
 	ldmfd sp!,{r4-r7,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
@@ -920,10 +921,6 @@ IO_Default:
 
 
 ;@----------------------------------------------------------------------------
-watchDogW:
-;@----------------------------------------------------------------------------
-	bx lr
-;@----------------------------------------------------------------------------
 g_subBatteryLevel:
 	.long 0x3000000				;@ subBatteryLevel
 batteryLevel:
@@ -935,13 +932,9 @@ batteryLevel:
 								;@ Alarm minimum = 0x5B80 (0x16E)
 rtcTimer:
 	.byte 0
-sc0Buf:
 	.byte 0
-commStatus:
 	.byte 0
-commByte:
 	.byte 0
-//	.space 2
 
 	.end
 #endif // #ifdef __arm__

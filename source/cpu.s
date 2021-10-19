@@ -4,6 +4,8 @@
 #include "ARMV30MZ/ARMV30MZ.i"
 #include "WSVideo/WSVideo.i"
 
+#define CYCLE_PSL (256)
+
 	.global run
 	.global cpuReset
 	.global isConsoleRunning
@@ -69,7 +71,7 @@ runStart:
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
 
-	bl execute_line
+	bl executeLine
 	ldr geptr,=k2GE_0
 	bl k2GEDoScanline
 	cmp r0,#0
@@ -94,8 +96,7 @@ wsFrameLoop:
 	b runStart
 
 ;@----------------------------------------------------------------------------
-tlcs900hCyclesPerScanline:	.long 0
-z80CyclesPerScanline:	.long 0
+v30MZCyclesPerScanline:	.long 0
 joyClick:			.long 0
 frameTotal:			.long 0		;@ Let ui.c see frame count for savestates
 waitCountIn:		.byte 0
@@ -108,9 +109,9 @@ g_z80onoff:			.byte 1
 					.byte 0,0
 
 ;@----------------------------------------------------------------------------
-execute_line:
+executeLine:
 ;@----------------------------------------------------------------------------
-	mov r0,#256
+	mov r0,#CYCLE_PSL
 	bx r4
 ;@----------------------------------------------------------------------------
 scanlinehook:
@@ -167,6 +168,8 @@ cpuReset:					;@ Called by loadCart/resetGame
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
+	mov r0,#CYCLE_PSL
+	str r0,v30MZCyclesPerScanline
 	mov r0,#0
 	ldr r1,=nec_reset
 	blx r1
