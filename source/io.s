@@ -1,16 +1,16 @@
 #ifdef __arm__
 
-#include "TLCS900H/TLCS900H.i"
-#include "K2GE/K2GE.i"
+#include "ARMV30MZ/ARMV30MZ.i"
+#include "WSVideo/WSVideo.i"
 
 	.global ioReset
 	.global transferTime
-	.global Z80In
-	.global Z80Out
 	.global refreshEMUjoypads
 	.global ioSaveState
 	.global ioLoadState
 	.global ioGetStateSize
+	.global ioReadByte
+	.global ioWriteByte
 
 	.global joyCfg
 	.global EMUinput
@@ -20,14 +20,11 @@
 	.global serialinterrupt
 	.global resetSIO
 	.global updateSlowIO
-	.global z80ReadLatch
 	.global g_subBatteryLevel
 	.global batteryLevel
 	.global commByte
-	.global system_comms_read
-	.global system_comms_poll
-	.global system_comms_write
 	.global systemMemory
+	.global IO_regs
 
 	.syntax unified
 	.arm
@@ -54,7 +51,7 @@ initSysMem:					;@ In r0=values ptr.
 initMemLoop:
 	ldrb r0,[r4,r5]
 	mov r1,r5
-	bl t9StoreB_Low
+	bl IO_reg_W
 	subs r5,r5,#1
 	bpl initMemLoop
 
@@ -123,7 +120,7 @@ refreshEMUjoypads:			;@ Call every frame
 		andcs r3,r3,r2
 		tstcs r3,r3,lsr#10		;@ NDS L?
 		andcs r3,r3,r2,lsr#16
-	adr r1,rlud2lrud
+	adr r1,dulr2dlur
 	ldrb r0,[r1,r0,lsr#4]
 
 
@@ -135,66 +132,48 @@ refreshEMUjoypads:			;@ Call every frame
 	orr r0,r0,r1,lsl#4
 
 	tst r4,#0x08				;@ NDS Start
-	tsteq r4,#0x400				;@ NDS X
-	orrne r0,r0,#0x40			;@ NGP Option
-	tst r4,#0x200				;@ NDS L
-	orrne r0,r0,#0x80			;@ NGP D
+	orrne r0,r0,#0x20			;@ WS Start
 
-	ldr r2,=systemMemory+0xB0	;@ HW joypad
-	strb r0,[r2]
-
-	mov r0,#0xFF
-	tst r4,#0x04				;@ NDS Select
-	tsteq r4,#0x800				;@ NDS Y
-	bicne r0,r0,#0x01			;@ NGP Power
-	ldr r1,=g_subBatteryLevel
-	ldr r1,[r1]
-	tst r1,#0x2000000			;@ highest bit of subbattery level
-	biceq r0,r0,#0x02
-	strb r0,[r2,#1]				;@ HW powerbutton + subbattery
+	strb r0,joy0State
 
 	bx lr
 
 joyCfg: .long 0x00ff01ff	;@ byte0=auto mask, byte1=(saves R), byte2=R auto mask
 							;@ bit 31=single/multi, 30,29=1P/2P, 27=(multi) link active, 24=reset signal received
 playerCount:.long 0			;@ Number of players in multilink.
+joy0State:	.byte 0
 			.byte 0
 			.byte 0
 			.byte 0
-			.byte 0
-rlud2lrud:		.byte 0x00,0x08,0x04,0x0C, 0x01,0x09,0x05,0x0D, 0x02,0x0A,0x06,0x0E, 0x03,0x0B,0x07,0x0F
+dulr2dlur:	.byte 0x00,0x02,0x08,0x0A, 0x01,0x03,0x09,0x0B, 0x04,0x06,0x0C,0x0E, 0x05,0x07,0x0D,0x0F
 
 EMUinput:			;@ This label here for main.c to use
 	.long 0			;@ EMUjoypad (this is what Emu sees)
 
 ;@----------------------------------------------------------------------------
-z80ReadLatch:
+IOPortA_R:		;@ Player1...
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
-	mov r0,#0
-	bl Z80SetNMIPin
-	ldmfd sp!,{lr}
-	ldrb r0,commByte				;@ 0xBC
+	ldr r1,=IO_regs
+	ldrb r1,[r1,#0xB5]
+	and r1,r1,#0xF0
+	ldrb r0,joy0State
+	tst r1,#0x20
+	andne r0,r0,#0x0F
+	tst r1,#0x40
+	movne r0,r0,lsr#4
+
+	orr r0,r0,r1
+	
 	bx lr
 
 ;@----------------------------------------------------------------------------
-system_comms_read:			;@ r0 = (uint8 *buffer)
-	.type system_comms_read STT_FUNC
+IO_machine_R:
 ;@----------------------------------------------------------------------------
-	mov r0,#0
+	ldr r1,=IO_regs
+	ldrb r0,[r1,r0]
+	orr r0,r0,#2
 	bx lr
-;@----------------------------------------------------------------------------
-system_comms_poll:			;@ r0 = (uint8 *buffer)
-	.type system_comms_poll STT_FUNC
-;@----------------------------------------------------------------------------
-	mov r0,#0
-	bx lr
-;@----------------------------------------------------------------------------
-system_comms_write:			;@ r0 = (uint8 data)
-	.type system_comms_write STT_FUNC
-;@----------------------------------------------------------------------------
-	mov r0,#0
-	bx lr
+
 ;@----------------------------------------------------------------------------
 updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 ;@----------------------------------------------------------------------------
@@ -281,175 +260,669 @@ checkForAlarm:
 	ldrbeq r0,[r2,#0x93]		;@ RTC Days
 	ldrbeq r1,[r2,#0x98]		;@ ALARM Days
 	moveq r0,#0x0A
-	beq setInterrupt
+//	beq setInterrupt
 
 	bx lr
 
+
 ;@----------------------------------------------------------------------------
-t9StoreB_Low:
+ioReadByte:
 ;@----------------------------------------------------------------------------
-	ldr t9optbl,=tlcs900HState	;@ !!!This should not be needed when called from asm.
-	ldr r2,=systemMemory
-	strb r0,[r2,r1]
-
-	cmp r1,#0x50				;@ Serial channel 0 buffer.
-	strbeq r0,sc0Buf
-	bxeq lr
-
-	cmp r1,#0xB2				;@ COMMStatus
-	andeq r0,r0,#1
-	strbeq r0,commStatus
-	bxeq lr
-
-	cmp r1,#0xB8				;@ Soundchip enable/disable, 0x55 On 0xAA Off.
-	beq setMuteT6W28
-
-	cmp r1,#0xB9				;@ Z80 enable/disable, 0x55 On 0xAA Off.
-	beq Z80_SetEnable
-
-	cmp r1,#0xBA				;@ Z80 NMI
-	beq Z80_nmi_do
-
-	cmp r1,#0xBC				;@ Z80_COM
-	strbeq r0,commByte
-	bxeq lr
-
-	cmp r1,#0xA0				;@ T6W28, Right
-	beq T6W28_R_W
-	cmp r1,#0xA1				;@ T6W28, Left
-	beq T6W28_L_W
-	cmp r1,#0xA2				;@ T6W28 DAC, Left
-	beq T6W28_DAC_L_W
-;@	cmp r1,#0xA3				;@ T6W28 DAC, Right
-;@	beq T6W28_DAC_R_W
-
-	cmp r1,#0x6F				;@ Watchdog
-	beq watchDogW
-
-	cmp r1,#0x6D				;@ Battery A/D start
-	beq ADStart
-
-	cmp r1,#0x80				;@ CpuSpeed
-	beq cpuSpeedW
-
-	and r2,r1,#0xF0
-	cmp r2,#0x20
-	beq timer_write8
-
 	and r0,r0,#0xFF
-	cmp r2,#0x70
-	beq int_write8
+	ldr pc,[pc,r0,lsl#2]
+	.long 0
+IN_Table:
+	.long IO_reg_R				;@ 0x00
+	.long IO_reg_R
+	.long VCounter_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0x08
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
 
-//	cmp r1,#0xB3				;@ Power button NMI on/off.
+	.long IO_reg_R				;@ 0x10
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0x18
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0x20
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0x28
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0x30
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0x38
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0x40
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_important_R		;@ 0x48
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0x50
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0x58
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0x60
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0x68
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0x70
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0x78
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0x80
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0x88
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0x90
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0x98
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_machine_R			;@ 0xA0, color or mono
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0xA8
+	.long IO_reg_R
+	.long IO_important_R		;@ 0xAA vcounter?
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0xB0
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_important_R		;@ 0xB3 communication direction
+	.long IO_reg_R
+	.long IOPortA_R				;@ 0xB5 keypad
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0xB8
+	.long IO_reg_R
+	.long IO_important_R		;@ 0xBA int-eeprom even byte read
+	.long IO_important_R		;@ 0xBB int-eeprom odd byte read
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_important_R		;@ 0xBE int-eeprom status
+	.long IO_reg_R
+
+	.long BankSwitch4_F_R		;@ 0xC0
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_important_R		;@ 0xC4 ext-eeprom even byte read
+	.long IO_important_R		;@ 0xC5 ext-eeprom odd byte read
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_important_R		;@ 0xC8 ext-eeprom status
+	.long IO_reg_R
+	.long IO_important_R		;@ 0xCA rtc status
+	.long IO_important_R		;@ 0xCB rtc read
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0xD0
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0xD8
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0xE0
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0xE8
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+	.long IO_reg_R				;@ 0xF0
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R				;@ 0xF8
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+	.long IO_reg_R
+
+
+;@----------------------------------------------------------------------------
+ioWriteByte:				;@ r0=adr, r1=val
+;@----------------------------------------------------------------------------
+	ldr geptr,=k2GE_0
+	and r0,r0,#0xFF
+	ldr pc,[pc,r0,lsl#2]
+	.long 0
+OUT_Table:
+	.long IO_reg_W				;@ 0x00
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ last sprite, start sprite DMA?
+	.long wsvTileMapBaseW
+	.long IO_reg_W				;@ 0x08
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long k2GEBgScrXW			;@ 0x10
+	.long k2GEBgScrYW
+	.long k2GEFgScrXW
+	.long k2GEFgScrYW
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0x18
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0x20
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0x28
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0x30
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0x38
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0x40	DMA, source
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ DMA destination
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ DMA length
+	.long IO_reg_W
+	.long DMA_Start_W			;@ 0x48
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0x50
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0x58
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0x60
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0x68
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0x70
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0x78
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0x80
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0x88
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0x90
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0x98
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0xA0
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0xA8
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0xB0
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0xB8
+	.long IO_reg_W
+	.long IO_important_W		;@ 0xBA int-eeprom even byte write
+	.long IO_important_W		;@ 0xBB int-eeprom odd byte write
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long BankSwitch4_F_W		;@ 0xC0
+	.long IO_reg_W
+	.long BankSwitch2_W
+	.long BankSwitch3_W
+	.long IO_important_W		;@ 0xC4 ext-eeprom even byte write
+	.long IO_important_W		;@ 0xC5 ext-eeprom odd byte write
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0xC8
+	.long IO_reg_W
+	.long IO_important_W		;@ 0xCA rtc reset
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0xD0
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0xD8
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0xE0
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0xE8
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+	.long IO_reg_W				;@ 0xF0
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W				;@ 0xF8
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+	.long IO_reg_W
+
+;@----------------------------------------------------------------------------
+IO_important_W:
+	mov r11,r11					;@ No$GBA breakpoint
+;@----------------------------------------------------------------------------
+IO_reg_W:
+	adr r2,IO_regs
+	strb r1,[r2,r0]
 	bx lr
-
 ;@----------------------------------------------------------------------------
-ADStart:
+IO_important_R:
+	mov r11,r11					;@ No$GBA breakpoint
 ;@----------------------------------------------------------------------------
-	tst r0,#0x04
-	bxeq lr
-	ldr r0,batteryLevel
-	ldr r1,=systemMemory
-	orr r0,r0,#0x3F				;@ bit 0=ready, bit 1-5=1.
-	strh r0,[r1,#0x60]
-	mov r0,#0x1C
-	b setInterrupt
-
-;@----------------------------------------------------------------------------
-cpuSpeedW:
-;@----------------------------------------------------------------------------
-	adr r1,systemMemory
-	and r0,r0,#0x07
-	cmp r0,#4
-	movpl r0,#4
-	ldrb r2,[r1,#0x80]
-	subs r2,r0,r2
-	bxeq lr
-	strb r0,[r1,#0x80]
-	rsb r0,r0,#T9CYC_SHIFT
-	strb r0,[t9optbl,#tlcs_cycShift]
-	mov t9cycles,t9cycles,ror r2
+IO_reg_R:
+	ldrb r0,[pc,r0]
 	bx lr
-
-;@----------------------------------------------------------------------------
-t9LoadB_Low:
-;@----------------------------------------------------------------------------
-	and r1,r0,#0xF0
-
-	cmp r1,#0x70
-	beq int_read8
-
-	cmp r1,#0x20
-	beq timer_read8
-
-	cmp r0,#0x50				;@ Serial channel 0 buffer.
-	ldrbeq r0,sc0Buf
-	bxeq lr
-
-	cmp r0,#0xBC				;@ Z80_COM
-	ldrbeq r0,commByte
-	bxeq lr
-
-	ldr r2,=systemMemory
-	ldrb r0,[r2,r0]
-	bx lr
-
 ;@----------------------------------------------------------------------------
 systemMemory:
+IO_regs:
 	.space 0x100
 
+;@----------------------------------------------------------------------------
+DMA_Start_W:
+;@----------------------------------------------------------------------------
+	tst r1,#0x80
+	bxeq lr
+
+	stmfd sp!,{r4-r7,lr}
+	adr r7,IO_regs
+	ldrb r4,[r7,#0x40]
+	ldrb r0,[r7,#0x41]
+	orr r4,r4,r0,lsl#8
+	ldrb r0,[r7,#0x42]
+	orr r4,r4,r0,lsl#16			;@ r4=source
+
+	ldrb r5,[r7,#0x44]
+	ldrb r0,[r7,#0x45]
+	orr r5,r5,r0,lsl#8
+	ldrb r0,[r7,#0x43]
+	orr r5,r5,r0,lsl#16			;@ r5=destination
+
+	ldrb r6,[r7,#0x46]
+	ldrb r0,[r7,#0x47]
+	orr r6,r6,r0,lsl#8			;@ r6=length
+
+dma_loop:
+	mov r0,r4
+	bl cpuReadByte
+	mov r1,r0
+	mov r0,r5
+	bl cpuWriteByte
+	add r4,r4,#1
+	add r5,r5,#1
+	subs r6,r6,#1
+	bne dma_loop
+
+	strb r4,[r7,#0x40]
+	mov r4,r4,lsr#8
+	strb r4,[r7,#0x41]
+
+	strb r5,[r7,#0x44]
+	mov r5,r5,lsr#8
+	strb r5,[r7,#0x45]
+
+	mov r0,#0
+	strb r0,[r7,#0x46]
+	strb r0,[r7,#0x47]
+	strb r0,[r7,#0x48]
+
+
+
+	ldmfd sp!,{r4-r7,lr}
+	bx lr
+;@----------------------------------------------------------------------------
 
 SysMemDefault:
-	;@ 0x00													;@ 0x08
-	.byte 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x08, 0xFF, 0xFF
-	;@ 0x10													;@ 0x18
-	.byte 0x34, 0x3C, 0xFF, 0xFF, 0xFF, 0x3F, 0x00, 0x00,	0x3F, 0xFF, 0x2D, 0x01, 0xFF, 0xFF, 0x03, 0xB2
-	;@ 0x20													;@ 0x28
-	.byte 0x80, 0x00, 0x01, 0x90, 0x03, 0xB0, 0x90, 0x62,	0x05, 0x00, 0x00, 0x00, 0x0C, 0x0C, 0x4C, 0x4C
-	;@ 0x30													;@ 0x38
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x30, 0x00, 0x00, 0x00, 0x20, 0xFF, 0x80, 0x7F
-	;@ 0x40													;@ 0x48
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	;@ 0x50													;@ 0x58
-	.byte 0x00, 0x20, 0x69, 0x15, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF
-	;@ 0x60													;@ 0x68
-	.byte 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x17, 0x17, 0x03, 0x03, 0x02, 0x00, 0x10, 0x4E
-	;@ 0x70													;@ 0x78
-	.byte 0x02, 0x32, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	;@ 0x80													;@ 0x88
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	;@ 0x90													;@ 0x98
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	;@ 0xA0													;@ 0xA8
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	;@ 0xB0													;@ 0xB8
-	.byte 0x00, 0x00, 0x00, 0x04, 0x0A, 0x00, 0x00, 0x00,	0xAA, 0xAA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	;@ 0xC0													;@ 0xC8
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	;@ 0xD0													;@ 0xD8
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	;@ 0xE0													;@ 0xE8
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	;@ 0xF0													;@ 0xF8
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+IO_Default:
+	.byte 0x00, 0x00, 0x9d, 0xbb, 0x00, 0x00, 0x00, 0x26, 0xfe, 0xde, 0xf9, 0xfb, 0xdb, 0xd7, 0x7f, 0xf5
+	.byte 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x9e, 0x9b, 0x00, 0x00, 0x00, 0x00, 0x99, 0xfd, 0xb7, 0xdf
+	.byte 0x30, 0x57, 0x75, 0x76, 0x15, 0x73, 0x77, 0x77, 0x20, 0x75, 0x50, 0x36, 0x70, 0x67, 0x50, 0x77
+	.byte 0x57, 0x54, 0x75, 0x77, 0x75, 0x17, 0x37, 0x73, 0x50, 0x57, 0x60, 0x77, 0x70, 0x77, 0x10, 0x73
+	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	.byte 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, 0x00
+	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0x00, 0x00
+	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00
+	.byte 0x85, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4f, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	.byte 0x00, 0xdb, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x42, 0x00, 0x83, 0x00
+	.byte 0x2f, 0x3f, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1
+	.byte 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1
+	.byte 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1
+	.byte 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1
 
 
 ;@----------------------------------------------------------------------------
 watchDogW:
 ;@----------------------------------------------------------------------------
 	bx lr
-;@----------------------------------------------------------------------------
-Z80In:
-;@----------------------------------------------------------------------------
-	mov r11,r11					;@ No$GBA breakpoint
-	mov r0,#0
-	bx lr
-;@----------------------------------------------------------------------------
-Z80Out:
-;@----------------------------------------------------------------------------
-;@	mov r11,r11					;@ No$GBA breakpoint
-	mov r0,#0
-	b Z80SetIRQPin
 ;@----------------------------------------------------------------------------
 g_subBatteryLevel:
 	.long 0x3000000				;@ subBatteryLevel

@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "K2GE/K2GE.h"
+#include "WSVideo/WSVideo.h"
 
 extern u8 g_flicker;
 extern u8 g_twitch;

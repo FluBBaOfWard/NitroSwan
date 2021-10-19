@@ -1,6 +1,6 @@
 #ifdef __arm__
 
-#include "K2Audio/SN76496.i"
+//#include "WSAudio/SN76496.i"
 
 	.global soundInit
 	.global soundReset
@@ -9,11 +9,10 @@
 	.global setMuteT6W28
 	.global T6W28_L_W
 	.global T6W28_R_W
-	.global T6W28_DAC_L_W
 	.global k2Audio_0
 
 	.extern pauseEmulation
-
+	snptr	.req r12
 
 ;@----------------------------------------------------------------------------
 
@@ -37,7 +36,7 @@ soundReset:
 	stmfd sp!,{lr}
 	mov r0,#0
 	ldr snptr,=k2Audio_0
-	bl sn76496Reset			;@ sound
+//	bl sn76496Reset			;@ sound
 	ldmfd sp!,{lr}
 	bx lr
 
@@ -73,7 +72,7 @@ VblSound2:					;@ r0=length, r1=pointer
 
 	ldr snptr,=k2Audio_0
 	mov r0,r0,lsl#2
-	bl sn76496Mixer
+//	bl sn76496Mixer
 	ldmfd sp!,{r0,r1,lr}
 	bx lr
 
@@ -118,22 +117,11 @@ silenceLoop:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-T6W28_DAC_L_W:
-;@----------------------------------------------------------------------------
-	ldr r2,pcmWritePtr
-	add r1,r2,#1
-	str r1,pcmWritePtr
-	ldr r1,=WAVBUFFER
-	mov r2,r2,lsl#20
-	eor r0,r0,#0x80
-	strb r0,[r1,r2,lsr#20]
-	bx lr
-;@----------------------------------------------------------------------------
 T6W28_L_W:				;@ Sound left write
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r3,snptr,lr}
 	ldr snptr,=k2Audio_0
-	bl sn76496L_W
+//	bl sn76496L_W
 	ldmfd sp!,{r3,snptr,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
@@ -141,7 +129,7 @@ T6W28_R_W:				;@ Sound right write
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r3,snptr,lr}
 	ldr snptr,=k2Audio_0
-	bl sn76496W
+//	bl sn76496W
 	ldmfd sp!,{r3,snptr,lr}
 	bx lr
 
@@ -163,7 +151,7 @@ soundLatch:
 	.section .bss
 	.align 2
 k2Audio_0:
-	.space snSize
+	.space 0x800
 WAVBUFFER:
 	.space 0x1000
 ;@----------------------------------------------------------------------------

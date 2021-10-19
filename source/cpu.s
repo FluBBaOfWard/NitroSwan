@@ -2,7 +2,7 @@
 
 #include "Shared/nds_asm.h"
 #include "ARMV30MZ/ARMV30MZ.i"
-#include "K2GE/K2GE.i"
+#include "WSVideo/WSVideo.i"
 
 	.global run
 	.global cpuReset
@@ -14,8 +14,7 @@
 	.global waitMaskOut
 	.global cpu1SetIRQ
 	.global tlcs_return
-	.global Z80_SetEnable
-	.global Z80_nmi_do
+	.global setInterrupt
 
 	.syntax unified
 	.arm
@@ -36,61 +35,47 @@ run:		;@ Return after 1 frame
 ;@----------------------------------------------------------------------------
 runStart:
 ;@----------------------------------------------------------------------------
-	ldr r0,=EMUinput
-	ldr r0,[r0]
-	ldr r3,joyClick
-	eor r3,r3,r0
-	and r3,r3,r0
-	str r0,joyClick
+//	ldr r0,=EMUinput
+//	ldr r0,[r0]
+//	ldr r3,joyClick
+//	eor r3,r3,r0
+//	and r3,r3,r0
+//	str r0,joyClick
 
-	ldr r2,=yStart
-	ldrb r1,[r2]
-	tst r0,#0x200				;@ L?
-	subsne r1,#1
-	movmi r1,#0
-	tst r0,#0x100				;@ R?
-	addne r1,#1
-	cmp r1,#GAME_HEIGHT-SCREEN_HEIGHT
-	movpl r1,#GAME_HEIGHT-SCREEN_HEIGHT
-	strb r1,[r2]
+//	ldr r2,=yStart
+//	ldrb r1,[r2]
+//	tst r0,#0x200				;@ L?
+//	subsne r1,#1
+//	movmi r1,#0
+//	tst r0,#0x100				;@ R?
+//	addne r1,#1
+//	cmp r1,#GAME_HEIGHT-SCREEN_HEIGHT
+//	movpl r1,#GAME_HEIGHT-SCREEN_HEIGHT
+//	strb r1,[r2]
 
-	tst r3,#0x04				;@ NDS Select?
-	tsteq r3,#0x800				;@ NDS Y?
-	ldrne r2,=systemMemory+0xB3
-	ldrbne r2,[r2]
-	tstne r2,#4					;@ Power button NMI enabled?
-	movne r0,#0x08				;@ 0x08 = Power button on NGP
-	blne setInterruptExternal
+//	tst r3,#0x04				;@ NDS Select?
+//	tsteq r3,#0x800				;@ NDS Y?
+//	ldrne r2,=systemMemory+0xB3
+//	ldrbne r2,[r2]
+//	tstne r2,#4					;@ Power button NMI enabled?
+//	movne r0,#0x08				;@ 0x08 = Power button on NGP
+//	blne setInterruptExternal
 
 	bl refreshEMUjoypads		;@ Z=1 if communication ok
 
+	ldr r4,=nec_execute
+	ldr r5,=nec_int
 ;@----------------------------------------------------------------------------
-ngpFrameLoop:
+wsFrameLoop:
 ;@----------------------------------------------------------------------------
-	ldrh r0,z80enabled
-	ands r0,r0,r0,lsr#8
-	beq NoZ80Now
 
-	ldr z80optbl,=Z80OpTable
-	ldr r0,z80CyclesPerScanline
-	b Z80RestoreAndRunXCycles
-ngpZ80End:
-	add r0,z80optbl,#z80Regs
-	stmia r0,{z80f-z80pc,z80sp}			;@ Save Z80 state
-NoZ80Now:
-;@--------------------------------------
-	ldr t9optbl,=tlcs900HState
-	ldr r0,tlcs900hCyclesPerScanline
-	b tlcsRestoreAndRunXCycles
-tlcs_return:
-tlcs900hEnd:
-;@--------------------------------------
+	bl execute_line
 	ldr geptr,=k2GE_0
 	bl k2GEDoScanline
 	cmp r0,#0
-	bne ngpFrameLoop
-;@----------------------------------------------------------------------------
+	bne wsFrameLoop
 
+;@----------------------------------------------------------------------------
 	ldr r1,=fpsValue
 	ldr r0,[r1]
 	add r0,r0,#1
@@ -123,35 +108,68 @@ g_z80onoff:			.byte 1
 					.byte 0,0
 
 ;@----------------------------------------------------------------------------
-setCpuSpeed:				;@ in r0=0 normal / !=0 half speed.
-	.type   tweakCpuSpeed STT_FUNC
+execute_line:
 ;@----------------------------------------------------------------------------
-;@---Speed - 6.144MHz / 60Hz / 198 lines	;NGP TLCS-900H.
-	ldr r0,=T9_HINT_RATE				;@ 515
-	str r0,tlcs900hCyclesPerScanline
-;@---Speed - 3.072MHz / 60Hz / 198 lines	;NGP Z80.
-	mov r0,r0,lsr#1
-	str r0,z80CyclesPerScanline
+	mov r0,#256
+	bx r4
+;@----------------------------------------------------------------------------
+scanlinehook:
+;@----------------------------------------------------------------------------
+	str lr,[sp,#-4]!
+
+	ldr r2,=IO_regs
+	ldrb r0,[r2,#0xA4]
+	cmp r0,#0
+	beq nohblirq
+	ldrb r1,[r2,#0xB2]
+	tst r1,#0x80
+	beq nohblirq
+	ldrb r3,[r2,#0xA5]
+	cmp r3,#0
+	moveq r3,r0
+	subs r3,r3,#1
+	strb r3,[r2,#0xA5]
+	bne nohblirq
+	mov r0,#7
+	bl setInterrupt
+
+nohblirq:
+
+//	ldr r1,scanline
+	ldrb r0,[r2,#0x03]
+	cmp r0,r1
+	bne nolineirq
+	ldrb r1,[r2,#0xB2]
+	tst r1,#0x10
+	beq nolineirq
+	mov r0,#4
+	bl setInterrupt
+
+nolineirq:
+
+	ldr lr,[sp],#4
 	bx lr
+;@----------------------------------------------------------------------------
+setInterrupt:			;@ r0=int number
+;@----------------------------------------------------------------------------
+	ldr r2,=IO_regs
+	ldrb r1,[r2,#0xB6]
+	mov r3,#1
+	bic r1,r1,r3,lsl r0
+	strb r1,[r2,#0xB6]
+	ldrb r1,[r2,#0xB0]
+	add r0,r0,r1
+	mov r0,r0,lsl#2
+	bx r5
+
 ;@----------------------------------------------------------------------------
 cpuReset:					;@ Called by loadCart/resetGame
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
-	bl setCpuSpeed
-	ldr t9optbl,=tlcs900HState
-	bl tlcs900HReset
-
-
-;@--------------------------------------
-	ldr z80optbl,=Z80OpTable
-
-	adr r0,ngpZ80End
-	str r0,[z80optbl,#z80NextTimeout]
-	str r0,[z80optbl,#z80NextTimeout_]
-
 	mov r0,#0
-	bl Z80Reset
+	ldr r1,=nec_reset
+	blx r1
 
 	ldmfd sp!,{lr}
 	bx lr

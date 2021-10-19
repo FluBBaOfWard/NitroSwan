@@ -8,7 +8,6 @@
 #include "Shared/AsmExtra.h"
 #include "Gui.h"
 #include "FileHandling.h"
-#include "bios.h"
 #include "EmuFont.h"
 #include "Cart.h"
 #include "cpu.h"

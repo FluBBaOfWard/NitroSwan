@@ -9,14 +9,11 @@
 #include "Gfx.h"
 #include "io.h"
 #include "cpu.h"
-#include "bios.h"
 #include "ARMV30MZ/Version.h"
 
-#define EMUVERSION "V0.1.1 2021-10-17"
+#define EMUVERSION "V0.1.1 2021-10-19"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
-
-void hacksInit(void);
 
 static void paletteChange(void);
 static void languageSet(void);
@@ -26,7 +23,6 @@ static void subBatteryChange(void);
 static void speedHackSet(void);
 
 static void uiMachine(void);
-static void updateGameInfo(void);
 
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
@@ -231,7 +227,6 @@ void paletteChange() {
 	}
 	monoPalInit();
 	paletteTxAll();
-	fixBiosSettings();
 	settingsChanged = true;
 }
 /*
@@ -245,7 +240,6 @@ void borderSet() {
 */
 void languageSet() {
 	g_lang ^= 0x01;
-	fixBiosSettings();
 }
 
 void machineSet() {
@@ -254,7 +248,6 @@ void machineSet() {
 
 void speedHackSet() {
 	emuSettings ^= ALLOW_SPEED_HACKS;
-	hacksInit();
 }
 
 void batteryChange() {

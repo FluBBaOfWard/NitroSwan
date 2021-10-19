@@ -2,8 +2,7 @@
 
 #include "Shared/nds_asm.h"
 #include "Equates.h"
-#include "TLCS900H/TLCS900H.i"
-#include "K2GE/K2GE.i"
+#include "WSVideo/WSVideo.i"
 
 	.global gfxInit
 	.global gfxReset
@@ -12,6 +11,8 @@
 	.global paletteTxAll
 	.global refreshGfx
 	.global endFrameGfx
+	.global VCounter_R
+
 	.global gfxState
 	.global g_gammaValue
 	.global g_flicker
@@ -455,7 +456,9 @@ k2GE_0W:					;@ K2GE write, 0x8000-0x8FFF
 	bl k2GE_W
 	ldmfd sp!,{geptr,lr}
 	bx lr
-
+VCounter_R:
+	adr geptr,k2GE_0
+	b wsvVCountR
 k2GE_0:
 	.space k2GESize
 ;@----------------------------------------------------------------------------

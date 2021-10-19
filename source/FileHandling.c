@@ -19,7 +19,7 @@
 #include "Gfx.h"
 #include "io.h"
 #include "Memory.h"
-#include "NitroSwan.h"
+#include "WonderSwan.h"
 
 static const char *const folderName = "nitroswan";
 static const char *const settingName = "settings.cfg";
@@ -68,43 +68,43 @@ int initSettings() {
 }
 
 bool updateSettingsFromNGP() {
-	int val;
+	int val = 0;
 	bool changed = false;
 
-	val = t9LoadB(0x6F8B);
+	//val = t9LoadB(0x6F8B);
 	if (cfg.birthYear != val) {
 		cfg.birthYear = val;
 		changed = true;
 	}
-	val = t9LoadB(0x6F8C);
+	//val = t9LoadB(0x6F8C);
 	if (cfg.birthMonth != val) {
 		cfg.birthMonth = val;
 		changed = true;
 	}
-	val = t9LoadB(0x6F8D);
+	//val = t9LoadB(0x6F8D);
 	if (cfg.birthDay != val) {
 		cfg.birthDay = val;
 		changed = true;
 	}
 
-	val = t9LoadB(0x6C34);
+	//val = t9LoadB(0x6C34);
 	if (cfg.alarmHour != val) {
 		cfg.alarmHour = val;
 		changed = true;
 	}
-	val = t9LoadB(0x6C35);
+	//val = t9LoadB(0x6C35);
 	if (cfg.alarmMinute != val) {
 		cfg.alarmMinute = val;
 		changed = true;
 	}
 
-	val = t9LoadB(0x6F87) & 1;
+	//val = t9LoadB(0x6F87) & 1;
 	if (cfg.language != val) {
 		cfg.language = val;
 		g_lang = val;
 		changed = true;
 	}
-	val = t9LoadB(0x6F94) & 7;
+	//val = t9LoadB(0x6F94) & 7;
 	if (cfg.palette != val) {
 		cfg.palette = val;
 		g_paletteBank = val;
@@ -169,191 +169,53 @@ void saveSettings() {
 	}
 }
 
-void loadNVRAM_() {
-	void *space;
-	FILE *file;
-	char flashName[FILENAMEMAXLENGTH];
-	NgpFlashFile flashHdr;
-
-	if (findFolder(folderName)) {
-		return;
-	}
-	strlcpy(flashName, currentFilename, sizeof(flashName));
-	strlcat(flashName, ".fla", sizeof(flashName));
-	if ( (file = fopen(flashName, "r")) ) {
-		fread(&flashHdr, 1, sizeof(flashHdr), file);
-		if (flashHdr.magic == NGPF_MAGIC) {
-			memcpy(getFlashLOBlocksAddress(), &flashHdr.blocksLOInfo, 35);
-			memcpy(getFlashHIBlocksAddress(), &flashHdr.blocksHIInfo, 35);
-			space = romSpacePtr + flashHdr.addressLO;
-			fread(space, 1, flashHdr.sizeLO, file);
-			if ( flashHdr.sizeHI != 0) {
-				fread(space, 1, flashHdr.sizeHI, file);
-			}
-			infoOutput("Loaded flash.");
-		}
-		fclose(file);
-	}
-	return;
-}
-
 //void loadSaveGameFile()
 void loadNVRAM() {
-	// Find the .fla file and read it in
-	FILE *ngfFile;
-	int i;
-	NgfHeader header;
-	NgfBlock block;
-	char flashName[FILENAMEMAXLENGTH];
-	bool canCopy;
+	// Find the .wss file and read it in
+	FILE *wssFile;
+	char saveName[FILENAMEMAXLENGTH];
 
 	if (findFolder(folderName)) {
 		return;
 	}
-	strlcpy(flashName, currentFilename, sizeof(flashName));
-	strlcat(flashName, ".fla", sizeof(flashName));
-	if ( !(ngfFile = fopen(flashName, "r")) ) {
+	strlcpy(saveName, currentFilename, sizeof(saveName));
+	strlcat(saveName, ".fla", sizeof(saveName));
+	if ( (wssFile = fopen(saveName, "r")) ) {
+		if (fread(&wsSRAM, 1, 0x8000, wssFile) != 0x8000) {
+			infoOutput("Bad flash file:");
+			infoOutput(saveName);
+		}
+		fclose(wssFile);
+		infoOutput("Loaded flash.");
+	}
+	else {
 		infoOutput("Couldn't open flash file:");
-		infoOutput(flashName);
-		return;
+		infoOutput(saveName);
 	}
-
-	if (fread(&header, 1, sizeof(NgfHeader), ngfFile) != sizeof(NgfHeader)) {
-		infoOutput("Bad flash file:");
-		infoOutput(flashName);
-		fclose(ngfFile);
-		return;
-	}
-
-	if (header.version != 0x53) {
-		infoOutput("Bad flash file version:");
-		infoOutput(flashName);
-		fclose(ngfFile);
-		return;
-	}
-
-    if (header.blockCount > MAX_BLOCKS) {
-		infoOutput("Too many blocks in flash file:");
-		infoOutput(flashName);
-		fclose(ngfFile);
-		return;
-    }
-
-	// Loop through the blocks and insert them into mainrom
-	for (i=0; i < header.blockCount; i++) {
-		if (fread(&block, 1, sizeof(NgfBlock), ngfFile) != sizeof(NgfBlock)) {
-			infoOutput("Couldn't read correct number of header bytes.");
-			fclose(ngfFile);
-			return;
-		}
-
-		canCopy = false;
-		if ((block.ngpAddr >= 0x800000 && block.ngpAddr < 0xA00000)) {
-			block.ngpAddr -= 0x600000;
-			canCopy = markBlockDirty(1, getBlockFromAddress(block.ngpAddr));
-		}
-		else if ((block.ngpAddr >= 0x200000 && block.ngpAddr < 0x400000)) {
-			block.ngpAddr -= 0x200000;
-			canCopy = markBlockDirty(0, getBlockFromAddress(block.ngpAddr));
-		}
-		if (!canCopy) {
-			fseek(ngfFile, block.len, SEEK_CUR);
-			infoOutput("Invalid block header in flash.");
-            continue;
-        }
-		if (fread(&romSpacePtr[block.ngpAddr], 1, block.len, ngfFile) != block.len) {
-			infoOutput("Couldn't read correct number of block bytes.");
-			fclose(ngfFile);
-			return;
-		}
-	}
-
-	infoOutput("Loaded flash.");
-	fclose(ngfFile);
 }
 
 //void writeSaveGameFile() {
 void saveNVRAM() {
-	// Find the dirty blocks and write them to the .fla file
-	int totalBlocks = MAX_BLOCKS;
-	int i;
-	int chip;
-	FILE *ngfFile;
-	char flashName[FILENAMEMAXLENGTH];
+	FILE *wssFile;
+	char saveName[FILENAMEMAXLENGTH];
 
-	int bytes;
-	int chipCount = (flashSize != 0x400000) ? 1 : 2;
-	NgfHeader header;
-	NgfBlock block;
 
-	header.version = 0x53;
-	header.blockCount = 0;
-	header.fileLen = sizeof(NgfHeader);
-
-	// Add them all up, first
-	for (chip=0; chip<chipCount; chip++) {
-		for (i=0; i<totalBlocks; i++) {
-			if (isBlockDirty(chip,i)) {
-				header.blockCount++;
-				header.fileLen += getBlockSize(i);
-			}
-		}
-	}
-
-	header.fileLen += header.blockCount * sizeof(NgfBlock);
 
 	if (findFolder(folderName)) {
 		return;
 	}
-	strlcpy(flashName, currentFilename, sizeof(flashName));
-	strlcat(flashName, ".fla", sizeof(flashName));
-	if ( !(ngfFile = fopen(flashName, "w")) ) {
-		infoOutput("Couldn't open file:");
-		infoOutput(flashName);
-		return;
-	}
-
-	if (fwrite(&header, 1, sizeof(NgfHeader), ngfFile) != sizeof(NgfHeader)) {
-		infoOutput("Couldn't write correct number of bytes.");
-		fclose(ngfFile);
-		return;
-	}
-
-	for (chip=0; chip<chipCount; chip++) {
-		for (i=0; i<totalBlocks; i++) {
-			if (isBlockDirty(chip,i)) {
-				block.len = getBlockSize(i);
-				if (chip == 0) {
-					block.ngpAddr = getBlockOffset(i)+0x200000;
-				}
-				else {
-					block.ngpAddr = getBlockOffset(i)+0x800000;
-				}
-
-				if (fwrite(&block, 1, sizeof(NgfBlock), ngfFile) != sizeof(NgfBlock)) {
-					infoOutput("Couldn't write correct number of bytes.");
-					fclose(ngfFile);
-					return;
-				}
-
-				if (chip == 0) {
-					bytes = fwrite(&romSpacePtr[getBlockOffset(i)], 1, block.len, ngfFile);
-				}
-				else {
-					bytes = fwrite(&romSpacePtr[getBlockOffset(i)+0x200000], 1, block.len, ngfFile);
-				}
-				if (bytes != block.len)
-				{
-					infoOutput("Couldn't write correct number of bytes.");
-					fclose(ngfFile);
-					return;
-				}
-			}
+	strlcpy(saveName, currentFilename, sizeof(saveName));
+	strlcat(saveName, ".fla", sizeof(saveName));
+	if ( (wssFile = fopen(saveName, "w")) ) {
+		if (fwrite(&wsSRAM, 1, 0x8000, wssFile) != 0x8000) {
+			infoOutput("Couldn't write correct number of bytes.");
 		}
+		fclose(wssFile);
 	}
-
-	infoOutput("Saved flash.");
-	fclose(ngfFile);
+	else {
+		infoOutput("Couldn't open file:");
+		infoOutput(saveName);
+	}
 }
 
 void loadState(void) {
@@ -410,44 +272,10 @@ void saveState(void) {
 	}
 }
 
-/// Hold down the power button for ~40 frames.
-static void turnPowerOff(void) {
-	int i;
-	if ( g_BIOSBASE_COLOR != NULL ) {
-		EMUinput &= ~4;
-		for (i = 0; i < 100; i++ ) {
-			run();
-			EMUinput |= 4;
-			if (isConsoleSleeping()) {
-				break;
-			}
-		}
-	}
-}
-
-/// Hold down the power button for ~40 frames.
-static void turnPowerOn(void) {
-	int i;
-	if ( g_BIOSBASE_COLOR != NULL ) {
-		EMUinput &= ~4;
-		for (i = 0; i < 100; i++ ) {
-			run();
-			EMUinput |= 4;
-			if (isConsoleRunning()) {
-				break;
-			}
-		}
-	}
-}
-
 //---------------------------------------------------------------------------------
 bool loadGame(const char *gameName) {
 	if ( gameName ) {
 		cls(0);
-		if ( isConsoleRunning() ) {
-			drawText("     Please wait, power off.", 11, 0);
-			turnPowerOff();
-		}
 		drawText("     Please wait, loading.", 11, 0);
 		g_romSize = loadROM(romSpacePtr, gameName, maxRomSize);
 		if ( g_romSize ) {
@@ -460,8 +288,6 @@ bool loadGame(const char *gameName) {
 			if ( emuSettings & AUTOLOAD_STATE ) {
 				loadState();
 			}
-			drawText("     Please wait, power on.", 11, 0);
-			turnPowerOn();
 			closeMenu();
 			return false;
 		}

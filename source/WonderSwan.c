@@ -5,40 +5,36 @@
 #include "Gfx.h"
 #include "Sound.h"
 #include "io.h"
-#include "TLCS900H/TLCS900H.h"
 #include "ARMV30MZ/ARMV30MZ.h"
 
 
 int packState(void *statePtr) {
 	int size = 0;
-	memcpy(statePtr+size, ngpRAM, sizeof(ngpRAM));
-	size += sizeof(ngpRAM);
+	memcpy(statePtr+size, wsRAM, sizeof(wsRAM));
+	size += sizeof(wsRAM);
 	size += ioSaveState(statePtr+size);
-	size += sn76496SaveState(statePtr+size, &k2Audio_0);
-	size += k2GESaveState(statePtr+size, &k2GE_0);
-	size += Z80SaveState(statePtr+size, &Z80OpTable);
-	size += tlcs900HSaveState(statePtr+size, &tlcs900HState);
+//	size += sn76496SaveState(statePtr+size, &k2Audio_0);
+	size += wsVideoSaveState(statePtr+size, &k2GE_0);
+//	size += v30MZSaveState(statePtr+size, &armV30MZState);
 	return size;
 }
 
 void unpackState(const void *statePtr) {
 	int size = 0;
-	memcpy(ngpRAM, statePtr+size, sizeof(ngpRAM));
-	size += sizeof(ngpRAM);
+	memcpy(wsRAM, statePtr+size, sizeof(wsRAM));
+	size += sizeof(wsRAM);
 	size += ioLoadState(statePtr+size);
-	size += sn76496LoadState(&k2Audio_0, statePtr+size);
-	size += k2GELoadState(&k2GE_0, statePtr+size);
-	size += Z80LoadState(&Z80OpTable, statePtr+size);
-	tlcs900HLoadState(&tlcs900HState, statePtr+size);
+//	size += sn76496LoadState(&k2Audio_0, statePtr+size);
+	size += wsVideoLoadState(&k2GE_0, statePtr+size);
+//	size += v30MZLoadState(&armV30MZState, statePtr+size);
 }
 
 int getStateSize() {
 	int size = 0;
-	size += sizeof(ngpRAM);
+	size += sizeof(wsRAM);
 	size += ioGetStateSize();
-	size += sn76496GetStateSize();
-	size += k2GEGetStateSize();
-	size += Z80GetStateSize();
-	size += tlcs900HGetStateSize();
+//	size += sn76496GetStateSize();
+	size += wsVideoGetStateSize();
+//	size += v30MZGetStateSize();
 	return size;
 }
