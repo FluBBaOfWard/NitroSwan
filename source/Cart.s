@@ -42,6 +42,7 @@ ROM_Space:
 //	.incbin "wsroms/Crazy Climber (J) [M][!].ws"
 //	.incbin "wsroms/Guilty Gear Petit (J).wsc"
 //	.incbin "wsroms/Mr. Driller (J) [!].wsc"
+ROM_SpaceEnd:
 //biosSpace:
 //	.incbin "wsroms/boot.rom"
 //	.incbin "wsroms/boot1.rom"
@@ -53,6 +54,9 @@ machineInit: 	;@ Called from C
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
 
+//	ldr r0,=romSize
+//	mov r1,#ROM_SpaceEnd-ROM_Space
+//	str r1,[r0]
 	ldr r0,=romSpacePtr
 //	ldr r7,=ROM_Space
 //	str r7,[r0]
@@ -114,9 +118,31 @@ tbLoop1:
 	str r1,[r4,#0x3*4]		;@ 3 ROM
 
 
-	ldr r0,g_BIOSBASE_COLOR
-	cmp r0,#0
+	ldr r0,=wsRAM			;@ clear RAM
+	mov r1,#0x10000/4
+	bl memclr_
+
+//	ldr r0,g_BIOSBASE_COLOR
+//	cmp r0,#0
 //	bne skipHWSetup
+
+	ldr r0,=wsRAM+0x75AC	;@ simulate BIOS leftovers?
+	mov r1,#0x41
+	strb r1,[r0],#1
+	mov r1,#0x5F
+	strb r1,[r0],#1
+	mov r1,#0x43
+	strb r1,[r0],#1
+	mov r1,#0x31
+	strb r1,[r0],#1
+	mov r1,#0x6E
+	strb r1,[r0],#1
+	mov r1,#0x5F
+	strb r1,[r0],#1
+	mov r1,#0x63
+	strb r1,[r0],#1
+	mov r1,#0x31
+	strb r1,[r0],#1
 
 	bl gfxReset
 	bl ioReset

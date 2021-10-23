@@ -28,7 +28,6 @@
 
 	.global k2GE_0
 	.global k2GE_0R
-	.global k2GE_0W
 	.global k2geRAM
 	.global DIRTYTILES
 	.global DIRTYTILES2
@@ -51,7 +50,7 @@ gfxInit:					;@ Called from machineInit
 	adr r0,scaleParms
 	bl setupSpriteScaling
 
-	bl k2GEInit
+	bl wsVideoInit
 
 	ldmfd sp!,{pc}
 
@@ -90,12 +89,10 @@ gfxReset:					;@ Called with CPU reset
 
 	mov r0,#0
 	mov r1,#0
-//	ldr r0,=m6809SetNMIPin
-//	ldr r1,=m6809SetIRQPin
 	ldr r2,=k2geRAM
 	ldr r3,=g_machine
 	ldrb r3,[r3]
-	bl k2GEReset0
+	bl wsVideoReset0
 	bl monoPalInit
 
 	ldr r0,=g_gammaValue
@@ -129,14 +126,6 @@ monoPalLoop:
 	bx lr
 ;@----------------------------------------------------------------------------
 monoPalette:
-;@	.short 0xFFF,0xDCD,0xBAB,0x979,0x767,0x535,0x313,0x000
-;@	.short 0xFFF,0xDDC,0xBBA,0x997,0x775,0x553,0x331,0x000
-;@	.short 0xFFF,0xCDD,0xABB,0x799,0x577,0x355,0x133,0x000
-;@	.short 0xFFF,0xCCD,0xAAB,0x779,0x557,0x335,0x113,0x000
-;@	.short 0xFFF,0xDCC,0xBAA,0x977,0x755,0x533,0x311,0x000
-;@	.short 0xFFF,0xCDC,0xABA,0x797,0x575,0x353,0x131,0x000
-;@	.short 0xFFF,0xDDD,0xBBB,0x999,0x777,0x555,0x333,0x000
-;@	.short 0xFFF,0xDDD,0xBBB,0x999,0x777,0x555,0x333,0x000
 
 ;@ Black & White
 	.short 0xFFF,0xDDD,0xBBB,0x999,0x777,0x444,0x333,0x000
@@ -159,8 +148,8 @@ paletteInit:		;@ r0-r3 modified.
 	ldr r6,=MAPPED_RGB
 	mov r4,#4096*2
 	sub r4,r4,#2
-noMap:							;@ Map 0000bbbbggggrrrr  ->  0bbbbbgggggrrrrr
-	and r0,r7,r4,lsr#9			;@ Blue ready
+noMap:							;@ Map 0000rrrrggggbbbb  ->  0bbbbbgggggrrrrr
+	and r0,r7,r4,lsr#1			;@ Blue ready
 	bl gPrefix
 	mov r5,r0
 
@@ -168,7 +157,7 @@ noMap:							;@ Map 0000bbbbggggrrrr  ->  0bbbbbgggggrrrrr
 	bl gPrefix
 	orr r5,r0,r5,lsl#5
 
-	and r0,r7,r4,lsr#1			;@ Red ready
+	and r0,r7,r4,lsr#9			;@ Red ready
 	bl gPrefix
 	orr r5,r0,r5,lsl#5
 
@@ -199,112 +188,30 @@ gammaConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4),returns new value i
 paletteTxAll:				;@ Called from ui.c
 	.type paletteTxAll STT_FUNC
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r11,lr}
-	adr geptr,k2GE_0
-	ldr r2,=0x1FFE
-	ldr r3,[geptr,#paletteRAM]	;@ Colour palette
-	ldr r7,[geptr,#paletteMonoRAM]	;@ Mono palette
+	stmfd sp!,{r4-r9,lr}
+	ldr r3,=wsRAM+0xFE00
 	ldr r4,=MAPPED_RGB
 	ldr r5,=EMUPALBUFF
-	add r6,r5,#0x200			;@ Sprite palette
-
-	ldrb r8,[geptr,#kgeMode]	;@ Mono or color mode.
-	eor r8,r8,#0x80
-	ldrb r0,[geptr,#kgeBGCol]
-	ands r9,r0,#0x80			;@ Invert colors?
-	orrne r9,r2,r2,lsl#16
-	mov r1,#0
-
-txLoop0:						;@ Transfer starts with spr and continues with bgr0.
-	tst r8,#0x80				;@ !!! inverted at start !!!
-	tsteq r1,#0x70
-	add r1,r1,#2
-	ldrh r0,[r3,r1]				;@ NGP palette
-	eor r0,r9,r0,lsl#1
-	and r0,r2,r0
-	ldrh r0,[r4,r0]				;@ Pal lut
-	strhne r0,[r6,r1]			;@ GBA/NDS palette
-	add r1,r1,#2
-
-	ldr r0,[r3,r1]				;@ NGP palette
-	eor r0,r9,r0,lsl#1
-	and r11,r2,r0
-	ldrh r11,[r4,r11]			;@ Pal lut
-	and r0,r2,r0,lsr#16
-	ldrh r0,[r4,r0]				;@ Pal lut
-	orr r0,r11,r0,lsl#16
-	strne r0,[r6,r1]			;@ GBA/NDS palette
-
-	add r1,r1,#4
-	add r6,r6,#0x18
-	tst r1,#0x7E
-	bne txLoop0
-
-	sub r6,r6,#512-8
-	cmp r1,#0x80
-	subeq r6,r5,#0x80
-	cmp r1,#0x180				;@ Also show mono replacement palette? 0x180/0x200.
-	bne txLoop0
-
-	tst r8,#0x80				;@ !!! inverted at start !!!
-	beq TxMonoPalette
-TxBackground:
-	ldrb r0,[geptr,#kgeBGCol]	;@ Out of window color
-	and r0,r0,#0x07
-	mov r0,r0,lsl#1
-	add r0,r0,#0x1F0
-	ldrh r0,[r3,r0]
-	eor r0,r9,r0,lsl#1
-	and r0,r2,r0
+	ldr r2,=0x1FFE
+	mov r1,#0x100
+	mov r6,#0
+txLoop:
+	ldrh r0,[r3],#2
+	and r0,r2,r0,lsl#1
 	ldrh r0,[r4,r0]
-	strh r0,[r5]
-	mov r0,#0
-	strh r0,[r5,#0x20]			;@ Border color (internal)
+	cmp r6,#0x10
+	cmpne r6,#0x20
+	strneh r0,[r5],#2			;@ Background palette
+	addeq r5,r5,#2
+	cmp r6,#0x80
+	strplh r0,[r5,#0xFE]		;@ Sprite palette
 
-	ldrb r1,[r7,#0x18]			;@ Background color
-	and r0,r1,#0x07
-	mov r0,r0,lsl#1
-	add r0,r0,#0x1E0
-	ldrh r0,[r3,r0]
-//	and r1,r1,#0xC0
-//	cmp r1,#0x80
-//	movne r0,#0					;@ Black background if not 0x80
-	eor r0,r9,r0,lsl#1
-	and r0,r2,r0
-	ldrh r0,[r4,r0]
-	strh r0,[r5,#0x40]
+	add r6,r6,#1
+	cmp r6,#0x100
+	bmi txLoop
 
-	ldmfd sp!,{r4-r11,lr}
+	ldmfd sp!,{r4-r9,lr}
 	bx lr
-
-TxMonoPalette:
-	add r6,r5,#0x200			;@ Sprite palette
-	mov r1,#0
-	add r8,r3,#0x180			;@ Mono palette
-txLoop1:
-	tst r1,#0x06
-	ldrbne r0,[r7,r1,lsr#1]		;@ NGP mono lut
-	eorne r0,r9,r0,lsl#1
-	andne r0,r0,#0x0E
-	ldrhne r0,[r8,r0]			;@ NGP palette
-	andne r0,r2,r0,lsl#1
-	ldrhne r0,[r4,r0]			;@ Pal lut
-	strhne r0,[r6,r1]			;@ GBA/NDS palette
-
-	add r1,r1,#2
-	tst r1,#0x6
-	addeq r6,r6,#0x18
-	addeq r8,r8,#0x10
-	tst r1,#0x0E
-	bne txLoop1
-
-	sub r6,r6,#64-8
-	cmp r1,#0x10
-	subeq r6,r5,#0x10
-	cmp r1,#0x30
-	bne txLoop1
-
-	b TxBackground
 
 ;@----------------------------------------------------------------------------
 updateLED:
@@ -366,7 +273,7 @@ vblIrqHandler:
 	ldr r0,frameDone
 	cmp r0,#0
 	beq nothingNew
-	bl k2GEConvertTiles
+//	bl k2GEConvertTiles
 	mov r0,#BG_GFX
 	bl k2GEConvertTileMaps
 	mov r0,#0
@@ -434,10 +341,10 @@ dmaScroll:		.long SCROLLBUFF2
 
 frameDone:		.long 0
 ;@----------------------------------------------------------------------------
-k2GEReset0:			;@ r0=periodicIrqFunc, r1=frameIrqFunc, r2=frame2IrqFunc, r3=model
+wsVideoReset0:		;@ r0=periodicIrqFunc, r1=frameIrqFunc, r2=frame2IrqFunc, r3=model
 ;@----------------------------------------------------------------------------
 	adr geptr,k2GE_0
-	b k2GEReset
+	b wsVideoReset
 ;@----------------------------------------------------------------------------
 k2GE_0R:					;@ K2GE read, 0x8000-0x8FFF
 ;@----------------------------------------------------------------------------
@@ -447,14 +354,6 @@ k2GE_0R:					;@ K2GE read, 0x8000-0x8FFF
 	ldmfd sp!,{geptr,lr}
 	bx lr
 
-;@----------------------------------------------------------------------------
-k2GE_0W:					;@ K2GE write, 0x8000-0x8FFF
-;@----------------------------------------------------------------------------
-	stmfd sp!,{geptr,lr}
-	adr geptr,k2GE_0
-	bl k2GE_W
-	ldmfd sp!,{geptr,lr}
-	bx lr
 k2GE_0:
 	.space k2GESize
 ;@----------------------------------------------------------------------------

@@ -2,17 +2,11 @@
   /   |   \ ___ __/ \__ ___  ___  /\__
   \  / \  // __>\_   _// __|/ __\/    \
    \_____/_\__ \  \_/  \___|\___/\_/\_/
-          \____/      2.4 - 26.12.2003
+          \____/      2021-10-21
 
 1. ABOUT
-   WStech doc v2.4 made by Judge and Dox
+   WStech original doc made by Judge and Dox
    Special thanks to -anonymous- contributor for some usefull info.
-
-   For more info please visit http://www.pocketdomain.net
-
-   Comments/updates/infos please send to dox@space.pl
-
-   What's new in version 2.4:
 
    - corect info about Sprite Table, BG Map and FG Map  locations    	
 	(ports $04 and $07 - section 10)
@@ -107,7 +101,7 @@
                       bit 14       - Horizontal flip
                       bit 15       - Vertical flip
    Tile formats    - Depends on video mode (port $60)
-   Sprites         - Max 128 sprites , limited to max 32 on scanline
+   Sprites         - Max 128 sprites , limited to max 32 per scanline
                      sprite format:
                      byte 0,1 - bits
                                 0 - 8   - Tile number (0-511)
@@ -177,9 +171,9 @@
 
    For detailed info please check ports $80 - $91 in section I/O Ports.
 
-   There's also Audio DMA (please chec ports $4a - $52).
+   There's also Audio DMA (please check ports $4a - $52).
    Transfer rate is 12KHz (HBlank).
-   I/O ports $4A-$4B and $4E-$4F are autoupdated durning data transfer .
+   I/O ports $4A-$4B and $4E-$4F are autoupdated during data transfer .
 
 6. ROM HEADER
 
@@ -572,7 +566,7 @@
                   bit 1 - Key press
                   bit 0 - Serial transmit
  - $B3 - $00 - Communication direction
-                  bit 7 - Recieve data interrupt generation
+                  bit 7 - Receive data interrupt generation
                   bit 6 - Connection Speed
                            0 - 9600  bps
                            1 - 38400 bps

@@ -71,6 +71,7 @@ runStart:
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
 
+	bl scanlineHook
 	bl executeLine
 	ldr geptr,=k2GE_0
 	bl k2GEDoScanline
@@ -104,51 +105,46 @@ waitMaskIn:			.byte 0
 waitCountOut:		.byte 0
 waitMaskOut:		.byte 0
 
-z80enabled:			.byte 0
-g_z80onoff:			.byte 1
-					.byte 0,0
-
 ;@----------------------------------------------------------------------------
 executeLine:
 ;@----------------------------------------------------------------------------
 	mov r0,#CYCLE_PSL
 	bx r4
 ;@----------------------------------------------------------------------------
-scanlinehook:
+scanlineHook:
 ;@----------------------------------------------------------------------------
-	str lr,[sp,#-4]!
+	stmfd sp!,{lr}
 
 	ldr r2,=IO_regs
 	ldrb r0,[r2,#0xA4]
 	cmp r0,#0
-	beq nohblirq
+	beq noHBlIrq
 	ldrb r1,[r2,#0xB2]
 	tst r1,#0x80
-	beq nohblirq
+	beq noHBlIrq
 	ldrb r3,[r2,#0xA5]
 	cmp r3,#0
 	moveq r3,r0
 	subs r3,r3,#1
 	strb r3,[r2,#0xA5]
-	bne nohblirq
+	bne noHBlIrq
 	mov r0,#7
 	bl setInterrupt
+noHBlIrq:
 
-nohblirq:
-
-//	ldr r1,scanline
+	ldr geptr,=k2GE_0
+	ldr r1,[geptr,#scanline]
 	ldrb r0,[r2,#0x03]
 	cmp r0,r1
-	bne nolineirq
+	bne noLineIrq
 	ldrb r1,[r2,#0xB2]
 	tst r1,#0x10
-	beq nolineirq
+	beq noLineIrq
 	mov r0,#4
 	bl setInterrupt
+noLineIrq:
 
-nolineirq:
-
-	ldr lr,[sp],#4
+	ldmfd sp!,{lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 setInterrupt:			;@ r0=int number
