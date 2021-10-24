@@ -74,7 +74,7 @@ wsFrameLoop:
 	bl scanlineHook
 	bl executeLine
 	ldr geptr,=k2GE_0
-	bl k2GEDoScanline
+	bl wsvDoScanline
 	cmp r0,#0
 	bne wsFrameLoop
 

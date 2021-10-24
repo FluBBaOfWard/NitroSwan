@@ -128,7 +128,7 @@ refreshEMUjoypads:			;@ Call every frame
 	eorne r1,r1,#3
 	tst r2,#0x400				;@ Swap A/B?
 	andne r1,r3,#3
-	orr r0,r0,r1,lsl#4
+	orr r0,r0,r1,lsl#6
 
 	tst r4,#0x08				;@ NDS Start
 	orrne r0,r0,#0x20			;@ WS Start
@@ -552,16 +552,18 @@ ioWriteByte:				;@ r0=adr, r1=val
 ;@----------------------------------------------------------------------------
 	ldr geptr,=k2GE_0
 	and r0,r0,#0xFF
+	ldr r2,=IO_regs
+	strb r1,[r2,r0]
 	ldr pc,[pc,r0,lsl#2]
 	.long 0
 OUT_Table:
-	.long IO_reg_W				;@ 0x00
+	.long wsvDisplayControlW	;@ 0x00
 	.long IO_reg_W
 	.long IO_reg_W
 	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ last sprite, start sprite DMA?
+	.long wsvSpriteTblAdrW
+	.long wsvSpriteStartW
+	.long wsvSpriteEndW			;@ last sprite, start sprite DMA?
 	.long wsvTileMapBaseW
 	.long IO_reg_W				;@ 0x08
 	.long IO_reg_W
@@ -572,10 +574,10 @@ OUT_Table:
 	.long IO_reg_W
 	.long IO_reg_W
 
-	.long k2GEBgScrXW			;@ 0x10
-	.long k2GEBgScrYW
-	.long k2GEFgScrXW
-	.long k2GEFgScrYW
+	.long wsvBgScrXW			;@ 0x10
+	.long wsvBgScrYW
+	.long wsvFgScrXW
+	.long wsvFgScrYW
 	.long IO_reg_W
 	.long IO_reg_W
 	.long IO_reg_W

@@ -20,6 +20,7 @@
 	.global g_gfxMask
 	.global vblIrqHandler
 	.global yStart
+	.global GFX_DISPCNT
 	.global GFX_BG0CNT
 	.global GFX_BG1CNT
 	.global EMUPALBUFF
@@ -28,7 +29,6 @@
 
 	.global k2GE_0
 	.global k2GE_0R
-	.global k2geRAM
 	.global DIRTYTILES
 	.global DIRTYTILES2
 
@@ -66,14 +66,12 @@ gfxReset:					;@ Called with CPU reset
 	mov r1,#5					;@ 5*4
 	bl memclr_					;@ Clear GFX regs
 
-	ldr r0,=k2geRAM
-	ldr r1,=0x6960/4			;@ VRAM and dirty tiles
-	bl memclr_					;@ Clear GFX regs
-
 	mov r1,#REG_BASE
-	ldr r0,=0x30D0				;@ start-end
+	;@ Horizontal start-end
+	ldr r0,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<16)+(SCREEN_WIDTH+GAME_WIDTH)/2
 	strh r0,[r1,#REG_WIN0H]
-	ldr r0,=0x1400+(SCREEN_HEIGHT+GAME_HEIGHT)/2	;@ start-end
+	;@ Vertical start-end
+	ldr r0,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<16)+(SCREEN_HEIGHT+GAME_HEIGHT)/2
 	strh r0,[r1,#REG_WIN0V]
 
 	mov r0,#0x003F				;@ WinIN0, Everything enabled inside Win0
@@ -89,7 +87,7 @@ gfxReset:					;@ Called with CPU reset
 
 	mov r0,#0
 	mov r1,#0
-	ldr r2,=k2geRAM
+	ldr r2,=wsRAM
 	ldr r3,=g_machine
 	ldrb r3,[r3]
 	bl wsVideoReset0
@@ -201,10 +199,10 @@ txLoop:
 	ldrh r0,[r4,r0]
 	cmp r6,#0x10
 	cmpne r6,#0x20
-	strneh r0,[r5],#2			;@ Background palette
+	strhne r0,[r5],#2			;@ Background palette
 	addeq r5,r5,#2
 	cmp r6,#0x80
-	strplh r0,[r5,#0xFE]		;@ Sprite palette
+	strhpl r0,[r5,#0xFE]		;@ Sprite palette
 
 	add r6,r6,#1
 	cmp r6,#0x100
@@ -248,7 +246,7 @@ vblIrqHandler:
 	ldr r2,dmaOamBuffer			;@ DMA3 src, OAM transfer:
 	mov r3,#OAM					;@ DMA3 dst
 	mov r4,#0x84000000			;@ noIRQ 32bit incsrc incdst
-	orr r4,r4,#64*2				;@ 64 sprites * 2 longwords
+	orr r4,r4,#128*2			;@ 128 sprites * 2 longwords
 	stmia r1,{r2-r4}			;@ DMA3 go
 
 	ldr r2,=EMUPALBUFF			;@ DMA3 src, Palette transfer:
@@ -258,12 +256,21 @@ vblIrqHandler:
 	stmia r1,{r2-r4}			;@ DMA3 go
 
 	adr geptr,k2GE_0
-	ldrb r0,[geptr,#kgeBGPrio]
-	tst r0,#0x80
 	ldr r0,GFX_BG0CNT
-	orrne r0,r0,#0x00001
-	orreq r0,r0,#0x10000
 	str r0,[r6,#REG_BG0CNT]
+	ldr r0,GFX_DISPCNT
+	ldrb r1,[geptr,#wsvDisplayControl]
+	tst r1,#1
+	biceq r0,r0,#0x0100				;@ Turn off bg
+	tst r1,#0x02
+	biceq r0,r0,#0x0200				;@ Turn off fg
+	tst r1,#0x04
+	biceq r0,r0,#0x1000				;@ Turn off sprites
+	tst r1,#0x20
+//	biceq r0,r0,#0x2000				;@ Turn off fg-window
+	ldrb r1,g_gfxMask
+//	bic r0,r0,r1,lsl#8
+	strh r0,[r6,#REG_DISPCNT]
 
 	ldr r0,[geptr,#windowData]
 	strh r0,[r6,#REG_WIN0H]
@@ -366,6 +373,8 @@ windowTop:
 wTop:
 	.long 0,0,0		;@ windowTop  (this label too)   L/R scrolling in unscaled mode
 
+GFX_DISPCNT:
+	.long 0
 GFX_BG0CNT:
 	.short 0
 GFX_BG1CNT:
@@ -384,9 +393,6 @@ MAPPED_RGB:
 	.space 0x2000				;@ 4096*2
 EMUPALBUFF:
 	.space 0x400
-k2geRAM:
-	.space 0x3360				;@ 0x3000+0x200+0x140+0x20
-	.space 0x3000				;@ backbuffer
 DIRTYTILES:
 	.space 0x400
 DIRTYTILES2:

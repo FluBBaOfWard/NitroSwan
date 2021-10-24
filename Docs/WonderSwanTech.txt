@@ -289,39 +289,38 @@
 10. I/O PORTS (port number /initial value / description)
 
 - $00 - $00 -  Display control
-               bit 0   - background layer on/off
-               bit 1   - foreground layer on/off
-               bit 2   - sprites on/off
-               bit 3   - sprite window on/off (window coords defined in ports $0C - $0F)
-               bit 4,5 - fg win inside on/off (window coords defined in ports $08 - $0B)
-               Meaning of bits 4 and 5 :
-               5 4
-               ---
-               0 0  FG layer is displayed inside and outside FG window area
-               0 1  ??
-               1 0  FG layer is displayed only inside window
-               1 1  FG layer is displayed outside window
+                bit 0   - background layer on/off
+                bit 1   - foreground layer on/off
+                bit 2   - sprites on/off
+                bit 3   - sprite window on/off (window coords defined in ports $0C - $0F)
+                bit 4,5 - fg win inside on/off (window coords defined in ports $08 - $0B)
+                Meaning of bits 4 and 5 :
+                5 4
+                ---
+                0 0  FG layer is displayed inside and outside FG window area
+                0 1  ??
+                1 0  FG layer is displayed only inside window
+                1 1  FG layer is displayed outside window
  - $01 - $00 - Determines the background color
-               bit 0-3 - background color
-               bit 4-7 - background palette (WSC only)
+                bit 0-3 - background color
+                bit 4-7 - background palette (WSC only)
  - $02 - ??? - Current Line (0 - 158) (159 ???)
  - $03 - $BB - Line compare (for drawning line detection interrupt)
  - $04 - $00 - Determines the base address for the sprite table.
-               To get the address of the table, shift this value left 9 times
-               and clear MSB. (bits 0..5 are effective to determines the base,
-               bits 6,7 are unknown)
+                To get the address of the table, shift this value left 9 times
+                and clear MSB. (bits 0..5 are effective to determines the base,
+                bits 6,7 are unknown)
                 0 0xxxxxx0 00000000 
-		(Sprite Attribute Table Base can move from $00000-$07E00 with 512 bytes step)
+		        (Sprite Attribute Table Base can move from $00000-$07E00 with 512 bytes step)
  - $05 - $00 - Determines the number of the sprite to start drawing with
  - $06 - $00 - Determines the number of the sprite to stop drawing.
  - $07 - $26 - Determines the location of the foreground and background screens in RAM.
-                Format:
-                 bits 7-0 : ?fff?bbb
-                 bit  7  - Unknown
-                 bits 6-4 - Determines foreground location (address is 00fff000 00000000)
-                 bit 3-? - Unknown
-                 bits 2-0 - Determines background location (address is 00bbb000 00000000)
-		 Back Ground Tile Map Base can move from $00000-$03800 (2048 bytes step)
+                bits 7-0 : ?fff?bbb
+                bit  7  - Unknown
+                bits 6-4 - Determines foreground location (address is 00fff000 00000000)
+                bit 3-? - Unknown
+                bits 2-0 - Determines background location (address is 00bbb000 00000000)
+		        Back Ground Tile Map Base can move from $00000-$03800 (2048 bytes step)
  - $08 - $FE - x0 of FG window (x0,y0) = top left corner,  (x1,y1) = bottom right corner
  - $09 - $DE - y0 of FG window
  - $0A - $F9 - x1 of FG window
@@ -338,14 +337,14 @@
                 bit 0 - 1 - LCD on
                         0 - LCD off
  - $15 - $00 - LCD Icons
-              bit 0 - LCD Sleep
-              bit 1 - Vertical Position
-              bit 2 - Horizontal Position
-              bit 3 - Dot 1
-              bit 4 - Dot 2
-              bit 5 - Dot 3
-              bit 6 - Not Used ?
-              bit 7 - Not Used ?
+                bit 7 - Not Used ?
+                bit 6 - Not Used ?
+                bit 5 - Dot 3
+                bit 4 - Dot 2
+                bit 3 - Dot 1
+                bit 2 - Horizontal Position
+                bit 1 - Vertical Position
+                bit 0 - LCD Sleep
  - $16 - $9E - ???
  - $17 - $9B - ???
  - $18 - $00 - ???
@@ -397,10 +396,10 @@
  - $46 - $00 - size of copied data (in bytes)
  - $47 - $00 - ^^^
  - $48 - $00 - bit  7 = 1  -> copy start
-              (bit 7=0 when data transfer is finished)
-              DMA(?) isn't immediate and not stopping
-              the main cpu operations (like gbc GDMA)
-              ports $40-$48 are updated durning copy process
+                (bit 7=0 when data transfer is finished)
+                DMA(?) isn't immediate and not stopping
+                the main cpu operations (like gbc GDMA)
+                ports $40-$48 are updated durning copy process
  - $49 - $00 - ???
 
  - $4A - $00 - sound DMA source address
@@ -425,7 +424,7 @@
  - $5D - $00 - ???
  - $5E - $00 - ???
  - $5F - $00 - ???
- - $60 - $0A - video mode
+ - $60 - $0A - Video mode
                Meaning of bits 5-7:
                 765
                 ---
@@ -433,7 +432,7 @@
                 110   16 col/tile 'layered' mode  -  tiles like in GameGear, 16 col/tile
                 010    4 col/tile                 -  the same as mono (below) but using color palettes, 4 cols/tile, one tile = 16 bytes, WSC only
                 000    4 col/tile mono            -  tiles like in GameBoy,
-              [bit 7 = 16/4 color/tile , bit 6 - color/mono mode, bit 5 - 'packed' mode on/off]
+                [bit 7 = 16/4 color/tile , bit 6 - color/mono mode, bit 5 - 'packed' mode on/off]
  - $61 - $00 - ???
  - $62 - $00 - ???
  - $63 - $00 - ???
@@ -481,37 +480,37 @@
  - $8D - $1F - ?? Sweep step
  - $8E - $00 - Noise control
                 Bits :
-                        0 - Noise generator type
-                        1 - ^^^
-                        2 - ^^^
-                        3 - Reset
-                        4 - Enable
-                        5 - ???
-                        6 - ???
-                        7 - ???
+                7 - ???
+                6 - ???
+                5 - ???
+                4 - Enable
+                3 - Reset
+                2 - ^^^
+                1 - ^^^
+                0 - Noise generator type
  - $8F - $00 - Sample  location
                 To get the address of samples, shift this value left 6 times.
                 0 00xxxxxx xx000000
  - $90 - $00 - Audio control
                 Bits:
-                        0 - Audio 1 on/off
-                        1 - Audio 2 on/off
-                        2 - Audio 3 on/off
-                        3 - Audio 4 on/off
-                        4 - ???
-                        5 - Audio 2 Voice
-                        6 - Audio 3 Sweep
-                        7 - Audio 4 Noise
+                7 - Audio 4 Noise
+                6 - Audio 3 Sweep
+                5 - Audio 2 Voice
+                4 - ???
+                3 - Audio 4 on/off
+                2 - Audio 3 on/off
+                1 - Audio 2 on/off
+                0 - Audio 1 on/off
  - $91 - $00 - Audio Output
                 Bits :
-                        0 - Mono
-                        1 - Output Volume
-                        2 - ^^^
-                        3 - External Stereo
-                        4 - ???
-                        5 - ???
-                        6 - ???
-                        7 - External Speaker (set by hardware)
+                7 - External Speaker (set by hardware)
+                6 - ???
+                5 - ???
+                4 - ???
+                3 - External Stereo
+                2 - ^^^
+                1 - Output Volume
+                0 - Mono
  - $92 - $00 - Noise Counter Shift Register (15 bits)
  - $93 - $00 - ^^^
  - $94 - $00 - Volume (4 bit)
@@ -527,18 +526,18 @@
  - $9E - $03 - ???
  - $9F - $00 - ???
  - $A0 - $87 - Hardware type
-                  bit 1 - 1 - color
-                          0 - mono
+                bit 1 - 1 - color
+                        0 - mono
  - $A1 - $00 - ???
  - $A2 - $0C - Timer Control
-                  bit 0 - Hblank Timer on/off
-                  bit 1 - Hblank Timer Mode
-                           0 - One Shot
-                           1 - Auto Preset
-                  bit 2 - Vblank Timer(1/75s) on/off
-                  bit 3 - Vblank Timer Mode
-                           0 - One Shot
-                           1 - Auto Preset
+                bit 0 - Hblank Timer on/off
+                bit 1 - Hblank Timer Mode
+                        0 - One Shot
+                        1 - Auto Preset
+                bit 2 - Vblank Timer(1/75s) on/off
+                bit 3 - Vblank Timer Mode
+                        0 - One Shot
+                        1 - Auto Preset
  - $A3 - $00 - ???
  - $A4 - $00 - Hblank Timer 'frequency'
                 0 = no HBLANK Interrupt
@@ -557,25 +556,25 @@
  - $B0 - $00 - Interrupt Base
  - $B1 - $DB - Communication byte
  - $B2 - $00 - Interrupt enable
-                  bit 7 - HBlank Timer
-                  bit 6 - VBlank begin
-                  bit 5 - VBlank Timer
-                  bit 4 - Drawing line detection
-                  bit 3 - Serial receive
-                  bit 2 - RTC Alarm
-                  bit 1 - Key press
-                  bit 0 - Serial transmit
+                bit 7 - HBlank Timer
+                bit 6 - VBlank begin
+                bit 5 - VBlank Timer
+                bit 4 - Drawing line detection
+                bit 3 - Serial receive
+                bit 2 - RTC Alarm
+                bit 1 - Key press
+                bit 0 - Serial transmit
  - $B3 - $00 - Communication direction
-                  bit 7 - Receive data interrupt generation
-                  bit 6 - Connection Speed
-                           0 - 9600  bps
-                           1 - 38400 bps
-                  bit 5 - Send data interrupt generation
-                  bit 4 - ???
-                  bit 3 - ???
-                  bit 2 - Send Complete
-                  bit 1 - Error
-                  bit 0 - Recieve Complete
+                bit 7 - Receive data interrupt generation
+                bit 6 - Connection Speed
+                        0 - 9600  bps
+                        1 - 38400 bps
+                bit 5 - Send data interrupt generation
+                bit 4 - ???
+                bit 3 - ???
+                bit 2 - Send Complete
+                bit 1 - Error
+                bit 0 - Recieve Complete
 
                         write $00-$7f = read $00
                         write $80-$bf = read $84
@@ -614,24 +613,24 @@
  - $BC - $42 - Internal EEPROM (?) Address (calculated probably Modulo EEPROM (1kbit?) size (mirroring for read/write))
  - $BD - $00 - ^^^
  - $BE - $83 - Internal EEPROM (?) Command
-                   bit 7 - Initialize ?
-                   bit 6 - Protect ?
-                   bit 5 - Write
-                   bit 4 - Read
-                   bit 3 - ???
-                   bit 2 - ???
-                   bit 1 - Write Complete (Read only)
-                   bit 0 - Read Complete (Read only)
+                bit 7 - Initialize ?
+                bit 6 - Protect ?
+                bit 5 - Write
+                bit 4 - Read
+                bit 3 - ???
+                bit 2 - ???
+                bit 1 - Write Complete (Read only)
+                bit 0 - Read Complete (Read only)
  - $BF - $00 - ???
  - $C0 - $2F - ROM Bank Base Selector for segments 4-$F
- - $C1 - $3F  - SRAM Bank selector (???)
- - $C2 - $FF  - BNK2SLCT - ROM Bank selector for segment 2
- - $C3 - $FF  - BNK3SLCT - ROM Bank selector for segment 3
- - $C4 - $00  - EEPROM Data
- - $C5 - $00  - ^^^
- - $C6 - $00  - 1kbit EEPROM (16bit*64) :
-                  - bits 0-5 - address
-                  - bits 6-7 - command :
+ - $C1 - $3F - SRAM Bank selector (???)
+ - $C2 - $FF - BNK2SLCT - ROM Bank selector for segment 2
+ - $C3 - $FF - BNK3SLCT - ROM Bank selector for segment 3
+ - $C4 - $00 - EEPROM Data
+ - $C5 - $00 - ^^^
+ - $C6 - $00 - 1kbit EEPROM (16bit*64) :
+                - bits 0-5 - address
+                - bits 6-7 - command :
                            0 - Extended Comand Address bits 4-5
                                0 - Write Disable
                                1 - Write All
@@ -640,12 +639,12 @@
                            1 - Write
                            2 - Read
                            3 - Erase
-               - 16 kbit EEPROM (16bit*1024) - bits 0-7 - address (low)
- - $C7 - $00  - 1kbit EEPROM (16bit*64) :
-                   bit 0 - Start
-               - 16 kbit EEPROM (16bit*1024) :
-                  - bits 0-1 - address (high)
-                  - bits 2-3 - command :
+             - 16 kbit EEPROM (16bit*1024) - bits 0-7 - address (low)
+ - $C7 - $00 - 1kbit EEPROM (16bit*64) :
+                - bit 0 - Start
+             - 16 kbit EEPROM (16bit*1024) :
+                - bits 0-1 - address (high)
+                - bits 2-3 - command :
                            0 - Extended Comand Address bits 0-1
                                0 - Write Disable
                                1 - Write All
@@ -654,16 +653,16 @@
                            1 - Write
                            2 - Read
                            3 - Erase
-                  - bit 4 - Start
+                - bit 4 - Start
  - $C8 - $D1 - EEPROM Command :
-                  bit 7 - Initialize ???
-                  bit 6 - Protect ???
-                  bit 5 - Write
-                  bit 4 - Read
-                  bit 3 - ???
-                  bit 2 - ???
-                  bit 1 - Write Complete (Read only)
-                  bit 0 - Read Complete (Read only)
+                bit 7 - Initialize ???
+                bit 6 - Protect ???
+                bit 5 - Write
+                bit 4 - Read
+                bit 3 - ???
+                bit 2 - ???
+                bit 1 - Write Complete (Read only)
+                bit 0 - Read Complete (Read only)
  - $C9 - $D1 - ???
  - $CA - $D1 - RTC Command
                 Write :
