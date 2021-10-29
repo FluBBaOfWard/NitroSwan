@@ -115,7 +115,7 @@
                      byte 2 - Y position on the screen
                      byte 3 - X position on the screen
 
-                     Sprite table is buffered durning frame display.
+                     Sprite table is buffered during frame display.
                      Probably up to scanline 140 (1238-144?)
 
    Colors          - Wonderswan (Mono) is capable of showing 16 shades of gray(only 8 can be selected at any one time)
@@ -289,36 +289,32 @@
 10. I/O PORTS (port number /initial value / description)
 
 - $00 - $00 -  Display control
-                bit 0   - background layer on/off
-                bit 1   - foreground layer on/off
-                bit 2   - sprites on/off
-                bit 3   - sprite window on/off (window coords defined in ports $0C - $0F)
-                bit 4,5 - fg win inside on/off (window coords defined in ports $08 - $0B)
-                Meaning of bits 4 and 5 :
-                5 4
-                ---
-                0 0  FG layer is displayed inside and outside FG window area
-                0 1  ??
-                1 0  FG layer is displayed only inside window
-                1 1  FG layer is displayed outside window
+                bit 5 - fg win on/off (window coords defined in ports $08 - $0B)
+                bit 4 - fg inside/outside win
+                        0  FG layer is displayed only inside window
+                        1  FG layer is displayed outside window
+                bit 3 - sprite window on/off (window coords defined in ports $0C - $0F)
+                bit 2 - sprites on/off
+                bit 1 - foreground layer on/off
+                bit 0 - background layer on/off
  - $01 - $00 - Determines the background color
-                bit 0-3 - background color
-                bit 4-7 - background palette (WSC only)
+                bit 7-0 - background palette (WSC only)
+                bit 2-0 - background color (WS Only)
  - $02 - ??? - Current Line (0 - 158) (159 ???)
  - $03 - $BB - Line compare (for drawning line detection interrupt)
  - $04 - $00 - Determines the base address for the sprite table.
+                bit 5-0 - bit 14-9 of address (WSC).
+                bit 4-0 - bit 13-9 of address (WS).
                 To get the address of the table, shift this value left 9 times
-                and clear MSB. (bits 0..5 are effective to determines the base,
-                bits 6,7 are unknown)
-                0 0xxxxxx0 00000000 
+                and clear MSB.
 		        (Sprite Attribute Table Base can move from $00000-$07E00 with 512 bytes step)
  - $05 - $00 - Determines the number of the sprite to start drawing with
  - $06 - $00 - Determines the number of the sprite to stop drawing.
  - $07 - $26 - Determines the location of the foreground and background screens in RAM.
                 bits 7-0 : ?fff?bbb
-                bit  7  - Unknown
+                bit  7   - Unknown
                 bits 6-4 - Determines foreground location (address is 00fff000 00000000)
-                bit 3-? - Unknown
+                bit  3   - Unknown
                 bits 2-0 - Determines background location (address is 00bbb000 00000000)
 		        Back Ground Tile Map Base can move from $00000-$03800 (2048 bytes step)
  - $08 - $FE - x0 of FG window (x0,y0) = top left corner,  (x1,y1) = bottom right corner
@@ -370,23 +366,23 @@
  - $2C - $70 - PAL60
  - $2D - $67 - PAL61
  - $2E - $50 - PAL70
- - $2F - $77 - PAL70
- - $30 - $57 - PAL00
- - $31 - $54 - PAL01
- - $32 - $75 - PAL10
- - $33 - $77 - PAL11
- - $34 - $75 - PAL20
- - $35 - $17 - PAL21
- - $36 - $37 - PAL30
- - $37 - $73 - PAL31
- - $38 - $50 - PAL40
- - $39 - $57 - PAL41
- - $3A - $60 - PAL50
- - $3B - $77 - PAL51
- - $3C - $70 - PAL60
- - $3D - $77 - PAL61
- - $3E - $10 - PAL70
- - $3F - $73 - PAL70
+ - $2F - $77 - PAL71
+ - $30 - $57 - PAL80
+ - $31 - $54 - PAL81
+ - $32 - $75 - PAL90
+ - $33 - $77 - PAL91
+ - $34 - $75 - PALA0
+ - $35 - $17 - PALA1
+ - $36 - $37 - PALB0
+ - $37 - $73 - PALB1
+ - $38 - $50 - PALC0
+ - $39 - $57 - PALC1
+ - $3A - $60 - PALD0
+ - $3B - $77 - PALD1
+ - $3C - $70 - PALE0
+ - $3D - $77 - PALE1
+ - $3E - $10 - PALF0
+ - $3F - $73 - PALF1
  - $40 - $00 - DMA (?) copy source address
  - $41 - $00 -  ^^^
  - $42 - $00 - copy source bank
@@ -425,7 +421,7 @@
  - $5E - $00 - ???
  - $5F - $00 - ???
  - $60 - $0A - Video mode
-               Meaning of bits 5-7:
+               Meaning of bits 7-5:
                 765
                 ---
                 111   16 col/tile 'packed' mode   -  tiles like in Genesis, 16 col/tile

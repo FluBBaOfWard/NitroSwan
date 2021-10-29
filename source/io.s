@@ -48,8 +48,8 @@ initSysMem:					;@ In r0=values ptr.
 	mov r4,r0
 	mov r5,#0xFF
 initMemLoop:
-	ldrb r0,[r4,r5]
-	mov r1,r5
+	ldrb r1,[r4,r5]
+	mov r0,r5
 	bl IO_reg_W
 	subs r5,r5,#1
 	bpl initMemLoop
@@ -156,10 +156,11 @@ IOPortA_R:		;@ Player1...
 	ldrb r1,[r1,#0xB5]
 	and r1,r1,#0xF0
 	ldrb r0,joy0State
-	tst r1,#0x20
-	andne r0,r0,#0x0F
+	tst r1,#0x10
+	movne r0,#0
 	tst r1,#0x40
 	movne r0,r0,lsr#4
+	and r0,r0,#0x0F
 
 	orr r0,r0,r1
 	

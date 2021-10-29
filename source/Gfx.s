@@ -186,31 +186,84 @@ gammaConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4),returns new value i
 paletteTxAll:				;@ Called from ui.c
 	.type paletteTxAll STT_FUNC
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r9,lr}
-	ldr r3,=wsRAM+0xFE00
-	ldr r4,=MAPPED_RGB
-	ldr r5,=EMUPALBUFF
+	ldr r0,=EMUPALBUFF
+;@----------------------------------------------------------------------------
+paletteTx:
+;@----------------------------------------------------------------------------
+	ldr r1,=MAPPED_RGB
 	ldr r2,=0x1FFE
-	mov r1,#0x100
-	mov r6,#0
+	stmfd sp!,{r4-r8,lr}
+	mov r5,#0
+	ldr r3,=IO_regs
+	ldrb r4,[r3,#0x60]
+	tst r4,#0x40
+	beq bnwTx
+	ldr r4,=wsRAM+0xFE00
 txLoop:
-	ldrh r0,[r3],#2
-	and r0,r2,r0,lsl#1
-	ldrh r0,[r4,r0]
-	cmp r6,#0x10
-	cmpne r6,#0x20
-	strhne r0,[r5],#2			;@ Background palette
-	addeq r5,r5,#2
-	cmp r6,#0x80
-	strhpl r0,[r5,#0xFE]		;@ Sprite palette
+	ldrh r3,[r4],#2
+	and r3,r2,r3,lsl#1
+	ldrh r3,[r1,r3]
+//	cmp r5,#0x00
+	cmpne r5,#0x10
+	strhne r3,[r0]				;@ Background palette
+	add r0,r0,#2
+	cmp r5,#0x80
+	strhpl r3,[r0,#0xFE]		;@ Sprite palette
 
-	add r6,r6,#1
-	cmp r6,#0x100
+	add r5,r5,#1
+	cmp r5,#0x100
 	bmi txLoop
 
-	ldmfd sp!,{r4-r9,lr}
+	ldmfd sp!,{r4-r8,lr}
 	bx lr
 
+bnwTx:
+	add r4,r3,#0x20
+	add r7,r3,#0x1C
+	ldrb r3,[r3,#1]				;@ Background palette
+	and r3,r3,#0x7
+	tst r3,#1
+	ldrb r3,[r7,r3,lsr#1]
+	movne r3,r3,lsr#4
+	and r3,r3,#0xF
+	eor r3,r3,#0xF
+	orr r3,r3,r3,lsl#4
+	orr r3,r3,r3,lsl#4
+	and r3,r2,r3,lsl#1
+	ldrh r3,[r1,r3]
+	strh r3,[r0]				;@ Background palette
+bnwTxLoop2:
+	ldrh r6,[r4],#2
+bnwTxLoop:
+	and r3,r6,#0x7
+	mov r6,r6,lsr#4
+	tst r3,#1
+	ldrb r3,[r7,r3,lsr#1]
+	movne r3,r3,lsr#4
+	and r3,r3,#0xF
+	eor r3,r3,#0xF
+	orr r3,r3,r3,lsl#4
+	orr r3,r3,r3,lsl#4
+	and r3,r2,r3,lsl#1
+	ldrh r3,[r1,r3]
+
+	cmp r5,#0x0
+	strhne r3,[r0]				;@ Background palette
+	strh r3,[r0,#0x8]			;@ Opaque tiles palette
+	add r0,r0,#2
+	cmp r5,#0x80
+	strhpl r3,[r0,#0xFE]		;@ Sprite palette
+
+	add r5,r5,#1
+	tst r5,#3
+	bne bnwTxLoop
+	add r5,r5,#0xC
+	add r0,r0,#0x18
+	cmp r5,#0x100
+	bmi bnwTxLoop2
+
+	ldmfd sp!,{r4-r8,lr}
+	bx lr
 ;@----------------------------------------------------------------------------
 updateLED:
 ;@----------------------------------------------------------------------------
