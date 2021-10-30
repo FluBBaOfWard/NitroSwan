@@ -12,7 +12,7 @@ extern u8 g_twitch;
 extern u8 g_scaling;
 extern u8 g_gfxMask;
 
-extern K2GE k2GE_0;
+extern WSVideo wsv_0;
 extern u16 EMUPALBUFF[0x200];
 extern u32 GFX_DISPCNT;
 extern u16 GFX_BG0CNT;

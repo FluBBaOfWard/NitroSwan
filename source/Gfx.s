@@ -27,8 +27,8 @@
 	.global tmpOamBuffer
 
 
-	.global k2GE_0
-	.global k2GE_0R
+	.global wsv_0
+	.global wsv_0R
 	.global DIRTYTILES
 	.global DIRTYTILES2
 
@@ -104,7 +104,7 @@ gfxReset:					;@ Called with CPU reset
 monoPalInit:
 	.type monoPalInit STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr geptr,=k2GE_0
+	ldr geptr,=wsv_0
 	stmfd sp!,{r4-r6,lr}
 	ldr r0,=g_paletteBank
 	ldrb r0,[r0]
@@ -308,11 +308,11 @@ vblIrqHandler:
 	orr r4,r4,#0x100			;@ 256 words (1024 bytes)
 	stmia r1,{r2-r4}			;@ DMA3 go
 
-	adr geptr,k2GE_0
+	adr geptr,wsv_0
 	ldr r0,GFX_BG0CNT
 	str r0,[r6,#REG_BG0CNT]
 	ldr r0,GFX_DISPCNT
-	ldrb r1,[geptr,#wsvDisplayControl]
+	ldrb r1,[geptr,#wsvDispCtrl]
 	tst r1,#1
 	biceq r0,r0,#0x0100				;@ Turn off bg
 	tst r1,#0x02
@@ -333,9 +333,9 @@ vblIrqHandler:
 	ldr r0,frameDone
 	cmp r0,#0
 	beq nothingNew
-//	bl k2GEConvertTiles
+//	bl wsvConvertTiles
 	mov r0,#BG_GFX
-	bl k2GEConvertTileMaps
+	bl wsvConvertTileMaps
 	mov r0,#0
 	str r0,frameDone
 nothingNew:
@@ -357,7 +357,7 @@ yStart:			.byte 0
 refreshGfx:					;@ Called from C when changing scaling.
 	.type refreshGfx STT_FUNC
 ;@----------------------------------------------------------------------------
-	adr geptr,k2GE_0
+	adr geptr,wsv_0
 ;@----------------------------------------------------------------------------
 endFrameGfx:				;@ Called just before screen end (~line 152)	(r0-r3 safe to use)
 ;@----------------------------------------------------------------------------
@@ -403,19 +403,19 @@ frameDone:		.long 0
 ;@----------------------------------------------------------------------------
 wsVideoReset0:		;@ r0=periodicIrqFunc, r1=frameIrqFunc, r2=frame2IrqFunc, r3=model
 ;@----------------------------------------------------------------------------
-	adr geptr,k2GE_0
+	adr geptr,wsv_0
 	b wsVideoReset
 ;@----------------------------------------------------------------------------
-k2GE_0R:					;@ K2GE read, 0x8000-0x8FFF
+wsv_0R:					;@ WSVideo read, 0x8000-0x8FFF
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{geptr,lr}
-	adr geptr,k2GE_0
-	bl k2GE_R
+	adr geptr,wsv_0
+	bl wsvRead
 	ldmfd sp!,{geptr,lr}
 	bx lr
 
-k2GE_0:
-	.space k2GESize
+wsv_0:
+	.space wsVideoSize
 ;@----------------------------------------------------------------------------
 
 gfxState:

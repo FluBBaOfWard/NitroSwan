@@ -73,7 +73,7 @@ wsFrameLoop:
 
 	bl scanlineHook
 	bl executeLine
-	ldr geptr,=k2GE_0
+	ldr geptr,=wsv_0
 	bl wsvDoScanline
 	cmp r0,#0
 	bne wsFrameLoop
@@ -132,7 +132,7 @@ scanlineHook:
 	bl setInterrupt
 noHBlIrq:
 
-	ldr geptr,=k2GE_0
+	ldr geptr,=wsv_0
 	ldr r1,[geptr,#scanline]
 	ldrb r0,[r2,#0x03]
 	cmp r0,r1

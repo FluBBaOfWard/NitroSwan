@@ -269,7 +269,7 @@ checkForAlarm:
 ioReadByte:
 	.type ioReadByte STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr geptr,=k2GE_0
+	ldr geptr,=wsv_0
 	and r0,r0,#0xFF
 	ldr pc,[pc,r0,lsl#2]
 	.long 0
@@ -551,7 +551,7 @@ IN_Table:
 ioWriteByte:				;@ r0=adr, r1=val
 	.type ioWriteByte STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr geptr,=k2GE_0
+	ldr geptr,=wsv_0
 	and r0,r0,#0xFF
 	ldr r2,=IO_regs
 	strb r1,[r2,r0]

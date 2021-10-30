@@ -395,7 +395,7 @@
                 (bit 7=0 when data transfer is finished)
                 DMA(?) isn't immediate and not stopping
                 the main cpu operations (like gbc GDMA)
-                ports $40-$48 are updated durning copy process
+                ports $40-$48 are updated during copy process
  - $49 - $00 - ???
 
  - $4A - $00 - sound DMA source address
