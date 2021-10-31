@@ -187,15 +187,15 @@ paletteTxAll:				;@ Called from ui.c
 	.type paletteTxAll STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldr r0,=EMUPALBUFF
+	ldr geptr,=wsv_0
 ;@----------------------------------------------------------------------------
-paletteTx:
+paletteTx:					;@ r0=destination, geptr=WSVideo
 ;@----------------------------------------------------------------------------
 	ldr r1,=MAPPED_RGB
 	ldr r2,=0x1FFE
 	stmfd sp!,{r4-r8,lr}
 	mov r5,#0
-	ldr r3,=IO_regs
-	ldrb r4,[r3,#0x60]
+	ldrb r4,[geptr,#wsvVideoMode]
 	tst r4,#0x40
 	beq bnwTx
 	ldr r4,=wsRAM+0xFE00
@@ -218,9 +218,9 @@ txLoop:
 	bx lr
 
 bnwTx:
-	add r4,r3,#0x20
-	add r7,r3,#0x1C
-	ldrb r3,[r3,#1]				;@ Background palette
+	add r4,geptr,#wsvPalette00
+	add r7,geptr,#wsvColor01
+	ldrb r3,[geptr,#wsvBGColor]	;@ Background palette
 	and r3,r3,#0x7
 	tst r3,#1
 	ldrb r3,[r7,r3,lsr#1]

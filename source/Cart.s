@@ -42,6 +42,7 @@ ROM_Space:
 //	.incbin "wsroms/Crazy Climber (J) [M][!].ws"
 //	.incbin "wsroms/Guilty Gear Petit (J).wsc"
 //	.incbin "wsroms/Mr. Driller (J) [!].wsc"
+//	.incbin "wsroms/WONDERPR.WSC"
 ROM_SpaceEnd:
 //biosSpace:
 //	.incbin "wsroms/boot.rom"
@@ -104,9 +105,9 @@ tbLoop1:
 	and r1,r5,r2
 	add r1,r7,r1,lsl#16		;@ 64kB blocks.
 	str r1,[r4,r0,lsl#2]
-	add r0,r0,#1
 	add r5,r5,#1
-	cmp r5,#0x100
+	add r0,r0,#1
+	cmp r0,#0x10
 	bne tbLoop1
 
 	ldr r1,=wsRAM
@@ -156,21 +157,21 @@ skipHWSetup:
 ;@----------------------------------------------------------------------------
 BankSwitch4_F_R:					;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	ldr r1,=IO_regs
-	ldrb r0,[r1,#0xC0]
+	ldr geptr,=wsv_0
+	ldrb r0,[geptr,#wsvBnk0Slct]
 	and r0,r0,#0x0F
 	orr r0,r0,#0x20
 	bx lr
 ;@----------------------------------------------------------------------------
 reBankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	ldr r0,=IO_regs
-	ldrb r1,[r0,#0xC0]
+	ldr geptr,=wsv_0
+	ldrb r1,[geptr,#wsvBnk0Slct]
 ;@----------------------------------------------------------------------------
 BankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	ldr r0,=IO_regs
-	strb r1,[r0,#0xC0]
+	ldr geptr,=wsv_0
+	strb r1,[geptr,#wsvBnk0Slct]
 	mov r1,r1,lsl#4
 	orr r1,r1,#4
 
@@ -178,24 +179,24 @@ BankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 	ldr r2,romSpacePtr
 	ldr r12,=MEMMAPTBL_+4*4
 tbLoop2:
-	and r3,r1,r0
+	and r3,r0,r1
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	str r3,[r12],#4
 	add r1,r1,#1
-	cmp r1,#0x100
+	ands r3,r1,#0xF
 	bne tbLoop2
 
 	bx lr
 ;@----------------------------------------------------------------------------
 reBankSwitch2_W:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	ldr r0,=IO_regs
-	ldrb r1,[r0,#0xC2]
+	ldr geptr,=wsv_0
+	ldrb r1,[geptr,#wsvBnk2Slct]
 ;@----------------------------------------------------------------------------
 BankSwitch2_W:					;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	ldr r0,=IO_regs
-	strb r1,[r0,#0xC2]
+	ldr geptr,=wsv_0
+	strb r1,[geptr,#wsvBnk2Slct]
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
@@ -209,13 +210,13 @@ BankSwitch2_W:					;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 reBankSwitch3_W:				;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	ldr r0,=IO_regs
-	ldrb r1,[r0,#0xC3]
+	ldr geptr,=wsv_0
+	ldrb r1,[geptr,#wsvBnk3Slct]
 ;@----------------------------------------------------------------------------
 BankSwitch3_W:					;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	ldr r0,=IO_regs
-	strb r1,[r0,#0xC3]
+	ldr geptr,=wsv_0
+	strb r1,[geptr,#wsvBnk3Slct]
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr

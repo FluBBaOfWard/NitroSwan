@@ -115,18 +115,18 @@ scanlineHook:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
-	ldr r2,=IO_regs
-	ldrb r0,[r2,#0xA4]
+	ldr geptr,=wsv_0
+	ldrb r0,[geptr,#wsvHBlTimerFreq]
 	cmp r0,#0
 	beq noHBlIrq
-	ldrb r1,[r2,#0xB2]
+	ldrb r1,[geptr,#wsvInterruptEnable]
 	tst r1,#0x80
 	beq noHBlIrq
-	ldrb r3,[r2,#0xA5]
+	ldrb r3,[geptr,#wsvHBlTimerFreq+1]
 	cmp r3,#0
 	moveq r3,r0
 	subs r3,r3,#1
-	strb r3,[r2,#0xA5]
+	strb r3,[geptr,#wsvHBlTimerFreq+1]
 	bne noHBlIrq
 	mov r0,#7
 	bl setInterrupt
@@ -134,10 +134,10 @@ noHBlIrq:
 
 	ldr geptr,=wsv_0
 	ldr r1,[geptr,#scanline]
-	ldrb r0,[r2,#0x03]
+	ldrb r0,[geptr,#wsvLineCompare]
 	cmp r0,r1
 	bne noLineIrq
-	ldrb r1,[r2,#0xB2]
+	ldrb r1,[geptr,#wsvInterruptEnable]
 	tst r1,#0x10
 	beq noLineIrq
 	mov r0,#4
@@ -149,12 +149,12 @@ noLineIrq:
 ;@----------------------------------------------------------------------------
 setInterrupt:			;@ r0=int number
 ;@----------------------------------------------------------------------------
-	ldr r2,=IO_regs
-	ldrb r1,[r2,#0xB6]
+	ldr geptr,=wsv_0
+	ldrb r1,[geptr,#wsvInterruptAck]
 	mov r3,#1
 	bic r1,r1,r3,lsl r0
-	strb r1,[r2,#0xB6]
-	ldrb r1,[r2,#0xB0]
+	strb r1,[geptr,#wsvInterruptAck]
+	ldrb r1,[geptr,#wsvInterruptBase]
 	add r0,r0,r1
 	mov r0,r0,lsl#2
 	bx r5

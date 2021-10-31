@@ -22,8 +22,7 @@
 	.global updateSlowIO
 	.global g_subBatteryLevel
 	.global batteryLevel
-	.global systemMemory
-	.global IO_regs
+	.global DMA_Start_W
 
 	.syntax unified
 	.arm
@@ -35,9 +34,9 @@ ioReset:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
-	ldr r0,=SysMemDefault
+	ldr r0,=IO_Default
 	bl initSysMem
-	bl transferTime
+//	bl transferTime
 
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
@@ -50,7 +49,7 @@ initSysMem:					;@ In r0=values ptr.
 initMemLoop:
 	ldrb r1,[r4,r5]
 	mov r0,r5
-	bl IO_reg_W
+	bl ioWriteByte
 	subs r5,r5,#1
 	bpl initMemLoop
 
@@ -61,9 +60,9 @@ ioSaveState:			;@ In r0=destination. Out r0=size.
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
-	ldr r1,=systemMemory
+//	ldr r1,=rtcRegs
 	mov r2,#0x100
-	bl memcpy
+//	bl memcpy
 
 	ldmfd sp!,{lr}
 	mov r0,#0x100
@@ -90,7 +89,7 @@ transferTime:
 	stmfd sp!,{lr}
 
 	bl getTime					;@ r0 = ??ssMMHH, r1 = ??DDMMYY
-	ldr r2,=systemMemory
+	ldr r2,=rtcRegs
 	strb r1,[r2,#0x91]			;@ Year
 	mov r1,r1,lsr#8
 	strb r1,[r2,#0x92]			;@ Month
@@ -152,8 +151,8 @@ EMUinput:			;@ This label here for main.c to use
 ;@----------------------------------------------------------------------------
 IOPortA_R:		;@ Player1...
 ;@----------------------------------------------------------------------------
-	ldr r1,=IO_regs
-	ldrb r1,[r1,#0xB5]
+	ldr geptr,=wsv_0
+	ldrb r1,[geptr,#wsvControls]
 	and r1,r1,#0xF0
 	ldrb r0,joy0State
 	tst r1,#0x10
@@ -164,14 +163,6 @@ IOPortA_R:		;@ Player1...
 
 	orr r0,r0,r1
 	
-	bx lr
-
-;@----------------------------------------------------------------------------
-IO_machine_R:
-;@----------------------------------------------------------------------------
-	ldr r1,=IO_regs
-	ldrb r0,[r1,r0]
-	orr r0,r0,#2
 	bx lr
 
 ;@----------------------------------------------------------------------------
@@ -194,7 +185,7 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 	movmi r0,#0x00001000
 	str r0,[r1]
 
-	ldr r2,=systemMemory
+	ldr r2,=rtcRegs
 	ldrb r0,[r2,#0x90]			;@ RTC control
 	tst r0,#1					;@ Enabled?
 	bxeq lr
@@ -444,7 +435,7 @@ IN_Table:
 	.long IO_reg_R
 	.long IO_reg_R
 
-	.long IO_machine_R			;@ 0xA0, color or mono
+	.long wsvHWTypeR			;@ 0xA0, color or mono
 	.long IO_reg_R
 	.long IO_reg_R
 	.long IO_reg_R
@@ -552,329 +543,53 @@ ioWriteByte:				;@ r0=adr, r1=val
 	.type ioWriteByte STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldr geptr,=wsv_0
-	and r0,r0,#0xFF
-	ldr r2,=IO_regs
-	strb r1,[r2,r0]
-	ldr pc,[pc,r0,lsl#2]
-	.long 0
-OUT_Table:
-	.long wsvDisplayControlW	;@ 0x00
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long wsvSpriteTblAdrW
-	.long wsvSpriteStartW
-	.long wsvSpriteEndW			;@ last sprite, start sprite DMA?
-	.long wsvTileMapBaseW
-	.long IO_reg_W				;@ 0x08
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long wsvBgScrXW			;@ 0x10
-	.long wsvBgScrYW
-	.long wsvFgScrXW
-	.long wsvFgScrYW
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0x18
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0x20
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0x28
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0x30
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0x38
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0x40	DMA, source
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ DMA destination
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ DMA length
-	.long IO_reg_W
-	.long DMA_Start_W			;@ 0x48
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0x50
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0x58
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0x60
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0x68
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0x70
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0x78
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0x80
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0x88
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0x90
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0x98
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0xA0
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0xA8
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0xB0
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0xB8
-	.long IO_reg_W
-	.long IO_important_W		;@ 0xBA int-eeprom even byte write
-	.long IO_important_W		;@ 0xBB int-eeprom odd byte write
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long BankSwitch4_F_W		;@ 0xC0
-	.long IO_reg_W
-	.long BankSwitch2_W
-	.long BankSwitch3_W
-	.long IO_important_W		;@ 0xC4 ext-eeprom even byte write
-	.long IO_important_W		;@ 0xC5 ext-eeprom odd byte write
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0xC8
-	.long IO_reg_W
-	.long IO_important_W		;@ 0xCA rtc reset
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0xD0
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0xD8
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0xE0
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0xE8
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-
-	.long IO_reg_W				;@ 0xF0
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W				;@ 0xF8
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
-	.long IO_reg_W
+	b wsVideoW
 
 ;@----------------------------------------------------------------------------
-IO_important_W:
-	mov r11,r11					;@ No$GBA breakpoint
+wsvHWTypeR:					;@ 0xA0
 ;@----------------------------------------------------------------------------
-IO_reg_W:
-	adr r2,IO_regs
-	strb r1,[r2,r0]
+	ldrb r0,[geptr,#wsvHardwareType]
+	orr r0,r0,#2
 	bx lr
+
 ;@----------------------------------------------------------------------------
 IO_important_R:
 	mov r11,r11					;@ No$GBA breakpoint
 ;@----------------------------------------------------------------------------
 IO_reg_R:
-	ldrb r0,[pc,r0]
+	add r2,geptr,#wsvRegs
+	ldrb r0,[r2,r0]
 	bx lr
 ;@----------------------------------------------------------------------------
-systemMemory:
-IO_regs:
+rtcRegs:
 	.space 0x100
 
 ;@----------------------------------------------------------------------------
 DMA_Start_W:
 ;@----------------------------------------------------------------------------
+	strb r1,[geptr,#wsvDMAStart]
 	tst r1,#0x80
 	bxeq lr
 
 	stmfd sp!,{r4-r7,lr}
-	adr r7,IO_regs
-	ldrb r4,[r7,#0x40]
-	ldrb r0,[r7,#0x41]
+	mov r7,geptr
+	ldrb r4,[geptr,#wsvDMASource0]
+	ldrb r0,[geptr,#wsvDMASource1]
 	orr r4,r4,r0,lsl#8
-	ldrb r0,[r7,#0x42]
+	ldrb r0,[geptr,#wsvDMASrcBnk]
 	orr r4,r4,r0,lsl#16			;@ r4=source
 
-	ldrb r5,[r7,#0x44]
-	ldrb r0,[r7,#0x45]
+	ldrb r5,[geptr,#wsvDMADest0]
+	ldrb r0,[geptr,#wsvDMADest1]
 	orr r5,r5,r0,lsl#8
-	ldrb r0,[r7,#0x43]
+	ldrb r0,[geptr,#wsvDMADstBnk]
 	orr r5,r5,r0,lsl#16			;@ r5=destination
 
-	ldrb r6,[r7,#0x46]
-	ldrb r0,[r7,#0x47]
+	ldrb r6,[geptr,#wsvDMALength0]
+	ldrb r0,[geptr,#wsvDMALength1]
 	orr r6,r6,r0,lsl#8			;@ r6=length
 
-dma_loop:
+dmaLoop:
 	mov r0,r4
 	bl cpuReadByte
 	mov r1,r0
@@ -883,27 +598,27 @@ dma_loop:
 	add r4,r4,#1
 	add r5,r5,#1
 	subs r6,r6,#1
-	bne dma_loop
+	bne dmaLoop
 
-	strb r4,[r7,#0x40]
+	mov geptr,r7
+	strb r4,[geptr,#wsvDMASource0]
 	mov r4,r4,lsr#8
-	strb r4,[r7,#0x41]
+	strb r4,[geptr,#wsvDMASource1]
 
-	strb r5,[r7,#0x44]
+	strb r5,[geptr,#wsvDMADest0]
 	mov r5,r5,lsr#8
-	strb r5,[r7,#0x45]
+	strb r5,[geptr,#wsvDMADest1]
 
 	mov r0,#0
-	strb r0,[r7,#0x46]
-	strb r0,[r7,#0x47]
-	strb r0,[r7,#0x48]
+	strb r0,[geptr,#wsvDMALength0]
+	strb r0,[geptr,#wsvDMALength1]
+	strb r0,[geptr,#wsvDMAStart]
 
 
 	ldmfd sp!,{r4-r7,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 
-SysMemDefault:
 IO_Default:
 	.byte 0x00, 0x00, 0x9d, 0xbb, 0x00, 0x00, 0x00, 0x26, 0xfe, 0xde, 0xf9, 0xfb, 0xdb, 0xd7, 0x7f, 0xf5
 	.byte 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x9e, 0x9b, 0x00, 0x00, 0x00, 0x00, 0x99, 0xfd, 0xb7, 0xdf
