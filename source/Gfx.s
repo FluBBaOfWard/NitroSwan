@@ -28,7 +28,6 @@
 
 
 	.global wsv_0
-	.global wsv_0R
 	.global DIRTYTILES
 	.global DIRTYTILES2
 
@@ -405,15 +404,6 @@ wsVideoReset0:		;@ r0=periodicIrqFunc, r1=frameIrqFunc, r2=frame2IrqFunc, r3=mod
 ;@----------------------------------------------------------------------------
 	adr geptr,wsv_0
 	b wsVideoReset
-;@----------------------------------------------------------------------------
-wsv_0R:					;@ WSVideo read, 0x8000-0x8FFF
-;@----------------------------------------------------------------------------
-	stmfd sp!,{geptr,lr}
-	adr geptr,wsv_0
-	bl wsvRead
-	ldmfd sp!,{geptr,lr}
-	bx lr
-
 wsv_0:
 	.space wsVideoSize
 ;@----------------------------------------------------------------------------

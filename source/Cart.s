@@ -9,8 +9,8 @@
 	.global romNum
 	.global cartFlags
 	.global romStart
+	.global reBankSwitch4_F_W
 	.global BankSwitch4_F_W
-	.global BankSwitch4_F_R
 	.global BankSwitch2_W
 	.global BankSwitch3_W
 
@@ -44,9 +44,12 @@ ROM_Space:
 //	.incbin "wsroms/Mr. Driller (J) [!].wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
 ROM_SpaceEnd:
-//biosSpace:
+BIOS_Space:
 //	.incbin "wsroms/boot.rom"
 //	.incbin "wsroms/boot1.rom"
+//	.incbin "wsroms/ws_irom.bin"
+	.incbin "wsroms/wc_irom.bin"
+//	.incbin "wsroms/wsc_irom.bin"
 
 	.align 2
 ;@----------------------------------------------------------------------------
@@ -63,8 +66,9 @@ machineInit: 	;@ Called from C
 //	str r7,[r0]
 	ldr r7,[r0]
 							;@ r7=rombase til end of loadcart
-	ldr r0,=biosSpace
-//	str r0,[t9optbl,#biosBase]
+	ldr r0,=BIOS_Space
+	ldr r1,=biosBase
+	str r0,[r1]
 
 	bl gfxInit
 //	bl ioInit
@@ -118,6 +122,10 @@ tbLoop1:
 	str r1,[r4,#0x2*4]		;@ 2 ROM
 	str r1,[r4,#0x3*4]		;@ 3 ROM
 
+	ldr r1,biosBase
+	sub r1,r1,#0xE000
+//	str r1,[r4,#0xF*4]		;@ Map in Bios, not liked by GunPey
+
 
 	ldr r0,=wsRAM			;@ clear RAM
 	mov r1,#0x10000/4
@@ -154,14 +162,6 @@ skipHWSetup:
 	bx lr
 
 
-;@----------------------------------------------------------------------------
-BankSwitch4_F_R:					;@ 0x40000-0xFFFFF
-;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
-	ldrb r0,[geptr,#wsvBnk0Slct]
-	and r0,r0,#0x0F
-	orr r0,r0,#0x20
-	bx lr
 ;@----------------------------------------------------------------------------
 reBankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
@@ -263,6 +263,8 @@ maxRomSize:
 	.long 0
 romMask:
 	.long 0
+biosBase:
+	.long 0
 
 	.section .bss
 MEMMAPTBL_:
@@ -274,7 +276,7 @@ wsSRAM:
 biosSpace:
 	.space 0x1000
 biosSpaceColor:
-	.space 0x1000
+	.space 0x2000
 ;@----------------------------------------------------------------------------
 	.end
 #endif // #ifdef __arm__

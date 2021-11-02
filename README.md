@@ -79,6 +79,7 @@ Huge thanks to Loopy for the incredible PocketNES, without it this emu would
 probably never have been made.
 Thanks to:
 Flavor & Koyote for WonderSwan info.
+Godzil for the boot rom stubs. https://github.com/Godzil/NewOswan
 Dwedit for help and inspiration with a lot of things.
 
 

@@ -11,7 +11,7 @@
 #include "cpu.h"
 #include "ARMV30MZ/Version.h"
 
-#define EMUVERSION "V0.1.1 2021-10-19"
+#define EMUVERSION "V0.1.1 2021-11-02"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -53,7 +53,7 @@ const char *const flickTxt[] = {"No Flicker", "Flicker"};
 const char *const bordTxt[]  = {"Black", "Border Color", "None"};
 const char *const palTxt[]   = {"Black & White", "Red", "Green", "Blue", "Classic"};
 const char *const langTxt[]  = {"Japanese", "English"};
-const char *const machTxt[]  = {"WonderSwan Color", "WonderSwan"};
+const char *const machTxt[]  = {"WonderSwan Color", "WonderSwan", "CrystalSwan"};
 
 
 void setupGUI() {

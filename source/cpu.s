@@ -67,11 +67,11 @@ runStart:
 
 	ldr r4,=nec_execute
 	ldr r5,=nec_int
+	ldr geptr,=wsv_0
 ;@----------------------------------------------------------------------------
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
-
-	bl scanlineHook
+	bl checkInterrupt
 	bl executeLine
 	ldr geptr,=wsv_0
 	bl wsvDoScanline
@@ -111,51 +111,26 @@ executeLine:
 	mov r0,#CYCLE_PSL
 	bx r4
 ;@----------------------------------------------------------------------------
-scanlineHook:
-;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
-
-	ldr geptr,=wsv_0
-	ldrb r0,[geptr,#wsvHBlTimerFreq]
-	cmp r0,#0
-	beq noHBlIrq
-	ldrb r1,[geptr,#wsvInterruptEnable]
-	tst r1,#0x80
-	beq noHBlIrq
-	ldrb r3,[geptr,#wsvHBlTimerFreq+1]
-	cmp r3,#0
-	moveq r3,r0
-	subs r3,r3,#1
-	strb r3,[geptr,#wsvHBlTimerFreq+1]
-	bne noHBlIrq
-	mov r0,#7
-	bl setInterrupt
-noHBlIrq:
-
-	ldr geptr,=wsv_0
-	ldr r1,[geptr,#scanline]
-	ldrb r0,[geptr,#wsvLineCompare]
-	cmp r0,r1
-	bne noLineIrq
-	ldrb r1,[geptr,#wsvInterruptEnable]
-	tst r1,#0x10
-	beq noLineIrq
-	mov r0,#4
-	bl setInterrupt
-noLineIrq:
-
-	ldmfd sp!,{lr}
-	bx lr
-;@----------------------------------------------------------------------------
 setInterrupt:			;@ r0=int number
 ;@----------------------------------------------------------------------------
+	and r0,r0,#7
 	ldr geptr,=wsv_0
-	ldrb r1,[geptr,#wsvInterruptAck]
-	mov r3,#1
-	bic r1,r1,r3,lsl r0
-	strb r1,[geptr,#wsvInterruptAck]
+	mov r2,#1
+	ldrb r1,[geptr,#wsvInterruptStatus]
+	orr r1,r1,r2,lsl r0
+	strb r1,[geptr,#wsvInterruptStatus]
+;@----------------------------------------------------------------------------
+checkInterrupt:
+;@----------------------------------------------------------------------------
+	ldrb r1,[geptr,#wsvInterruptStatus]
+	ldrb r0,[geptr,#wsvInterruptEnable]
+	ands r1,r1,r0
+	bxeq lr
+	clz r0,r1
+	rsb r0,r0,#31
 	ldrb r1,[geptr,#wsvInterruptBase]
-	add r0,r0,r1
+	bic r1,r1,#7
+	orr r0,r0,r1
 	mov r0,r0,lsl#2
 	bx r5
 

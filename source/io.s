@@ -15,14 +15,12 @@
 	.global joyCfg
 	.global EMUinput
 
-	.global t9LoadB_Low
-	.global t9StoreB_Low
 	.global serialinterrupt
 	.global resetSIO
 	.global updateSlowIO
 	.global g_subBatteryLevel
 	.global batteryLevel
-	.global DMA_Start_W
+	.global IOPortA_R
 
 	.syntax unified
 	.arm
@@ -49,7 +47,8 @@ initSysMem:					;@ In r0=values ptr.
 initMemLoop:
 	ldrb r1,[r4,r5]
 	mov r0,r5
-	bl ioWriteByte
+	cmp r0,#0xC0
+	blne ioWriteByte
 	subs r5,r5,#1
 	bpl initMemLoop
 
@@ -162,7 +161,7 @@ IOPortA_R:		;@ Player1...
 	and r0,r0,#0x0F
 
 	orr r0,r0,r1
-	
+
 	bx lr
 
 ;@----------------------------------------------------------------------------
@@ -261,282 +260,7 @@ ioReadByte:
 	.type ioReadByte STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldr geptr,=wsv_0
-	and r0,r0,#0xFF
-	ldr pc,[pc,r0,lsl#2]
-	.long 0
-IN_Table:
-	.long IO_reg_R				;@ 0x00
-	.long IO_reg_R
-	.long wsvVCountR
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0x08
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0x10
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0x18
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0x20
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0x28
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0x30
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0x38
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0x40
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_important_R		;@ 0x48
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0x50
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0x58
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0x60
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0x68
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0x70
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0x78
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0x80
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0x88
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0x90
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0x98
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long wsvHWTypeR			;@ 0xA0, color or mono
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0xA8
-	.long IO_reg_R
-	.long IO_important_R		;@ 0xAA vcounter?
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0xB0
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_important_R		;@ 0xB3 communication direction
-	.long IO_reg_R
-	.long IOPortA_R				;@ 0xB5 keypad
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0xB8
-	.long IO_reg_R
-	.long IO_important_R		;@ 0xBA int-eeprom even byte read
-	.long IO_important_R		;@ 0xBB int-eeprom odd byte read
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_important_R		;@ 0xBE int-eeprom status
-	.long IO_reg_R
-
-	.long BankSwitch4_F_R		;@ 0xC0
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_important_R		;@ 0xC4 ext-eeprom even byte read
-	.long IO_important_R		;@ 0xC5 ext-eeprom odd byte read
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_important_R		;@ 0xC8 ext-eeprom status
-	.long IO_reg_R
-	.long IO_important_R		;@ 0xCA rtc status
-	.long IO_important_R		;@ 0xCB rtc read
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0xD0
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0xD8
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0xE0
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0xE8
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
-	.long IO_reg_R				;@ 0xF0
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R				;@ 0xF8
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-	.long IO_reg_R
-
+	b wsvRead
 
 ;@----------------------------------------------------------------------------
 ioWriteByte:				;@ r0=adr, r1=val
@@ -546,77 +270,9 @@ ioWriteByte:				;@ r0=adr, r1=val
 	b wsVideoW
 
 ;@----------------------------------------------------------------------------
-wsvHWTypeR:					;@ 0xA0
-;@----------------------------------------------------------------------------
-	ldrb r0,[geptr,#wsvHardwareType]
-	orr r0,r0,#2
-	bx lr
-
-;@----------------------------------------------------------------------------
-IO_important_R:
-	mov r11,r11					;@ No$GBA breakpoint
-;@----------------------------------------------------------------------------
-IO_reg_R:
-	add r2,geptr,#wsvRegs
-	ldrb r0,[r2,r0]
-	bx lr
-;@----------------------------------------------------------------------------
 rtcRegs:
 	.space 0x100
 
-;@----------------------------------------------------------------------------
-DMA_Start_W:
-;@----------------------------------------------------------------------------
-	strb r1,[geptr,#wsvDMAStart]
-	tst r1,#0x80
-	bxeq lr
-
-	stmfd sp!,{r4-r7,lr}
-	mov r7,geptr
-	ldrb r4,[geptr,#wsvDMASource0]
-	ldrb r0,[geptr,#wsvDMASource1]
-	orr r4,r4,r0,lsl#8
-	ldrb r0,[geptr,#wsvDMASrcBnk]
-	orr r4,r4,r0,lsl#16			;@ r4=source
-
-	ldrb r5,[geptr,#wsvDMADest0]
-	ldrb r0,[geptr,#wsvDMADest1]
-	orr r5,r5,r0,lsl#8
-	ldrb r0,[geptr,#wsvDMADstBnk]
-	orr r5,r5,r0,lsl#16			;@ r5=destination
-
-	ldrb r6,[geptr,#wsvDMALength0]
-	ldrb r0,[geptr,#wsvDMALength1]
-	orr r6,r6,r0,lsl#8			;@ r6=length
-
-dmaLoop:
-	mov r0,r4
-	bl cpuReadByte
-	mov r1,r0
-	mov r0,r5
-	bl cpuWriteByte
-	add r4,r4,#1
-	add r5,r5,#1
-	subs r6,r6,#1
-	bne dmaLoop
-
-	mov geptr,r7
-	strb r4,[geptr,#wsvDMASource0]
-	mov r4,r4,lsr#8
-	strb r4,[geptr,#wsvDMASource1]
-
-	strb r5,[geptr,#wsvDMADest0]
-	mov r5,r5,lsr#8
-	strb r5,[geptr,#wsvDMADest1]
-
-	mov r0,#0
-	strb r0,[geptr,#wsvDMALength0]
-	strb r0,[geptr,#wsvDMALength1]
-	strb r0,[geptr,#wsvDMAStart]
-
-
-	ldmfd sp!,{r4-r7,lr}
-	bx lr
 ;@----------------------------------------------------------------------------
 
 IO_Default:
@@ -630,7 +286,8 @@ IO_Default:
 	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0x00, 0x00
 	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00
-	.byte 0x85, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4f, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	;@ 0xA0 = 0x85
+	.byte 0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4f, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 	.byte 0x00, 0xdb, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x42, 0x00, 0x83, 0x00
 	.byte 0x2f, 0x3f, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1
 	.byte 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1

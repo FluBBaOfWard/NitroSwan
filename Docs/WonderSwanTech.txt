@@ -341,8 +341,8 @@
                 bit 2 - Horizontal Position
                 bit 1 - Vertical Position
                 bit 0 - LCD Sleep
- - $16 - $9E - ???
- - $17 - $9B - ???
+ - $16 - $9E - VTotal, last scanline.
+ - $17 - $9B - VSync, which line vsync is sent? Doesn't exist on SwanCrystal.
  - $18 - $00 - ???
  - $19 - $00 - ???
  - $1A - $00 - ???
@@ -386,27 +386,26 @@
  - $40 - $00 - DMA (?) copy source address
  - $41 - $00 -  ^^^
  - $42 - $00 - copy source bank
- - $43 - $00 - copy destination bank
+ - $43 - $00 - ???
  - $44 - $00 - copy destination address
  - $45 - $00 - ^^^
  - $46 - $00 - size of copied data (in bytes)
  - $47 - $00 - ^^^
  - $48 - $00 - bit  7 = 1  -> copy start
                 (bit 7=0 when data transfer is finished)
-                DMA(?) isn't immediate and not stopping
-                the main cpu operations (like gbc GDMA)
                 ports $40-$48 are updated during copy process
+               bit 6 inc/dec
  - $49 - $00 - ???
 
  - $4A - $00 - sound DMA source address
  - $4B - $00 - ^^^
- - $4C - $00 - DMA source memory segment bank
+ - $4C - $00 - sound DMA source memory segment bank
  - $4D - $00 - ???
  - $4E - $00 - DMA transfer size (in bytes)
  - $4F - $00 - ^^^
- - $50 - $00 - ???
+ - $50 - $00 - ^^^
  - $51 - $00 - ???
- - $52 - $00 - bit  7 = 1  -> DMA start
+ - $52 - $00 - DMA control bit  7 = 1  -> DMA start
  - $53 - $00 - ???
  - $54 - $00 - ???
  - $55 - $00 - ???
@@ -430,7 +429,9 @@
                 000    4 col/tile mono            -  tiles like in GameBoy,
                 [bit 7 = 16/4 color/tile , bit 6 - color/mono mode, bit 5 - 'packed' mode on/off]
  - $61 - $00 - ???
- - $62 - $00 - ???
+ - $62 - $00 - WSC System
+               bit 7 = System (0=WonderSwan (Color), 1=SwanCrystal)
+               bit 0 = Power off, write 1
  - $63 - $00 - ???
  - $64 - $00 - ???
  - $65 - $00 - ???
@@ -438,20 +439,31 @@
  - $67 - $00 - ???
  - $68 - $00 - ???
  - $69 - $00 - ???
- - $6A - $00 - ???
- - $6B - $0F - ???
+ - $6A - $00 - REG_HYPER_CTRL
+               bit 7   = Enable
+               bit 4-6 = Unknown
+               bit 2-3 = Scaling mode
+							0   data <<3-vol
+							1   data <<3-vol | (-0x100 << 3-vol)
+							2   data <<3-vol
+							3   data <<3
+               bit 0-1 = vol
+ - $6B - $0F - REG_HYPER_CHAN_CTRL
+               bit 6     Right channel enable
+               bit 5     Left channel enable
+               bit 0-3   Nothing?
  - $6C - $00 - ???
  - $6D - $00 - ???
  - $6E - $00 - ???
  - $6F - $00 - ???
- - $70 - $00 - ???
- - $71 - $00 - ???
- - $72 - $00 - ???
- - $73 - $00 - ???
- - $74 - $00 - ???
- - $75 - $00 - ???
- - $76 - $00 - ???
- - $77 - $00 - ???
+ - $70 - $00 - REG_UNK_70 SwanCrystal=$D0
+ - $71 - $00 - REG_UNK_71 SwanCrystal=$77
+ - $72 - $00 - REG_UNK_72 SwanCrystal=$F7
+ - $73 - $00 - REG_UNK_73 SwanCrystal=$06
+ - $74 - $00 - REG_UNK_74 SwanCrystal=$E2
+ - $75 - $00 - REG_UNK_75 SwanCrystal=$0A
+ - $76 - $00 - REG_UNK_76 SwanCrystal=$EA
+ - $77 - $00 - REG_UNK_77 SwanCrystal=$EE
  - $78 - $00 - ???
  - $79 - $00 - ???
  - $7A - $00 - ???
@@ -510,20 +522,21 @@
  - $92 - $00 - Noise Counter Shift Register (15 bits)
  - $93 - $00 - ^^^
  - $94 - $00 - Volume (4 bit)
- - $95 - $00 - ???
- - $96 - $00 - ???
+ - $95 - $00 - REG_SND_HYPERVOICE
+ - $96 - $00 - REG_SND_9697
  - $97 - $00 - ???
- - $98 - $00 - ???
+ - $98 - $00 - REG_SND_9899
  - $99 - $00 - ???
- - $9A - $00 - ???
- - $9B - $00 - ???
- - $9C - $00 - ???
- - $9D - $00 - ???
- - $9E - $03 - ???
+ - $9A - $00 - REG_SND_9A
+ - $9B - $00 - REG_SND_9B
+ - $9C - $00 - REG_SND_9C
+ - $9D - $00 - REG_SND_9D
+ - $9E - $03 - REG_SND_9E
  - $9F - $00 - ???
  - $A0 - $87 - Hardware type
-                bit 1 - 1 - color
-                        0 - mono
+                bit 2 - 1 = 16bit cart access
+                bit 1 - 1 = color, 0 = mono
+                bit 0 - 1 = lock the boot rom
  - $A1 - $00 - ???
  - $A2 - $0C - Timer Control
                 bit 0 - Hblank Timer on/off
@@ -575,7 +588,15 @@
                         write $00-$7f = read $00
                         write $80-$bf = read $84
                         write $c0-$cf = read $c4
- - $B4 - $00 - ???
+ - $B4 - $00 - Interrupt status
+                bit 7 - HBlank Timer
+                bit 6 - VBlank begin
+                bit 5 - VBlank Timer
+                bit 4 - Drawing line detection
+                bit 3 - Serial receive
+                bit 2 - RTC Alarm
+                bit 1 - Key press
+                bit 0 - Serial transmit
  - $B5 - $40 - Controls
                 bits 4-7 : read/write - Select line of inputs to read
                         0001 - read vertical cursors
@@ -618,6 +639,10 @@
                 bit 1 - Write Complete (Read only)
                 bit 0 - Read Complete (Read only)
  - $BF - $00 - ???
+
+---------------------------------------------------------------------
+Mapped to cartridge.
+---------------------------------------------------------------------
  - $C0 - $2F - ROM Bank Base Selector for segments 4-$F
  - $C1 - $3F - SRAM Bank selector (???)
  - $C2 - $FF - BNK2SLCT - ROM Bank selector for segment 2
