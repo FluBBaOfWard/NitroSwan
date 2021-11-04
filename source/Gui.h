@@ -24,6 +24,9 @@ void uiOptions(void);
 void uiController(void);
 void uiDisplay(void);
 
+void debugIOUnimplR(u8 port);
+void debugIOUnimplW(u8 port, u8 val);
+
 void controllerSet(void);
 void swapABSet(void);
 

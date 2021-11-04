@@ -181,6 +181,26 @@ void resetGame() {
 }
 
 //---------------------------------------------------------------------------------
+void debugIOUnimplR(u8 port) {
+	char debugString[32];
+
+	debugString[0] = 0;
+	strlcat(debugString, "Unimpl R port:", sizeof(debugString));
+	char2HexStr(&debugString[14], port);
+	debugOutput(debugString);
+}
+//---------------------------------------------------------------------------------
+void debugIOUnimplW(u8 port, u8 val) {
+	char debugString[32];
+
+	debugString[0] = 0;
+	strlcat(debugString, "Unimpl W port:", sizeof(debugString));
+	char2HexStr(&debugString[14], port);
+	strlcat(debugString, " val:", sizeof(debugString));
+	char2HexStr(&debugString[21], val);
+	debugOutput(debugString);
+}
+//---------------------------------------------------------------------------------
 /// Switch between Player 1 & Player 2 controls
 void controllerSet() {				// See io.s: refreshEMUjoypads
 	joyCfg ^= 0x20000000;
@@ -192,7 +212,7 @@ void swapABSet() {
 }
 
 /// Turn on/off scaling
-void scalingSet(){
+void scalingSet() {
 	g_scaling ^= 0x01;
 	refreshGfx();
 }
@@ -208,15 +228,15 @@ void gammaSet() {
 }
 
 /// Turn on/off rendering of foreground
-void fgrLayerSet(){
+void fgrLayerSet() {
 	g_gfxMask ^= 0x01;
 }
 /// Turn on/off rendering of background
-void bgrLayerSet(){
+void bgrLayerSet() {
 	g_gfxMask ^= 0x02;
 }
 /// Turn on/off rendering of sprites
-void sprLayerSet(){
+void sprLayerSet() {
 	g_gfxMask ^= 0x10;
 }
 

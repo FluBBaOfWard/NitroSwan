@@ -288,7 +288,7 @@
 
 10. I/O PORTS (port number /initial value / description)
 
-- $00 - $00 -  Display control
+ - $00 - $00 - Display control
                 bit 5 - fg win on/off (window coords defined in ports $08 - $0B)
                 bit 4 - fg inside/outside win
                         0  FG layer is displayed only inside window
@@ -307,7 +307,7 @@
                 bit 4-0 - bit 13-9 of address (WS).
                 To get the address of the table, shift this value left 9 times
                 and clear MSB.
-		        (Sprite Attribute Table Base can move from $00000-$07E00 with 512 bytes step)
+		        (Sprite Attribute Table Base can move from $00000-$07E00 with $200 bytes step)
  - $05 - $00 - Determines the number of the sprite to start drawing with
  - $06 - $00 - Determines the number of the sprite to stop drawing.
  - $07 - $26 - Determines the location of the foreground and background screens in RAM.
@@ -316,7 +316,7 @@
                 bits 6-4 - Determines foreground location (address is 00fff000 00000000)
                 bit  3   - Unknown
                 bits 2-0 - Determines background location (address is 00bbb000 00000000)
-		        Back Ground Tile Map Base can move from $00000-$03800 (2048 bytes step)
+		        Back Ground Tile Map Base can move from $00000-$03800 ($800 bytes step)
  - $08 - $FE - x0 of FG window (x0,y0) = top left corner,  (x1,y1) = bottom right corner
  - $09 - $DE - y0 of FG window
  - $0A - $F9 - x1 of FG window
@@ -330,11 +330,11 @@
  - $12 - $00 - Foreground layer X scroll register
  - $13 - $00 - Foreground layer Y scroll register
  - $14 - $01 - LCD Control (???)
-                bit 0 - 1 - LCD on
-                        0 - LCD off
+                bit 0 - LCD on/off
+                bit 1 - Contrast, 0 low, 1 high (WSC).
  - $15 - $00 - LCD Icons
-                bit 7 - Not Used ?
-                bit 6 - Not Used ?
+                bit 7 - 0
+                bit 6 - 0
                 bit 5 - Dot 3
                 bit 4 - Dot 2
                 bit 3 - Dot 1

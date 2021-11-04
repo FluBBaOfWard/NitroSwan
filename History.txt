@@ -2,10 +2,11 @@ NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
-V0.1.2 - 2021-10-29 (FluBBa)
+V0.1.2 - 2021-11-04 (FluBBa)
 	Backgrounds works.
 	Sprites works.
 	Mono mode works.
+	Fixed Interrupts and Timers.
 
 V0.1.1 - 2021-10-17 (FluBBa)
 	Started port to Nintendo DS & devkitPro.

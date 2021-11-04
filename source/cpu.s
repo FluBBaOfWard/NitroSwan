@@ -16,7 +16,7 @@
 	.global waitMaskOut
 	.global cpu1SetIRQ
 	.global tlcs_return
-	.global setInterrupt
+	.global setInterruptExternal
 
 	.syntax unified
 	.arm
@@ -111,7 +111,7 @@ executeLine:
 	mov r0,#CYCLE_PSL
 	bx r4
 ;@----------------------------------------------------------------------------
-setInterrupt:			;@ r0=int number
+setInterruptExternal:			;@ r0=int number
 ;@----------------------------------------------------------------------------
 	and r0,r0,#7
 	ldr geptr,=wsv_0
