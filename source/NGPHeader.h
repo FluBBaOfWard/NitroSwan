@@ -1,7 +1,7 @@
-#ifndef NGPHEADER
-#define NGPHEADER
+#ifndef WSHEADER
+#define WSHEADER
 
-/// NgpHeader
+/// WsHeader
 typedef struct
 {
 	char licence[28];		// 0x00 - 0x1B
@@ -15,6 +15,6 @@ typedef struct
 	u32  reserved2;			// 0x34 - 0x37
 	u32  reserved3;			// 0x38 - 0x3B
 	u32  reserved4;			// 0x3C - 0x3F
-} NgpHeader;
+} WsHeader;
 
-#endif	// NGPHEADER
+#endif	// WSHEADER

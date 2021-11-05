@@ -34,7 +34,7 @@ To select between the tabs use R & L or the touchscreen.
 	Controller:
 		Autofire: Select if you want autofire.
 		Controller: 2P start a 2 player game.
-		Swap A/B: Swap which NDS button is mapped to which NGP button.
+		Swap A/B: Swap which NDS button is mapped to which WS button.
 	Display:
 		Mono Palette: Here you can select the palette for B & W games.
 		Gamma: Lets you change the gamma ("brightness").
@@ -46,10 +46,10 @@ To select between the tabs use R & L or the touchscreen.
 		Machine: Select the emulated machine.
 		Half cpu speed: This halves the emulated cpu speed.
 			Can make games faster.
-		Change Batteries: Change to new main batteries (AA/LR6).
+		Change Batteries: Change to a new main battery (AA/LR6).
 		Change Sub Battery: Change to a new sub battery (CR2032).
 		Cpu speed hacks: Allow speed hacks.
-		Bios Settings: Load a real NGP Bios, recommended.
+		Bios Settings: Load a real WS Bios.
 	Settings:
 		Speed: Switch between speed modes.
 			Normal: Game runs at it's normal speed.

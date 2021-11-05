@@ -30,7 +30,7 @@ int ioLoadState(const void *source);
  */
 int ioGetStateSize(void);
 
-/// Copies the time from the NDS RTC to the NGP RTC.
+/// Copies the time from the NDS RTC to the WS RTC.
 void transferTime(void);
 
 u8 ioReadByte(u8 port);

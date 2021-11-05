@@ -60,7 +60,7 @@ runStart:
 //	ldrne r2,=systemMemory+0xB3
 //	ldrbne r2,[r2]
 //	tstne r2,#4					;@ Power button NMI enabled?
-//	movne r0,#0x08				;@ 0x08 = Power button on NGP
+//	movne r0,#0x08				;@ 0x08 = Power button on WS
 //	blne setInterruptExternal
 
 	bl refreshEMUjoypads		;@ Z=1 if communication ok

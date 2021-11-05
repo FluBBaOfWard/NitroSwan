@@ -67,7 +67,7 @@ int initSettings() {
 	return 0;
 }
 
-bool updateSettingsFromNGP() {
+bool updateSettingsFromWS() {
 	int val = 0;
 	bool changed = false;
 
@@ -359,7 +359,7 @@ static bool selectBios(char *dest, const char *fileTypes) {
 
 void selectColorBios() {
 	pauseEmulation = true;
-	if ( selectBios(cfg.biosPath, ".ngp.ngc.rom.zip") ) {
+	if ( selectBios(cfg.biosPath, ".ws.wsc.rom.zip") ) {
 		loadColorBIOS();
 		machineInit();
 	}
@@ -367,7 +367,7 @@ void selectColorBios() {
 }
 
 void selectBWBios() {
-	if ( selectBios(cfg.biosPath, ".ngp.ngc.rom.zip") ) {
+	if ( selectBios(cfg.biosPath, ".ws.wsc.rom.zip") ) {
 		loadBWBIOS();
 		machineInit();
 	}

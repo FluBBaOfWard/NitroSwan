@@ -23,7 +23,7 @@
 		9C4EB1CE271CB5200072D38E /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
 		9C4EB1CF271CB5200072D38E /* ARMV30MZ_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ARMV30MZ_todo.txt; sourceTree = "<group>"; };
 		9C4EB1D1271CB8550072D38E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		9C4EB1D2271CB8B10072D38E /* WSVideo_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WSVideo_todo.txt; sourceTree = "<group>"; };
+		9C4EB1D2271CB8B10072D38E /* WSSOC_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WSSOC_todo.txt; sourceTree = "<group>"; };
 		9C4EB1D3271CB8B10072D38E /* WSVideo.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = WSVideo.s; sourceTree = "<group>"; };
 		9C4EB1D4271CB8B10072D38E /* WSVideo.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = WSVideo.i; sourceTree = "<group>"; };
 		9C4EB1D5271CB8B10072D38E /* WSVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSVideo.h; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				9C4EB1D1271CB8550072D38E /* README.md */,
-				9C4EB1D2271CB8B10072D38E /* WSVideo_todo.txt */,
+				9C4EB1D2271CB8B10072D38E /* WSSOC_todo.txt */,
 				9C4EB1D6271CB8B10072D38E /* History.txt */,
 				9C4EB1D7271CB8B10072D38E /* Version.h */,
 				9C4EB1D5271CB8B10072D38E /* WSVideo.h */,

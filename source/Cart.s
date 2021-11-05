@@ -14,7 +14,7 @@
 	.global BankSwitch2_W
 	.global BankSwitch3_W
 
-	.global ngpHeader
+	.global wsHeader
 	.global romSpacePtr
 	.global MEMMAPTBL_
 
@@ -249,7 +249,7 @@ g_paletteBank:
 	.byte 0						;@ palettebank
 	.space 3					;@ alignment.
 
-ngpHeader:
+wsHeader:
 romSpacePtr:
 	.long 0
 g_BIOSBASE_BW:

@@ -10,8 +10,9 @@
 #include "io.h"
 #include "cpu.h"
 #include "ARMV30MZ/Version.h"
+#include "WSVideo/Version.h"
 
-#define EMUVERSION "V0.1.1 2021-11-02"
+#define EMUVERSION "V0.1.1 2021-11-05"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -64,7 +65,7 @@ void setupGUI() {
 
 /// This is called when going from emu to ui.
 void enterGUI() {
-	if (updateSettingsFromNGP() && (emuSettings & AUTOSAVE_SETTINGS)) {
+	if (updateSettingsFromWS() && (emuSettings & AUTOSAVE_SETTINGS)) {
 		saveSettings();
 		settingsChanged = false;
 	}
@@ -110,12 +111,13 @@ void uiOptions() {
 void uiAbout() {
 	cls(1);
 	drawTabs();
-	drawText(" B:        NGP A button", 4, 0);
-	drawText(" A:        NGP B button", 5, 0);
+	drawText(" B:        WS A button", 4, 0);
+	drawText(" A:        WS B button", 5, 0);
 	drawText(" Y/Select: Power button", 6, 0);
 	drawText(" X/Start:  Start button", 7, 0);
 
-	drawText(" NitroSwan    " EMUVERSION, 22, 0);
+	drawText(" NitroSwan    " EMUVERSION, 21, 0);
+	drawText(" WSSOC        " WSSOCVERSION, 22, 0);
 	drawText(" ARMV30MZ     " ARMV30MZVERSION, 23, 0);
 }
 

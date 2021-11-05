@@ -1,5 +1,7 @@
 NitroSwan Todo
 
+	Add sound!
+	Fix FG window.
 	Sprite DMA is on line 142.
 	Save settings for Swap A-B.
 
