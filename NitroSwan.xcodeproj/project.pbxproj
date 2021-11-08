@@ -51,6 +51,7 @@
 		9C8F33EE248ACA2E00996E5A /* nds_asm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nds_asm.h; sourceTree = "<group>"; };
 		9CBC0C8E26DD7C2A0039D17E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9CC013FC2668FDD9005714F7 /* Emubase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Emubase.h; sourceTree = "<group>"; };
+		9CC3D9512735D9360057A7E2 /* WSAudio.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = WSAudio.s; sourceTree = "<group>"; };
 		A47F092B20863AF5004E1DA6 /* EmuMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuMenu.h; sourceTree = "<group>"; };
 		A47F092C20863AF5004E1DA6 /* EmuMenu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EmuMenu.c; sourceTree = "<group>"; };
 		A49D34381757E54900BD9B4B /* cpu.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = cpu.s; sourceTree = "<group>"; };
@@ -125,6 +126,7 @@
 				9C4EB1D5271CB8B10072D38E /* WSVideo.h */,
 				9C4EB1D4271CB8B10072D38E /* WSVideo.i */,
 				9C4EB1D3271CB8B10072D38E /* WSVideo.s */,
+				9CC3D9512735D9360057A7E2 /* WSAudio.s */,
 			);
 			path = WSVideo;
 			sourceTree = "<group>";

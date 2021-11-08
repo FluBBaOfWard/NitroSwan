@@ -67,21 +67,18 @@ gfxReset:					;@ Called with CPU reset
 
 	mov r1,#REG_BASE
 	;@ Horizontal start-end
-	ldr r0,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<16)+(SCREEN_WIDTH+GAME_WIDTH)/2
+	ldr r0,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+(SCREEN_WIDTH+GAME_WIDTH)/2
 	strh r0,[r1,#REG_WIN0H]
-	;@ Vertical start-end
-	ldr r0,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<16)+(SCREEN_HEIGHT+GAME_HEIGHT)/2
-	strh r0,[r1,#REG_WIN0V]
-
-	mov r0,#0x003F				;@ WinIN0, Everything enabled inside Win0
-	orr r0,r0,#0x2800			;@ WinIN1, Only BG3 & COL inside Win1
-	strh r0,[r1,#REG_WININ]
-	mov r0,#0x002C				;@ WinOUT, BG2, BG3 & COL enabled outside Windows.
-	strh r0,[r1,#REG_WINOUT]
-	ldr r0,=0x14AC30D0
 	strh r0,[r1,#REG_WIN1H]
-	mov r0,r0,lsr#16
+	;@ Vertical start-end
+	ldr r0,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+(SCREEN_HEIGHT+GAME_HEIGHT)/2
+	strh r0,[r1,#REG_WIN0V]
 	strh r0,[r1,#REG_WIN1V]
+
+	ldr r0,=0x3333				;@ WinIN0/1, BG0, BG1, SPR & COL inside Win0
+	strh r0,[r1,#REG_WININ]
+	mov r0,#0x002C				;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
+	strh r0,[r1,#REG_WINOUT]
 
 
 	mov r0,#0
@@ -318,16 +315,24 @@ vblIrqHandler:
 	biceq r0,r0,#0x0200				;@ Turn off fg
 	tst r1,#0x04
 	biceq r0,r0,#0x1000				;@ Turn off sprites
-	tst r1,#0x20
-//	biceq r0,r0,#0x2000				;@ Turn off fg-window
-	ldrb r1,g_gfxMask
-//	bic r0,r0,r1,lsl#8
+	tst r1,#0x20					;@ Win for FG on?
+	biceq r0,r0,#0x2000				;@ Turn off fg-window
+	ldrb r2,g_gfxMask
+//	bic r0,r0,r2,lsl#8
 	strh r0,[r6,#REG_DISPCNT]
 
 	ldr r0,[geptr,#windowData]
 	strh r0,[r6,#REG_WIN0H]
 	mov r0,r0,lsr#16
 	strh r0,[r6,#REG_WIN0V]
+	ldr r0,=0x3333				;@ WinIN0/1, BG0, BG1, SPR & COL inside Win0
+	and r2,r1,#0x30
+	cmp r2,#0x20
+	biceq r0,r0,#0x0200
+	cmp r2,#0x30
+	biceq r0,r0,#0x0002
+	strh r0,[r6,#REG_WININ]
+
 
 	ldr r0,frameDone
 	cmp r0,#0

@@ -42,7 +42,9 @@ ROM_Space:
 //	.incbin "wsroms/Crazy Climber (J) [M][!].ws"
 //	.incbin "wsroms/Guilty Gear Petit (J).wsc"
 //	.incbin "wsroms/Mr. Driller (J) [!].wsc"
+//	.incbin "wsroms/Tetris (Japan).wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
+//	.incbin "wsroms/XI Little (Japan).wsc"
 ROM_SpaceEnd:
 BIOS_Space:
 //	.incbin "wsroms/boot.rom"
@@ -137,21 +139,21 @@ tbLoop1:
 
 	ldr r0,=wsRAM+0x75AC	;@ simulate BIOS leftovers?
 	mov r1,#0x41
-	strb r1,[r0],#1
+//	strb r1,[r0],#1
 	mov r1,#0x5F
-	strb r1,[r0],#1
+//	strb r1,[r0],#1
 	mov r1,#0x43
-	strb r1,[r0],#1
+//	strb r1,[r0],#1
 	mov r1,#0x31
-	strb r1,[r0],#1
+//	strb r1,[r0],#1
 	mov r1,#0x6E
-	strb r1,[r0],#1
+//	strb r1,[r0],#1
 	mov r1,#0x5F
-	strb r1,[r0],#1
+//	strb r1,[r0],#1
 	mov r1,#0x63
-	strb r1,[r0],#1
+//	strb r1,[r0],#1
 	mov r1,#0x31
-	strb r1,[r0],#1
+//	strb r1,[r0],#1
 
 	bl gfxReset
 	bl ioReset
