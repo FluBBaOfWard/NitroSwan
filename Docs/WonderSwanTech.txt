@@ -63,7 +63,7 @@
         $C2 - Segment 2 (value written to port is ROM Bank number  ($FF means last ROM bank (last 64 kbytes of ROM file) , $FE  = last - 1 .. etc)
         $C3 - Segment 3 (same as above)
         $C0 - Segments 4-$F - bits 0,1,2 and 3 of port $C0 are bits 4,5,6 and 7 of ROM bank number in segments 4-$F . Bits 0-3
-              are taken form segment number ( for example , IO[$C0]=$4E  -> segment 9 contains ROM bank $E9).
+              are taken from segment number ( for example , IO[$C0]=$4E  -> segment 9 contains ROM bank $E9).
 
   RAM Map :
 
@@ -200,7 +200,7 @@
        01 - 64k SRAM
        02 - 256k SRAM
        03 - 1M SRAM (Taikyoku Igo Heisei Kiin)
-       04 - 2M SRAM (WonderWitch)
+       04 - 2M SRAM (WonderWitch, Dicing Knight)
        10 - 1k EEPROM
        20 - 16k EEPROM
        50 - 8k EEPROM
@@ -229,7 +229,7 @@
   will have to be cleared through code when the interrupt has been handled.
 
   Example:
-   The Wonderswan is set to react to VBlank begin interrupts. Then bit 7 of B6 is set high
+   The Wonderswan is set to react to VBlank begin interrupts. Then bit 6 of B6 is set high
    and keeps the interrupt line high until the CPU is able to take action upon this interrupt.
    A typical VBlank interrupt routine is as follows:
         <push registers>
@@ -280,7 +280,7 @@
     - Month of birth  -  1 byte  (BCD)
     - Day of birth    -  1 byte  (BCD)
     - Sex             -  1 byte (1 - male , 2 - female)
-    - Blood           -  1 byte (1 - A, 2 - B, 3 - 0, 4 - AB)
+    - Blood           -  1 byte (1 - A, 2 - B, 3 - O, 4 - AB)
 
 
     Struct size - 22 bytes  = 11 reads,

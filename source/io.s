@@ -2,6 +2,7 @@
 
 #include "ARMV30MZ/ARMV30MZ.i"
 #include "WSVideo/WSVideo.i"
+#include "EEPROM.i"
 
 	.global ioReset
 	.global transferTime
@@ -22,6 +23,17 @@
 	.global batteryLevel
 	.global IOPortA_R
 
+	.global intEepromDataLowR
+	.global intEepromDataHighR
+	.global intEepromAdrLowR
+	.global intEepromAdrHighR
+	.global intEepromStatusR
+	.global intEepromDataLowW
+	.global intEepromDataHighW
+	.global intEepromAdrLowW
+	.global intEepromAdrHighW
+	.global intEepromCommandW
+
 	.syntax unified
 	.arm
 
@@ -35,6 +47,7 @@ ioReset:
 	ldr r0,=IO_Default
 	bl initSysMem
 //	bl transferTime
+	bl intEepromReset
 
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
@@ -296,6 +309,77 @@ IO_Default:
 	.byte 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1, 0xd1
 
 
+;@----------------------------------------------------------------------------
+intEepromDataLowR:
+;@----------------------------------------------------------------------------
+	adr eeptr,intEeprom
+	b wsEepromDataLowR
+;@----------------------------------------------------------------------------
+intEepromDataHighR:
+;@----------------------------------------------------------------------------
+	adr eeptr,intEeprom
+	b wsEepromDataHighR
+;@----------------------------------------------------------------------------
+intEepromAdrLowR:
+;@----------------------------------------------------------------------------
+	adr eeptr,intEeprom
+	b wsEepromAddressLowR
+;@----------------------------------------------------------------------------
+intEepromAdrHighR:
+;@----------------------------------------------------------------------------
+	adr eeptr,intEeprom
+	b wsEepromAddressHighR
+;@----------------------------------------------------------------------------
+intEepromStatusR:
+;@----------------------------------------------------------------------------
+	adr eeptr,intEeprom
+	b wsEepromStatusR
+;@----------------------------------------------------------------------------
+intEepromDataLowW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,intEeprom
+	b wsEepromDataLowW
+;@----------------------------------------------------------------------------
+intEepromDataHighW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,intEeprom
+	b wsEepromDataHighW
+;@----------------------------------------------------------------------------
+intEepromAdrLowW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,intEeprom
+	b wsEepromAddressLowW
+;@----------------------------------------------------------------------------
+intEepromAdrHighW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,intEeprom
+	b wsEepromAddressHighW
+;@----------------------------------------------------------------------------
+intEepromCommandW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,intEeprom
+	b wsEepromCommandW
+;@----------------------------------------------------------------------------
+intEepromReset:
+;@----------------------------------------------------------------------------
+	ldr r0,=g_machine
+	ldrb r0,[r0]
+	cmp r0,#HW_ASWAN
+	moveq r1,#0x080				;@  1kbit
+	movne r1,#0x800				;@ 16kbit
+	ldr r0,=intEepromMem
+	adr eeptr,intEeprom
+	b wsEepromReset
+;@----------------------------------------------------------------------------
+intEeprom:
+	.space wsEepromSize
+intEepromMem:
+	.space 0x800
 ;@----------------------------------------------------------------------------
 g_subBatteryLevel:
 	.long 0x3000000				;@ subBatteryLevel

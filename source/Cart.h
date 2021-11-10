@@ -12,6 +12,7 @@ extern u8 g_cartFlags;
 extern u8 g_configSet;
 extern u8 g_config;
 extern u8 g_machine;
+extern u8 g_machineSet;
 extern u8 g_lang;
 extern u8 g_paletteBank;
 

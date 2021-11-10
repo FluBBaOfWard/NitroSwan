@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "WSVideo/Version.h"
 
-#define EMUVERSION "V0.1.1 2021-11-05"
+#define EMUVERSION "V0.1.1 2021-11-10"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -54,7 +54,7 @@ const char *const flickTxt[] = {"No Flicker", "Flicker"};
 const char *const bordTxt[]  = {"Black", "Border Color", "None"};
 const char *const palTxt[]   = {"Black & White", "Red", "Green", "Blue", "Classic"};
 const char *const langTxt[]  = {"Japanese", "English"};
-const char *const machTxt[]  = {"WonderSwan Color", "WonderSwan", "CrystalSwan"};
+const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "CrystalSwan"};
 
 
 void setupGUI() {
@@ -141,7 +141,7 @@ void uiDisplay() {
 static void uiMachine() {
 	setupSubMenu("Machine Settings");
 	drawSubItem("Language: ",langTxt[g_lang]);
-	drawSubItem("Machine: ",machTxt[g_machine]);
+	drawSubItem("Machine: ",machTxt[g_machineSet]);
 	drawMenuItem(" Change Batteries");
 	drawMenuItem(" Change Sub Battery");
 	drawSubItem("Cpu speed hacks: ",autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
@@ -265,7 +265,10 @@ void languageSet() {
 }
 
 void machineSet() {
-	g_machine ^= 0x01;
+	g_machineSet++;
+	if (g_machineSet >= HW_SELECT_END){
+		g_machineSet = 0;
+	}
 }
 
 void speedHackSet() {

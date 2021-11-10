@@ -1,6 +1,7 @@
 #ifdef __arm__
 
 #include "Equates.h"
+#include "EEPROM.i"
 #include "WSVideo/WSVideo.i"
 
 	.global machineInit
@@ -28,8 +29,20 @@
 	.global romMask
 	.global g_config
 	.global g_machine
+	.global g_machineSet
 	.global g_lang
 	.global g_paletteBank
+
+	.global extEepromDataLowR
+	.global extEepromDataHighR
+	.global extEepromAdrLowR
+	.global extEepromAdrHighR
+	.global extEepromStatusR
+	.global extEepromDataLowW
+	.global extEepromDataHighW
+	.global extEepromAdrLowW
+	.global extEepromAdrHighW
+	.global extEepromCommandW
 
 
 	.syntax unified
@@ -124,6 +137,28 @@ tbLoop1:
 	str r1,[r4,#0x2*4]		;@ 2 ROM
 	str r1,[r4,#0x3*4]		;@ 3 ROM
 
+	ldrb r3,g_machineSet
+	cmp r3,#HW_AUTO
+	bne dontCheckHW
+	ldr r3,=0xFFF7			;@ Minimum System
+	ldrb r3,[r1,r3]
+	cmp r3,#0
+	moveq r3,#HW_ASWAN
+	movne r3,#HW_SPHINX
+dontCheckHW:
+	strb r3,g_machine
+
+	ldr r3,=0xFFFB			;@ NVRAM size
+	ldrb r3,[r1,r3]
+	mov r0,#0
+	cmp r3,#0x10			;@ 1kbit
+	moveq r0,#0x80
+	cmp r3,#0x20			;@ 16kbit
+	moveq r0,#0x800
+	cmp r3,#0x50			;@ 8kbit
+	moveq r0,#0x400
+	str r0,eepromSize
+
 	ldr r1,biosBase
 	sub r1,r1,#0xE000
 //	str r1,[r4,#0xF*4]		;@ Map in Bios, not liked by GunPey
@@ -155,6 +190,7 @@ tbLoop1:
 	mov r1,#0x31
 //	strb r1,[r0],#1
 
+	bl extEepromReset
 	bl gfxReset
 	bl ioReset
 	bl soundReset
@@ -205,7 +241,7 @@ BankSwitch2_W:					;@ 0x20000-0x2FFFF
 	ldr r12,=MEMMAPTBL_+2*4
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
-	str r3,[r12],#4
+	str r3,[r12]
 
 	bx lr
 
@@ -225,11 +261,77 @@ BankSwitch3_W:					;@ 0x30000-0x3FFFF
 	ldr r12,=MEMMAPTBL_+3*4
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
-	str r3,[r12],#4
+	str r3,[r12]
 
 	bx lr
 
 ;@----------------------------------------------------------------------------
+extEepromDataLowR:
+;@----------------------------------------------------------------------------
+	adr eeptr,extEeprom
+	b wsEepromDataLowR
+;@----------------------------------------------------------------------------
+extEepromDataHighR:
+;@----------------------------------------------------------------------------
+	adr eeptr,extEeprom
+	b wsEepromDataHighR
+;@----------------------------------------------------------------------------
+extEepromAdrLowR:
+;@----------------------------------------------------------------------------
+	adr eeptr,extEeprom
+	b wsEepromAddressLowR
+;@----------------------------------------------------------------------------
+extEepromAdrHighR:
+;@----------------------------------------------------------------------------
+	adr eeptr,extEeprom
+	b wsEepromAddressHighR
+;@----------------------------------------------------------------------------
+extEepromStatusR:
+;@----------------------------------------------------------------------------
+	adr eeptr,extEeprom
+	b wsEepromStatusR
+;@----------------------------------------------------------------------------
+extEepromDataLowW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,extEeprom
+	b wsEepromDataLowW
+;@----------------------------------------------------------------------------
+extEepromDataHighW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,extEeprom
+	b wsEepromDataHighW
+;@----------------------------------------------------------------------------
+extEepromAdrLowW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,extEeprom
+	b wsEepromAddressLowW
+;@----------------------------------------------------------------------------
+extEepromAdrHighW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,extEeprom
+	b wsEepromAddressHighW
+;@----------------------------------------------------------------------------
+extEepromCommandW:
+;@----------------------------------------------------------------------------
+	mov r0,r1
+	adr eeptr,extEeprom
+	b wsEepromCommandW
+;@----------------------------------------------------------------------------
+extEepromReset:
+;@----------------------------------------------------------------------------
+	ldr r1,eepromSize
+	cmp r1,#0
+	bxeq lr
+	ldr r0,=extEepromMem
+	adr eeptr,extEeprom
+	b wsEepromReset
+;@----------------------------------------------------------------------------
+extEeprom:
+	.space wsEepromSize
 
 romNum:
 	.long 0						;@ romnumber
@@ -244,12 +346,14 @@ cartFlags:
 g_config:
 	.byte 0						;@ Config, bit 7=BIOS on/off
 g_machine:
-	.byte 0						;@ machine
+	.byte 0
+g_machineSet:
+	.byte HW_SPHINX
 g_lang:
 	.byte 1						;@ language
 g_paletteBank:
 	.byte 0						;@ palettebank
-	.space 3					;@ alignment.
+	.space 2					;@ alignment.
 
 wsHeader:
 romSpacePtr:
@@ -267,6 +371,8 @@ romMask:
 	.long 0
 biosBase:
 	.long 0
+eepromSize:
+	.long 0
 
 	.section .bss
 MEMMAPTBL_:
@@ -279,6 +385,8 @@ biosSpace:
 	.space 0x1000
 biosSpaceColor:
 	.space 0x2000
+extEepromMem:
+	.space 0x800
 ;@----------------------------------------------------------------------------
 	.end
 #endif // #ifdef __arm__

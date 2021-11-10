@@ -145,15 +145,16 @@ paletteInit:		;@ r0-r3 modified.
 noMap:							;@ Map 0000rrrrggggbbbb  ->  0bbbbbgggggrrrrr
 	and r0,r7,r4,lsr#1			;@ Blue ready
 	bl gPrefix
-	mov r5,r0
+	mov r5,r0,lsl#10
 
 	and r0,r7,r4,lsr#5			;@ Green ready
 	bl gPrefix
-	orr r5,r0,r5,lsl#5
+	orr r5,r5,r0,lsl#5
+	orrcs r5,r5,#0x8000
 
 	and r0,r7,r4,lsr#9			;@ Red ready
 	bl gPrefix
-	orr r5,r0,r5,lsl#5
+	orr r5,r5,r0
 
 	strh r5,[r6,r4]
 	subs r4,r4,#2
@@ -175,7 +176,7 @@ gammaConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4),returns new value i
 	orr r0,r0,r0,lsl#8
 	mul r2,r1,r2
 	mla r0,r3,r0,r2
-	mov r0,r0,lsr#13
+	movs r0,r0,lsr#13
 
 	bx lr
 ;@----------------------------------------------------------------------------
@@ -192,7 +193,7 @@ paletteTx:					;@ r0=destination, geptr=WSVideo
 	stmfd sp!,{r4-r8,lr}
 	mov r5,#0
 	ldrb r4,[geptr,#wsvVideoMode]
-	tst r4,#0x40
+	tst r4,#0x80
 	beq bnwTx
 	ldr r4,=wsRAM+0xFE00
 txLoop:
