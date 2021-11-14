@@ -2,7 +2,7 @@
 
 <img align="right" width="220" src="./logo.png" />
 
-This is a Bandai WonderSwan (Color) emulator for the Nintendo DS.
+This is a Bandai WonderSwan (Color/Crystal) & PocketChallenge V2 emulator for the Nintendo DS.
 
 ## How to use:
 
@@ -25,8 +25,8 @@ To select between the tabs use R & L or the touchscreen.
 	Load Game: Select a game to load.
 	Load State: Load a previously saved state of the currently running game.
 	Save State: Save a state of the currently running game.
-	Load Flash RAM: Load flash ram for the currently running game.
-	Save Flash RAM: Save flash ram for the currently running game.
+	Load NVRAM: Load non volatile ram (EEPROM/SRAM) for the currently running game.
+	Save NVRAM: Save non volatile ram (EEPROM/SRAM) for the currently running game.
 	Save Settings: Save the current settings.
 	Reset Game: Reset the currently running game.
 

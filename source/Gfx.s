@@ -192,16 +192,23 @@ paletteTx:					;@ r0=destination, geptr=WSVideo
 	ldr r2,=0x1FFE
 	stmfd sp!,{r4-r8,lr}
 	mov r5,#0
-	ldrb r4,[geptr,#wsvVideoMode]
-	tst r4,#0x80
+	ldrb r3,[geptr,#wsvBGColor]	;@ Background palette
+	ldrb r6,[geptr,#wsvVideoMode]
+	tst r6,#0x80				;@ Color mode?
 	beq bnwTx
 	ldr r4,=wsRAM+0xFE00
+	mov r3,r3,lsl#1
+	ldrh r3,[r4,r3]
+	and r3,r2,r3,lsl#1
+	ldrh r3,[r1,r3]
+	strh r3,[r0]				;@ Background palette
+	tst r6,#0x40				;@ 4bitplane mode?
+	beq col4Tx
 txLoop:
 	ldrh r3,[r4],#2
 	and r3,r2,r3,lsl#1
 	ldrh r3,[r1,r3]
-//	cmp r5,#0x00
-	cmpne r5,#0x10
+	cmp r5,#0x00
 	strhne r3,[r0]				;@ Background palette
 	add r0,r0,#2
 	cmp r5,#0x80
@@ -214,12 +221,34 @@ txLoop:
 	ldmfd sp!,{r4-r8,lr}
 	bx lr
 
+col4Tx:
+col4TxLoop:
+	ldrh r3,[r4,r5]
+	and r3,r2,r3,lsl#1
+	ldrh r3,[r1,r3]
+	cmp r5,#0x00
+	strhne r3,[r0]				;@ Background palette
+	strh r3,[r0,#0x8]			;@ Opaque tiles palette
+	add r0,r0,#2
+	cmp r5,#0x100
+	strhpl r3,[r0,#0xFE]		;@ Sprite palette
+
+	add r5,r5,#2
+	tst r5,#6
+	bne col4TxLoop
+	add r5,r5,#0x18
+	add r0,r0,#0x18
+	cmp r5,#0x200
+	bmi col4TxLoop
+
+	ldmfd sp!,{r4-r8,lr}
+	bx lr
+
 bnwTx:
 	add r4,geptr,#wsvPalette00
-	add r7,geptr,#wsvColor01
-	ldrb r3,[geptr,#wsvBGColor]	;@ Background palette
 	and r3,r3,#0x7
 	tst r3,#1
+	add r7,geptr,#wsvColor01
 	ldrb r3,[r7,r3,lsr#1]
 	movne r3,r3,lsr#4
 	and r3,r3,#0xF

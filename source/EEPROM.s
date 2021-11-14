@@ -134,6 +134,14 @@ wsEepromStatusR:	;@ r12=eeptr
 ;@----------------------------------------------------------------------------
 	ldrb r0,[eeptr,#eepStatus]
 	bx lr
+// bit(0) = readReady;
+// bit(1) = writeReady;
+// bit(2) = eraseReady;
+// bit(3) = resetReady;
+// bit(4) = readPending;
+// bit(5) = writePending;
+// bit(6) = erasePending;
+// bit(7) = resetPending;
 ;@----------------------------------------------------------------------------
 wsEepromDataLowW:		;@ r0 = value, r12=eeptr
 ;@----------------------------------------------------------------------------
@@ -157,7 +165,7 @@ wsEepromAddressHighW:	;@ r0 = value, r12=eeptr
 ;@----------------------------------------------------------------------------
 wsEepromCommandW:		;@ r0 = value, r12=eeptr
 ;@----------------------------------------------------------------------------
-	and r0,r0,#0x70
+	and r0,r0,#0xF0
 	strb r0,[eeptr,#eepCommand]
 
 	cmp r0,#0x10	;@ Read
@@ -166,6 +174,8 @@ wsEepromCommandW:		;@ r0 = value, r12=eeptr
 	beq wsEepromDoWrite
 	cmp r0,#0x40	;@ Erase
 	beq wsEepromDoErase
+	cmp r0,#0x80	;@ Reset
+	beq wsEepromDoReset
 	bx lr			;@ Only 1 bit can be set
 ;@----------------------------------------------------------------------------
 wsEepromDoRead:
@@ -182,7 +192,7 @@ wsEepromDoRead:
 	add r2,r2,r1,lsl#1
 	ldrh r0,[r2]
 	strh r0,[eeptr,#eepData]
-	mov r0,#3
+	mov r0,#1
 	strb r0,[eeptr,#eepStatus]
 	bx lr
 ;@----------------------------------------------------------------------------
@@ -218,9 +228,15 @@ wsEepromDoErase:
 	mov r0,#-1
 	add r2,r2,r1,lsl#1
 	strh r0,[r2]
-	mov r0,#2
+	mov r0,#4
 	strb r0,[eeptr,#eepStatus]
 	bx lr
-
+;@----------------------------------------------------------------------------
+wsEepromDoReset:
+;@----------------------------------------------------------------------------
+	mov r11,r11
+	mov r0,#8
+	strb r0,[eeptr,#eepStatus]
+	bx lr
 
 #endif // #ifdef __arm__

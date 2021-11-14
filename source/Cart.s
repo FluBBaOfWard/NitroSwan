@@ -20,6 +20,7 @@
 	.global MEMMAPTBL_
 
 	.global biosSpace
+	.global BIOS_Space
 	.global g_BIOSBASE_COLOR
 	.global g_BIOSBASE_BW
 	.global wsRAM
@@ -61,9 +62,9 @@ ROM_Space:
 ROM_SpaceEnd:
 BIOS_Space:
 //	.incbin "wsroms/boot.rom"
-//	.incbin "wsroms/boot1.rom"
+	.incbin "wsroms/boot1.rom"
 //	.incbin "wsroms/ws_irom.bin"
-	.incbin "wsroms/wc_irom.bin"
+//	.incbin "wsroms/wc_irom.bin"
 //	.incbin "wsroms/wsc_irom.bin"
 
 	.align 2
@@ -82,7 +83,7 @@ machineInit: 	;@ Called from C
 	ldr r7,[r0]
 							;@ r7=rombase til end of loadcart
 	ldr r0,=BIOS_Space
-	ldr r1,=biosBase
+	ldr r1,=g_BIOSBASE_COLOR
 	str r0,[r1]
 
 	bl gfxInit
@@ -91,12 +92,12 @@ machineInit: 	;@ Called from C
 //	bl cpuInit
 
 	ldr r0,=g_BIOSBASE_COLOR
-	ldr r0,[r0]
-	cmp r0,#0
-	beq skipBiosSettings
+//	ldr r0,[r0]
+//	cmp r0,#0
+//	beq skipBiosSettings
 
-	bl run					;@ Settings are cleared when new batteries are inserted.
-	bl transferTime			;@ So set up time
+//	bl run					;@ Settings are cleared when new batteries are inserted.
+//	bl transferTime			;@ So set up time
 skipBiosSettings:
 	ldmfd sp!,{r4-r11,lr}
 	bx lr
@@ -159,8 +160,8 @@ dontCheckHW:
 	moveq r0,#0x400
 	str r0,eepromSize
 
-	ldr r1,biosBase
-	sub r1,r1,#0xE000
+//	ldr r1,biosBase
+//	sub r1,r1,#0xE000
 //	str r1,[r4,#0xF*4]		;@ Map in Bios, not liked by GunPey
 
 
@@ -372,6 +373,8 @@ romMask:
 biosBase:
 	.long 0
 eepromSize:
+	.long 0
+sramSize:
 	.long 0
 
 	.section .bss

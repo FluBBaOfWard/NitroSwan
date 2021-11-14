@@ -16,10 +16,14 @@ extern "C" {
 typedef struct {
 	void *eepMemory;
 	int eepSize;	// Size in bytes
-	int eepAddress; // Current address
-	u8 eepWidth;	// bus width in bits (8 or 16)
+	int eepMask;	// Address mask (size - 1)
+	int eepAddress;	// Current address
+	short eepData;	// Current data value
+	u8 eepStatus;	// Status value
+	u8 eepAdrBits;	// Number of bits in the address
 	u8 eepMode;
-	u8 eepPadding0;
+	u8 eepCommand;
+	u8 eepWidth;	// bus width in bits (8 or 16)
 	u8 eepPadding1;
 } WSEEPROM;
 

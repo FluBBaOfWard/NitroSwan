@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "WSVideo/Version.h"
 
-#define EMUVERSION "V0.1.1 2021-11-10"
+#define EMUVERSION "V0.1.1 2021-11-14"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -54,7 +54,7 @@ const char *const flickTxt[] = {"No Flicker", "Flicker"};
 const char *const bordTxt[]  = {"Black", "Border Color", "None"};
 const char *const palTxt[]   = {"Black & White", "Red", "Green", "Blue", "Classic"};
 const char *const langTxt[]  = {"Japanese", "English"};
-const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "CrystalSwan"};
+const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "CrystalSwan", "Pocket Challenge V2"};
 
 
 void setupGUI() {
@@ -90,8 +90,8 @@ void uiFile() {
 	drawMenuItem("Load Game");
 	drawMenuItem("Load State");
 	drawMenuItem("Save State");
-	drawMenuItem("Load Flash");
-	drawMenuItem("Save Flash");
+	drawMenuItem("Load NVRAM");
+	drawMenuItem("Save NVRAM");
 	drawMenuItem("Save Settings");
 	drawMenuItem("Eject Game");
 	drawMenuItem("Reset Console");
@@ -152,7 +152,7 @@ void uiSettings() {
 	setupSubMenu("Settings");
 	drawSubItem("Speed: ", speedTxt[(emuSettings>>6)&3]);
 	drawSubItem("Autoload State: ", autoTxt[(emuSettings>>2)&1]);
-	drawSubItem("Autoload Flash RAM: ", autoTxt[(emuSettings>>10)&1]);
+	drawSubItem("Autoload NVRAM: ", autoTxt[(emuSettings>>10)&1]);
 	drawSubItem("Autosave Settings: ", autoTxt[(emuSettings>>9)&1]);
 	drawSubItem("Autopause Game: ", autoTxt[emuSettings&1]);
 	drawSubItem("Powersave 2nd Screen: ",autoTxt[(emuSettings>>1)&1]);

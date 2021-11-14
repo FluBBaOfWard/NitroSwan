@@ -52,6 +52,7 @@
 		9CA52585273BCE400022BAD7 /* EEPROM.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = EEPROM.s; sourceTree = "<group>"; };
 		9CA52586273BCE400022BAD7 /* EEPROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EEPROM.h; sourceTree = "<group>"; };
 		9CA52587273BCE400022BAD7 /* EEPROM.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = EEPROM.i; sourceTree = "<group>"; };
+		9CA52588273D7F3C0022BAD7 /* InternalEEPROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InternalEEPROM.h; sourceTree = "<group>"; };
 		9CBC0C8E26DD7C2A0039D17E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9CC013FC2668FDD9005714F7 /* Emubase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Emubase.h; sourceTree = "<group>"; };
 		9CC3D9512735D9360057A7E2 /* WSAudio.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = WSAudio.s; sourceTree = "<group>"; };
@@ -194,6 +195,7 @@
 				9C4EB1C5271CB16A0072D38E /* WonderSwan.h */,
 				9C4EB1C4271CB16A0072D38E /* WonderSwan.c */,
 				9C715145265645DD0084BE99 /* WSHeader.h */,
+				9CA52588273D7F3C0022BAD7 /* InternalEEPROM.h */,
 				9C50820525D45A9A00A8E1BA /* Cart.h */,
 				9C50820F25D45A9B00A8E1BA /* Cart.s */,
 				35E683AD1C66453300FCFE8A /* cpu.h */,

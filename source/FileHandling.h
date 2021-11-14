@@ -7,7 +7,7 @@ extern "C" {
 
 #include "Emubase.h"
 
-#define FILEEXTENSIONS ".ws.wsc"
+#define FILEEXTENSIONS ".ws.wsc.pc2"
 
 extern ConfigData cfg;
 

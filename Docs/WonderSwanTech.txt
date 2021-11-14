@@ -201,6 +201,7 @@
        02 - 256k SRAM
        03 - 1M SRAM (Taikyoku Igo Heisei Kiin)
        04 - 2M SRAM (WonderWitch, Dicing Knight)
+       05 - 4M SRAM
        10 - 1k EEPROM
        20 - 16k EEPROM
        50 - 8k EEPROM
@@ -534,6 +535,7 @@
  - $9E - $03 - REG_SND_9E
  - $9F - $00 - ???
  - $A0 - $87 - Hardware type
+                bit 7 - 1 = finnished booting?
                 bit 2 - 1 = 16bit cart access
                 bit 1 - 1 = color, 0 = mono
                 bit 0 - 1 = lock the boot rom
@@ -547,7 +549,7 @@
                 bit 3 - Vblank Timer Mode
                         0 - One Shot
                         1 - Auto Preset
- - $A3 - $00 - ???
+ - $A3 - $00 - ^^^
  - $A4 - $00 - Hblank Timer 'frequency'
                 0 = no HBLANK Interrupt
                 n = HBLANK Interrupt every n lines (???)
@@ -622,34 +624,36 @@
                 bit 2 - RTC Alarm
                 bit 1 - Key press
                 bit 0 - Serial transmit
- - $B7 - $00 - ???
+ - $B7 - $00 - INT_NMI_CTRL, some games write 0x10
  - $B8 - $00 - ???
  - $B9 - $00 - ???
- - $BA - $01 - Internal EEPROM (?) Data
+ - $BA - $01 - Internal EEPROM Data
  - $BB - $00 - ^^^
- - $BC - $42 - Internal EEPROM (?) Address (calculated probably Modulo EEPROM (1kbit?) size (mirroring for read/write))
+ - $BC - $42 - Internal EEPROM Address
  - $BD - $00 - ^^^
- - $BE - $83 - Internal EEPROM (?) Command
-                bit 7 - Initialize ?
-                bit 6 - Protect ?
+ - $BE - $83 - Internal EEPROM Command/Status
+                bit 7 - Reset
+                bit 6 - Erase/Protect
                 bit 5 - Write
                 bit 4 - Read
-                bit 3 - ???
-                bit 2 - ???
-                bit 1 - Write Complete (Read only)
-                bit 0 - Read Complete (Read only)
+                bit 3 - Reset complete (Read only)
+                bit 2 - Erase complete (Read only)
+                bit 1 - Write complete (Read only)
+                bit 0 - Read complete (Read only)
  - $BF - $00 - ???
 
 ---------------------------------------------------------------------
-Mapped to cartridge.
+Mapped to cartridge. Luxor1 / Luxor2
 ---------------------------------------------------------------------
  - $C0 - $2F - ROM Bank Base Selector for segments 4-$F
- - $C1 - $3F - SRAM Bank selector (???)
+ - $C1 - $3F - SRAM Bank selector (0x10000))
  - $C2 - $FF - BNK2SLCT - ROM Bank selector for segment 2
  - $C3 - $FF - BNK3SLCT - ROM Bank selector for segment 3
  - $C4 - $00 - EEPROM Data
  - $C5 - $00 - ^^^
- - $C6 - $00 - 1kbit EEPROM (16bit*64) :
+ - $C6 - $00 - EEPROM address:
+ - $C7 - $00 - ^^^
+               1kbit EEPROM (16bit*64) :
                 - bits 0-5 - address
                 - bits 6-7 - command :
                            0 - Extended Comand Address bits 4-5
@@ -660,13 +664,11 @@ Mapped to cartridge.
                            1 - Write
                            2 - Read
                            3 - Erase
-             - 16 kbit EEPROM (16bit*1024) - bits 0-7 - address (low)
- - $C7 - $00 - 1kbit EEPROM (16bit*64) :
-                - bit 0 - Start
+                - bit 8 - Start
              - 16 kbit EEPROM (16bit*1024) :
-                - bits 0-1 - address (high)
-                - bits 2-3 - command :
-                           0 - Extended Comand Address bits 0-1
+                - bits 0-9 - address
+                - bits 10-11 - command :
+                           0 - Extended Comand Address bits 8-9
                                0 - Write Disable
                                1 - Write All
                                2 - Erase All
@@ -674,17 +676,17 @@ Mapped to cartridge.
                            1 - Write
                            2 - Read
                            3 - Erase
-                - bit 4 - Start
- - $C8 - $D1 - EEPROM Command :
-                bit 7 - Initialize ???
-                bit 6 - Protect ???
+                - bit 12 - Start
+ - $C8 - $83 - EEPROM Command/Status :
+                bit 7 - Reset
+                bit 6 - Erase/Protect
                 bit 5 - Write
                 bit 4 - Read
-                bit 3 - ???
-                bit 2 - ???
-                bit 1 - Write Complete (Read only)
-                bit 0 - Read Complete (Read only)
- - $C9 - $D1 - ???
+                bit 3 - Reset complete (Read only)
+                bit 2 - Erase complete (Read only)
+                bit 1 - Write complete (Read only)
+                bit 0 - Read complete (Read only)
+ - $C9 - $D1 - ^^^
  - $CA - $D1 - RTC Command
                 Write :
                         - $10 - Reset
@@ -717,16 +719,16 @@ Mapped to cartridge.
                                 - Hour
                                 - Min
                                 - Sec
- - $CC - $D1 - ???
- - $CD - $D1 - ???
- - $CE - $D1 - ???
+ - $CC - $D1 - GPIO enable
+ - $CD - $D1 - GPIO data
+ - $CE - $D1 - MEMORY_CTRL
  - $CF - $D1 - ???
- - $D0 - $D1 - ???
- - $D1 - $D1 - ???
- - $D2 - $D1 - ???
- - $D3 - $D1 - ???
- - $D4 - $D1 - ???
- - $D5 - $D1 - ???
+ - $D0 - $D1 - SRAM Bank selector low
+ - $D1 - $D1 - SRAM Bank selector high
+ - $D2 - $D1 - BNK2SLCT - ROM Bank selector for segment 2 low
+ - $D3 - $D1 - BNK2SLCT - ROM Bank selector for segment 2 high
+ - $D4 - $D1 - BNK3SLCT - ROM Bank selector for segment 3 low
+ - $D5 - $D1 - BNK3SLCT - ROM Bank selector for segment 3 high
  - $D6 - $D1 - ???
  - $D7 - $D1 - ???
  - $D8 - $D1 - ???

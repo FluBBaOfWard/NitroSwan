@@ -7,3 +7,6 @@ build
 *.ws
 *.wsc
 *.rom
+*.pc2
+*.eeprom
+*.ram
