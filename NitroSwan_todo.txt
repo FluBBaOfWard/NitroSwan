@@ -1,10 +1,10 @@
 NitroSwan Todo
 
 	Save SRAM and EEPROM.
+	Add sound!
 	Add border.
 	Graphics on menu screen?
-	Add sound!
-	Sprite DMA is on line 142.
+	Update cpu code to new version.
 	Save settings for Swap A-B.
 
 GFX:
@@ -26,14 +26,14 @@ Sound:
 Misc:
 	...
 
-Games Non Working:
+Games Not Working:
 	Tetris hangs in cpu?
 	Dokodemo Hamster 3 - O Dekake Saffron (needs RTC?)
 	inu yasha (needs RTC?)
 	Robot Works (needs RTC?)
 
 Games With Glitches:
-	Flash Koibito-kun. Runs in Mono, not color.
+	F.
 	...
 
 Speedhacks:

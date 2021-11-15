@@ -162,7 +162,7 @@ dontCheckHW:
 
 //	ldr r1,biosBase
 //	sub r1,r1,#0xE000
-//	str r1,[r4,#0xF*4]		;@ Map in Bios, not liked by GunPey
+//	str r1,[r4,#0xF*4]
 
 
 	ldr r0,=wsRAM			;@ clear RAM
