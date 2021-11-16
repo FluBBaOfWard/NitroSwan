@@ -193,29 +193,30 @@ paletteTx:					;@ r0=destination, geptr=WSVideo
 	stmfd sp!,{r4-r8,lr}
 	mov r5,#0
 	ldrb r3,[geptr,#wsvBGColor]	;@ Background palette
-	ldrb r6,[geptr,#wsvVideoMode]
-	tst r6,#0x80				;@ Color mode?
+	ldrb r7,[geptr,#wsvVideoMode]
+	tst r7,#0x80				;@ Color mode?
 	beq bnwTx
+
 	ldr r4,=wsRAM+0xFE00
 	mov r3,r3,lsl#1
 	ldrh r3,[r4,r3]
 	and r3,r2,r3,lsl#1
 	ldrh r3,[r1,r3]
 	strh r3,[r0]				;@ Background palette
-	tst r6,#0x40				;@ 4bitplane mode?
+	tst r7,#0x40				;@ 4bitplane mode?
 	beq col4Tx
+	add r6,r0,#0x100			;@ Sprite pal ofs - r5
 txLoop:
 	ldrh r3,[r4],#2
 	and r3,r2,r3,lsl#1
 	ldrh r3,[r1,r3]
 	cmp r5,#0x00
-	strhne r3,[r0]				;@ Background palette
-	add r0,r0,#2
-	cmp r5,#0x80
-	strhpl r3,[r0,#0xFE]		;@ Sprite palette
-
-	add r5,r5,#1
+	strhne r3,[r0,r5]				;@ Background palette
 	cmp r5,#0x100
+	strhpl r3,[r6,r5]				;@ Sprite palette
+
+	add r5,r5,#2
+	cmp r5,#0x200
 	bmi txLoop
 
 	ldmfd sp!,{r4-r8,lr}
@@ -229,15 +230,17 @@ col4TxLoop:
 	cmp r5,#0x00
 	strhne r3,[r0]				;@ Background palette
 	strh r3,[r0,#0x8]			;@ Opaque tiles palette
-	add r0,r0,#2
 	cmp r5,#0x100
-	strhpl r3,[r0,#0xFE]		;@ Sprite palette
+	addpl r6,r0,#0x100
+	strhpl r3,[r6]			;@ Sprite palette
+	strhpl r3,[r6,#0x8]		;@ Sprite palette opaque
 
+	add r0,r0,#2
 	add r5,r5,#2
 	tst r5,#6
 	bne col4TxLoop
-	add r5,r5,#0x18
 	add r0,r0,#0x18
+	add r5,r5,#0x18
 	cmp r5,#0x200
 	bmi col4TxLoop
 
@@ -276,16 +279,18 @@ bnwTxLoop:
 	cmp r5,#0x0
 	strhne r3,[r0]				;@ Background palette
 	strh r3,[r0,#0x8]			;@ Opaque tiles palette
-	add r0,r0,#2
-	cmp r5,#0x80
-	strhpl r3,[r0,#0xFE]		;@ Sprite palette
-
-	add r5,r5,#1
-	tst r5,#3
-	bne bnwTxLoop
-	add r5,r5,#0xC
-	add r0,r0,#0x18
 	cmp r5,#0x100
+	addpl r8,r0,#0x100
+	strhpl r3,[r8]				;@ Sprite palette
+	strhpl r3,[r8,#0x8]			;@ Sprite palette opaque
+
+	add r0,r0,#2
+	add r5,r5,#2
+	tst r5,#6
+	bne bnwTxLoop
+	add r0,r0,#0x18
+	add r5,r5,#0x18
+	cmp r5,#0x200
 	bmi bnwTxLoop2
 
 	ldmfd sp!,{r4-r8,lr}
