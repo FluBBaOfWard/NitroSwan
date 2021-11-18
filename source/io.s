@@ -393,6 +393,8 @@ intEeprom:
 	.space wsEepromSize
 intEepromMem:
 //	.incbin "00024007.eeprom"
+//	.incbin "dengeki.eeprom"
+//	.incbin "naviget4_ee.eeprom"
 	.space 0x800
 ;@----------------------------------------------------------------------------
 g_subBatteryLevel:

@@ -23,9 +23,9 @@ void saveState(void);
 void ejectCart(void);
 void selectGame(void);
 void selectColorBios(void);
-void selectBWBios(void);
+void selectBnWBios(void);
 int loadColorBIOS(void);
-int loadBWBIOS(void);
+int loadBnWBIOS(void);
 
 #ifdef __cplusplus
 } // extern "C"

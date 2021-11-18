@@ -1,18 +1,18 @@
 NitroSwan Todo
 
-	Save SRAM and EEPROM.
+	Add RTC emulation.
+	Save/load SRAM and EEPROM.
 	Add sound!
 	Add border.
 	Graphics on menu screen?
 	Update cpu code to new version.
-	Save settings for Swap A-B.
 
 GFX:
 	Optimize color transfer?
 
 GUI:
 	Remove... Done.
-	Eng/Jap: The only game this setting is known to affect is "Digimon Tamers - Battle Spirit".
+	Eng/Jap: "Digimon Tamers - Battle Spirit" has jumper on the cart.
 
 Mem:
 

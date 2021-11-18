@@ -9,8 +9,7 @@ This is a Bandai WonderSwan (Color/Crystal) & PocketChallenge V2 emulator for th
 Depending on your flashcart you might have to DLDI patch the emulator.
 Create a folder named "nitroswan" in either the root of your flash card or in the
 data folder. Now put game/bios files into a folder where you have roms.
-Note! You need a bios to be able to save in game.
-The save file should be compatible with most other NeoGeo Pocket emulators.
+The save files should be compatible with most other WonderSwan emulators.
 
 When the emulator starts, you can either press L+R or tap on the screen to open
 up the menu.
@@ -46,7 +45,7 @@ To select between the tabs use R & L or the touchscreen.
 		Machine: Select the emulated machine.
 		Half cpu speed: This halves the emulated cpu speed.
 			Can make games faster.
-		Change Batteries: Change to a new main battery (AA/LR6).
+		Change Battery: Change to a new main battery (AA/LR6).
 		Change Sub Battery: Change to a new sub battery (CR2032).
 		Cpu speed hacks: Allow speed hacks.
 		Bios Settings: Load a real WS Bios.

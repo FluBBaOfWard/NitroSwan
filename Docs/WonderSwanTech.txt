@@ -585,7 +585,7 @@
                 bit 3 - ???
                 bit 2 - Send Complete
                 bit 1 - Error
-                bit 0 - Recieve Complete
+                bit 0 - Receive Complete
 
                         write $00-$7f = read $00
                         write $80-$bf = read $84
@@ -624,7 +624,7 @@
                 bit 2 - RTC Alarm
                 bit 1 - Key press
                 bit 0 - Serial transmit
- - $B7 - $00 - INT_NMI_CTRL, some games write 0x10
+ - $B7 - $00 - INT_NMI_CTRL, some games write 0x10/0x00
  - $B8 - $00 - ???
  - $B9 - $00 - ???
  - $BA - $01 - Internal EEPROM Data

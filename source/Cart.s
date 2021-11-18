@@ -19,10 +19,12 @@
 	.global romSpacePtr
 	.global MEMMAPTBL_
 
+	.global biosBase
 	.global biosSpace
-	.global BIOS_Space
+	.global biosSpaceColor
+	.global g_BIOSBASE_BNW
 	.global g_BIOSBASE_COLOR
-	.global g_BIOSBASE_BW
+	.global g_BIOSBASE_CRYSTAL
 	.global wsRAM
 	.global wsSRAM
 	.global g_romSize
@@ -60,11 +62,13 @@ ROM_Space:
 //	.incbin "wsroms/WONDERPR.WSC"
 //	.incbin "wsroms/XI Little (Japan).wsc"
 ROM_SpaceEnd:
-BIOS_Space:
+WS_BIOS_INTERNAL:
+	.incbin "wsroms/ws_irom.bin"
 //	.incbin "wsroms/boot.rom"
-	.incbin "wsroms/boot1.rom"
-//	.incbin "wsroms/ws_irom.bin"
-//	.incbin "wsroms/wc_irom.bin"
+WSC_BIOS_INTERNAL:
+	.incbin "wsroms/wc_irom.bin"
+//	.incbin "wsroms/boot1.rom"
+SC_BIOS_INTERNAL:
 //	.incbin "wsroms/wsc_irom.bin"
 
 	.align 2
@@ -77,27 +81,15 @@ machineInit: 	;@ Called from C
 //	ldr r0,=romSize
 //	mov r1,#ROM_SpaceEnd-ROM_Space
 //	str r1,[r0]
-	ldr r0,=romSpacePtr
+//	ldr r0,=romSpacePtr
 //	ldr r7,=ROM_Space
 //	str r7,[r0]
-	ldr r7,[r0]
-							;@ r7=rombase til end of loadcart
-	ldr r0,=BIOS_Space
-	ldr r1,=g_BIOSBASE_COLOR
-	str r0,[r1]
 
 	bl gfxInit
 //	bl ioInit
 	bl soundInit
 //	bl cpuInit
 
-	ldr r0,=g_BIOSBASE_COLOR
-//	ldr r0,[r0]
-//	cmp r0,#0
-//	beq skipBiosSettings
-
-//	bl run					;@ Settings are cleared when new batteries are inserted.
-//	bl transferTime			;@ So set up time
 skipBiosSettings:
 	ldmfd sp!,{r4-r11,lr}
 	bx lr
@@ -134,62 +126,63 @@ tbLoop1:
 	str r1,[r4,#0x0*4]		;@ 0 RAM
 	ldr r1,=wsSRAM
 	str r1,[r4,#0x1*4]		;@ 1 SRAM
-	ldr r1,[r4,#0xF*4]		;@ MemMap
-	str r1,[r4,#0x2*4]		;@ 2 ROM
-	str r1,[r4,#0x3*4]		;@ 3 ROM
+	ldr r6,[r4,#0xF*4]		;@ MemMap
+	str r6,[r4,#0x2*4]		;@ 2 ROM
+	str r6,[r4,#0x3*4]		;@ 3 ROM
 
-	ldrb r3,g_machineSet
-	cmp r3,#HW_AUTO
+	ldrb r5,g_machineSet
+	cmp r5,#HW_AUTO
 	bne dontCheckHW
-	ldr r3,=0xFFF7			;@ Minimum System
-	ldrb r3,[r1,r3]
+	ldr r3,=0xFFF7			;@ Supported System
+	ldrb r3,[r6,r3]
 	cmp r3,#0
-	moveq r3,#HW_ASWAN
-	movne r3,#HW_SPHINX
+	moveq r5,#HW_ASWAN
+	movne r5,#HW_SPHINX
 dontCheckHW:
-	strb r3,g_machine
+	strb r5,g_machine
 
 	ldr r3,=0xFFFB			;@ NVRAM size
-	ldrb r3,[r1,r3]
-	mov r0,#0
-	cmp r3,#0x10			;@ 1kbit
-	moveq r0,#0x80
-	cmp r3,#0x20			;@ 16kbit
-	moveq r0,#0x800
-	cmp r3,#0x50			;@ 8kbit
-	moveq r0,#0x400
-	str r0,eepromSize
+	ldrb r3,[r6,r3]
+	mov r0,#0				;@ r0 = sram size
+	mov r1,#0				;@ r1 = eeprom size
+	cmp r3,#0x01			;@ 64kbit sram
+	moveq r0,#0x2000
+	cmp r3,#0x02			;@ 256kbit sram
+	moveq r0,#0x8000
+	cmp r3,#0x03			;@ 1Mbit sram
+	moveq r0,#0x20000
+	cmp r3,#0x04			;@ 2Mbit sram
+	moveq r0,#0x40000
+	cmp r3,#0x05			;@ 4Mbit sram
+	moveq r0,#0x80000
+	cmp r3,#0x10			;@ 1kbit eeprom
+	moveq r1,#0x80
+	cmp r3,#0x20			;@ 16kbit eeprom
+	moveq r1,#0x800
+	cmp r3,#0x50			;@ 8kbit eeprom
+	moveq r1,#0x400
+	str r0,sramSize
+	str r1,eepromSize
 
-//	ldr r1,biosBase
-//	sub r1,r1,#0xE000
-//	str r1,[r4,#0xF*4]
+	cmp r5,#HW_ASWAN
+	moveq r0,#1				;@ For boot rom overlay
+	movne r0,#2
+	ldreq r1,g_BIOSBASE_BNW
+	ldrne r1,g_BIOSBASE_COLOR
+	ldreq r2,=WS_BIOS_INTERNAL
+	ldrne r2,=WSC_BIOS_INTERNAL
+	cmp r1,#0
+	moveq r1,r2				;@ Use internal bios
+	str r1,biosBase
+	bl setBootRomOverlay
+
+//	sub r0,r0,#0xE000
+//	str r0,[r4,#0xF*4]
 
 
 	ldr r0,=wsRAM			;@ clear RAM
 	mov r1,#0x10000/4
 	bl memclr_
-
-//	ldr r0,g_BIOSBASE_COLOR
-//	cmp r0,#0
-//	bne skipHWSetup
-
-	ldr r0,=wsRAM+0x75AC	;@ simulate BIOS leftovers?
-	mov r1,#0x41
-//	strb r1,[r0],#1
-	mov r1,#0x5F
-//	strb r1,[r0],#1
-	mov r1,#0x43
-//	strb r1,[r0],#1
-	mov r1,#0x31
-//	strb r1,[r0],#1
-	mov r1,#0x6E
-//	strb r1,[r0],#1
-	mov r1,#0x5F
-//	strb r1,[r0],#1
-	mov r1,#0x63
-//	strb r1,[r0],#1
-	mov r1,#0x31
-//	strb r1,[r0],#1
 
 	bl extEepromReset
 	bl gfxReset
@@ -349,7 +342,7 @@ g_config:
 g_machine:
 	.byte 0
 g_machineSet:
-	.byte HW_SPHINX
+	.byte HW_AUTO
 g_lang:
 	.byte 1						;@ language
 g_paletteBank:
@@ -359,9 +352,10 @@ g_paletteBank:
 wsHeader:
 romSpacePtr:
 	.long 0
-g_BIOSBASE_BW:
+g_BIOSBASE_BNW:
 	.long 0
 g_BIOSBASE_COLOR:
+g_BIOSBASE_CRYSTAL:
 	.long 0
 g_romSize:
 romSize:
@@ -372,9 +366,9 @@ romMask:
 	.long 0
 biosBase:
 	.long 0
-eepromSize:
-	.long 0
 sramSize:
+	.long 0
+eepromSize:
 	.long 0
 
 	.section .bss

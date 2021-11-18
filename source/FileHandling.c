@@ -328,20 +328,20 @@ static int loadBIOS(void *dest, const char *fPath, const int maxSize) {
 }
 
 int loadColorBIOS(void) {
-	if ( loadBIOS(biosSpace, cfg.biosPath, sizeof(biosSpace)) ) {
-		g_BIOSBASE_COLOR = biosSpace;
+	if ( loadBIOS(biosSpaceColor, cfg.colorBiosPath, sizeof(biosSpaceColor)) ) {
+		g_BIOSBASE_COLOR = biosSpaceColor;
 		return 1;
 	}
 	g_BIOSBASE_COLOR = NULL;
 	return 0;
 }
 
-int loadBWBIOS(void) {
+int loadBnWBIOS(void) {
 	if ( loadBIOS(biosSpace, cfg.biosPath, sizeof(biosSpace)) ) {
-		g_BIOSBASE_BW = biosSpace;
+		g_BIOSBASE_BNW = biosSpace;
 		return 1;
 	}
-	g_BIOSBASE_BW = NULL;
+	g_BIOSBASE_BNW = NULL;
 	return 0;
 }
 
@@ -359,17 +359,15 @@ static bool selectBios(char *dest, const char *fileTypes) {
 
 void selectColorBios() {
 	pauseEmulation = true;
-	if ( selectBios(cfg.biosPath, ".ws.wsc.rom.zip") ) {
+	if ( selectBios(cfg.colorBiosPath, ".ws.wsc.rom.zip") ) {
 		loadColorBIOS();
-		machineInit();
 	}
 	cls(0);
 }
 
-void selectBWBios() {
+void selectBnWBios() {
 	if ( selectBios(cfg.biosPath, ".ws.wsc.rom.zip") ) {
-		loadBWBIOS();
-		machineInit();
+		loadBnWBIOS();
 	}
 	cls(0);
 }

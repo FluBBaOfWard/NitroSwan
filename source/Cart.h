@@ -19,9 +19,10 @@ extern u8 g_paletteBank;
 extern u8 wsRAM[0x10000];
 extern u8 wsSRAM[0x8000];
 extern u8 biosSpace[0x1000];
+extern u8 biosSpaceColor[0x2000];
 extern u8 *romSpacePtr;
+extern void *g_BIOSBASE_BNW;
 extern void *g_BIOSBASE_COLOR;
-extern void *g_BIOSBASE_BW;
 
 void machineInit(void);
 void loadCart(int emuFlags);

@@ -142,8 +142,7 @@ cpuReset:					;@ Called by loadCart/resetGame
 	mov r0,#CYCLE_PSL
 	str r0,v30MZCyclesPerScanline
 	mov r0,#0
-	ldr r1,=nec_reset
-	blx r1
+	blx nec_reset
 
 	ldmfd sp!,{lr}
 	bx lr
