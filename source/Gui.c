@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "WSVideo/Version.h"
 
-#define EMUVERSION "V0.1.1 2021-11-18"
+#define EMUVERSION "V0.1.2 2021-11-21"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -33,7 +33,7 @@ const fptr fnList2[] = {ui4, ui5, ui6, ui7};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList5[] = {/*scalingSet, flickSet,*/ gammaSet, paletteChange, fgrLayerSet, bgrLayerSet, sprLayerSet};
-const fptr fnList6[] = {languageSet, machineSet, batteryChange, subBatteryChange, speedHackSet, selectBnWBios, selectColorBios};
+const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, languageSet};
 const fptr fnList7[] = {speedSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, debugTextSet, sleepSet};
 const fptr fnList8[] = {quickSelectGame};
 const fptr fnList9[] = {uiDummy};
@@ -140,13 +140,15 @@ void uiDisplay() {
 
 static void uiMachine() {
 	setupSubMenu("Machine Settings");
-	drawSubItem("Language: ",langTxt[g_lang]);
 	drawSubItem("Machine: ",machTxt[g_machineSet]);
-	drawMenuItem(" Change Battery");
-	drawMenuItem(" Change Sub Battery");
-	drawSubItem("Cpu speed hacks: ",autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
 	drawMenuItem(" Select WS Bios");
 	drawMenuItem(" Select WS Color Bios");
+	drawMenuItem(" Import internal EEPROM");
+	drawMenuItem(" Clear internal EEPROM");
+	drawSubItem("Cpu speed hacks: ",autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
+	drawMenuItem(" Change Battery");
+	drawSubItem("Language: ",langTxt[g_lang]);
+//	drawMenuItem(" Change Sub Battery");
 }
 
 void uiSettings() {

@@ -12,6 +12,7 @@
 #include "Shared/EmuSettings.h"
 #include "Shared/FileHelper.h"
 #include "Shared/unzip/unzipnds.h"
+#include "Shared/AsmExtra.h"
 #include "Main.h"
 #include "Gui.h"
 #include "Cart.h"
@@ -23,6 +24,8 @@
 
 static const char *const folderName = "nitroswan";
 static const char *const settingName = "settings.cfg";
+static const char *const wsEepromName = "wsinternal.eeprom";
+static const char *const wscEepromName = "wscinternal.eeprom";
 
 ConfigData cfg;
 
@@ -32,11 +35,10 @@ int initSettings() {
 	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM;
 	cfg.sleepTime = 60*60*5;
 	cfg.controller = 0;					// Don't swap A/B
-	cfg.alarmHour = PersonalData->alarmHour;
-	cfg.alarmMinute = PersonalData->alarmMinute;
-	cfg.birthDay = PersonalData->birthDay;
-	cfg.birthMonth = PersonalData->birthMonth;
-	cfg.birthYear = 99;
+	cfg.birthYear[0] = 0x19;
+	cfg.birthYear[1] = 0x99;
+	cfg.birthMonth = bin2BCD(PersonalData->birthMonth);
+	cfg.birthDay = bin2BCD(PersonalData->birthDay);
 	cfg.language = (PersonalData->language == 0) ? 0 : 1;
 	int col = 0;
 	switch (PersonalData->theme & 0xF) {
@@ -64,6 +66,18 @@ int initSettings() {
 	}
 	cfg.palette = col;
 	g_paletteBank = col;
+
+	int i;
+	for (i = 0; i < PersonalData->nameLen; i++) {
+		s16 char16 = PersonalData->name[i];
+		if (char16 < 0xFF) {
+			cfg.name[i] = char16;
+		}
+		else {
+			break;
+		}
+	}
+	cfg.name[i] = 0;
 	return 0;
 }
 
@@ -72,8 +86,9 @@ bool updateSettingsFromWS() {
 	bool changed = false;
 
 	//val = t9LoadB(0x6F8B);
-	if (cfg.birthYear != val) {
-		cfg.birthYear = val;
+	if (cfg.birthYear[0] != (val & 0xFF) || cfg.birthYear[1] != ((val >> 8) & 0xFF)) {
+		cfg.birthYear[0] = val;
+		cfg.birthYear[1] = (val >> 8);
 		changed = true;
 	}
 	//val = t9LoadB(0x6F8C);
@@ -87,27 +102,10 @@ bool updateSettingsFromWS() {
 		changed = true;
 	}
 
-	//val = t9LoadB(0x6C34);
-	if (cfg.alarmHour != val) {
-		cfg.alarmHour = val;
-		changed = true;
-	}
-	//val = t9LoadB(0x6C35);
-	if (cfg.alarmMinute != val) {
-		cfg.alarmMinute = val;
-		changed = true;
-	}
-
 	//val = t9LoadB(0x6F87) & 1;
 	if (cfg.language != val) {
 		cfg.language = val;
 		g_lang = val;
-		changed = true;
-	}
-	//val = t9LoadB(0x6F94) & 7;
-	if (cfg.palette != val) {
-		cfg.palette = val;
-		g_paletteBank = val;
 		changed = true;
 	}
 	settingsChanged |= changed;
@@ -167,6 +165,7 @@ void saveSettings() {
 		infoOutput("Couldn't open file:");
 		infoOutput(settingName);
 	}
+	saveIntEeproms();
 }
 
 //void loadSaveGameFile()
@@ -269,6 +268,68 @@ void saveState(void) {
 		}
 		fclose(file);
 	}
+}
+
+//---------------------------------------------------------------------------------
+int loadIntEeprom(const char *name, u8 *dest, int size) {
+	FILE *file;
+	if ( (file = fopen(name, "r")) ) {
+		fread(dest, 1, size, file);
+		fclose(file);
+	}
+	else {
+		infoOutput("Couldn't open file:");
+		infoOutput(name);
+		return 1;
+	}
+	infoOutput("Internal EEPROM loaded.");
+	return 0;
+}
+
+int saveIntEeprom(const char *name, u8 *source, int size) {
+	FILE *file;
+	if ( (file = fopen(name, "w")) ) {
+		fwrite(source, 1, size, file);
+		fclose(file);
+	}
+	else {
+		infoOutput("Couldn't open file:");
+		infoOutput(name);
+		return 1;
+	}
+	infoOutput("Internal EEPROM saved.");
+	return 0;
+}
+
+int loadIntEeproms() {
+	if (findFolder(folderName)) {
+		return 1;
+	}
+	loadIntEeprom(wscEepromName, wscEepromMem, sizeof(wscEepromMem));
+	loadIntEeprom(wsEepromName, wsEepromMem, sizeof(wsEepromMem));
+	return 0;
+}
+
+int saveIntEeproms() {
+	if (findFolder(folderName)) {
+		return 1;
+	}
+	saveIntEeprom(wscEepromName, wscEepromMem, sizeof(wscEepromMem));
+	saveIntEeprom(wsEepromName, wsEepromMem, sizeof(wsEepromMem));
+	return 0;
+}
+
+void selectEEPROM() {
+	pauseEmulation = true;
+//	setSelectedMenu(9);
+	const char *eepromName = browseForFileType(".eeprom");
+	cls(0);
+	loadIntEeprom(eepromName, wscEepromMem, sizeof(wscEepromMem));
+}
+
+void clearIntEeproms() {
+	memset(wscEepromMem, 0, sizeof(wscEepromMem));
+	memset(wsEepromMem, 0, sizeof(wsEepromMem));
 }
 
 //---------------------------------------------------------------------------------

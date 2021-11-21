@@ -317,10 +317,10 @@ extEepromCommandW:
 ;@----------------------------------------------------------------------------
 extEepromReset:
 ;@----------------------------------------------------------------------------
-	ldr r1,eepromSize
-	cmp r1,#0
+	ldr r0,eepromSize
+	cmp r0,#0
 	bxeq lr
-	ldr r0,=extEepromMem
+	ldr r1,=extEepromMem
 	adr eeptr,extEeprom
 	b wsEepromReset
 ;@----------------------------------------------------------------------------

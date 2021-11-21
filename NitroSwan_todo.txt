@@ -1,7 +1,7 @@
 NitroSwan Todo
 
-	Add RTC emulation.
 	Save/load SRAM and EEPROM.
+	Add RTC emulation.
 	Add sound!
 	Add border.
 	Graphics on menu screen?
@@ -33,7 +33,7 @@ Games Not Working:
 	Robot Works (needs RTC?)
 
 Games With Glitches:
-	F.
+	Magical Drop.
 	...
 
 Speedhacks:

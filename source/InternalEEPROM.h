@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 // Font order = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZhn+-?." h=heart, n=note.
+// Values are 0x00-0x2A
 // Starts at 0x60
 struct userdata_t
 {

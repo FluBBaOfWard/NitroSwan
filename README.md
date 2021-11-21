@@ -1,4 +1,4 @@
-# NitroSwan V0.1.1
+# NitroSwan V0.1.2
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -17,6 +17,8 @@ Now you can use the cross or touchscreen to navigate the menus, A or double tap
 to select an option, B or the top of the screen to go back a step.
 
 To select between the tabs use R & L or the touchscreen.
+
+Hold Start while starting a game to enter the boot rom settings.
 
 ## Menu:
 
@@ -41,14 +43,14 @@ To select between the tabs use R & L or the touchscreen.
 		Disable Background: Turn on/off background rendering.
 		Disable Sprites: Turn on/off sprite rendering.
 	Machine Settings:
-		Language: Select between Japanese and English.
 		Machine: Select the emulated machine.
-		Half cpu speed: This halves the emulated cpu speed.
-			Can make games faster.
-		Change Battery: Change to a new main battery (AA/LR6).
-		Change Sub Battery: Change to a new sub battery (CR2032).
+		Select WS Bios: Load a real WS Bios.
+		Select WS Color Bios: Load a real WS Color Bios.
+		Import internal EEPROM: Load a special internal EEPROM.
+		Clear internal EEPROM: Reset internal EEPROM.
 		Cpu speed hacks: Allow speed hacks.
-		Bios Settings: Load a real WS Bios.
+		Change Battery: Change to a new main battery (AA/LR6).
+		Language: Select between Japanese and English.
 	Settings:
 		Speed: Switch between speed modes.
 			Normal: Game runs at it's normal speed.

@@ -26,6 +26,10 @@ void selectColorBios(void);
 void selectBnWBios(void);
 int loadColorBIOS(void);
 int loadBnWBIOS(void);
+int loadIntEeproms(void);
+int saveIntEeproms(void);
+void selectEEPROM(void);
+void clearIntEeproms(void);
 
 #ifdef __cplusplus
 } // extern "C"

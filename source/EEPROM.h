@@ -27,7 +27,9 @@ typedef struct {
 	u8 eepPadding1;
 } WSEEPROM;
 
-void wsEepromReset(void *mem, int size);
+void wsEepromReset(int size, void *mem);
+void wsEepromSetSize(int size);
+void wsEepromWriteByte(int offset, int value);
 
 /**
  * Saves the state of the chip to the destination.
@@ -50,8 +52,6 @@ int wsEepromLoadState(WSEEPROM *chip, const void *source);
  * @return The size of the state.
  */
 int wsEepromGetStateSize(void);
-
-void wsEe(void);
 
 #ifdef __cplusplus
 } // extern "C"

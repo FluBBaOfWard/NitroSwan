@@ -13,16 +13,10 @@
 	.global ioReadByte
 	.global ioWriteByte
 
-	.global joyCfg
-	.global EMUinput
-
-	.global serialinterrupt
-	.global resetSIO
 	.global updateSlowIO
-	.global g_subBatteryLevel
-	.global batteryLevel
 	.global IOPortA_R
 
+	.global intEepromSetSize
 	.global intEepromDataLowR
 	.global intEepromDataHighR
 	.global intEepromAdrLowR
@@ -34,6 +28,13 @@
 	.global intEepromAdrHighW
 	.global intEepromCommandW
 
+	.global joyCfg
+	.global EMUinput
+	.global batteryLevel
+	.global g_subBatteryLevel
+	.global wsEepromMem
+	.global wscEepromMem
+
 	.syntax unified
 	.arm
 
@@ -44,10 +45,10 @@ ioReset:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
+	bl intEepromReset
 	ldr r0,=IO_Default
 	bl initSysMem
 //	bl transferTime
-	bl intEepromReset
 
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
@@ -60,18 +61,19 @@ initSysMem:					;@ In r0=values ptr.
 initMemLoop:
 	ldrb r1,[r4,r5]
 	mov r0,r5
-	cmp r0,#0xC0
-	blne ioWriteByte
+	bl ioWriteByte
 	subs r5,r5,#1
 	bpl initMemLoop
 
-	ldr r0,=intEepromMem+0x60
-	ldr r1,=eepromDefault
-	mov r2,#0x30/4
+	ldr eeptr,=intEeprom
+	mov r4,#0x60
+	ldr r5,=eepromDefault
 eepromLoop:
-	ldr r3,[r1],#4
-	str r3,[r0],#4
-	subs r2,r2,#1
+	mov r0,r4
+	ldrb r1,[r5],#1
+	bl wsEepromWriteByte
+	add r4,r4,#1
+	cmp r4,#0x60+22
 	bne eepromLoop
 
 	ldmfd sp!,{r4-r5,pc}
@@ -320,7 +322,6 @@ IO_Default:
 eepromDefault: //from adr 0x60
 	.byte 0x10, 0x16, 0x1F, 0x0C, 0x0C, 0x0B, 0x00, 0x19, 0x10, 0x00, 0x21, 0x0B, 0x1C, 0x0E, 0x25, 0x26
 	.byte 0x19, 0x75, 0x04, 0x19, 0x01, 0x02, 0x01, 0x01, 0x27, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00
-	.byte 0x01, 0x01, 0x27, 0x03, 0x00, 0x00, 0x01, 0x01, 0x27, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00
 
 ;@----------------------------------------------------------------------------
 intEepromDataLowR:
@@ -383,15 +384,26 @@ intEepromReset:
 	ldr r0,=g_machine
 	ldrb r0,[r0]
 	cmp r0,#HW_ASWAN
-	moveq r1,#0x080				;@  1kbit
-	movne r1,#0x800				;@ 16kbit
-	ldr r0,=intEepromMem
+	ldreq r1,=wsEepromMem
+	ldrne r1,=wscEepromMem
+	moveq r0,#0x080				;@  1kbit
+	movne r0,#0x800				;@ 16kbit
 	adr eeptr,intEeprom
 	b wsEepromReset
 ;@----------------------------------------------------------------------------
+intEepromSetSize:			;@ r0 = size, 0=1kbit, !0=16kbit
+;@----------------------------------------------------------------------------
+	cmp r0,#0
+	moveq r0,#0x080				;@  1kbit
+	movne r0,#0x800				;@ 16kbit
+	adr eeptr,intEeprom
+	b wsEepromSetSize
+;@----------------------------------------------------------------------------
 intEeprom:
 	.space wsEepromSize
-intEepromMem:
+wsEepromMem:
+//	.space 0x80
+wscEepromMem:
 //	.incbin "00024007.eeprom"
 //	.incbin "dengeki.eeprom"
 //	.incbin "naviget4_ee.eeprom"

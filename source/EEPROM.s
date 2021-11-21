@@ -5,6 +5,8 @@
 #include "EEPROM.i"
 
 	.global wsEepromReset
+	.global wsEepromSetSize
+	.global wsEepromWriteByte
 	.global wsEepromSaveState
 	.global wsEepromLoadState
 	.global wsEepromGetStateSize
@@ -31,35 +33,46 @@
 #endif
 	.align 2
 ;@----------------------------------------------------------------------------
-wsEepromReset:		;@ r0 = *memory, r1 = size(in bytes), r12 = eeptr
+wsEepromReset:			;@ r0 = size(in bytes), r1 = *memory, r12 = eeptr
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r0-r1,lr}
+	stmfd sp!,{r0-r1,eeptr,lr}
 
 	mov r0,eeptr
 	ldr r1,=wsEepromSize/4
 	bl memclr_					;@ Clear WSEeprom state
 
-	ldmfd sp!,{r0-r1,lr}
-	str r0,[eeptr,#eepMemory]
-	mov r0,#0x80				;@ 1kbit
+	ldmfd sp!,{r0-r1,eeptr,lr}
+	str r1,[eeptr,#eepMemory]
+;@----------------------------------------------------------------------------
+wsEepromSetSize:		;@ r0 = size(in bytes), r12 = eeptr
+;@----------------------------------------------------------------------------
+	mov r1,#0x80				;@ 1kbit
 	mov r2,#6
-	cmp r1,#0x100				;@ 2kbit
-	movpl r0,#0x100
+	cmp r0,#0x100				;@ 2kbit
+	movpl r1,#0x100
 	movpl r2,#7
-	cmp r1,#0x200				;@ 4kbit
-	movpl r0,#0x200
+	cmp r0,#0x200				;@ 4kbit
+	movpl r1,#0x200
 	movpl r2,#8
-	cmp r1,#0x400				;@ 8kbit
-	movpl r0,#0x400
+	cmp r0,#0x400				;@ 8kbit
+	movpl r1,#0x400
 	movpl r2,#9
-	cmp r1,#0x800				;@ 16kbit
-	movpl r0,#0x800
+	cmp r0,#0x800				;@ 16kbit
+	movpl r1,#0x800
 	movpl r2,#10
-	str r0,[eeptr,#eepSize]
-	sub r0,r0,#1
-	str r0,[eeptr,#eepMask]
+	str r1,[eeptr,#eepSize]
+	sub r1,r1,#1
+	str r1,[eeptr,#eepMask]
 	strb r2,[eeptr,#eepAdrBits]
 
+	bx lr
+;@----------------------------------------------------------------------------
+wsEepromWriteByte:		;@ r0 = adr, r1 = value, r12 = eeptr
+;@----------------------------------------------------------------------------
+	ldr r2,[eeptr,#eepMask]
+	and r0,r2,r0
+	ldr r2,[eeptr,#eepMemory]
+	strb r1,[r2,r0]
 	bx lr
 ;@----------------------------------------------------------------------------
 wsEepromSaveState:		;@ In r0=destination, r1=eeptr. Out r0=state size.
@@ -180,17 +193,16 @@ wsEepromCommandW:		;@ r0 = value, r12=eeptr
 ;@----------------------------------------------------------------------------
 wsEepromDoRead:
 ;@----------------------------------------------------------------------------
-//	ldrb r0,[eeptr,#eepAdrBits]
+	ldrb r0,[eeptr,#eepAdrBits]
 	ldr r1,[eeptr,#eepAddress]
-//	mov r2,r1,lsr r0
-//	and r2,r2,#0x7
-//	cmp r2,#0x6
-//	bxne lr
+	mov r2,r1,lsr r0
+	and r2,r2,#0x7
+	cmp r2,#0x6
+	bxne lr
 	ldr r2,[eeptr,#eepMask]
-	and r1,r1,r2
+	and r1,r2,r1,lsl#1
 	ldr r2,[eeptr,#eepMemory]
-	add r2,r2,r1,lsl#1
-	ldrh r0,[r2]
+	ldrh r0,[r2,r1]
 	strh r0,[eeptr,#eepData]
 	mov r0,#1
 	strb r0,[eeptr,#eepStatus]
@@ -198,36 +210,34 @@ wsEepromDoRead:
 ;@----------------------------------------------------------------------------
 wsEepromDoWrite:
 ;@----------------------------------------------------------------------------
-//	ldrb r0,[eeptr,#eepAdrBits]
+	ldrb r0,[eeptr,#eepAdrBits]
 	ldr r1,[eeptr,#eepAddress]
-//	mov r2,r1,lsr r0
-//	and r2,r2,#0x7
-//	cmp r2,#0x5
-//	bxne lr
+	mov r2,r1,lsr r0
+	and r2,r2,#0x7
+	cmp r2,#0x5
+	bxne lr
 	ldr r2,[eeptr,#eepMask]
-	and r1,r1,r2
+	and r1,r2,r1,lsl#1
 	ldr r2,[eeptr,#eepMemory]
 	ldrh r0,[eeptr,#eepData]
-	add r2,r2,r1,lsl#1
-	strh r0,[r2]
+	strh r0,[r2,r1]
 	mov r0,#2
 	strb r0,[eeptr,#eepStatus]
 	bx lr
 ;@----------------------------------------------------------------------------
 wsEepromDoErase:
 ;@----------------------------------------------------------------------------
-//	ldrb r0,[eeptr,#eepAdrBits]
+	ldrb r0,[eeptr,#eepAdrBits]
 	ldr r1,[eeptr,#eepAddress]
-//	mov r2,r1,lsr r0
-//	and r2,r2,#0x7
-//	cmp r2,#0x7
-//	bxne lr
+	mov r2,r1,lsr r0
+	and r2,r2,#0x7
+	cmp r2,#0x7				;@ Erase?
+	bxne lr
 	ldr r2,[eeptr,#eepMask]
-	and r1,r1,r2
+	and r1,r2,r1,lsl#1
 	ldr r2,[eeptr,#eepMemory]
 	mov r0,#-1
-	add r2,r2,r1,lsl#1
-	strh r0,[r2]
+	strh r0,[r2,r1]
 	mov r0,#4
 	strb r0,[eeptr,#eepStatus]
 	bx lr
