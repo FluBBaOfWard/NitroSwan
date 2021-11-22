@@ -59,8 +59,8 @@ Hold Start while starting a game to enter the boot rom settings.
 			50%: Game runs at half speed.
 		Autoload State: Toggle Savestate autoloading.
 			Automagically load the savestate associated with the current game.
-		Autoload Flash RAM: Toggle flash/save ram autoloading.
-			Automagically load the flash ram associated with the current game.
+		Autoload NVRAM: Toggle EEPROM/SRAM autoloading.
+			Automagically load the EEPROM/SRAM associated with the current game.
 		Autosave Settings: This will save settings when
 			leaving menu if any changes are made.
 		Autopause Game: Toggle if the game should pause when opening the menu.

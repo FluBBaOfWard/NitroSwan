@@ -2,13 +2,14 @@ NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
-V0.1.2 - 2021-11-18 (FluBBa)
+V0.1.2 - 2021-11-22 (FluBBa)
 	Backgrounds works.
 	Sprites works.
 	Mono mode works.
 	Fixed Interrupts and Timers.
 	Added EEPROM emulation.
 	Added loading of bootrom for both WS & WSC.
+	Added loading/saving of sram/eeprom.
 
 V0.1.1 - 2021-10-17 (FluBBa)
 	Started port to Nintendo DS & devkitPro.

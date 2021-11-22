@@ -170,49 +170,76 @@ void saveSettings() {
 
 //void loadSaveGameFile()
 void loadNVRAM() {
-	// Find the .wss file and read it in
 	FILE *wssFile;
-	char saveName[FILENAMEMAXLENGTH];
+	char nvramName[FILENAMEMAXLENGTH];
+	int saveSize = 0;
+	void *nvMem = NULL;
 
+	strlcpy(nvramName, currentFilename, sizeof(nvramName));
+	if (sramSize > 0) {
+		saveSize = sramSize;
+		nvMem = wsSRAM;
+		strlcat(nvramName, ".ram", sizeof(nvramName));
+	}
+	else if (eepromSize > 0) {
+		saveSize = eepromSize;
+		nvMem = extEepromMem;
+		strlcat(nvramName, ".eeprom", sizeof(nvramName));
+	}
+	else {
+		return;
+	}
 	if (findFolder(folderName)) {
 		return;
 	}
-	strlcpy(saveName, currentFilename, sizeof(saveName));
-	strlcat(saveName, ".wss", sizeof(saveName));
-	if ( (wssFile = fopen(saveName, "r")) ) {
-		if (fread(&wsSRAM, 1, sizeof(wsSRAM), wssFile) != sizeof(wsSRAM)) {
-			infoOutput("Bad flash file:");
-			infoOutput(saveName);
+	if ( (wssFile = fopen(nvramName, "r")) ) {
+		if (fread(nvMem, 1, saveSize, wssFile) != saveSize) {
+			infoOutput("Bad NVRAM file:");
+			infoOutput(nvramName);
 		}
 		fclose(wssFile);
-		infoOutput("Loaded SRAM.");
+		infoOutput("Loaded NVRAM.");
 	}
 	else {
-		infoOutput("Couldn't open save file:");
-		infoOutput(saveName);
+		infoOutput("Couldn't open NVRAM file:");
+		infoOutput(nvramName);
 	}
 }
 
 //void writeSaveGameFile() {
 void saveNVRAM() {
 	FILE *wssFile;
-	char saveName[FILENAMEMAXLENGTH];
+	char nvramName[FILENAMEMAXLENGTH];
+	int saveSize = 0;
+	void *nvMem = NULL;
 
+	strlcpy(nvramName, currentFilename, sizeof(nvramName));
+	if (sramSize > 0) {
+		saveSize = sramSize;
+		nvMem = wsSRAM;
+		strlcat(nvramName, ".ram", sizeof(nvramName));
+	}
+	else if (eepromSize > 0) {
+		saveSize = eepromSize;
+		nvMem = extEepromMem;
+		strlcat(nvramName, ".eeprom", sizeof(nvramName));
+	}
+	else {
+		return;
+	}
 	if (findFolder(folderName)) {
 		return;
 	}
-	strlcpy(saveName, currentFilename, sizeof(saveName));
-	strlcat(saveName, ".wss", sizeof(saveName));
-	if ( (wssFile = fopen(saveName, "w")) ) {
-		if (fwrite(&wsSRAM, 1, sizeof(wsSRAM), wssFile) != sizeof(wsSRAM)) {
+	if ( (wssFile = fopen(nvramName, "w")) ) {
+		if (fwrite(nvMem, 1, saveSize, wssFile) != saveSize) {
 			infoOutput("Couldn't write correct number of bytes.");
 		}
 		fclose(wssFile);
-		infoOutput("Saved SRAM.");
+		infoOutput("Saved NVRAM.");
 	}
 	else {
-		infoOutput("Couldn't open save file:");
-		infoOutput(saveName);
+		infoOutput("Couldn't open NVRAM file:");
+		infoOutput(nvramName);
 	}
 }
 

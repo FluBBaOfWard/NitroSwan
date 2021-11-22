@@ -27,6 +27,9 @@
 	.global g_BIOSBASE_CRYSTAL
 	.global wsRAM
 	.global wsSRAM
+	.global extEepromMem
+	.global sramSize
+	.global eepromSize
 	.global g_romSize
 	.global maxRomSize
 	.global romMask

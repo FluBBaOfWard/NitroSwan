@@ -1,11 +1,11 @@
 NitroSwan Todo
 
-	Save/load SRAM and EEPROM.
 	Add RTC emulation.
 	Add sound!
 	Add border.
 	Graphics on menu screen?
 	Update cpu code to new version.
+	Add serial port emulation.
 
 GFX:
 	Optimize color transfer?
@@ -27,10 +27,17 @@ Misc:
 	...
 
 Games Not Working:
+	AnchorZ Field
+	Chou Aniki - Otoko no Tamafuda
+	Glocal Hexcite
+	Kurupara!
+	Langrisser Millenium WS
 	Tetris hangs in cpu?
-	Dokodemo Hamster 3 - O Dekake Saffron (needs RTC?)
-	inu yasha (needs RTC?)
-	Robot Works (needs RTC?)
+
+Needs RTC:
+	Dokodemo Hamster 3 - O Dekake Saffron
+	Inu yasha
+	Robot Works
 
 Games With Glitches:
 	Magical Drop.

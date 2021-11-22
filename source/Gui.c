@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "WSVideo/Version.h"
 
-#define EMUVERSION "V0.1.2 2021-11-21"
+#define EMUVERSION "V0.1.2 2021-11-22"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 

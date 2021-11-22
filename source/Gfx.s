@@ -86,6 +86,9 @@ gfxReset:					;@ Called with CPU reset
 	ldr r2,=wsRAM
 	ldr r3,=g_machine
 	ldrb r3,[r3]
+	cmp r3,#HW_ASWAN
+	moveq r3,#SOC_ASWAN
+	movne r3,#SOC_SPHINX
 	bl wsVideoReset0
 	bl monoPalInit
 

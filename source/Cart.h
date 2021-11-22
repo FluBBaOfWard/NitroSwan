@@ -15,9 +15,12 @@ extern u8 g_machine;
 extern u8 g_machineSet;
 extern u8 g_lang;
 extern u8 g_paletteBank;
+extern int sramSize;
+extern int eepromSize;
 
 extern u8 wsRAM[0x10000];
 extern u8 wsSRAM[0x8000];
+extern u8 extEepromMem[0x800];
 extern u8 biosSpace[0x1000];
 extern u8 biosSpaceColor[0x2000];
 extern u8 *romSpacePtr;
