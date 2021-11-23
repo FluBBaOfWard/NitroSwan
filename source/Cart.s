@@ -2,7 +2,7 @@
 
 #include "Equates.h"
 #include "EEPROM.i"
-#include "WSVideo/WSVideo.i"
+#include "Sphinx/WSVideo.i"
 
 	.global machineInit
 	.global loadCart

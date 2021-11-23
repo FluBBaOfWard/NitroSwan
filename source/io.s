@@ -1,7 +1,7 @@
 #ifdef __arm__
 
 #include "ARMV30MZ/ARMV30MZ.i"
-#include "WSVideo/WSVideo.i"
+#include "Sphinx/WSVideo.i"
 #include "EEPROM.i"
 
 	.global ioReset

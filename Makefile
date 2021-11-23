@@ -28,7 +28,7 @@ SOURCES		:=	source	\
 				source/Shared \
 				source/Shared/unzip \
 				source/ARMV30MZ \
-				source/WSVideo \
+				source/Sphinx \
 				source/WSAudio
 DATA		:=	data
 INCLUDES	:=	include

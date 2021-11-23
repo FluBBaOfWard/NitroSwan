@@ -2,7 +2,7 @@
 
 #include "Shared/nds_asm.h"
 #include "Equates.h"
-#include "WSVideo/WSVideo.i"
+#include "Sphinx/WSVideo.i"
 
 	.global gfxInit
 	.global gfxReset

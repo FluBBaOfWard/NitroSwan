@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "WSVideo/WSVideo.h"
+#include "Sphinx/WSVideo.h"
 
 extern u8 g_flicker;
 extern u8 g_twitch;

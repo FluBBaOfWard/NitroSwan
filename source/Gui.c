@@ -10,9 +10,9 @@
 #include "io.h"
 #include "cpu.h"
 #include "ARMV30MZ/Version.h"
-#include "WSVideo/Version.h"
+#include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.1.2 2021-11-22"
+#define EMUVERSION "V0.1.2 2021-11-23"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -117,7 +117,7 @@ void uiAbout() {
 	drawText(" X/Start:  Start button", 7, 0);
 
 	drawText(" NitroSwan    " EMUVERSION, 21, 0);
-	drawText(" WSSOC        " WSSOCVERSION, 22, 0);
+	drawText(" Sphinx       " SPHINXVERSION, 22, 0);
 	drawText(" ARMV30MZ     " ARMV30MZVERSION, 23, 0);
 }
 

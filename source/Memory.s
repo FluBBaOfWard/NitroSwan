@@ -1,7 +1,7 @@
 #ifdef __arm__
 
 #include "ARMV30MZ/ARMV30MZ.i"
-#include "WSVideo/WSVideo.i"
+#include "Sphinx/WSVideo.i"
 
 	.global empty_IO_R
 	.global empty_IO_W

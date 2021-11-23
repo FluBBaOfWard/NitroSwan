@@ -2,7 +2,7 @@
 
 #include "Shared/nds_asm.h"
 #include "ARMV30MZ/ARMV30MZ.i"
-#include "WSVideo/WSVideo.i"
+#include "Sphinx/WSVideo.i"
 
 #define CYCLE_PSL (256)
 
