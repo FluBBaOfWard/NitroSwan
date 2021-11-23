@@ -1,7 +1,7 @@
 NitroSwan Todo
 
-	Add RTC emulation.
 	Add sound!
+	Add RTC emulation.
 	Add border.
 	Graphics on menu screen?
 	Update cpu code to new version.
