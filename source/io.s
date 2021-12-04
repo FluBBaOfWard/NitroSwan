@@ -1,7 +1,7 @@
 #ifdef __arm__
 
 #include "ARMV30MZ/ARMV30MZ.i"
-#include "Sphinx/WSVideo.i"
+#include "Sphinx/Sphinx.i"
 #include "EEPROM.i"
 
 	.global ioReset
@@ -31,7 +31,6 @@
 	.global joyCfg
 	.global EMUinput
 	.global batteryLevel
-	.global g_subBatteryLevel
 	.global wsEepromMem
 	.global wscEepromMem
 
@@ -201,12 +200,6 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 	subs r0,r0,#1
 	movmi r0,#1
 	str r0,batteryLevel
-
-	ldr r1,=g_subBatteryLevel
-	ldr r0,[r1]
-	subs r0,r0,#0x00000100
-	movmi r0,#0x00001000
-	str r0,[r1]
 
 	ldr r2,=rtcRegs
 	ldrb r0,[r2,#0x90]			;@ RTC control
@@ -381,9 +374,9 @@ intEepromCommandW:
 ;@----------------------------------------------------------------------------
 intEepromReset:
 ;@----------------------------------------------------------------------------
-	ldr r0,=g_machine
+	ldr r0,=gSOC
 	ldrb r0,[r0]
-	cmp r0,#HW_ASWAN
+	cmp r0,#SOC_ASWAN
 	ldreq r1,=wsEepromMem
 	ldrne r1,=wscEepromMem
 	moveq r0,#0x080				;@  1kbit
@@ -409,8 +402,6 @@ wscEepromMem:
 //	.incbin "naviget4_ee.eeprom"
 	.space 0x800
 ;@----------------------------------------------------------------------------
-g_subBatteryLevel:
-	.long 0x3000000				;@ subBatteryLevel
 batteryLevel:
 	.long 0xFFFF				;@ Max = 0xFFFF (0x3FF)
 								;@ To start > 0x8400 (0x210)

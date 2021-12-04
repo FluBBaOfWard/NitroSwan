@@ -201,7 +201,7 @@ static void setupGraphics() {
 }
 
 void setupMenuPalette() {
-	convertPalette(BG_PALETTE_SUB, guiPalette, sizeof(guiPalette)/3, g_gammaValue);
+	convertPalette(BG_PALETTE_SUB, guiPalette, sizeof(guiPalette)/3, gGammaValue);
 }
 
 //---------------------------------------------------------------------------------

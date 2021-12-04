@@ -5,16 +5,14 @@
 extern "C" {
 #endif
 
-extern u32 g_romSize;
+extern u32 gRomSize;
 extern u32 maxRomSize;
-extern u32 emuFlags;
-extern u8 g_cartFlags;
-extern u8 g_configSet;
-extern u8 g_config;
-extern u8 g_machine;
-extern u8 g_machineSet;
-extern u8 g_lang;
-extern u8 g_paletteBank;
+extern u8 gConfig;
+extern u8 gMachine;
+extern u8 gMachineSet;
+extern u8 gSOC;
+extern u8 gLang;
+extern u8 gPaletteBank;
 extern int sramSize;
 extern int eepromSize;
 
@@ -28,7 +26,7 @@ extern void *g_BIOSBASE_BNW;
 extern void *g_BIOSBASE_COLOR;
 
 void machineInit(void);
-void loadCart(int emuFlags);
+void loadCart(void);
 
 #ifdef __cplusplus
 } // extern "C"

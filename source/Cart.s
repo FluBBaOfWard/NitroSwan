@@ -2,11 +2,10 @@
 
 #include "Equates.h"
 #include "EEPROM.i"
-#include "Sphinx/WSVideo.i"
+#include "Sphinx/Sphinx.i"
 
 	.global machineInit
 	.global loadCart
-	.global emuFlags
 	.global romNum
 	.global cartFlags
 	.global romStart
@@ -30,14 +29,15 @@
 	.global extEepromMem
 	.global sramSize
 	.global eepromSize
-	.global g_romSize
+	.global gRomSize
 	.global maxRomSize
 	.global romMask
-	.global g_config
-	.global g_machine
-	.global g_machineSet
-	.global g_lang
-	.global g_paletteBank
+	.global gConfig
+	.global gMachine
+	.global gMachineSet
+	.global gSOC
+	.global gLang
+	.global gPaletteBank
 
 	.global extEepromDataLowR
 	.global extEepromDataHighR
@@ -100,11 +100,10 @@ skipBiosSettings:
 	.section .ewram,"ax"
 	.align 2
 ;@----------------------------------------------------------------------------
-loadCart: 		;@ Called from C:  r0=emuflags
+loadCart: 		;@ Called from C:
 	.type   loadCart STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
-	str r0,emuFlags
 
 	ldr r0,romSize
 	movs r2,r0,lsr#16		;@ 64kB blocks.
@@ -133,17 +132,6 @@ tbLoop1:
 	str r6,[r4,#0x2*4]		;@ 2 ROM
 	str r6,[r4,#0x3*4]		;@ 3 ROM
 
-	ldrb r5,g_machineSet
-	cmp r5,#HW_AUTO
-	bne dontCheckHW
-	ldr r3,=0xFFF7			;@ Supported System
-	ldrb r3,[r6,r3]
-	cmp r3,#0
-	moveq r5,#HW_ASWAN
-	movne r5,#HW_SPHINX
-dontCheckHW:
-	strb r5,g_machine
-
 	ldr r3,=0xFFFB			;@ NVRAM size
 	ldrb r3,[r6,r3]
 	mov r0,#0				;@ r0 = sram size
@@ -167,7 +155,12 @@ dontCheckHW:
 	str r0,sramSize
 	str r1,eepromSize
 
-	cmp r5,#HW_ASWAN
+	ldrb r5,gMachine
+	cmp r5,#HW_WONDERSWAN
+	cmpne r5,#HW_POCKETCHALLENGEV2
+	moveq r0,#SOC_ASWAN
+	movne r0,#SOC_SPHINX
+	strb r0,gSOC
 	moveq r0,#1				;@ For boot rom overlay
 	movne r0,#2
 	ldreq r1,g_BIOSBASE_BNW
@@ -340,17 +333,19 @@ emuFlags:
 	.byte 0,0					;@ (sprite follow val)
 cartFlags:
 	.byte 0 					;@ cartflags
-g_config:
+gConfig:
 	.byte 0						;@ Config, bit 7=BIOS on/off
-g_machine:
-	.byte 0
-g_machineSet:
+gMachineSet:
 	.byte HW_AUTO
-g_lang:
+gMachine:
+	.byte HW_WONDERSWANCOLOR
+gSOC:
+	.byte SOC_SPHINX
+gLang:
 	.byte 1						;@ language
-g_paletteBank:
+gPaletteBank:
 	.byte 0						;@ palettebank
-	.space 2					;@ alignment.
+	.space 1					;@ alignment.
 
 wsHeader:
 romSpacePtr:
@@ -360,7 +355,7 @@ g_BIOSBASE_BNW:
 g_BIOSBASE_COLOR:
 g_BIOSBASE_CRYSTAL:
 	.long 0
-g_romSize:
+gRomSize:
 romSize:
 	.long 0
 maxRomSize:

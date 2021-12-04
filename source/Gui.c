@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.1.2 2021-11-23"
+#define EMUVERSION "V0.1.2 2021-12-04"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -20,7 +20,6 @@ static void paletteChange(void);
 static void languageSet(void);
 static void machineSet(void);
 static void batteryChange(void);
-static void subBatteryChange(void);
 static void speedHackSet(void);
 
 static void uiMachine(void);
@@ -42,7 +41,7 @@ const u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), A
 const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDummy, uiDummy};
 const u8 menuXBack[] = {0,0,0,0,2,2,2,2,1,1};
 
-u8 g_gammaValue = 0;
+u8 gGammaValue = 0;
 
 const char *const autoTxt[]  = {"Off", "On", "With R"};
 const char *const speedTxt[] = {"Normal", "200%", "Max", "50%"};
@@ -131,23 +130,23 @@ void uiController() {
 
 void uiDisplay() {
 	setupSubMenu("Display Settings");
-	drawSubItem("Gamma: ", brighTxt[g_gammaValue]);
-	drawSubItem("B&W Palette: ", palTxt[g_paletteBank]);
-	drawSubItem("Disable Foreground: ", autoTxt[g_gfxMask&1]);
-	drawSubItem("Disable Background: ", autoTxt[(g_gfxMask>>1)&1]);
-	drawSubItem("Disable Sprites: ", autoTxt[(g_gfxMask>>4)&1]);
+	drawSubItem("Gamma: ", brighTxt[gGammaValue]);
+	drawSubItem("B&W Palette: ", palTxt[gPaletteBank]);
+	drawSubItem("Disable Foreground: ", autoTxt[gGfxMask&1]);
+	drawSubItem("Disable Background: ", autoTxt[(gGfxMask>>1)&1]);
+	drawSubItem("Disable Sprites: ", autoTxt[(gGfxMask>>4)&1]);
 }
 
 static void uiMachine() {
 	setupSubMenu("Machine Settings");
-	drawSubItem("Machine: ",machTxt[g_machineSet]);
+	drawSubItem("Machine: ",machTxt[gMachineSet]);
 	drawMenuItem(" Select WS Bios");
 	drawMenuItem(" Select WS Color Bios");
 	drawMenuItem(" Import internal EEPROM");
 	drawMenuItem(" Clear internal EEPROM");
 	drawSubItem("Cpu speed hacks: ",autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
 	drawMenuItem(" Change Battery");
-	drawSubItem("Language: ",langTxt[g_lang]);
+	drawSubItem("Language: ",langTxt[gLang]);
 //	drawMenuItem(" Change Sub Battery");
 }
 
@@ -182,28 +181,33 @@ void ejectGame() {
 }
 
 void resetGame() {
-	loadCart(0);
+	checkMachine();
+	loadCart();
 }
 
+//---------------------------------------------------------------------------------
+void debugIO(u8 port, u8 val, const char *message) {
+	char debugString[32];
+
+	debugString[0] = 0;
+	strlcat(debugString, message, sizeof(debugString));
+	char2HexStr(&debugString[strlen(debugString)], port);
+	strlcat(debugString, " val:", sizeof(debugString));
+	char2HexStr(&debugString[strlen(debugString)], val);
+	debugOutput(debugString);
+}
 //---------------------------------------------------------------------------------
 void debugIOUnimplR(u8 port) {
-	char debugString[32];
-
-	debugString[0] = 0;
-	strlcat(debugString, "Unimpl R port:", sizeof(debugString));
-	char2HexStr(&debugString[14], port);
-	debugOutput(debugString);
+	debugIO(port, 0, "Unimpl R port:");
 }
-//---------------------------------------------------------------------------------
 void debugIOUnimplW(u8 port, u8 val) {
-	char debugString[32];
-
-	debugString[0] = 0;
-	strlcat(debugString, "Unimpl W port:", sizeof(debugString));
-	char2HexStr(&debugString[14], port);
-	strlcat(debugString, " val:", sizeof(debugString));
-	char2HexStr(&debugString[21], val);
-	debugOutput(debugString);
+	debugIO(port, val, "Unimpl W port:");
+}
+void debugIOUnmappedR(u8 port) {
+	debugIO(port, 0, "Unmapped R port:");
+}
+void debugIOUnmappedW(u8 port, u8 val) {
+	debugIO(port, val, "Unmapped W port:");
 }
 //---------------------------------------------------------------------------------
 /// Switch between Player 1 & Player 2 controls
@@ -218,15 +222,15 @@ void swapABSet() {
 
 /// Turn on/off scaling
 void scalingSet() {
-	g_scaling ^= 0x01;
+	gScaling ^= 0x01;
 	refreshGfx();
 }
 
 /// Change gamma (brightness)
 void gammaSet() {
-	g_gammaValue++;
-	if (g_gammaValue > 4) g_gammaValue = 0;
-	paletteInit(g_gammaValue);
+	gGammaValue++;
+	if (gGammaValue > 4) gGammaValue = 0;
+	paletteInit(gGammaValue);
 	paletteTxAll();					// Make new palette visible
 	setupMenuPalette();
 	settingsChanged = true;
@@ -234,21 +238,21 @@ void gammaSet() {
 
 /// Turn on/off rendering of foreground
 void fgrLayerSet() {
-	g_gfxMask ^= 0x01;
+	gGfxMask ^= 0x01;
 }
 /// Turn on/off rendering of background
 void bgrLayerSet() {
-	g_gfxMask ^= 0x02;
+	gGfxMask ^= 0x02;
 }
 /// Turn on/off rendering of sprites
 void sprLayerSet() {
-	g_gfxMask ^= 0x10;
+	gGfxMask ^= 0x10;
 }
 
 void paletteChange() {
-	g_paletteBank++;
-	if (g_paletteBank > 4) {
-		g_paletteBank = 0;
+	gPaletteBank++;
+	if (gPaletteBank > 4) {
+		gPaletteBank = 0;
 	}
 	monoPalInit();
 	paletteTxAll();
@@ -264,13 +268,13 @@ void borderSet() {
 }
 */
 void languageSet() {
-	g_lang ^= 0x01;
+	gLang ^= 0x01;
 }
 
 void machineSet() {
-	g_machineSet++;
-	if (g_machineSet >= HW_SELECT_END){
-		g_machineSet = 0;
+	gMachineSet++;
+	if (gMachineSet >= HW_SELECT_END){
+		gMachineSet = 0;
 	}
 }
 
@@ -280,8 +284,4 @@ void speedHackSet() {
 
 void batteryChange() {
 	batteryLevel = 0xFFFF;				// 0xFFFF for 2 days battery?
-}
-
-void subBatteryChange() {
-	g_subBatteryLevel = 0x3FFFFFF;		// 0x3FFFFFF for 2 years battery?
 }

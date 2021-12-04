@@ -65,7 +65,7 @@ int initSettings() {
 			break;
 	}
 	cfg.palette = col;
-	g_paletteBank = col;
+	gPaletteBank = col;
 
 	int i;
 	for (i = 0; i < PersonalData->nameLen; i++) {
@@ -105,7 +105,7 @@ bool updateSettingsFromWS() {
 	//val = t9LoadB(0x6F87) & 1;
 	if (cfg.language != val) {
 		cfg.language = val;
-		g_lang = val;
+		gLang = val;
 		changed = true;
 	}
 	settingsChanged |= changed;
@@ -133,7 +133,7 @@ int loadSettings() {
 		return 1;
 	}
 
-	g_gammaValue = cfg.gammaValue;
+	gGammaValue = cfg.gammaValue;
 	emuSettings  = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
 	sleepTime    = cfg.sleepTime;
 	joyCfg       = (joyCfg & ~0x400)|((cfg.controller & 1)<<10);
@@ -147,7 +147,7 @@ void saveSettings() {
 	FILE *file;
 
 	strcpy(cfg.magic,"cfg");
-	cfg.gammaValue  = g_gammaValue;
+	cfg.gammaValue  = gGammaValue;
 	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;		// Clear speed setting.
 	cfg.sleepTime   = sleepTime;
 	cfg.controller  = (joyCfg>>10)&1;
@@ -364,10 +364,11 @@ bool loadGame(const char *gameName) {
 	if ( gameName ) {
 		cls(0);
 		drawText("     Please wait, loading.", 11, 0);
-		g_romSize = loadROM(romSpacePtr, gameName, maxRomSize);
-		if ( g_romSize ) {
+		gRomSize = loadROM(romSpacePtr, gameName, maxRomSize);
+		if ( gRomSize ) {
+			checkMachine();
 			setEmuSpeed(0);
-			loadCart(emuFlags);
+			loadCart();
 			gameInserted = true;
 			if ( emuSettings & AUTOLOAD_NVRAM ) {
 				loadNVRAM();
@@ -391,10 +392,21 @@ void selectGame() {
 	}
 }
 
+void checkMachine() {
+	char fileExt[8];
+	if (gMachineSet == HW_AUTO) {
+		getFileExtension(fileExt, currentFilename);
+		gMachine = (romSpacePtr[gRomSize - 9] != 0 || strstr(fileExt, ".wsc")) ? HW_WONDERSWANCOLOR : HW_WONDERSWAN;
+	}
+	else {
+		gMachine = gMachineSet;
+	}
+}
+
 //---------------------------------------------------------------------------------
 void ejectCart() {
-	g_romSize = 0x200000;
-	memset(romSpacePtr, -1, g_romSize);
+	gRomSize = 0x200000;
+	memset(romSpacePtr, -1, gRomSize);
 	gameInserted = false;
 }
 

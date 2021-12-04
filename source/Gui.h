@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-extern u8 g_gammaValue;
+extern u8 gGammaValue;
 
 void setupGUI(void);
 void enterGUI(void);
@@ -24,6 +24,8 @@ void uiOptions(void);
 void uiController(void);
 void uiDisplay(void);
 
+void debugIOUnmappedR(u8 port);
+void debugIOUnmappedW(u8 port, u8 val);
 void debugIOUnimplR(u8 port);
 void debugIOUnimplW(u8 port, u8 val);
 

@@ -5,12 +5,12 @@
 extern "C" {
 #endif
 
-#include "Sphinx/WSVideo.h"
+#include "Sphinx/Sphinx.h"
 
-extern u8 g_flicker;
-extern u8 g_twitch;
-extern u8 g_scaling;
-extern u8 g_gfxMask;
+extern u8 gFlicker;
+extern u8 gTwitch;
+extern u8 gScaling;
+extern u8 gGfxMask;
 
 extern WSVideo wsv_0;
 extern u16 EMUPALBUFF[0x200];
