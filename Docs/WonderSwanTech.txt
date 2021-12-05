@@ -8,7 +8,7 @@
    WStech original doc made by Judge and Dox
    Special thanks to -anonymous- contributor for some usefull info.
 
-   - corect info about Sprite Table, BG Map and FG Map  locations    	
+   - correct info about Sprite Table, BG Map and FG Map  locations    	
 	(ports $04 and $07 - section 10)
     Special thanks to mika-n
 

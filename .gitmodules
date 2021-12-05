@@ -4,9 +4,6 @@
 [submodule "source/ARMV30MZ"]
 	path = source/ARMV30MZ
 	url = https://github.com/FluBBaOfWard/ARMV30MZ.git
-[submodule "source/WSAudio"]
-	path = source/WSAudio
-	url = https://github.com/FluBBaOfWard/WSAudio.git
 [submodule "source/Sphinx"]
 	path = source/Sphinx
 url=https://github.com/FluBBaOfWard/Sphinx.git

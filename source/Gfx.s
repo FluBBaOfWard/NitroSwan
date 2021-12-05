@@ -27,7 +27,7 @@
 	.global tmpOamBuffer
 
 
-	.global wsv_0
+	.global sphinx0
 	.global DIRTYTILES
 	.global DIRTYTILES2
 
@@ -100,13 +100,13 @@ gfxReset:					;@ Called with CPU reset
 monoPalInit:
 	.type monoPalInit STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
+	ldr spxptr,=sphinx0
 	stmfd sp!,{r4-r6,lr}
 	ldr r0,=gPaletteBank
 	ldrb r0,[r0]
 	adr r1,monoPalette
 	add r1,r1,r0,lsl#4
-	ldr r0,[geptr,#paletteRAM]
+	ldr r0,[spxptr,#paletteRAM]
 	add r0,r0,#0x180
 
 	mov r2,#8
@@ -184,16 +184,16 @@ paletteTxAll:				;@ Called from ui.c
 	.type paletteTxAll STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldr r0,=EMUPALBUFF
-	ldr geptr,=wsv_0
+	ldr spxptr,=sphinx0
 ;@----------------------------------------------------------------------------
-paletteTx:					;@ r0=destination, geptr=WSVideo
+paletteTx:					;@ r0=destination, spxptr=Sphinx
 ;@----------------------------------------------------------------------------
 	ldr r1,=MAPPED_RGB
 	ldr r2,=0x1FFE
 	stmfd sp!,{r4-r8,lr}
 	mov r5,#0
-	ldrb r3,[geptr,#wsvBGColor]	;@ Background palette
-	ldrb r7,[geptr,#wsvVideoMode]
+	ldrb r3,[spxptr,#wsvBGColor]	;@ Background palette
+	ldrb r7,[spxptr,#wsvVideoMode]
 	tst r7,#0x80				;@ Color mode?
 	beq bnwTx
 
@@ -248,10 +248,10 @@ col4TxLoop:
 	bx lr
 
 bnwTx:
-	add r4,geptr,#wsvPalette00
+	add r4,spxptr,#wsvPalette00
 	and r3,r3,#0x7
 	tst r3,#1
-	add r7,geptr,#wsvColor01
+	add r7,spxptr,#wsvColor01
 	ldrb r3,[r7,r3,lsr#1]
 	movne r3,r3,lsr#4
 	and r3,r3,#0xF
@@ -298,7 +298,7 @@ bnwTxLoop:
 ;@----------------------------------------------------------------------------
 updateLED:
 ;@----------------------------------------------------------------------------
-	ldrb r0,[geptr,#kgeLedOnOff]
+	ldrb r0,[spxptr,#kgeLedOnOff]
 	tst r0,#0x01
 	ldr r0,=BG_GFX+0x1000
 	ldr r1,[r0,#64*24]
@@ -339,11 +339,11 @@ vblIrqHandler:
 	orr r4,r4,#0x100			;@ 256 words (1024 bytes)
 	stmia r1,{r2-r4}			;@ DMA3 go
 
-	adr geptr,wsv_0
+	adr spxptr,sphinx0
 	ldr r0,GFX_BG0CNT
 	str r0,[r6,#REG_BG0CNT]
 	ldr r0,GFX_DISPCNT
-	ldrb r1,[geptr,#wsvDispCtrl]
+	ldrb r1,[spxptr,#wsvDispCtrl]
 	tst r1,#1
 	biceq r0,r0,#0x0100				;@ Turn off bg
 	tst r1,#0x02
@@ -356,7 +356,7 @@ vblIrqHandler:
 //	bic r0,r0,r2,lsl#8
 	strh r0,[r6,#REG_DISPCNT]
 
-	ldr r0,[geptr,#windowData]
+	ldr r0,[spxptr,#windowData]
 	strh r0,[r6,#REG_WIN0H]
 	mov r0,r0,lsr#16
 	strh r0,[r6,#REG_WIN0V]
@@ -396,7 +396,7 @@ yStart:			.byte 0
 refreshGfx:					;@ Called from C when changing scaling.
 	.type refreshGfx STT_FUNC
 ;@----------------------------------------------------------------------------
-	adr geptr,wsv_0
+	adr spxptr,sphinx0
 ;@----------------------------------------------------------------------------
 endFrameGfx:				;@ Called just before screen end (~line 152)	(r0-r3 safe to use)
 ;@----------------------------------------------------------------------------
@@ -442,10 +442,10 @@ frameDone:		.long 0
 ;@----------------------------------------------------------------------------
 wsVideoReset0:		;@ r0=periodicIrqFunc, r1=frameIrqFunc, r2=frame2IrqFunc, r3=model
 ;@----------------------------------------------------------------------------
-	adr geptr,wsv_0
+	adr spxptr,sphinx0
 	b wsVideoReset
-wsv_0:
-	.space wsVideoSize
+sphinx0:
+	.space sphinxSize
 ;@----------------------------------------------------------------------------
 
 gfxState:

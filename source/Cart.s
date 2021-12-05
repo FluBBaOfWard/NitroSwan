@@ -193,13 +193,13 @@ skipHWSetup:
 ;@----------------------------------------------------------------------------
 reBankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
-	ldrb r1,[geptr,#wsvBnk0Slct]
+	ldr spxptr,=sphinx0
+	ldrb r1,[spxptr,#wsvBnk0Slct]
 ;@----------------------------------------------------------------------------
 BankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
-	strb r1,[geptr,#wsvBnk0Slct]
+	ldr spxptr,=sphinx0
+	strb r1,[spxptr,#wsvBnk0Slct]
 	mov r1,r1,lsl#4
 	orr r1,r1,#4
 
@@ -218,13 +218,13 @@ tbLoop2:
 ;@----------------------------------------------------------------------------
 reBankSwitch2_W:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
-	ldrb r1,[geptr,#wsvBnk2Slct]
+	ldr spxptr,=sphinx0
+	ldrb r1,[spxptr,#wsvBnk2Slct]
 ;@----------------------------------------------------------------------------
 BankSwitch2_W:					;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
-	strb r1,[geptr,#wsvBnk2Slct]
+	ldr spxptr,=sphinx0
+	strb r1,[spxptr,#wsvBnk2Slct]
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
@@ -238,13 +238,13 @@ BankSwitch2_W:					;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 reBankSwitch3_W:				;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
-	ldrb r1,[geptr,#wsvBnk3Slct]
+	ldr spxptr,=sphinx0
+	ldrb r1,[spxptr,#wsvBnk3Slct]
 ;@----------------------------------------------------------------------------
 BankSwitch3_W:					;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
-	strb r1,[geptr,#wsvBnk3Slct]
+	ldr spxptr,=sphinx0
+	strb r1,[spxptr,#wsvBnk3Slct]
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr

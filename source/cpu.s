@@ -67,13 +67,13 @@ runStart:
 
 	ldr r4,=nec_execute
 	ldr r5,=nec_int
-	ldr geptr,=wsv_0
+	ldr spxptr,=sphinx0
 ;@----------------------------------------------------------------------------
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
 	bl checkInterrupt
 	bl executeLine
-	ldr geptr,=wsv_0
+	ldr spxptr,=sphinx0
 	bl wsvDoScanline
 	cmp r0,#0
 	bne wsFrameLoop
@@ -114,21 +114,21 @@ executeLine:
 setInterruptExternal:			;@ r0=int number
 ;@----------------------------------------------------------------------------
 	and r0,r0,#7
-	ldr geptr,=wsv_0
+	ldr spxptr,=sphinx0
 	mov r2,#1
-	ldrb r1,[geptr,#wsvInterruptStatus]
+	ldrb r1,[spxptr,#wsvInterruptStatus]
 	orr r1,r1,r2,lsl r0
-	strb r1,[geptr,#wsvInterruptStatus]
+	strb r1,[spxptr,#wsvInterruptStatus]
 ;@----------------------------------------------------------------------------
 checkInterrupt:
 ;@----------------------------------------------------------------------------
-	ldrb r1,[geptr,#wsvInterruptStatus]
-	ldrb r0,[geptr,#wsvInterruptEnable]
+	ldrb r1,[spxptr,#wsvInterruptStatus]
+	ldrb r0,[spxptr,#wsvInterruptEnable]
 	ands r1,r1,r0
 	bxeq lr
 	clz r0,r1
 	rsb r0,r0,#31
-	ldrb r1,[geptr,#wsvInterruptBase]
+	ldrb r1,[spxptr,#wsvInterruptBase]
 	bic r1,r1,#7
 	orr r0,r0,r1
 	mov r0,r0,lsl#2

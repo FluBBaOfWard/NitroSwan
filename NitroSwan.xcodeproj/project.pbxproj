@@ -23,7 +23,6 @@
 		9C4EB1CE271CB5200072D38E /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
 		9C4EB1CF271CB5200072D38E /* ARMV30MZ_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ARMV30MZ_todo.txt; sourceTree = "<group>"; };
 		9C4EB1D8271CBC060072D38E /* WonderSwanTech.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WonderSwanTech.txt; sourceTree = "<group>"; };
-		9C4EB1DA271CBCEF0072D38E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9C50820525D45A9A00A8E1BA /* Cart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cart.h; sourceTree = "<group>"; };
 		9C50820625D45A9A00A8E1BA /* Sound.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = Sound.s; sourceTree = "<group>"; };
 		9C50820725D45A9A00A8E1BA /* Main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Main.h; sourceTree = "<group>"; };
@@ -120,14 +119,6 @@
 			path = ARMV30MZ;
 			sourceTree = "<group>";
 		};
-		9C4EB1D9271CBCEF0072D38E /* WSAudio */ = {
-			isa = PBXGroup;
-			children = (
-				9C4EB1DA271CBCEF0072D38E /* README.md */,
-			);
-			path = WSAudio;
-			sourceTree = "<group>";
-		};
 		9C7BB94925FCD73C00EA9C9C /* graphics */ = {
 			isa = PBXGroup;
 			children = (
@@ -184,7 +175,6 @@
 			children = (
 				9C4EB1C6271CB2E10072D38E /* ARMV30MZ */,
 				9CAB1A0C274D4C0C00182F62 /* Sphinx */,
-				9C4EB1D9271CBCEF0072D38E /* WSAudio */,
 				A47F092A20863AF5004E1DA6 /* Shared */,
 				9CC013FC2668FDD9005714F7 /* Emubase.h */,
 				A49D343A1757E54900BD9B4B /* Equates.h */,

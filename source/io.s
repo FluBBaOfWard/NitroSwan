@@ -173,8 +173,8 @@ EMUinput:			;@ This label here for main.c to use
 ;@----------------------------------------------------------------------------
 IOPortA_R:		;@ Player1...
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
-	ldrb r1,[geptr,#wsvControls]
+	ldr spxptr,=sphinx0
+	ldrb r1,[spxptr,#wsvControls]
 	and r1,r1,#0xF0
 	ldrb r0,joy0State
 	tst r1,#0x20
@@ -276,14 +276,14 @@ checkForAlarm:
 ioReadByte:
 	.type ioReadByte STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
+	ldr spxptr,=sphinx0
 	b wsvRead
 
 ;@----------------------------------------------------------------------------
 ioWriteByte:				;@ r0=adr, r1=val
 	.type ioWriteByte STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr geptr,=wsv_0
+	ldr spxptr,=sphinx0
 	b wsVideoW
 
 ;@----------------------------------------------------------------------------
