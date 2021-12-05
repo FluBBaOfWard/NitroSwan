@@ -156,7 +156,7 @@
    with selectable frequency = 3,072 *10e6  / ((2048 - N) x 32 ) Hz , where N = 11 bit value.
    Location of those samples is unknown.
 
-   Volume of each audio channle is controlled by writing two 4 bit values ( for left/right output
+   Volume of each audio channel is controlled by writing two 4 bit values ( for left/right output
    channel) into ports $88 - $8B. Master volume is controlled by  port $91
    (2 bit value = first  'used' bit in master volume output (11 bit wide)  , D/A converter can
    read only 8 bits , starting from  bit set in port $91 , for example if first 'used' bit
@@ -522,7 +522,7 @@
                 0 - Mono
  - $92 - $00 - Noise Counter Shift Register (15 bits)
  - $93 - $00 - ^^^
- - $94 - $00 - Volume (4 bit)
+ - $94 - $00 - Voice Volume (4 bit)
  - $95 - $00 - REG_SND_HYPERVOICE
  - $96 - $00 - REG_SND_9697
  - $97 - $00 - ???

@@ -1,18 +1,13 @@
 #ifdef __arm__
 
-//#include "WSAudio/SN76496.i"
+#include "Sphinx/Sphinx.i"
 
 	.global soundInit
 	.global soundReset
 	.global VblSound2
 	.global setMuteSoundGUI
-	.global setMuteT6W28
-	.global T6W28_L_W
-	.global T6W28_R_W
-	.global k2Audio_0
 
 	.extern pauseEmulation
-	snptr	.req r12
 
 ;@----------------------------------------------------------------------------
 
@@ -35,8 +30,8 @@ soundReset:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 	mov r0,#0
-	ldr snptr,=k2Audio_0
-//	bl sn76496Reset			;@ sound
+	ldr spxptr,=sphinx0
+	bl wsAudioReset			;@ sound
 	ldmfd sp!,{lr}
 	bx lr
 
@@ -47,15 +42,6 @@ setMuteSoundGUI:
 	ldr r1,=pauseEmulation		;@ Output silence when emulation paused.
 	ldrb r0,[r1]
 	strb r0,muteSoundGUI
-	bx lr
-;@----------------------------------------------------------------------------
-setMuteT6W28:
-;@----------------------------------------------------------------------------
-	and r0,r0,#0xFF
-	cmp r0,#0xAA
-	cmpne r0,#0x55
-	andeq r0,r0,#0xAA
-	strbeq r0,muteSoundChip
 	bx lr
 ;@----------------------------------------------------------------------------
 VblSound2:					;@ r0=length, r1=pointer
@@ -70,9 +56,9 @@ VblSound2:					;@ r0=length, r1=pointer
 //	cmp r2,#0
 //	bne playSamples
 
-	ldr snptr,=k2Audio_0
-	mov r0,r0,lsl#2
-//	bl sn76496Mixer
+	ldr spxptr,=sphinx0
+//	mov r0,r0,lsl#2
+	bl wsAudioMixer
 	ldmfd sp!,{r0,r1,lr}
 	bx lr
 
@@ -117,23 +103,6 @@ silenceLoop:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-T6W28_L_W:				;@ Sound left write
-;@----------------------------------------------------------------------------
-	stmfd sp!,{r3,snptr,lr}
-	ldr snptr,=k2Audio_0
-//	bl sn76496L_W
-	ldmfd sp!,{r3,snptr,lr}
-	bx lr
-;@----------------------------------------------------------------------------
-T6W28_R_W:				;@ Sound right write
-;@----------------------------------------------------------------------------
-	stmfd sp!,{r3,snptr,lr}
-	ldr snptr,=k2Audio_0
-//	bl sn76496W
-	ldmfd sp!,{r3,snptr,lr}
-	bx lr
-
-;@----------------------------------------------------------------------------
 pcmWritePtr:	.long 0
 pcmReadPtr:		.long 0
 
@@ -150,8 +119,6 @@ soundLatch:
 
 	.section .bss
 	.align 2
-k2Audio_0:
-	.space 0x800
 WAVBUFFER:
 	.space 0x1000
 ;@----------------------------------------------------------------------------
