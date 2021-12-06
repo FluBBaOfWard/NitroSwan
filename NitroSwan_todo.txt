@@ -1,10 +1,10 @@
 NitroSwan Todo
 
-	Add sound!
+	Update cpu code to new version.
+	Fix better sound!
 	Add RTC emulation.
 	Add border.
 	Graphics on menu screen?
-	Update cpu code to new version.
 	Add serial port emulation.
 
 GFX:
@@ -20,7 +20,7 @@ CPU:
 	See ARMV30MZ Todo.
 
 Sound:
-	Repurpose mixer from NitroGrafx.
+	See Sphinx todo.
 
 
 Misc:
