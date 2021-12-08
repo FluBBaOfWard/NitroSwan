@@ -29,7 +29,7 @@ Misc:
 Games Not Working:
 	AnchorZ Field
 	Chou Aniki - Otoko no Tamafuda
-	Glocal Hexcite
+	Glocal Hexcite, sound but no video.
 	Kurupara!
 	Langrisser Millenium WS
 	Tetris hangs in cpu?

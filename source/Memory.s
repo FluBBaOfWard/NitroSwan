@@ -67,9 +67,8 @@ ram_W:				;@ Write ram ($00000-$0FFFF)
 	mov r0,r0,lsl#16
 	ldr r2,=wsRAM
 	strb r1,[r2,r0,lsr#16]
-	mov r1,#0
 	ldr r2,=DIRTYTILES
-	strb r1,[r2,r0,lsr#21]
+	strb r0,[r2,r0,lsr#21]
 	bx lr
 
 ;@----------------------------------------------------------------------------

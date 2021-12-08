@@ -11,6 +11,8 @@
 	.global paletteTxAll
 	.global refreshGfx
 	.global endFrameGfx
+	.global ioReadByte
+	.global ioWriteByte
 
 	.global gfxState
 	.global gGammaValue
@@ -444,6 +446,18 @@ wsVideoReset0:		;@ r0=periodicIrqFunc, r1=frameIrqFunc, r2=frame2IrqFunc, r3=mod
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsVideoReset
+;@----------------------------------------------------------------------------
+ioReadByte:
+	.type ioReadByte STT_FUNC
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvRead
+;@----------------------------------------------------------------------------
+ioWriteByte:				;@ r0=port, r1=value
+	.type ioWriteByte STT_FUNC
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsVideoW
 sphinx0:
 	.space sphinxSize
 ;@----------------------------------------------------------------------------

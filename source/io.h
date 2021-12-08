@@ -34,9 +34,6 @@ int ioGetStateSize(void);
 /// Copies the time from the NDS RTC to the WS RTC.
 void transferTime(void);
 
-u8 ioReadByte(u8 port);
-void ioWriteByte(u32 port, u8 value);
-
 
 #ifdef __cplusplus
 } // extern "C"
