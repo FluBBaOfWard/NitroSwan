@@ -24,8 +24,10 @@ void monoPalInit(void);
 void paletteInit(u8 gammaVal);
 void paletteTxAll(void);
 void refreshGfx(void);
-u8 ioReadByte(int port);
-void ioWriteByte(int port, u8 value);
+u8 ioReadByte(u16 port);
+void ioWriteByte(u16 port, u8 value);
+u8 cpu_readport(u16 port);
+void cpu_writeport(u16 port, u8 value);
 
 
 #ifdef __cplusplus

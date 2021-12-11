@@ -53,6 +53,10 @@
 		9CAB1A12274D4C0C00182F62 /* Sphinx.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = Sphinx.i; sourceTree = "<group>"; };
 		9CAB1A13274D4C0C00182F62 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 		9CAB1A14274D4C0C00182F62 /* Sphinx_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sphinx_todo.txt; sourceTree = "<group>"; };
+		9CAB1A2327615B0B00182F62 /* necinstr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = necinstr.h; sourceTree = "<group>"; };
+		9CAB1A2427615B0B00182F62 /* necea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = necea.h; sourceTree = "<group>"; };
+		9CAB1A2527615B0B00182F62 /* necmodrm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = necmodrm.h; sourceTree = "<group>"; };
+		9CAB1A272762797300182F62 /* necintrf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = necintrf.h; sourceTree = "<group>"; };
 		9CBC0C8E26DD7C2A0039D17E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9CC013FC2668FDD9005714F7 /* Emubase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Emubase.h; sourceTree = "<group>"; };
 		A47F092B20863AF5004E1DA6 /* EmuMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuMenu.h; sourceTree = "<group>"; };
@@ -113,6 +117,10 @@
 				9C4EB1CE271CB5200072D38E /* Version.h */,
 				9C4EB1CC271CB5200072D38E /* ARMV30MZ.h */,
 				9C4EB1CB271CB5200072D38E /* ARMV30MZ.i */,
+				9CAB1A272762797300182F62 /* necintrf.h */,
+				9CAB1A2427615B0B00182F62 /* necea.h */,
+				9CAB1A2327615B0B00182F62 /* necinstr.h */,
+				9CAB1A2527615B0B00182F62 /* necmodrm.h */,
 				9C4EB1C9271CB2E10072D38E /* nec.h */,
 				9C4EB1C7271CB2E10072D38E /* nec.c */,
 			);

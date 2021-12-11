@@ -8,6 +8,8 @@
 	.global rom_W
 	.global cpuWriteByte
 	.global cpuReadByte
+	.global cpu_writemem20
+	.global cpu_readmem20
 	.global setBootRomOverlay
 
 
@@ -58,6 +60,8 @@ commandList:
 ;@----------------------------------------------------------------------------
 cpuWriteByte:		;@ r0=address, r1=value
 	.type cpuWriteByte STT_FUNC
+cpu_writemem20:		;@ r0=address, r1=value
+	.type cpu_writemem20 STT_FUNC
 ;@----------------------------------------------------------------------------
 	ands r2,r0,#0xF0000
 	bne tstSRAM_W
@@ -86,6 +90,8 @@ sram_W:				;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
 cpuReadByte:		;@ r0=address ($00000-$FFFFF)
 	.type cpuReadByte STT_FUNC
+cpu_readmem20:		;@ r0=address ($00000-$FFFFF)
+	.type cpu_readmem20 STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldr r1,=MEMMAPTBL_
 	and r2,r0,#0xF0000

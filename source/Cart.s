@@ -158,9 +158,9 @@ tbLoop1:
 	ldrb r5,gMachine
 	cmp r5,#HW_WONDERSWAN
 	cmpne r5,#HW_POCKETCHALLENGEV2
-	moveq r0,#SOC_ASWAN
-	movne r0,#SOC_SPHINX
-	strb r0,gSOC
+	moveq r4,#SOC_ASWAN
+	movne r4,#SOC_SPHINX
+	strb r4,gSOC
 	moveq r0,#1				;@ For boot rom overlay
 	movne r0,#2
 	ldreq r1,g_BIOSBASE_BNW
@@ -176,9 +176,14 @@ tbLoop1:
 //	str r0,[r4,#0xF*4]
 
 
-	ldr r0,=wsRAM			;@ clear RAM
+	ldr r0,=wsRAM			;@ Clear RAM
 	mov r1,#0x10000/4
 	bl memclr_
+	cmp r4,#SOC_ASWAN
+	ldreq r0,=wsRAM+0x4000	;@ Clear mem outside of RAM
+	moveq r1,#0x90
+	moveq r2,#0xC000
+	bleq memset
 
 	bl extEepromReset
 	bl gfxReset
@@ -375,7 +380,7 @@ MEMMAPTBL_:
 wsRAM:
 	.space 0x10000
 wsSRAM:
-	.space 0x8000
+	.space 0x10000
 biosSpace:
 	.space 0x1000
 biosSpaceColor:
