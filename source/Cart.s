@@ -375,6 +375,7 @@ eepromSize:
 	.long 0
 
 	.section .bss
+	.align 2
 MEMMAPTBL_:
 	.space 16*4
 wsRAM:

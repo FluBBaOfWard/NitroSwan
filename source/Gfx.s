@@ -484,6 +484,7 @@ GFX_BG1CNT:
 	.short 0
 
 	.section .bss
+	.align 2
 OAM_BUFFER1:
 	.space 0x400
 OAM_BUFFER2:

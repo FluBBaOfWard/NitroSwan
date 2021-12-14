@@ -1,10 +1,11 @@
 NitroSwan Todo
 
-	Update cpu code to new version.
 	Fix better sound!
 	Add RTC emulation.
 	Add border.
 	Graphics on menu screen?
+	Rewrite cpu core in asm.
+	add memory word access.
 	Add serial port emulation.
 
 GFX:
