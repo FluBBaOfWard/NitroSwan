@@ -26,6 +26,7 @@ static const char *const folderName = "nitroswan";
 static const char *const settingName = "settings.cfg";
 static const char *const wsEepromName = "wsinternal.eeprom";
 static const char *const wscEepromName = "wscinternal.eeprom";
+static const char *const scEepromName = "scinternal.eeprom";
 
 ConfigData cfg;
 
@@ -179,12 +180,12 @@ void loadNVRAM() {
 	if (sramSize > 0) {
 		saveSize = sramSize;
 		nvMem = wsSRAM;
-		strlcat(nvramName, ".ram", sizeof(nvramName));
+		setFileExtension(nvramName, ".ram", sizeof(nvramName));
 	}
 	else if (eepromSize > 0) {
 		saveSize = eepromSize;
 		nvMem = extEepromMem;
-		strlcat(nvramName, ".eeprom", sizeof(nvramName));
+		setFileExtension(nvramName, ".eeprom", sizeof(nvramName));
 	}
 	else {
 		return;
@@ -217,12 +218,12 @@ void saveNVRAM() {
 	if (sramSize > 0) {
 		saveSize = sramSize;
 		nvMem = wsSRAM;
-		strlcat(nvramName, ".ram", sizeof(nvramName));
+		setFileExtension(nvramName, ".ram", sizeof(nvramName));
 	}
 	else if (eepromSize > 0) {
 		saveSize = eepromSize;
 		nvMem = extEepromMem;
-		strlcat(nvramName, ".eeprom", sizeof(nvramName));
+		setFileExtension(nvramName, ".eeprom", sizeof(nvramName));
 	}
 	else {
 		return;
@@ -252,7 +253,7 @@ void loadState(void) {
 		return;
 	}
 	strlcpy(stateName, currentFilename, sizeof(stateName));
-	strlcat(stateName, ".sta", sizeof(stateName));
+	setFileExtension(stateName, ".sta", sizeof(stateName));
 	int stateSize = getStateSize();
 	if ( (file = fopen(stateName, "r")) ) {
 		if ( (statePtr = malloc(stateSize)) ) {
@@ -279,7 +280,7 @@ void saveState(void) {
 		return;
 	}
 	strlcpy(stateName, currentFilename, sizeof(stateName));
-	strlcat(stateName, ".sta", sizeof(stateName));
+	setFileExtension(stateName, ".sta", sizeof(stateName));
 	int stateSize = getStateSize();
 	if ( (file = fopen(stateName, "w")) ) {
 		if ( (statePtr = malloc(stateSize)) ) {
@@ -305,6 +306,7 @@ int loadIntEeprom(const char *name, u8 *dest, int size) {
 		fclose(file);
 	}
 	else {
+		initIntEeprom(dest);
 		infoOutput("Couldn't open file:");
 		infoOutput(name);
 		return 1;
@@ -329,21 +331,31 @@ int saveIntEeprom(const char *name, u8 *source, int size) {
 }
 
 int loadIntEeproms() {
-	if (findFolder(folderName)) {
-		return 1;
+	int status = 1;
+	if (!findFolder(folderName)) {
+		status = loadIntEeprom(wsEepromName, wsEepromMem, sizeof(wsEepromMem));
+		status |= loadIntEeprom(wscEepromName, wscEepromMem, sizeof(wscEepromMem));
+		status |= loadIntEeprom(scEepromName, scEepromMem, sizeof(scEepromMem));
 	}
-	loadIntEeprom(wscEepromName, wscEepromMem, sizeof(wscEepromMem));
-	loadIntEeprom(wsEepromName, wsEepromMem, sizeof(wsEepromMem));
-	return 0;
+	return status;
 }
 
 int saveIntEeproms() {
-	if (findFolder(folderName)) {
-		return 1;
+	int status = 1;
+	if (!findFolder(folderName)) {
+		switch (gSOC) {
+			case SOC_ASWAN:
+				status = saveIntEeprom(wsEepromName, wsEepromMem, sizeof(wsEepromMem));
+				break;
+			case SOC_SPHINX:
+				status = saveIntEeprom(wscEepromName, wscEepromMem, sizeof(wscEepromMem));
+				break;
+			case SOC_SPHINX2:
+				status = saveIntEeprom(scEepromName, scEepromMem, sizeof(scEepromMem));
+				break;
+		}
 	}
-	saveIntEeprom(wscEepromName, wscEepromMem, sizeof(wscEepromMem));
-	saveIntEeprom(wsEepromName, wsEepromMem, sizeof(wsEepromMem));
-	return 0;
+	return status;
 }
 
 void selectEEPROM() {
@@ -355,8 +367,20 @@ void selectEEPROM() {
 }
 
 void clearIntEeproms() {
-	memset(wscEepromMem, 0, sizeof(wscEepromMem));
-	memset(wsEepromMem, 0, sizeof(wsEepromMem));
+	switch (gSOC) {
+		case SOC_ASWAN:
+			memset(wsEepromMem, 0, sizeof(wsEepromMem));
+			initIntEeprom(wsEepromMem);
+			break;
+		case SOC_SPHINX:
+			memset(wscEepromMem, 0, sizeof(wscEepromMem));
+			initIntEeprom(wscEepromMem);
+			break;
+		case SOC_SPHINX2:
+			memset(scEepromMem, 0, sizeof(scEepromMem));
+			initIntEeprom(scEepromMem);
+			break;
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -427,6 +451,15 @@ static int loadBIOS(void *dest, const char *fPath, const int maxSize) {
 	return 0;
 }
 
+int loadBnWBIOS(void) {
+	if ( loadBIOS(biosSpace, cfg.monoBiosPath, sizeof(biosSpace)) ) {
+		g_BIOSBASE_BNW = biosSpace;
+		return 1;
+	}
+	g_BIOSBASE_BNW = NULL;
+	return 0;
+}
+
 int loadColorBIOS(void) {
 	if ( loadBIOS(biosSpaceColor, cfg.colorBiosPath, sizeof(biosSpaceColor)) ) {
 		g_BIOSBASE_COLOR = biosSpaceColor;
@@ -436,12 +469,12 @@ int loadColorBIOS(void) {
 	return 0;
 }
 
-int loadBnWBIOS(void) {
-	if ( loadBIOS(biosSpace, cfg.biosPath, sizeof(biosSpace)) ) {
-		g_BIOSBASE_BNW = biosSpace;
+int loadCrystalBIOS(void) {
+	if ( loadBIOS(biosSpaceCrystal, cfg.crystalBiosPath, sizeof(biosSpaceCrystal)) ) {
+		g_BIOSBASE_CRYSTAL = biosSpaceCrystal;
 		return 1;
 	}
-	g_BIOSBASE_BNW = NULL;
+	g_BIOSBASE_CRYSTAL = NULL;
 	return 0;
 }
 
@@ -457,17 +490,23 @@ static bool selectBios(char *dest, const char *fileTypes) {
 	return false;
 }
 
+void selectBnWBios() {
+	if ( selectBios(cfg.monoBiosPath, ".ws.rom.zip") ) {
+		loadBnWBIOS();
+	}
+	cls(0);
+}
+
 void selectColorBios() {
-	pauseEmulation = true;
 	if ( selectBios(cfg.colorBiosPath, ".ws.wsc.rom.zip") ) {
 		loadColorBIOS();
 	}
 	cls(0);
 }
 
-void selectBnWBios() {
-	if ( selectBios(cfg.biosPath, ".ws.wsc.rom.zip") ) {
-		loadBnWBIOS();
+void selectCrystalBios() {
+	if ( selectBios(cfg.crystalBiosPath, ".ws.wsc.rom.zip") ) {
+		loadCrystalBIOS();
 	}
 	cls(0);
 }

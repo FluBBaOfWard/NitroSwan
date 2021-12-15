@@ -2,11 +2,13 @@ NitroSwan Todo
 
 	Fix better sound!
 	Add RTC emulation.
+	Add key mappings (for Y1-Y4).
 	Add border.
 	Graphics on menu screen?
 	Rewrite cpu core in asm.
 	add memory word access.
 	Add serial port emulation.
+	Move EEPROM to it's own repo, rewrite to work under C.
 
 GFX:
 	Optimize color transfer?

@@ -10,6 +10,7 @@
 	.global ioSaveState
 	.global ioLoadState
 	.global ioGetStateSize
+	.global initIntEeprom
 
 	.global updateSlowIO
 	.global IOPortA_R
@@ -31,6 +32,7 @@
 	.global batteryLevel
 	.global wsEepromMem
 	.global wscEepromMem
+	.global scEepromMem
 
 	.syntax unified
 	.arm
@@ -43,27 +45,26 @@ ioReset:
 	stmfd sp!,{lr}
 
 	bl intEepromReset
-	bl initSysMem
 //	bl transferTime
 
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
-initSysMem:					;@ In r0=values ptr.
+initIntEeprom:				;@ r0 = eepromAdr
+	.type   initIntEeprom STT_FUNC
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r5,lr}
-
-	ldr eeptr,=intEeprom
-	mov r4,#0x60
-	ldr r5,=eepromDefault
+	add r0,r0,#0x60		;@ Name offset
+	ldr r1,=eepromDefault
+	mov r3,#16
 eepromLoop:
-	mov r0,r4
-	ldrb r1,[r5],#1
-	bl wsEepromWriteByte
-	add r4,r4,#1
-	cmp r4,#0x60+22
+	ldrb r2,[r1],#1
+	strb r2,[r0],#1
+	subs r3,r3,#1
 	bne eepromLoop
+	bx lr
+;@----------------------------------------------------------------------------
+eepromDefault: // From adr 0x60, "@ NITROSWAN @"
+	.byte 0x25, 0x00, 0x18, 0x13, 0x1E, 0x1C, 0x19, 0x1D, 0x21, 0x0B, 0x18, 0x00, 0x25, 0x00, 0x00, 0x00
 
-	ldmfd sp!,{r4-r5,pc}
 ;@----------------------------------------------------------------------------
 ioSaveState:			;@ In r0=destination. Out r0=size.
 	.type   ioSaveState STT_FUNC
@@ -71,7 +72,7 @@ ioSaveState:			;@ In r0=destination. Out r0=size.
 	stmfd sp!,{lr}
 
 //	ldr r1,=rtcRegs
-	mov r2,#0x100
+//	mov r2,#0x100
 //	bl memcpy
 
 	ldmfd sp!,{lr}
@@ -83,7 +84,7 @@ ioLoadState:			;@ In r0=source. Out r0=size.
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
-	bl initSysMem
+//	bl initSysMem
 
 	ldmfd sp!,{lr}
 ;@----------------------------------------------------------------------------
@@ -263,12 +264,14 @@ checkForAlarm:
 ;@----------------------------------------------------------------------------
 rtcRegs:
 	.space 0x100
-
+batteryLevel:
+	.long 0xFFFF				;@ Max = 0xFFFF (0x3FF)
+rtcTimer:
+	.byte 0
+	.byte 0
+	.byte 0
+	.byte 0
 ;@----------------------------------------------------------------------------
-
-eepromDefault: //from adr 0x60
-	.byte 0x10, 0x16, 0x1F, 0x0C, 0x0C, 0x0B, 0x00, 0x19, 0x10, 0x00, 0x21, 0x0B, 0x1C, 0x0E, 0x25, 0x26
-	.byte 0x19, 0x75, 0x04, 0x19, 0x01, 0x02, 0x01, 0x01, 0x27, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00
 
 ;@----------------------------------------------------------------------------
 intEepromDataLowR:
@@ -330,11 +333,12 @@ intEepromReset:
 ;@----------------------------------------------------------------------------
 	ldr r0,=gSOC
 	ldrb r0,[r0]
-	cmp r0,#SOC_ASWAN
-	ldreq r1,=wsEepromMem
-	ldrne r1,=wscEepromMem
-	moveq r0,#0x080				;@  1kbit
-	movne r0,#0x800				;@ 16kbit
+	cmp r0,#SOC_SPHINX
+	ldrmi r1,=wsEepromMem
+	ldreq r1,=wscEepromMem
+	ldrhi r1,=scEepromMem
+	movmi r0,#0x080				;@  1kbit
+	movpl r0,#0x800				;@ 16kbit
 	adr eeptr,intEeprom
 	b wsEepromReset
 ;@----------------------------------------------------------------------------
@@ -346,28 +350,16 @@ intEepromSetSize:			;@ r0 = size, 0=1kbit, !0=16kbit
 	adr eeptr,intEeprom
 	b wsEepromSetSize
 ;@----------------------------------------------------------------------------
+	.pool
 intEeprom:
 	.space wsEepromSize
 wsEepromMem:
-//	.space 0x80
+	.space 0x80
 wscEepromMem:
-//	.incbin "00024007.eeprom"
-//	.incbin "dengeki.eeprom"
-//	.incbin "naviget4_ee.eeprom"
+	.space 0x800
+scEepromMem:
 	.space 0x800
 ;@----------------------------------------------------------------------------
-batteryLevel:
-	.long 0xFFFF				;@ Max = 0xFFFF (0x3FF)
-								;@ To start > 0x8400 (0x210)
-								;@ Low < 0x8000 (0x200)
-								;@ Bad < 0x7880 (0x1E2)
-								;@ Shutdown <= 0x74C0 (0x1D3)
-								;@ Alarm minimum = 0x5B80 (0x16E)
-rtcTimer:
-	.byte 0
-	.byte 0
-	.byte 0
-	.byte 0
 
 	.end
 #endif // #ifdef __arm__

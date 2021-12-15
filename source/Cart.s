@@ -21,6 +21,7 @@
 	.global biosBase
 	.global biosSpace
 	.global biosSpaceColor
+	.global biosSpaceCrystal
 	.global g_BIOSBASE_BNW
 	.global g_BIOSBASE_COLOR
 	.global g_BIOSBASE_CRYSTAL
@@ -67,11 +68,9 @@ ROM_Space:
 ROM_SpaceEnd:
 WS_BIOS_INTERNAL:
 	.incbin "wsroms/ws_irom.bin"
-//	.incbin "wsroms/boot.rom"
 WSC_BIOS_INTERNAL:
-	.incbin "wsroms/wc_irom.bin"
-//	.incbin "wsroms/boot1.rom"
 SC_BIOS_INTERNAL:
+	.incbin "wsroms/wc_irom.bin"
 //	.incbin "wsroms/wsc_irom.bin"
 
 	.align 2
@@ -158,15 +157,19 @@ tbLoop1:
 	ldrb r5,gMachine
 	cmp r5,#HW_WONDERSWAN
 	cmpne r5,#HW_POCKETCHALLENGEV2
-	moveq r4,#SOC_ASWAN
-	movne r4,#SOC_SPHINX
-	strb r4,gSOC
-	moveq r0,#1				;@ For boot rom overlay
-	movne r0,#2
+	moveq r0,#1				;@ Set boot rom overlay (size small)
 	ldreq r1,g_BIOSBASE_BNW
-	ldrne r1,g_BIOSBASE_COLOR
 	ldreq r2,=WS_BIOS_INTERNAL
+	moveq r4,#SOC_ASWAN
+	movne r0,#2				;@ Set boot rom overlay (size big)
+	ldrne r1,g_BIOSBASE_COLOR
 	ldrne r2,=WSC_BIOS_INTERNAL
+	movne r4,#SOC_SPHINX
+	cmp r5,#HW_SWANCRYSTAL
+	ldreq r1,g_BIOSBASE_CRYSTAL
+	ldreq r2,=SC_BIOS_INTERNAL
+	moveq r4,#SOC_SPHINX2
+	strb r4,gSOC
 	cmp r1,#0
 	moveq r1,r2				;@ Use internal bios
 	str r1,biosBase
@@ -358,6 +361,7 @@ romSpacePtr:
 g_BIOSBASE_BNW:
 	.long 0
 g_BIOSBASE_COLOR:
+	.long 0
 g_BIOSBASE_CRYSTAL:
 	.long 0
 gRomSize:
@@ -385,6 +389,8 @@ wsSRAM:
 biosSpace:
 	.space 0x1000
 biosSpaceColor:
+	.space 0x2000
+biosSpaceCrystal:
 	.space 0x2000
 extEepromMem:
 	.space 0x800

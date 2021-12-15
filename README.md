@@ -4,11 +4,14 @@
 
 This is a Bandai WonderSwan (Color/Crystal) & PocketChallenge V2 emulator for the Nintendo DS.
 
+Savestates doesn't work yet
 ## How to use:
 
-Depending on your flashcart you might have to DLDI patch the emulator.
-Create a folder named "nitroswan" in either the root of your flash card or in the
-data folder. Now put game/bios files into a folder where you have roms.
+1. Create a folder named "nitroswan" in either the root of your flash card or in the data folder.
+This is where settings and save files end up.
+2. Now put game/bios files into a folder where you have roms.
+3. Depending on your flashcart you might have to DLDI patch the emulator.
+
 The save files should be compatible with most other WonderSwan emulators.
 
 When the emulator starts, you can either press L+R or tap on the screen to open
@@ -18,7 +21,7 @@ to select an option, B or the top of the screen to go back a step.
 
 To select between the tabs use R & L or the touchscreen.
 
-Hold Start while starting a game to enter the boot rom settings.
+Hold Start while starting a game to enter the boot rom settings, the internal eeprom is saved when saving settings.
 
 ## Menu:
 
@@ -85,6 +88,7 @@ Dwedit for help and inspiration with a lot of things.
 
 
 Fredrik Ahlström
-Twitter @TheRealFluBBa
-http://www.github.com/FluBBaOfWard
 
+Twitter @TheRealFluBBa
+
+http://www.github.com/FluBBaOfWard
