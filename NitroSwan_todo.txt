@@ -5,9 +5,11 @@ NitroSwan Todo
 	Add key mappings (for Y1-Y4).
 	Add border.
 	Graphics on menu screen?
+	Add LCD icons.
 	Rewrite cpu core in asm.
-	add memory word access.
+	Add memory word access.
 	Add serial port emulation.
+	Add banked SRAM emulation.
 	Move EEPROM to it's own repo, rewrite to work under C.
 
 GFX:
@@ -30,6 +32,8 @@ Misc:
 	...
 
 Games Not Working:
+	Dicing Knight.
+	Judgement Silversword Rebirth Edition
 
 Needs RTC:
 	Dokodemo Hamster 3 - O Dekake Saffron

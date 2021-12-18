@@ -9,7 +9,7 @@ Savestates doesn't work yet
 
 1. Create a folder named "nitroswan" in either the root of your flash card or in the data folder.
 This is where settings and save files end up.
-2. Now put game/bios files into a folder where you have roms.
+2. Now put game/bios files into a folder where you have (WonderSwan) roms.
 3. Depending on your flashcart you might have to DLDI patch the emulator.
 
 The save files should be compatible with most other WonderSwan emulators.
@@ -21,7 +21,7 @@ to select an option, B or the top of the screen to go back a step.
 
 To select between the tabs use R & L or the touchscreen.
 
-Hold Start while starting a game to enter the boot rom settings, the internal eeprom is saved when saving settings.
+Hold Start while starting a game to enter the boot rom settings, the internal EEPROM is saved when saving settings.
 
 ## Menu:
 
@@ -31,7 +31,7 @@ Hold Start while starting a game to enter the boot rom settings, the internal ee
 	Save State: Save a state of the currently running game.
 	Load NVRAM: Load non volatile ram (EEPROM/SRAM) for the currently running game.
 	Save NVRAM: Save non volatile ram (EEPROM/SRAM) for the currently running game.
-	Save Settings: Save the current settings.
+	Save Settings: Save the current settings (and internal EEPROM).
 	Reset Game: Reset the currently running game.
 
 ### Options:
@@ -49,6 +49,7 @@ Hold Start while starting a game to enter the boot rom settings, the internal ee
 		Machine: Select the emulated machine.
 		Select WS Bios: Load a real WS Bios.
 		Select WS Color Bios: Load a real WS Color Bios.
+		Select WS Crystal Bios: Load a real WS Crystal Bios.
 		Import internal EEPROM: Load a special internal EEPROM.
 		Clear internal EEPROM: Reset internal EEPROM.
 		Cpu speed hacks: Allow speed hacks.

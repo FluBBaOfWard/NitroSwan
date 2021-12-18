@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.1.2 2021-12-15"
+#define EMUVERSION "V0.1.2 2021-12-18"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -32,7 +32,7 @@ const fptr fnList2[] = {ui4, ui5, ui6, ui7};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList5[] = {/*scalingSet, flickSet,*/ gammaSet, paletteChange, fgrLayerSet, bgrLayerSet, sprLayerSet};
-const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, languageSet};
+const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, languageSet};
 const fptr fnList7[] = {speedSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, debugTextSet, sleepSet};
 const fptr fnList8[] = {quickSelectGame};
 const fptr fnList9[] = {uiDummy};
@@ -142,6 +142,7 @@ static void uiMachine() {
 	drawSubItem("Machine: ",machTxt[gMachineSet]);
 	drawMenuItem(" Select WS Bios");
 	drawMenuItem(" Select WS Color Bios");
+	drawMenuItem(" Select WS Crystal Bios");
 	drawMenuItem(" Import internal EEPROM");
 	drawMenuItem(" Clear internal EEPROM");
 	drawSubItem("Cpu speed hacks: ",autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
