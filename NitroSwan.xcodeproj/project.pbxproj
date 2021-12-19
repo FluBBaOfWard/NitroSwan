@@ -12,6 +12,8 @@
 		746D78E114ED9A8400CC738F /* Makefile */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; fileEncoding = 4; path = Makefile; sourceTree = "<group>"; };
 		9C19569D276D2D8F0044B938 /* WSBorder.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = WSBorder.grit; path = graphics/WSBorder.grit; sourceTree = "<group>"; };
 		9C19569E276D2D8F0044B938 /* WSBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = WSBorder.png; path = graphics/WSBorder.png; sourceTree = "<group>"; };
+		9C19569F276F4E340044B938 /* ARMV30MZ.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = ARMV30MZ.s; sourceTree = "<group>"; };
+		9C1956A0276F5B9C0044B938 /* ARMV30MZmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMV30MZmac.h; sourceTree = "<group>"; };
 		9C1FFFA72684A277005851ED /* EmuSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuSettings.h; sourceTree = "<group>"; };
 		9C4EB1C4271CB16A0072D38E /* WonderSwan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WonderSwan.c; sourceTree = "<group>"; };
 		9C4EB1C5271CB16A0072D38E /* WonderSwan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WonderSwan.h; sourceTree = "<group>"; };
@@ -120,11 +122,13 @@
 				9C4EB1CD271CB5200072D38E /* History.txt */,
 				9C4EB1CE271CB5200072D38E /* Version.h */,
 				9C4EB1CC271CB5200072D38E /* ARMV30MZ.h */,
+				9C1956A0276F5B9C0044B938 /* ARMV30MZmac.h */,
 				9C4EB1CB271CB5200072D38E /* ARMV30MZ.i */,
-				9CAB1A272762797300182F62 /* necintrf.h */,
+				9C19569F276F4E340044B938 /* ARMV30MZ.s */,
 				9CAB1A2427615B0B00182F62 /* necea.h */,
 				9CAB1A2327615B0B00182F62 /* necinstr.h */,
 				9CAB1A2527615B0B00182F62 /* necmodrm.h */,
+				9CAB1A272762797300182F62 /* necintrf.h */,
 				9C4EB1C9271CB2E10072D38E /* nec.h */,
 				9C4EB1C7271CB2E10072D38E /* nec.arm.c */,
 			);

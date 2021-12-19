@@ -8,9 +8,10 @@ NitroSwan Todo
 	Add LCD icons.
 	Rewrite cpu core in asm.
 	Add memory word access.
-	Add serial port emulation.
 	Add banked SRAM emulation.
 	Move EEPROM to it's own repo, rewrite to work under C.
+	Port to GBA.
+	Add serial port emulation.
 
 GFX:
 	Optimize color transfer?

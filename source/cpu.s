@@ -65,14 +65,14 @@ runStart:
 
 	bl refreshEMUjoypads		;@ Z=1 if communication ok
 
-	ldr r4,=nec_execute
-	ldr r5,=nec_int
+	ldr v30ptr,=V30OpTable
 	ldr spxptr,=sphinx0
 ;@----------------------------------------------------------------------------
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
 	bl checkInterrupt
-	bl executeLine
+	mov r0,#CYCLE_PSL
+	bl nec_execute
 	ldr spxptr,=sphinx0
 	bl wsvDoScanline
 	cmp r0,#0
@@ -106,15 +106,10 @@ waitCountOut:		.byte 0
 waitMaskOut:		.byte 0
 
 ;@----------------------------------------------------------------------------
-executeLine:
-;@----------------------------------------------------------------------------
-	mov r0,#CYCLE_PSL
-	bx r4
-;@----------------------------------------------------------------------------
 setInterruptExternal:			;@ r0=int number
 ;@----------------------------------------------------------------------------
-	and r0,r0,#7
 	ldr spxptr,=sphinx0
+	and r0,r0,#7
 	mov r2,#1
 	ldrb r1,[spxptr,#wsvInterruptStatus]
 	orr r1,r1,r2,lsl r0
@@ -132,7 +127,7 @@ checkInterrupt:
 	bic r1,r1,#7
 	orr r0,r0,r1
 	mov r0,r0,lsl#2
-	bx r5
+	b nec_int
 
 ;@----------------------------------------------------------------------------
 cpuReset:					;@ Called by loadCart/resetGame

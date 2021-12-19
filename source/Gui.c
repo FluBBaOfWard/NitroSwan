@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.1.2 2021-12-18"
+#define EMUVERSION "V0.1.3 2021-12-19"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
