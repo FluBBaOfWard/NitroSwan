@@ -10,8 +10,8 @@
 		35E683AD1C66453300FCFE8A /* cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpu.h; sourceTree = "<group>"; };
 		35E683AF1C664A6D00FCFE8A /* io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = io.h; sourceTree = "<group>"; };
 		746D78E114ED9A8400CC738F /* Makefile */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; fileEncoding = 4; path = Makefile; sourceTree = "<group>"; };
-		9C19569D276D2D8F0044B938 /* WSBorder.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = WSBorder.grit; path = graphics/WSBorder.grit; sourceTree = "<group>"; };
-		9C19569E276D2D8F0044B938 /* WSBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = WSBorder.png; path = graphics/WSBorder.png; sourceTree = "<group>"; };
+		9C19569D276D2D8F0044B938 /* WSBorder.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = WSBorder.grit; path = WSBorder.grit; sourceTree = "<group>"; };
+		9C19569E276D2D8F0044B938 /* WSBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = WSBorder.png; path = WSBorder.png; sourceTree = "<group>"; };
 		9C19569F276F4E340044B938 /* ARMV30MZ.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = ARMV30MZ.s; sourceTree = "<group>"; };
 		9C1956A0276F5B9C0044B938 /* ARMV30MZmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMV30MZmac.h; sourceTree = "<group>"; };
 		9C1FFFA72684A277005851ED /* EmuSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuSettings.h; sourceTree = "<group>"; };

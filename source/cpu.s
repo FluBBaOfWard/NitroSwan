@@ -44,17 +44,6 @@ runStart:
 //	and r3,r3,r0
 //	str r0,joyClick
 
-//	ldr r2,=yStart
-//	ldrb r1,[r2]
-//	tst r0,#0x200				;@ L?
-//	subsne r1,#1
-//	movmi r1,#0
-//	tst r0,#0x100				;@ R?
-//	addne r1,#1
-//	cmp r1,#GAME_HEIGHT-SCREEN_HEIGHT
-//	movpl r1,#GAME_HEIGHT-SCREEN_HEIGHT
-//	strb r1,[r2]
-
 //	tst r3,#0x04				;@ NDS Select?
 //	tsteq r3,#0x800				;@ NDS Y?
 //	ldrne r2,=systemMemory+0xB3
