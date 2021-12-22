@@ -32,8 +32,8 @@ SOURCES		:=	source	\
 				source/WSAudio
 DATA		:=	data
 INCLUDES	:=	include
-GRAPHICS	:=	graphics \
-				source/Shared/graphics
+GRAPHICS	:=	source/Shared/graphics \
+				graphics
 
 #---------------------------------------------------------------------------------
 # options for code generation
