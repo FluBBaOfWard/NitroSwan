@@ -1,13 +1,13 @@
 NitroSwan Todo
 
+	Rewrite cpu core in asm.
 	Fix better sound!
 	Add RTC emulation.
 	Add key mappings (for Y1-Y4).
 	Add border.
 	Graphics on menu screen?
 	Add LCD icons.
-	Rewrite cpu core in asm.
-	Add memory word access.
+	Add IO word access?
 	Add banked SRAM emulation.
 	Move EEPROM to it's own repo, rewrite to work under C.
 	Port to GBA.
@@ -28,21 +28,24 @@ CPU:
 Sound:
 	See Sphinx todo.
 
-
 Misc:
-	...
+	Cardcaptor Sakura, timing sensitive.
 
 Games Not Working:
+
+Needs Large (256kB) SRAM:
 	Dicing Knight.
 	Judgement Silversword Rebirth Edition
+	Tenori-On
 
 Needs RTC:
 	Dokodemo Hamster 3 - O Dekake Saffron
 	Inu yasha
 	Robot Works
+	Tenori-On
 
 Games With Glitches:
-	...
+	Sorobang
 
 Speedhacks:
 	"Bakumatsu Rouman Tokubetsu"		- JR (0x65,0xF8) @0x2002

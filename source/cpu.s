@@ -61,7 +61,7 @@ wsFrameLoop:
 ;@----------------------------------------------------------------------------
 	bl checkInterrupt
 	mov r0,#CYCLE_PSL
-	bl nec_execute
+	bl V30RunXCycles
 	ldr spxptr,=sphinx0
 	bl wsvDoScanline
 	cmp r0,#0
