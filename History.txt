@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.2.0 - 2022-01-19 (FluBBa)
+	Rewrote the whole cpu core in asm.
+
 V0.1.5 - 2022-01-09 (FluBBa)
 	Rewrote parts of the cpu core in asm.
 

@@ -202,6 +202,7 @@ void loadNVRAM() {
 		infoOutput("Loaded NVRAM.");
 	}
 	else {
+		memset(nvMem, 0, saveSize);
 		infoOutput("Couldn't open NVRAM file:");
 		infoOutput(nvramName);
 	}

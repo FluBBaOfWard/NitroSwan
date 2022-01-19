@@ -1,4 +1,4 @@
-# NitroSwan V0.1.3
+# NitroSwan V0.2.0
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -76,7 +76,7 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 		Autosleep: Doesn't work.
 
 ### About:
-	Some dumb info about the game and emulator...
+	Some info about the emulator and game...
 
 ## Credits:
 

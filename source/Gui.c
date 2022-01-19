@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.1.5 2022-01-09"
+#define EMUVERSION "V0.2.0 2022-01-19"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -27,17 +27,17 @@ static void uiMachine(void);
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
 const fptr fnList0[] = {uiDummy};
-const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, saveSettings, ejectGame, resetGame};
+const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, saveSettings, ejectGame, resetGame, ui8};
 const fptr fnList2[] = {ui4, ui5, ui6, ui7};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList5[] = {/*scalingSet, flickSet,*/ gammaSet, paletteChange, fgrLayerSet, bgrLayerSet, sprLayerSet};
 const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, languageSet};
 const fptr fnList7[] = {speedSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, debugTextSet, sleepSet};
-const fptr fnList8[] = {quickSelectGame};
+const fptr fnList8[] = {exitEmulator, backOutOfMenu};
 const fptr fnList9[] = {uiDummy};
 const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9};
-const u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9)};
+u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9)};
 const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDummy, uiDummy};
 const u8 menuXBack[] = {0,0,0,0,2,2,2,2,1,1};
 
@@ -59,6 +59,7 @@ const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "SwanC
 void setupGUI() {
 	emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | ALLOW_SPEED_HACKS | AUTOSLEEP_OFF;
 	keysSetRepeat(25, 4);	// delay, repeat.
+	menuXItems[1] = ARRSIZE(fnList1) - (enableExit?0:1);
 	openMenu();
 }
 
