@@ -16,7 +16,6 @@
 	.global waitMaskOut
 	.global cpu1SetIRQ
 	.global tlcs_return
-	.global setInterruptExternal
 
 	.syntax unified
 	.arm
@@ -55,6 +54,7 @@ runStart:
 	bl refreshEMUjoypads		;@ Z=1 if communication ok
 
 	ldr v30ptr,=V30OpTable
+	ldr v30cyc,[v30ptr,#v30ICount]
 	ldr spxptr,=sphinx0
 ;@----------------------------------------------------------------------------
 wsFrameLoop:
@@ -68,6 +68,7 @@ wsFrameLoop:
 	bne wsFrameLoop
 
 ;@----------------------------------------------------------------------------
+	str v30cyc,[v30ptr,#v30ICount]
 	ldr r1,=fpsValue
 	ldr r0,[r1]
 	add r0,r0,#1
@@ -95,15 +96,6 @@ waitCountOut:		.byte 0
 waitMaskOut:		.byte 0
 
 ;@----------------------------------------------------------------------------
-setInterruptExternal:			;@ r0=int number
-;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
-	and r0,r0,#7
-	mov r2,#1
-	ldrb r1,[spxptr,#wsvInterruptStatus]
-	orr r1,r1,r2,lsl r0
-	strb r1,[spxptr,#wsvInterruptStatus]
-;@----------------------------------------------------------------------------
 checkInterrupt:
 ;@----------------------------------------------------------------------------
 	ldrb r1,[spxptr,#wsvInterruptStatus]
@@ -115,7 +107,6 @@ checkInterrupt:
 	ldrb r1,[spxptr,#wsvInterruptBase]
 	bic r1,r1,#7
 	orr r0,r0,r1
-	mov r0,r0,lsl#2
 	b nec_int
 
 ;@----------------------------------------------------------------------------

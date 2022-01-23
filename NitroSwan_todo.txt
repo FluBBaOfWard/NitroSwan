@@ -30,7 +30,7 @@ Misc:
 	Cardcaptor Sakura, timing sensitive.
 
 Games Not Working:
-	Bakusou Dekotora Densetsu. Uses Halt opcode (F4).
+	Bakusou Dekotora Densetsu.
 
 Needs Large (256kB) SRAM:
 	Dicing Knight.
@@ -47,6 +47,36 @@ Games With Glitches:
 	Sorobang
 
 Speedhacks:
+	Halt (0xf4).
+	* Bakusou Dekotora Densetsu.
+	* Chocobo no Fushigi na Dungeon for WonderSwan
+	* Chou Aniki - Otoko no Tamafuda
+	* Engacho for WonderSwan
+	* Flash Koibito-kun
+	* Ganso Jajamaru-kun
+	* Goraku Ou Tango!
+	* GunPey
+	* GunPey EX
+	* Harobots
+	* Kaze no Klonoa - Moonlight Museum
+	* Kinnikuman Ilsei - Dream Tag Match
+	* Langrisser Millennium WS - The Last Century
+	* Magical Drop for WonderSwan
+	* Medarot Perfect Edition
+	* Moero!! Pro Yakyuu Rookies
+	* Mr. Driller
+	* Robot Works
+	* Rockman & Forte - Mirai Kara no Chousensha
+	* Saint Seya - Ougon Densetsu - Perfect Edition
+	* Sennou Millennium
+	* Shin Nippon Pro Wrestling Toukon Retsuden
+	* Super Robot Taisen Compact
+	* Tare Panda no GunPey
+	* Wonder Stadium '99
+	* Wonder Stadium
+	* WonderSwan Handy Sonar
+	* Zakull Bootsplash
+
 	"Bakumatsu Rouman Tokubetsu"		- JR (0x65,0xF8) @0x2002
 
 	"Bios"								- JR (0x67,0xF9) @0xFF

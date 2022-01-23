@@ -15,6 +15,8 @@
 	.global ioWriteByte
 	.global cpu_readport
 	.global cpu_writeport
+	.global getInterruptVector
+	.global setInterruptExternal
 
 	.global gfxState
 	.global gGammaValue
@@ -464,6 +466,16 @@ cpu_writeport:
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsVideoW
+;@----------------------------------------------------------------------------
+getInterruptVector:
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvGetInterruptVector
+;@----------------------------------------------------------------------------
+setInterruptExternal:			;@ r0=int number
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvSetInterruptExternal
 sphinx0:
 	.space sphinxSize
 ;@----------------------------------------------------------------------------
