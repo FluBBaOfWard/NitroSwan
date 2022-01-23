@@ -59,7 +59,6 @@ runStart:
 ;@----------------------------------------------------------------------------
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
-	bl checkInterrupt
 	mov r0,#CYCLE_PSL
 	bl V30RunXCycles
 	ldr spxptr,=sphinx0
@@ -96,30 +95,19 @@ waitCountOut:		.byte 0
 waitMaskOut:		.byte 0
 
 ;@----------------------------------------------------------------------------
-checkInterrupt:
-;@----------------------------------------------------------------------------
-	ldrb r1,[spxptr,#wsvInterruptStatus]
-	ldrb r0,[spxptr,#wsvInterruptEnable]
-	ands r1,r1,r0
-	bxeq lr
-	clz r0,r1
-	rsb r0,r0,#31
-	ldrb r1,[spxptr,#wsvInterruptBase]
-	bic r1,r1,#7
-	orr r0,r0,r1
-	b nec_int
-
-;@----------------------------------------------------------------------------
 cpuReset:					;@ Called by loadCart/resetGame
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
+	stmfd sp!,{v30ptr,lr}
+	ldr v30ptr,=V30OpTable
 
 	mov r0,#CYCLE_PSL
 	str r0,v30MZCyclesPerScanline
 	mov r0,#0
 	blx nec_reset
+	ldr r0,=getInterruptVector
+	str r0,[v30ptr,#v30IrqVectorFunc]
 
-	ldmfd sp!,{lr}
+	ldmfd sp!,{v30ptr,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 	.end

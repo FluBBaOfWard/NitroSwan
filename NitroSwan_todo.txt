@@ -1,13 +1,13 @@
 NitroSwan Todo
 
-	Fix better sound!
+	Add banked SRAM emulation.
 	Add RTC emulation.
 	Add key mappings (for Y1-Y4).
 	Add border.
-	Graphics on menu screen?
+	Fix better sound!
 	Add LCD icons.
+	Graphics on menu screen?
 	Add IO word access?
-	Add banked SRAM emulation.
 	Move EEPROM to it's own repo, rewrite to work under C.
 	Port to GBA.
 	Add serial port emulation.
