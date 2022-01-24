@@ -3,6 +3,7 @@
 #include "Equates.h"
 #include "EEPROM.i"
 #include "Sphinx/Sphinx.i"
+#include "ARMV30MZ/ARMV30MZ.i"
 
 	.global machineInit
 	.global loadCart
@@ -13,6 +14,7 @@
 	.global BankSwitch4_F_W
 	.global BankSwitch2_W
 	.global BankSwitch3_W
+	.global BankSwitch1_W
 
 	.global wsHeader
 	.global romSpacePtr
@@ -103,6 +105,7 @@ loadCart: 		;@ Called from C:
 	.type   loadCart STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
+	ldr v30ptr,=V30OpTable
 
 	ldr r0,romSize
 	movs r2,r0,lsr#16		;@ 64kB blocks.
@@ -111,7 +114,7 @@ loadCart: 		;@ Called from C:
 
 	ldr r7,romSpacePtr		;@ r7=rombase til end of loadcart
 
-	ldr r4,=MEMMAPTBL_
+	add r4,v30ptr,#v30MemTbl
 	mov r0,#4
 	mov r5,#0xF4
 tbLoop1:
@@ -213,7 +216,7 @@ BankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
-	ldr r12,=MEMMAPTBL_+4*4
+	add r12,v30ptr,#v30MemTbl+4*4
 tbLoop2:
 	and r3,r0,r1
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
@@ -236,10 +239,9 @@ BankSwitch2_W:					;@ 0x20000-0x2FFFF
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
-	ldr r12,=MEMMAPTBL_+2*4
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
-	str r3,[r12]
+	str r3,[v30ptr,#v30MemTbl+2*4]
 
 	bx lr
 
@@ -256,10 +258,29 @@ BankSwitch3_W:					;@ 0x30000-0x3FFFF
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
-	ldr r12,=MEMMAPTBL_+3*4
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
-	str r3,[r12]
+	str r3,[v30ptr,#v30MemTbl+3*4]
+
+	bx lr
+;@----------------------------------------------------------------------------
+reBankSwitch1_W:				;@ 0x10000-0x1FFFF
+;@----------------------------------------------------------------------------
+	ldr spxptr,=sphinx0
+	ldrb r1,[spxptr,#wsvBnk1Slct]
+;@----------------------------------------------------------------------------
+BankSwitch1_W:					;@ 0x10000-0x1FFFF
+;@----------------------------------------------------------------------------
+	ldr spxptr,=sphinx0
+	strb r1,[spxptr,#wsvBnk1Slct]
+
+	ldr r0,sramSize
+	sub r0,r0,#1
+	mov r0,r0,lsr#16
+	ldr r2,=wsSRAM
+	and r3,r1,r0
+	add r3,r2,r3,lsl#16		;@ 64kB blocks.
+	str r3,[v30ptr,#v30MemTbl+1*4]
 
 	bx lr
 
@@ -380,12 +401,10 @@ eepromSize:
 
 	.section .bss
 	.align 2
-MEMMAPTBL_:
-	.space 16*4
 wsRAM:
 	.space 0x10000
 wsSRAM:
-	.space 0x10000
+	.space 0x40000
 biosSpace:
 	.space 0x1000
 biosSpaceColor:

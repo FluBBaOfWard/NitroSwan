@@ -81,7 +81,7 @@ cpuReadByte:		;@ r0=address ($00000-$FFFFF)
 cpu_readmem20:		;@ r0=address ($00000-$FFFFF)
 	.type cpu_readmem20 STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr r1,=MEMMAPTBL_
+	add r1,v30ptr,#v30MemTbl
 	and r2,r0,#0xF0000
 	ldr r1,[r1,r2,lsr#14]
 	mov r3,r0,lsl#16
@@ -103,7 +103,7 @@ cpu_readmem20w:		;@ r0=address ($00000-$FFFFF)
 ;@----------------------------------------------------------------------------
 	tst r0,#1
 	bne cpuReadWordUnaligned
-	ldr r1,=MEMMAPTBL_
+	add r1,v30ptr,#v30MemTbl
 	and r2,r0,#0xF0000
 	ldr r1,[r1,r2,lsr#14]
 	mov r3,r0,lsl#16
@@ -141,7 +141,7 @@ cpu_writemem20:		;@ r0=address, r1=value
 ram_WB:				;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
 	mov r0,r0,lsl#16
-	ldr r2,=wsRAM
+	ldr r2,[v30ptr,#v30MemTbl]
 	strb r1,[r2,r0,lsr#16]
 	ldr r2,=DIRTYTILES
 	strb r0,[r2,r0,lsr#21]
@@ -155,7 +155,7 @@ tstSRAM_WB:
 sram_WB:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
 	movs r0,r0,lsl#16
-	ldr r2,=wsSRAM
+	ldr r2,[v30ptr,#v30MemTbl+1*4]
 	strb r1,[r2,r0,lsr#16]
 	bx lr
 ;@----------------------------------------------------------------------------
@@ -172,7 +172,7 @@ cpu_writemem20w:	;@ r0=address, r1=value
 ram_WW:				;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
 	mov r0,r0,lsl#16
-	ldr r2,=wsRAM
+	ldr r2,[v30ptr,#v30MemTbl]
 	add r2,r2,r0,lsr#16
 	strh r1,[r2]
 	ldr r2,=DIRTYTILES
