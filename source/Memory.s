@@ -81,15 +81,16 @@ cpuReadByte:		;@ r0=address ($00000-$FFFFF)
 cpu_readmem20:		;@ r0=address ($00000-$FFFFF)
 	.type cpu_readmem20 STT_FUNC
 ;@----------------------------------------------------------------------------
+	mov r0,r0,lsl#12
 	add r1,v30ptr,#v30MemTbl
-	and r2,r0,#0xF0000
-	ldr r1,[r1,r2,lsr#14]
-	mov r3,r0,lsl#16
+	and r2,r0,#0xF0000000
+	ldr r1,[r1,r2,lsr#26]
+	mov r3,r0,lsl#4
 	ldrb r0,[r1,r3,lsr#16]
 bootRomSwitch:
 	subs r3,r3,#0xE0000000
 	bxcc lr
-	cmp r2,#0xF0000
+	cmp r2,#0xF0000000
 	bxne lr
 	ldr r1,=biosBase
 	ldr r1,[r1]
@@ -101,18 +102,19 @@ cpuReadWord:		;@ r0=address ($00000-$FFFFF)
 cpu_readmem20w:		;@ r0=address ($00000-$FFFFF)
 	.type cpu_readmem20w STT_FUNC
 ;@----------------------------------------------------------------------------
-	tst r0,#1
+	tst r0,#0x1
 	bne cpuReadWordUnaligned
+	mov r0,r0,lsl#12
 	add r1,v30ptr,#v30MemTbl
-	and r2,r0,#0xF0000
-	ldr r1,[r1,r2,lsr#14]
-	mov r3,r0,lsl#16
+	and r2,r0,#0xF0000000
+	ldr r1,[r1,r2,lsr#26]
+	mov r3,r0,lsl#4
 	add r1,r1,r3,lsr#16
 	ldrh r0,[r1]
 bootRomSwitch2:
 	subs r3,r3,#0xE0000000
 	bxcc lr
-	cmp r2,#0xF0000
+	cmp r2,#0xF0000000
 	bxne lr
 	ldr r1,=biosBase
 	ldr r1,[r1]
@@ -135,26 +137,26 @@ cpuWriteByte:		;@ r0=address, r1=value
 cpu_writemem20:		;@ r0=address, r1=value
 	.type cpu_writemem20 STT_FUNC
 ;@----------------------------------------------------------------------------
-	ands r2,r0,#0xF0000
+	mov r0,r0,lsl#12
+	ands r2,r0,#0xF0000000
 	bne tstSRAM_WB
 ;@----------------------------------------------------------------------------
 ram_WB:				;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
-	mov r0,r0,lsl#16
 	ldr r2,[v30ptr,#v30MemTbl]
-	strb r1,[r2,r0,lsr#16]
+	strb r1,[r2,r0,lsr#12]
 	ldr r2,=DIRTYTILES
-	strb r0,[r2,r0,lsr#21]
+	strb r0,[r2,r0,lsr#17]
 	bx lr
 ;@----------------------------------------------------------------------------
 tstSRAM_WB:
 ;@----------------------------------------------------------------------------
-	cmp r2,#0x10000
+	cmp r2,#0x10000000
 	bne rom_W
 ;@----------------------------------------------------------------------------
 sram_WB:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
-	movs r0,r0,lsl#16
+	movs r0,r0,lsl#4
 	ldr r2,[v30ptr,#v30MemTbl+1*4]
 	strb r1,[r2,r0,lsr#16]
 	bx lr
@@ -166,28 +168,28 @@ cpu_writemem20w:	;@ r0=address, r1=value
 ;@----------------------------------------------------------------------------
 	tst r0,#1
 	bne cpuWriteWordUnaligned
-	ands r2,r0,#0xF0000
+	mov r0,r0,lsl#12
+	ands r2,r0,#0xF0000000
 	bne tstSRAM_WW
 ;@----------------------------------------------------------------------------
 ram_WW:				;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
-	mov r0,r0,lsl#16
 	ldr r2,[v30ptr,#v30MemTbl]
-	add r2,r2,r0,lsr#16
+	add r2,r2,r0,lsr#12
 	strh r1,[r2]
 	ldr r2,=DIRTYTILES
-	strb r0,[r2,r0,lsr#21]
+	strb r0,[r2,r0,lsr#17]
 	bx lr
 ;@----------------------------------------------------------------------------
 tstSRAM_WW:
 ;@----------------------------------------------------------------------------
-	cmp r2,#0x10000
+	cmp r2,#0x10000000
 	bne rom_W
 ;@----------------------------------------------------------------------------
 sram_WW:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
-	movs r0,r0,lsl#16
-	ldr r2,=wsSRAM
+	ldr r2,[v30ptr,#v30MemTbl+1*4]
+	mov r0,r0,lsl#4
 	add r2,r2,r0,lsr#16
 	strh r1,[r2]
 	bx lr
