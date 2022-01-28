@@ -12,8 +12,8 @@
 	.global cpuReadWord
 	.global cpuReadMem20
 	.global cpuReadMem20W
-	.global cpuGetOpcode
-	.global cpuGetOpcodeWord
+	.global cpuWriteMem20
+	.global cpuWriteMem20W
 	.global cpu_writemem20
 	.global cpu_writemem20w
 	.global setBootRomOverlay
@@ -82,7 +82,6 @@ cpuReadByte:		;@ r0=address ($00000-$FFFFF)
 ;@----------------------------------------------------------------------------
 	mov r0,r0,lsl#12
 cpuReadMem20:		;@ r0=address set in top 20 bits
-cpuGetOpcode:
 	add r1,v30ptr,#v30MemTbl
 	and r2,r0,#0xF0000000
 	ldr r1,[r1,r2,lsr#26]
@@ -103,7 +102,6 @@ cpuReadWord:		;@ r0=address ($00000-$FFFFF)
 ;@----------------------------------------------------------------------------
 	mov r0,r0,lsl#12
 cpuReadMem20W:		;@ r0=address set in top 20 bits
-cpuGetOpcodeWord:
 	tst r0,#0x1000
 	bne cpuReadWordUnaligned
 	add r1,v30ptr,#v30MemTbl
