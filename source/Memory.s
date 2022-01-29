@@ -7,15 +7,11 @@
 	.global empty_IO_W
 	.global rom_W
 	.global cpuWriteByte
-	.global cpuWriteWord
 	.global cpuReadByte
-	.global cpuReadWord
 	.global cpuReadMem20
 	.global cpuReadMem20W
 	.global cpuWriteMem20
 	.global cpuWriteMem20W
-	.global cpu_writemem20
-	.global cpu_writemem20w
 	.global setBootRomOverlay
 
 
@@ -81,7 +77,9 @@ cpuReadWordUnaligned:
 cpuReadByte:		;@ r0=address ($00000-$FFFFF)
 ;@----------------------------------------------------------------------------
 	mov r0,r0,lsl#12
+;@----------------------------------------------------------------------------
 cpuReadMem20:		;@ r0=address set in top 20 bits
+;@----------------------------------------------------------------------------
 	add r1,v30ptr,#v30MemTbl
 	and r2,r0,#0xF0000000
 	ldr r1,[r1,r2,lsr#26]
@@ -98,10 +96,8 @@ bootRomSwitch:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-cpuReadWord:		;@ r0=address ($00000-$FFFFF)
-;@----------------------------------------------------------------------------
-	mov r0,r0,lsl#12
 cpuReadMem20W:		;@ r0=address set in top 20 bits
+;@----------------------------------------------------------------------------
 	tst r0,#0x1000
 	bne cpuReadWordUnaligned
 	add r1,v30ptr,#v30MemTbl
@@ -133,12 +129,11 @@ cpuWriteWordUnaligned:
 	b cpuWriteMem20
 ;@----------------------------------------------------------------------------
 cpuWriteByte:		;@ r0=address, r1=value
-	.type cpuWriteByte STT_FUNC
-cpu_writemem20:		;@ r0=address, r1=value
-	.type cpu_writemem20 STT_FUNC
 ;@----------------------------------------------------------------------------
 	mov r0,r0,lsl#12
+;@----------------------------------------------------------------------------
 cpuWriteMem20:		;@ r0=address set in top 20 bits
+;@----------------------------------------------------------------------------
 	ands r2,r0,#0xF0000000
 	bne tstSRAM_WB
 ;@----------------------------------------------------------------------------
@@ -157,18 +152,13 @@ tstSRAM_WB:
 ;@----------------------------------------------------------------------------
 sram_WB:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
-	movs r0,r0,lsl#4
 	ldr r2,[v30ptr,#v30MemTbl+1*4]
+	mov r0,r0,lsl#4
 	strb r1,[r2,r0,lsr#16]
 	bx lr
 ;@----------------------------------------------------------------------------
-cpuWriteWord:		;@ r0=address, r1=value
-	.type cpuWriteWord STT_FUNC
-cpu_writemem20w:	;@ r0=address, r1=value
-	.type cpu_writemem20W STT_FUNC
-;@----------------------------------------------------------------------------
-	mov r0,r0,lsl#12
 cpuWriteMem20W:		;@ r0=address set in top 20 bits
+;@----------------------------------------------------------------------------
 	tst r0,#0x1000
 	bne cpuWriteWordUnaligned
 	ands r2,r0,#0xF0000000
