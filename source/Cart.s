@@ -216,10 +216,12 @@ BankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
+	sub r2,r2,#0x40000
 	add r12,v30ptr,#v30MemTbl+4*4
 tbLoop2:
 	and r3,r0,r1
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
+	sub r2,r2,#0x10000
 	str r3,[r12],#4
 	add r1,r1,#1
 	ands r3,r1,#0xF
@@ -239,6 +241,7 @@ BankSwitch2_W:					;@ 0x20000-0x2FFFF
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
+	sub r2,r2,#0x20000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTbl+2*4]
@@ -258,6 +261,7 @@ BankSwitch3_W:					;@ 0x30000-0x3FFFF
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
+	sub r2,r2,#0x30000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTbl+3*4]
@@ -277,7 +281,7 @@ BankSwitch1_W:					;@ 0x10000-0x1FFFF
 	ldr r0,sramSize
 	sub r0,r0,#1
 	mov r0,r0,lsr#16
-	ldr r2,=wsSRAM
+	ldr r2,=wsSRAM-0x10000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTbl+1*4]

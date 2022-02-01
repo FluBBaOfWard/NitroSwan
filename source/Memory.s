@@ -6,8 +6,6 @@
 	.global empty_IO_R
 	.global empty_IO_W
 	.global rom_W
-	.global cpuWriteByte
-	.global cpuReadByte
 	.global cpuReadMem20
 	.global cpuReadMem20W
 	.global cpuWriteMem20
@@ -50,8 +48,8 @@ setBootRomOverlay:			;@ r0=arg0, 0=remove overlay, 1=WS, 2=WSC
 	strmi r0,[r2]
 commandList:
 	bx lr
-	subs r3,r3,#0xF0000000
-	subs r3,r3,#0xE0000000
+	subs r3,r3,#0xFF000
+	subs r3,r3,#0xFE000
 
 ;@----------------------------------------------------------------------------
 
@@ -74,25 +72,19 @@ cpuReadWordUnaligned:
 	orr r0,r4,r0,lsl#8
 	ldmfd sp!,{r4,pc}
 ;@----------------------------------------------------------------------------
-cpuReadByte:		;@ r0=address ($00000-$FFFFF)
-;@----------------------------------------------------------------------------
-	mov r0,r0,lsl#12
-;@----------------------------------------------------------------------------
 cpuReadMem20:		;@ r0=address set in top 20 bits
 ;@----------------------------------------------------------------------------
 	add r1,v30ptr,#v30MemTbl
-	and r2,r0,#0xF0000000
-	ldr r1,[r1,r2,lsr#26]
-	mov r3,r0,lsl#4
-	ldrb r0,[r1,r3,lsr#16]
+	mov r2,r0,lsr#28
+	ldr r1,[r1,r2,lsl#2]
+	mov r3,r0,lsr#12
+	ldrb r0,[r1,r0,lsr#12]
 bootRomSwitch:
-	subs r3,r3,#0xE0000000
+	subs r3,r3,#0xFE000
 	bxcc lr
-	cmp r2,#0xF0000000
-	bxne lr
 	ldr r1,=biosBase
 	ldr r1,[r1]
-	ldrb r0,[r1,r3,lsr#16]
+	ldrb r0,[r1,r3]
 	bx lr
 
 ;@----------------------------------------------------------------------------
@@ -101,20 +93,16 @@ cpuReadMem20W:		;@ r0=address set in top 20 bits
 	tst r0,#0x1000
 	bne cpuReadWordUnaligned
 	add r1,v30ptr,#v30MemTbl
-	and r2,r0,#0xF0000000
-	ldr r1,[r1,r2,lsr#26]
-	mov r3,r0,lsl#4
-	add r1,r1,r3,lsr#16
-	ldrh r0,[r1]
+	mov r2,r0,lsr#28
+	ldr r1,[r1,r2,lsl#2]
+	mov r3,r0,lsr#12
+	ldrh r0,[r1,r3]
 bootRomSwitch2:
-	subs r3,r3,#0xE0000000
+	subs r3,r3,#0xFE000
 	bxcc lr
-	cmp r2,#0xF0000000
-	bxne lr
 	ldr r1,=biosBase
 	ldr r1,[r1]
-	add r1,r1,r3,lsr#16
-	ldrh r0,[r1]
+	ldrh r0,[r1,r3]
 	bx lr
 
 
@@ -126,15 +114,10 @@ cpuWriteWordUnaligned:
 	ldmfd sp!,{r0,r1,lr}
 	add r0,r0,#0x1000
 	mov r1,r1,lsr#8
-	b cpuWriteMem20
-;@----------------------------------------------------------------------------
-cpuWriteByte:		;@ r0=address, r1=value
-;@----------------------------------------------------------------------------
-	mov r0,r0,lsl#12
 ;@----------------------------------------------------------------------------
 cpuWriteMem20:		;@ r0=address set in top 20 bits
 ;@----------------------------------------------------------------------------
-	ands r2,r0,#0xF0000000
+	movs r2,r0,lsr#28
 	bne tstSRAM_WB
 ;@----------------------------------------------------------------------------
 ram_WB:				;@ Write ram ($00000-$0FFFF)
@@ -147,21 +130,20 @@ ram_WB:				;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
 tstSRAM_WB:
 ;@----------------------------------------------------------------------------
-	cmp r2,#0x10000000
+	cmp r2,#1
 	bne rom_W
 ;@----------------------------------------------------------------------------
 sram_WB:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
 	ldr r2,[v30ptr,#v30MemTbl+1*4]
-	mov r0,r0,lsl#4
-	strb r1,[r2,r0,lsr#16]
+	strb r1,[r2,r0,lsr#12]
 	bx lr
 ;@----------------------------------------------------------------------------
 cpuWriteMem20W:		;@ r0=address set in top 20 bits
 ;@----------------------------------------------------------------------------
 	tst r0,#0x1000
 	bne cpuWriteWordUnaligned
-	ands r2,r0,#0xF0000000
+	movs r2,r0,lsr#28
 	bne tstSRAM_WW
 ;@----------------------------------------------------------------------------
 ram_WW:				;@ Write ram ($00000-$0FFFF)
@@ -175,15 +157,14 @@ ram_WW:				;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
 tstSRAM_WW:
 ;@----------------------------------------------------------------------------
-	cmp r2,#0x10000000
+	cmp r2,#1
 	bne rom_W
 ;@----------------------------------------------------------------------------
 sram_WW:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
 	ldr r2,[v30ptr,#v30MemTbl+1*4]
-	mov r0,r0,lsl#4
-	add r2,r2,r0,lsr#16
-	strh r1,[r2]
+	mov r0,r0,lsr#12
+	strh r1,[r2,r0]
 	bx lr
 ;@----------------------------------------------------------------------------
 	.end
