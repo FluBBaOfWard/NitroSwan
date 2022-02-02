@@ -113,29 +113,21 @@ loadCart: 		;@ Called from C:
 	subne r2,r2,#1
 	str r2,romMask			;@ romMask=romBlocks-1
 
-	ldr r7,romSpacePtr		;@ r7=rombase til end of loadcart
+	mov r1,#0xFF
+	bl BankSwitch4_F_W
+	mov r1,#0xFF
+	bl BankSwitch3_W
+	mov r1,#0xFF
+	bl BankSwitch2_W
 
 	add r4,v30ptr,#v30MemTbl
-	mov r0,#4
-	mov r5,#0xF4
-tbLoop1:
-	and r1,r5,r2
-	add r1,r7,r1,lsl#16		;@ 64kB blocks.
-	str r1,[r4,r0,lsl#2]
-	add r5,r5,#1
-	add r0,r0,#1
-	cmp r0,#0x10
-	bne tbLoop1
-
 	ldr r1,=wsRAM
 	str r1,[r4,#0x0*4]		;@ 0 RAM
-	ldr r1,=wsSRAM
+	ldr r1,=wsSRAM-0x10000
 	str r1,[r4,#0x1*4]		;@ 1 SRAM
 	ldr r6,[r4,#0xF*4]		;@ MemMap
-	str r6,[r4,#0x2*4]		;@ 2 ROM
-	str r6,[r4,#0x3*4]		;@ 3 ROM
 
-	ldr r3,=0xFFFB			;@ NVRAM size
+	ldr r3,=0xFFFFB			;@ NVRAM size
 	ldrb r3,[r6,r3]
 	mov r0,#0				;@ r0 = sram size
 	mov r1,#0				;@ r1 = eeprom size
@@ -178,9 +170,6 @@ tbLoop1:
 	moveq r1,r2				;@ Use internal bios
 	str r1,biosBase
 	bl setBootRomOverlay
-
-//	sub r0,r0,#0xE000
-//	str r0,[r4,#0xF*4]
 
 
 	ldr r0,=wsRAM			;@ Clear RAM
