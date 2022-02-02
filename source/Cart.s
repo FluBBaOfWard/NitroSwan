@@ -63,6 +63,7 @@
 ROM_Space:
 //	.incbin "wsroms/Crazy Climber (J) [M][!].ws"
 //	.incbin "wsroms/Guilty Gear Petit (J).wsc"
+//	.incbin "wsroms/Kaze no Klonoa - Moonlight Museum (Japan).ws"
 //	.incbin "wsroms/Mr. Driller (J) [!].wsc"
 //	.incbin "wsroms/Tetris (Japan).wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
