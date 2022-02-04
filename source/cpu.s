@@ -7,6 +7,7 @@
 #define CYCLE_PSL (256)
 
 	.global run
+	.global cpuInit
 	.global cpuReset
 	.global isConsoleRunning
 	.global isConsoleSleeping
@@ -99,7 +100,7 @@ waitCountOut:		.byte 0
 waitMaskOut:		.byte 0
 
 ;@----------------------------------------------------------------------------
-cpuReset:					;@ Called by loadCart/resetGame
+cpuInit:					;@ Called by machineInit
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{v30ptr,lr}
 	ldr v30ptr,=V30OpTable
@@ -108,6 +109,17 @@ cpuReset:					;@ Called by loadCart/resetGame
 	str r0,v30MZCyclesPerScanline
 	mov r0,v30ptr
 	bl V30Init
+
+	ldmfd sp!,{v30ptr,lr}
+	bx lr
+;@----------------------------------------------------------------------------
+cpuReset:					;@ Called by loadCart/resetGame
+;@----------------------------------------------------------------------------
+	stmfd sp!,{v30ptr,lr}
+	ldr v30ptr,=V30OpTable
+
+	mov r0,v30ptr
+	bl V30Reset
 	ldr r0,=getInterruptVector
 	str r0,[v30ptr,#v30IrqVectorFunc]
 

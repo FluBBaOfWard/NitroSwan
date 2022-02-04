@@ -93,7 +93,7 @@ machineInit: 	;@ Called from C
 	bl gfxInit
 //	bl ioInit
 	bl soundInit
-//	bl cpuInit
+	bl cpuInit
 
 skipBiosSettings:
 	ldmfd sp!,{r4-r11,lr}
