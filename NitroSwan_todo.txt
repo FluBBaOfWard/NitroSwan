@@ -1,5 +1,6 @@
 NitroSwan Todo
 
+	Cho Aniki doesn't work
 	Fix opcode 37 & 3F? Carry should always be same as Aux?
 	Add RTC emulation.
 	Add key mappings (for Y1-Y4).

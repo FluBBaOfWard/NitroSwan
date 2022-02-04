@@ -106,12 +106,10 @@ cpuReset:					;@ Called by loadCart/resetGame
 
 	mov r0,#CYCLE_PSL
 	str r0,v30MZCyclesPerScanline
-	mov r0,#0
-	blx nec_reset
-	ldr r0,=getInterruptVector
-	str r0,[v30ptr,#v30IrqVectorFunc]
 	mov r0,v30ptr
 	bl V30Init
+	ldr r0,=getInterruptVector
+	str r0,[v30ptr,#v30IrqVectorFunc]
 
 	ldmfd sp!,{v30ptr,lr}
 	bx lr
