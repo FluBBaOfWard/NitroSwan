@@ -18,7 +18,6 @@
 		9C443D79278AE4110029EE11 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9C4EB1C4271CB16A0072D38E /* WonderSwan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WonderSwan.c; sourceTree = "<group>"; };
 		9C4EB1C5271CB16A0072D38E /* WonderSwan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WonderSwan.h; sourceTree = "<group>"; };
-		9C4EB1C7271CB2E10072D38E /* nec.arm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = nec.arm.c; sourceTree = "<group>"; };
 		9C4EB1C8271CB2E10072D38E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9C4EB1CA271CB3860072D38E /* NitroSwan_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NitroSwan_todo.txt; sourceTree = "<group>"; };
 		9C4EB1CB271CB5200072D38E /* ARMV30MZ.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = ARMV30MZ.i; sourceTree = "<group>"; };
@@ -57,7 +56,6 @@
 		9CAB1A12274D4C0C00182F62 /* Sphinx.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = Sphinx.i; sourceTree = "<group>"; };
 		9CAB1A13274D4C0C00182F62 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 		9CAB1A14274D4C0C00182F62 /* Sphinx_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sphinx_todo.txt; sourceTree = "<group>"; };
-		9CAB1A272762797300182F62 /* necintrf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = necintrf.h; sourceTree = "<group>"; };
 		9CBC0C8E26DD7C2A0039D17E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9CC013FC2668FDD9005714F7 /* Emubase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Emubase.h; sourceTree = "<group>"; };
 		A47F092B20863AF5004E1DA6 /* EmuMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuMenu.h; sourceTree = "<group>"; };
@@ -122,8 +120,6 @@
 				9C1956A0276F5B9C0044B938 /* ARMV30MZmac.h */,
 				9C4EB1CB271CB5200072D38E /* ARMV30MZ.i */,
 				9C19569F276F4E340044B938 /* ARMV30MZ.s */,
-				9CAB1A272762797300182F62 /* necintrf.h */,
-				9C4EB1C7271CB2E10072D38E /* nec.arm.c */,
 			);
 			path = ARMV30MZ;
 			sourceTree = "<group>";

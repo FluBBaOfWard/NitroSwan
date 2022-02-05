@@ -1,11 +1,13 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.3.0 - 2022-02-04 (FluBBa)
+V0.3.0 - 2022-02-05 (FluBBa)
 	Added banked SRAM emulation.
 	Fixed zip decompression buffer size.
 	Optimized cycle counting.
+	Optimized Program Counter.
 	Optimized mermoy access.
+	Optimized opcodes.
 
 V0.2.0 - 2022-01-19 (FluBBa)
 	Rewrote the whole cpu core in asm.
