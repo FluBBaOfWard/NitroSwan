@@ -1,5 +1,6 @@
 NitroSwan Todo
 
+	Optimize memory access.
 	Add RTC emulation.
 	Add key mappings (for Y1-Y4).
 	Add border.
