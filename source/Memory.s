@@ -48,8 +48,8 @@ setBootRomOverlay:			;@ r0=arg0, 0=remove overlay, 1=WS, 2=WSC
 	strmi r0,[r2]
 commandList:
 	bx lr
-	subs r3,r3,#0xFF000
-	subs r3,r3,#0xFE000
+	subs r2,r2,#0xFF000
+	subs r2,r2,#0xFE000
 
 ;@----------------------------------------------------------------------------
 
@@ -61,30 +61,29 @@ commandList:
 	.align 2
 
 ;@----------------------------------------------------------------------------
-cpuReadWordUnaligned:
+cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r0,r4,lr}
+	stmfd sp!,{lr}
+	mov r3,r0
 	bl cpuReadMem20
-	mov r4,r0
-	ldmfd sp!,{r0}
-	add r0,r0,#0x1000
+	mov r12,r0
+	add r0,r3,#0x1000
 	bl cpuReadMem20
-	orr r0,r4,r0,lsl#8
-	ldmfd sp!,{r4,pc}
+	orr r0,r12,r0,lsl#8
+	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
 cpuReadMem20:		;@ r0=address set in top 20 bits
 ;@----------------------------------------------------------------------------
-	add r1,v30ptr,#v30MemTbl
-	mov r2,r0,lsr#28
-	ldr r1,[r1,r2,lsl#2]
-	mov r3,r0,lsr#12
+	mvn r2,r0,lsr#28
+	ldr r1,[v30ptr,r2,lsl#2]
+	mov r2,r0,lsr#12
 	ldrb r0,[r1,r0,lsr#12]
 bootRomSwitch:
-	subs r3,r3,#0xFE000
+	subs r2,r2,#0xFE000
 	bxcc lr
 	ldr r1,=biosBase
 	ldr r1,[r1]
-	ldrb r0,[r1,r3]
+	ldrb r0,[r1,r2]
 	bx lr
 
 ;@----------------------------------------------------------------------------
@@ -92,26 +91,25 @@ cpuReadMem20W:		;@ r0=address set in top 20 bits
 ;@----------------------------------------------------------------------------
 	tst r0,#0x1000
 	bne cpuReadWordUnaligned
-	add r1,v30ptr,#v30MemTbl
-	mov r2,r0,lsr#28
-	ldr r1,[r1,r2,lsl#2]
-	mov r3,r0,lsr#12
-	ldrh r0,[r1,r3]
+	mvn r2,r0,lsr#28
+	ldr r1,[v30ptr,r2,lsl#2]
+	mov r2,r0,lsr#12
+	ldrh r0,[r1,r2]
 bootRomSwitch2:
-	subs r3,r3,#0xFE000
+	subs r2,r2,#0xFE000
 	bxcc lr
 	ldr r1,=biosBase
 	ldr r1,[r1]
-	ldrh r0,[r1,r3]
+	ldrh r0,[r1,r2]
 	bx lr
 
 
 ;@----------------------------------------------------------------------------
-cpuWriteWordUnaligned:
+cpuWriteWordUnaligned:	;@ Make sure cpuWriteMem20 does not change r0 or r1!
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r0,r1,lr}
+	stmfd sp!,{lr}
 	bl cpuWriteMem20
-	ldmfd sp!,{r0,r1,lr}
+	ldmfd sp!,{lr}
 	add r0,r0,#0x1000
 	mov r1,r1,lsr#8
 ;@----------------------------------------------------------------------------
@@ -122,7 +120,7 @@ cpuWriteMem20:		;@ r0=address set in top 20 bits
 ;@----------------------------------------------------------------------------
 ram_WB:				;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
-	ldr r2,[v30ptr,#v30MemTbl]
+	ldr r2,[v30ptr,#v30MemTblInv-1*4]
 	strb r1,[r2,r0,lsr#12]
 	ldr r2,=DIRTYTILES
 	strb r0,[r2,r0,lsr#17]
@@ -135,9 +133,10 @@ tstSRAM_WB:
 ;@----------------------------------------------------------------------------
 sram_WB:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
-	ldr r2,[v30ptr,#v30MemTbl+1*4]
+	ldr r2,[v30ptr,#v30MemTblInv-2*4]
 	strb r1,[r2,r0,lsr#12]
 	bx lr
+
 ;@----------------------------------------------------------------------------
 cpuWriteMem20W:		;@ r0=address set in top 20 bits
 ;@----------------------------------------------------------------------------
@@ -148,7 +147,7 @@ cpuWriteMem20W:		;@ r0=address set in top 20 bits
 ;@----------------------------------------------------------------------------
 ram_WW:				;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
-	ldr r2,[v30ptr,#v30MemTbl]
+	ldr r2,[v30ptr,#v30MemTblInv-1*4]
 	add r2,r2,r0,lsr#12
 	strh r1,[r2]
 	ldr r2,=DIRTYTILES
@@ -162,7 +161,7 @@ tstSRAM_WW:
 ;@----------------------------------------------------------------------------
 sram_WW:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
-	ldr r2,[v30ptr,#v30MemTbl+1*4]
+	ldr r2,[v30ptr,#v30MemTblInv-2*4]
 	mov r0,r0,lsr#12
 	strh r1,[r2,r0]
 	bx lr

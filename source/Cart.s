@@ -119,13 +119,12 @@ loadCart: 		;@ Called from C:
 	bl BankSwitch3_W
 	mov r1,#0xFF
 	bl BankSwitch2_W
+	mov r1,#0
+	bl BankSwitch1_W
 
-	add r4,v30ptr,#v30MemTbl
 	ldr r1,=wsRAM
-	str r1,[r4,#0x0*4]		;@ 0 RAM
-	ldr r1,=wsSRAM-0x10000
-	str r1,[r4,#0x1*4]		;@ 1 SRAM
-	ldr r6,[r4,#0xF*4]		;@ MemMap
+	str r1,[v30ptr,#v30MemTblInv-0x1*4]		;@ 0 RAM
+	ldr r6,[v30ptr,#v30MemTblInv-0x10*4]	;@ MemMap
 
 	ldr r3,=0xFFFFB			;@ NVRAM size
 	ldrb r3,[r6,r3]
@@ -207,12 +206,12 @@ BankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 	ldr r0,romMask
 	ldr r2,romSpacePtr
 	sub r2,r2,#0x40000
-	add r12,v30ptr,#v30MemTbl+4*4
+	add r12,v30ptr,#v30MemTblInv-4*4
 tbLoop2:
 	and r3,r0,r1
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	sub r2,r2,#0x10000
-	str r3,[r12],#4
+	str r3,[r12,#-4]!
 	add r1,r1,#1
 	ands r3,r1,#0xF
 	bne tbLoop2
@@ -234,7 +233,7 @@ BankSwitch2_W:					;@ 0x20000-0x2FFFF
 	sub r2,r2,#0x20000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
-	str r3,[v30ptr,#v30MemTbl+2*4]
+	str r3,[v30ptr,#v30MemTblInv-3*4]
 
 	bx lr
 
@@ -254,7 +253,7 @@ BankSwitch3_W:					;@ 0x30000-0x3FFFF
 	sub r2,r2,#0x30000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
-	str r3,[v30ptr,#v30MemTbl+3*4]
+	str r3,[v30ptr,#v30MemTblInv-4*4]
 
 	bx lr
 ;@----------------------------------------------------------------------------
@@ -274,7 +273,7 @@ BankSwitch1_W:					;@ 0x10000-0x1FFFF
 	ldr r2,=wsSRAM-0x10000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
-	str r3,[v30ptr,#v30MemTbl+1*4]
+	str r3,[v30ptr,#v30MemTblInv-2*4]
 
 	bx lr
 
