@@ -6,7 +6,7 @@ V0.3.0 - 2022-02-09 (FluBBa)
 	Fixed zip decompression buffer size.
 	Optimized cycle counting.
 	Optimized Program Counter.
-	Optimized mermoy access.
+	Optimized memory access.
 	Optimized opcodes.
 
 V0.2.0 - 2022-01-19 (FluBBa)
@@ -30,7 +30,7 @@ V0.1.1 - 2021-10-17 (FluBBa)
 	Started port to Nintendo DS & devkitPro.
 
 V0.1.0 - 2006-07-28 (FluBBa)
-   Initial release.
+	Initial release for GBA.
 
 V0.0.0 - 2006-07-23 (FluBBa)
-   Started Coding.
+	Started coding on GBA version.

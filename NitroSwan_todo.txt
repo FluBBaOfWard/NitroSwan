@@ -43,7 +43,7 @@ Needs RTC:
 	Tenori-On
 
 Games With Glitches:
-	Sorobang
+	Sorobang, wrong priority for backgrounds?
 
 Speedhacks:
 	Halt (0xf4).
