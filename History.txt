@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.3.1 - 2022-02-11 (FluBBa)
+	Moved EEPROM chip...
+
 V0.3.0 - 2022-02-09 (FluBBa)
 	Added banked SRAM emulation.
 	Fixed zip decompression buffer size.

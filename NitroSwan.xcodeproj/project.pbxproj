@@ -47,6 +47,8 @@
 		9C8347DE27B6D6FD004106B0 /* WSEEPROM.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = WSEEPROM.s; sourceTree = "<group>"; };
 		9C8347DF27B6D6FD004106B0 /* WSEEPROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSEEPROM.h; sourceTree = "<group>"; };
 		9C8347E027B6D6FD004106B0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9C8347E127B6D97C004106B0 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
+		9C8347E227B6D97C004106B0 /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
 		9C8F33EE248ACA2E00996E5A /* nds_asm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nds_asm.h; sourceTree = "<group>"; };
 		9CA52588273D7F3C0022BAD7 /* InternalEEPROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InternalEEPROM.h; sourceTree = "<group>"; };
 		9CAB1A0D274D4C0C00182F62 /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
@@ -137,10 +139,12 @@
 		9C8347DC27B6D6FD004106B0 /* WSEEPROM */ = {
 			isa = PBXGroup;
 			children = (
+				9C8347E127B6D97C004106B0 /* History.txt */,
+				9C8347E227B6D97C004106B0 /* Version.h */,
+				9C8347E027B6D6FD004106B0 /* README.md */,
 				9C8347DD27B6D6FD004106B0 /* WSEEPROM.i */,
 				9C8347DE27B6D6FD004106B0 /* WSEEPROM.s */,
 				9C8347DF27B6D6FD004106B0 /* WSEEPROM.h */,
-				9C8347E027B6D6FD004106B0 /* README.md */,
 			);
 			path = WSEEPROM;
 			sourceTree = "<group>";
