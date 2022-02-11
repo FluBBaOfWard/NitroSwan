@@ -1,14 +1,14 @@
 NitroSwan Todo
 
+	Find speed hacks.
 	Add RTC emulation.
 	Add key mappings (for Y1-Y4).
 	Add border.
-	Fix better sound!
 	Add LCD icons.
-	Graphics on menu screen?
-	Add IO word access?
-	Move EEPROM to it's own repo, rewrite to work under C.
 	Port to GBA.
+	Graphics on menu screen?
+	Fix better sound!
+	Add IO word access?
 	Add serial port emulation.
 
 GFX:

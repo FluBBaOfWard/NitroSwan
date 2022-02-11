@@ -7,3 +7,6 @@
 [submodule "source/Sphinx"]
 	path = source/Sphinx
 url=https://github.com/FluBBaOfWard/Sphinx.git
+[submodule "source/WSEEPROM"]
+	path = source/WSEEPROM
+	url = https://github.com/FluBBaOfWard/WSEEPROM.git

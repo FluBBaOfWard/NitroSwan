@@ -1,7 +1,7 @@
 #ifdef __arm__
 
 #include "Equates.h"
-#include "EEPROM.i"
+#include "WSEEPROM/WSEEPROM.i"
 #include "Sphinx/Sphinx.i"
 #include "ARMV30MZ/ARMV30MZ.i"
 
@@ -305,40 +305,35 @@ extEepromStatusR:
 ;@----------------------------------------------------------------------------
 extEepromDataLowW:
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,extEeprom
 	b wsEepromDataLowW
 ;@----------------------------------------------------------------------------
 extEepromDataHighW:
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,extEeprom
 	b wsEepromDataHighW
 ;@----------------------------------------------------------------------------
 extEepromAdrLowW:
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,extEeprom
 	b wsEepromAddressLowW
 ;@----------------------------------------------------------------------------
 extEepromAdrHighW:
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,extEeprom
 	b wsEepromAddressHighW
 ;@----------------------------------------------------------------------------
 extEepromCommandW:
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,extEeprom
 	b wsEepromCommandW
 ;@----------------------------------------------------------------------------
 extEepromReset:
 ;@----------------------------------------------------------------------------
-	ldr r0,eepromSize
-	cmp r0,#0
+	ldr r1,eepromSize
+	cmp r1,#0
 	bxeq lr
-	ldr r1,=extEepromMem
+	ldr r2,=extEepromMem
 	adr eeptr,extEeprom
 	b wsEepromReset
 ;@----------------------------------------------------------------------------

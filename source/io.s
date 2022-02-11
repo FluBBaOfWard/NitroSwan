@@ -2,7 +2,7 @@
 
 #include "ARMV30MZ/ARMV30MZ.i"
 #include "Sphinx/Sphinx.i"
-#include "EEPROM.i"
+#include "WSEEPROM/WSEEPROM.i"
 
 	.global ioReset
 	.global transferTime
@@ -299,33 +299,28 @@ intEepromStatusR:
 	adr eeptr,intEeprom
 	b wsEepromStatusR
 ;@----------------------------------------------------------------------------
-intEepromDataLowW:
+intEepromDataLowW:		;@ r1 = value
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,intEeprom
 	b wsEepromDataLowW
 ;@----------------------------------------------------------------------------
-intEepromDataHighW:
+intEepromDataHighW:		;@ r1 = value
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,intEeprom
 	b wsEepromDataHighW
 ;@----------------------------------------------------------------------------
-intEepromAdrLowW:
+intEepromAdrLowW:		;@ r1 = value
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,intEeprom
 	b wsEepromAddressLowW
 ;@----------------------------------------------------------------------------
-intEepromAdrHighW:
+intEepromAdrHighW:		;@ r1 = value
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,intEeprom
 	b wsEepromAddressHighW
 ;@----------------------------------------------------------------------------
-intEepromCommandW:
+intEepromCommandW:		;@ r1 = value
 ;@----------------------------------------------------------------------------
-	mov r0,r1
 	adr eeptr,intEeprom
 	b wsEepromCommandW
 ;@----------------------------------------------------------------------------
@@ -334,19 +329,19 @@ intEepromReset:
 	ldr r0,=gSOC
 	ldrb r0,[r0]
 	cmp r0,#SOC_SPHINX
-	ldrmi r1,=wsEepromMem
-	ldreq r1,=wscEepromMem
-	ldrhi r1,=scEepromMem
-	movmi r0,#0x080				;@  1kbit
-	movpl r0,#0x800				;@ 16kbit
+	ldrmi r2,=wsEepromMem
+	ldreq r2,=wscEepromMem
+	ldrhi r2,=scEepromMem
+	movmi r1,#0x080				;@  1kbit
+	movpl r1,#0x800				;@ 16kbit
 	adr eeptr,intEeprom
 	b wsEepromReset
 ;@----------------------------------------------------------------------------
 intEepromSetSize:			;@ r0 = size, 0=1kbit, !0=16kbit
 ;@----------------------------------------------------------------------------
 	cmp r0,#0
-	moveq r0,#0x080				;@  1kbit
-	movne r0,#0x800				;@ 16kbit
+	moveq r1,#0x080				;@  1kbit
+	movne r1,#0x800				;@ 16kbit
 	adr eeptr,intEeprom
 	b wsEepromSetSize
 ;@----------------------------------------------------------------------------

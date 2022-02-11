@@ -29,6 +29,7 @@ SOURCES		:=	source	\
 				source/Shared/Unzip \
 				source/ARMV30MZ \
 				source/Sphinx \
+				source/WSEEPROM \
 				source/WSAudio
 DATA		:=	data
 INCLUDES	:=	include
