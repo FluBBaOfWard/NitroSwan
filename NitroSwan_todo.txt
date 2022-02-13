@@ -1,6 +1,5 @@
 NitroSwan Todo
 
-	Add external interrupt pointer to RTC state.
 	Check RTC emulation.
 	Add key mappings (for Y1-Y4).
 	Add border.
@@ -38,8 +37,10 @@ Needs Large (256kB) SRAM:
 	Tenori-On
 
 Needs RTC:
+	Dicing Knight.
 	Dokodemo Hamster 3 - O Dekake Saffron
 	Inu yasha
+	Judgement Sword.
 	Robot Works
 	Tenori-On
 

@@ -35,10 +35,6 @@ int ioGetStateSize(void);
 /// Initializes internal EEPROM.
 void initIntEeprom(void *eepromAdr);
 
-/// Copies the time from the NDS RTC to the WS RTC.
-void transferTime(void);
-
-
 #ifdef __cplusplus
 } // extern "C"
 #endif

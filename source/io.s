@@ -5,7 +5,6 @@
 #include "WSEEPROM/WSEEPROM.i"
 
 	.global ioReset
-	.global transferTime
 	.global refreshEMUjoypads
 	.global ioSaveState
 	.global ioLoadState
@@ -45,7 +44,6 @@ ioReset:
 	stmfd sp!,{lr}
 
 	bl intEepromReset
-//	bl transferTime
 
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
@@ -92,28 +90,6 @@ ioGetStateSize:		;@ Out r0=state size.
 	.type   ioGetStateSize STT_FUNC
 ;@----------------------------------------------------------------------------
 	mov r0,#0x100
-	bx lr
-;@----------------------------------------------------------------------------
-transferTime:
-	.type transferTime STT_FUNC
-;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
-
-	bl getTime					;@ r0 = ??ssMMHH, r1 = ??DDMMYY
-	ldr r2,=rtcRegs
-	strb r1,[r2,#0x91]			;@ Year
-	mov r1,r1,lsr#8
-	strb r1,[r2,#0x92]			;@ Month
-	mov r1,r1,lsr#8
-	strb r1,[r2,#0x93]			;@ Day
-	and r1,r0,#0x3F
-	strb r1,[r2,#0x94]			;@ Hours
-	mov r0,r0,lsr#8
-	strb r0,[r2,#0x95]			;@ Minutes
-	mov r0,r0,lsr#8
-	strb r0,[r2,#0x96]			;@ Seconds
-
-	ldmfd sp!,{lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 refreshEMUjoypads:			;@ Call every frame
@@ -179,10 +155,10 @@ IOPortA_R:		;@ Player1...
 ;@----------------------------------------------------------------------------
 updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 ;@----------------------------------------------------------------------------
-	ldrb r0,rtcTimer
+	ldrb r0,slowTimer
 	subs r0,r0,#1
-	movmi r0,#59
-	strb r0,rtcTimer
+	movmi r0,#74
+	strb r0,slowTimer
 	bxpl lr
 
 	ldr r0,batteryLevel
@@ -190,83 +166,12 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 	movmi r0,#1
 	str r0,batteryLevel
 
-	ldr r2,=rtcRegs
-	ldrb r0,[r2,#0x90]			;@ RTC control
-	tst r0,#1					;@ Enabled?
-	bxeq lr
-
-	ldrb r0,[r2,#0x96]			;@ Seconds
-	add r0,r0,#0x01
-	and r1,r0,#0x0F
-	cmp r1,#0x0A
-	addpl r0,r0,#0x06
-	cmp r0,#0x60
-	movpl r0,#0
-	strb r0,[r2,#0x96]			;@ Seconds
-	bmi checkForAlarm
-
-	ldrb r0,[r2,#0x95]			;@ Minutes
-	add r0,r0,#0x01
-	and r1,r0,#0x0F
-	cmp r1,#0x0A
-	addpl r0,r0,#0x06
-	cmp r0,#0x60
-	movpl r0,#0
-	strb r0,[r2,#0x95]			;@ Minutes
-	bmi checkForAlarm
-
-	ldrb r0,[r2,#0x94]			;@ Hours
-	add r0,r0,#0x01
-	and r1,r0,#0x0F
-	cmp r1,#0x0A
-	addpl r0,r0,#0x06
-	cmp r0,#0x24
-	movpl r0,#0
-	strb r0,[r2,#0x94]			;@ Hours
-	bmi checkForAlarm
-
-	ldrb r0,[r2,#0x93]			;@ Days
-	add r0,r0,#0x01
-	and r1,r0,#0x0F
-	cmp r1,#0x0A
-	addpl r0,r0,#0x06
-	cmp r0,#0x32
-	movpl r0,#0
-	strb r0,[r2,#0x93]			;@ Days
-	bmi checkForAlarm
-
-	ldrb r0,[r2,#0x92]			;@ Months
-	add r0,r0,#0x01
-	and r1,r0,#0x0F
-	cmp r1,#0x0A
-	addpl r0,r0,#0x06
-	cmp r0,#0x13
-	movpl r0,#1
-	strb r0,[r2,#0x92]			;@ Months
-
-checkForAlarm:
-	ldrb r0,[r2,#0x96]			;@ Seconds
-	cmp r0,#0x00
-	ldrbeq r0,[r2,#0x95]		;@ RTC Minutes
-	ldrbeq r1,[r2,#0x9A]		;@ ALARM Minutes
-	cmpeq r0,r1
-	ldrbeq r0,[r2,#0x94]		;@ RTC Hours
-	ldrbeq r1,[r2,#0x99]		;@ ALARM Hours
-	cmpeq r0,r1
-	ldrbeq r0,[r2,#0x93]		;@ RTC Days
-	ldrbeq r1,[r2,#0x98]		;@ ALARM Days
-	moveq r0,#0x02				;@ Cartridge interrupt
-//	beq setInterruptExternal
-
-	bx lr
-
+	b cartRtcUpdate
 
 ;@----------------------------------------------------------------------------
-rtcRegs:
-	.space 0x100
 batteryLevel:
 	.long 0xFFFF				;@ Max = 0xFFFF (0x3FF)
-rtcTimer:
+slowTimer:
 	.byte 0
 	.byte 0
 	.byte 0

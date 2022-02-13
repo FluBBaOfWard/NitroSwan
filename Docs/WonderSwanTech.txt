@@ -694,6 +694,7 @@ Mapped to cartridge. Luxor1 / Luxor2
                         - $13 - ???
                         - $14 - Set Time
                         - $15 - Get Time
+                        - $18 - Set Alarm
                 Read:
                          - bit 7 - Ack [HACK = 1]
  - $CB - $D1 - RTC Data

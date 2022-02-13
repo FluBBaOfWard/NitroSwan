@@ -59,6 +59,7 @@
 	.global cartRtcCommandW
 	.global cartRtcDataR
 	.global cartRtcDataW
+	.global cartRtcUpdate
 
 	.syntax unified
 	.arm
@@ -371,14 +372,7 @@ cartRtcCommandW:
 cartRtcDataR:
 ;@----------------------------------------------------------------------------
 	adr rtcptr,cartRtc
-	stmfd sp!,{r4,r12,lr}
-	bl wsRtcDataR
-	mov r4,r0
-	mov r0,#0xCB
-	mov r1,r4
-	blx debugIOUnimplR
-	mov r0,r4
-	ldmfd sp!,{r4,r12,pc}
+	b wsRtcDataR
 ;@----------------------------------------------------------------------------
 cartRtcDataW:
 ;@----------------------------------------------------------------------------
@@ -399,6 +393,11 @@ cartRtcReset:
 	mov r1,r0
 	adr rtcptr,cartRtc
 	b wsRtcSetDateTime
+;@----------------------------------------------------------------------------
+cartRtcUpdate:		;@ r0=rtcptr. Call every second.
+;@----------------------------------------------------------------------------
+	adr rtcptr,cartRtc
+	b wsRtcUpdate
 ;@----------------------------------------------------------------------------
 cartRtc:
 	.space wsRtcSize
