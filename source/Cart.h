@@ -13,6 +13,7 @@ extern u8 gMachineSet;
 extern u8 gSOC;
 extern u8 gLang;
 extern u8 gPaletteBank;
+extern u8 gGameID;
 extern int sramSize;
 extern int eepromSize;
 

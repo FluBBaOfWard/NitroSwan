@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.3.1 2022-02-11"
+#define EMUVERSION "V0.3.1 2022-02-13"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -23,6 +23,7 @@ static void batteryChange(void);
 static void speedHackSet(void);
 
 static void uiMachine(void);
+static void updateGameInfo(void);
 
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
@@ -42,6 +43,7 @@ const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, 
 const u8 menuXBack[] = {0,0,0,0,2,2,2,2,1,1};
 
 u8 gGammaValue = 0;
+char gameInfoString[32];
 
 const char *const autoTxt[]  = {"Off", "On", "With R"};
 const char *const speedTxt[] = {"Normal", "200%", "Max", "50%"};
@@ -110,11 +112,14 @@ void uiOptions() {
 
 void uiAbout() {
 	cls(1);
+	updateGameInfo();
 	drawTabs();
 	drawText(" B:        WS A button", 4, 0);
 	drawText(" A:        WS B button", 5, 0);
 	drawText(" Y/Select: Power button", 6, 0);
 	drawText(" X/Start:  Start button", 7, 0);
+
+	drawText(gameInfoString, 9, 0);
 
 	drawText(" NitroSwan    " EMUVERSION, 21, 0);
 	drawText(" Sphinx       " SPHINXVERSION, 22, 0);
@@ -187,6 +192,11 @@ void resetGame() {
 	loadCart();
 }
 
+void updateGameInfo() {
+	char catalog[8];
+	char2HexStr(catalog, gGameID);
+	strlMerge(gameInfoString, " Game #: 0x", catalog, sizeof(gameInfoString));
+}
 //---------------------------------------------------------------------------------
 void debugIO(u8 port, u8 val, const char *message) {
 	char debugString[32];

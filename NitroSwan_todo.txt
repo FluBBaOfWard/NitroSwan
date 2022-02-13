@@ -1,12 +1,13 @@
 NitroSwan Todo
 
-	Find speed hacks.
-	Add RTC emulation.
+	Add external interrupt pointer to RTC state.
+	Check RTC emulation.
 	Add key mappings (for Y1-Y4).
 	Add border.
 	Add LCD icons.
 	Port to GBA.
 	Graphics on menu screen?
+	Find speed hacks.
 	Fix better sound!
 	Add IO word access?
 	Add serial port emulation.
@@ -76,7 +77,7 @@ Speedhacks:
 	* WonderSwan Handy Sonar
 	* Zakull Bootsplash
 
-	"Bakumatsu Rouman Tokubetsu"		- JR (0x65,0xF8) @0x2002
+	"Guilty Gear Petit"		- JR (0x72,0xF9) @0x2002
 
 	"Bios"								- JR (0x67,0xF9) @0xFF
 										- JR (0x6E,0xF9) @0xFF

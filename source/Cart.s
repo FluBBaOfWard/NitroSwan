@@ -2,6 +2,7 @@
 
 #include "Equates.h"
 #include "WSEEPROM/WSEEPROM.i"
+#include "WSRTC/WSRTC.i"
 #include "Sphinx/Sphinx.i"
 #include "ARMV30MZ/ARMV30MZ.i"
 
@@ -41,6 +42,7 @@
 	.global gSOC
 	.global gLang
 	.global gPaletteBank
+	.global gGameID
 
 	.global extEepromDataLowR
 	.global extEepromDataHighR
@@ -53,6 +55,10 @@
 	.global extEepromAdrHighW
 	.global extEepromCommandW
 
+	.global cartRtcStatusR
+	.global cartRtcCommandW
+	.global cartRtcDataR
+	.global cartRtcDataW
 
 	.syntax unified
 	.arm
@@ -61,9 +67,11 @@
 	.align 2
 
 ROM_Space:
+//	.incbin "wsroms/Anchorz Field (Japan).ws"
 //	.incbin "wsroms/Crazy Climber (J) [M][!].ws"
 //	.incbin "wsroms/Guilty Gear Petit (J).wsc"
 //	.incbin "wsroms/Kaze no Klonoa - Moonlight Museum (Japan).ws"
+//	.incbin "wsroms/Makaimura for WonderSwan (Japan).ws"
 //	.incbin "wsroms/Mr. Driller (J) [!].wsc"
 //	.incbin "wsroms/Tetris (Japan).wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
@@ -126,8 +134,11 @@ loadCart: 		;@ Called from C:
 	str r1,[v30ptr,#v30MemTblInv-0x1*4]		;@ 0 RAM
 	ldr r6,[v30ptr,#v30MemTblInv-0x10*4]	;@ MemMap
 
-	ldr r3,=0xFFFFB			;@ NVRAM size
-	ldrb r3,[r6,r3]
+	ldr r4,=0xFFFF8			;@ Game ID
+	ldrb r0,[r6,r4]
+	strb r0,gGameID
+	add r4,r4,#3			;@ NVRAM size
+	ldrb r3,[r6,r4]
 	mov r0,#0				;@ r0 = sram size
 	mov r1,#0				;@ r1 = eeprom size
 	cmp r3,#0x01			;@ 64kbit sram
@@ -148,6 +159,10 @@ loadCart: 		;@ Called from C:
 	moveq r1,#0x400
 	str r0,sramSize
 	str r1,eepromSize
+
+	add r4,r4,#2			;@ RTC present
+	ldrb r0,[r6,r4]
+	strb r0,rtcPresent
 
 	ldrb r5,gMachine
 	cmp r5,#HW_WONDERSWAN
@@ -180,7 +195,9 @@ loadCart: 		;@ Called from C:
 	moveq r2,#0xC000
 	bleq memset
 
+//	bl hacksInit
 	bl extEepromReset
+	bl cartRtcReset
 	bl gfxReset
 	bl ioReset
 	bl soundReset
@@ -340,6 +357,52 @@ extEepromReset:
 extEeprom:
 	.space wsEepromSize
 
+;@----------------------------------------------------------------------------
+cartRtcStatusR:
+;@----------------------------------------------------------------------------
+	adr rtcptr,cartRtc
+	b wsRtcStatusR
+;@----------------------------------------------------------------------------
+cartRtcCommandW:
+;@----------------------------------------------------------------------------
+	adr rtcptr,cartRtc
+	b wsRtcCommandW
+;@----------------------------------------------------------------------------
+cartRtcDataR:
+;@----------------------------------------------------------------------------
+	adr rtcptr,cartRtc
+	stmfd sp!,{r4,r12,lr}
+	bl wsRtcDataR
+	mov r4,r0
+	mov r0,#0xCB
+	mov r1,r4
+	blx debugIOUnimplR
+	mov r0,r4
+	ldmfd sp!,{r4,r12,pc}
+;@----------------------------------------------------------------------------
+cartRtcDataW:
+;@----------------------------------------------------------------------------
+	adr rtcptr,cartRtc
+	b wsRtcDataW
+;@----------------------------------------------------------------------------
+cartRtcReset:
+;@----------------------------------------------------------------------------
+	ldrb r0,rtcPresent
+	cmp r0,#0
+	bxeq lr
+	stmfd sp!,{lr}
+	adr rtcptr,cartRtc
+	bl wsRtcReset
+	bl getTime					;@ r0 = ??ssMMHH, r1 = ??DDMMYY
+	ldmfd sp!,{lr}
+	mov r2,r1
+	mov r1,r0
+	adr rtcptr,cartRtc
+	b wsRtcSetDateTime
+;@----------------------------------------------------------------------------
+cartRtc:
+	.space wsRtcSize
+
 romNum:
 	.long 0						;@ romnumber
 romInfo:						;@
@@ -362,7 +425,11 @@ gLang:
 	.byte 1						;@ language
 gPaletteBank:
 	.byte 0						;@ palettebank
-	.space 1					;@ alignment.
+gGameID:
+	.byte 0						;@ Game ID
+rtcPresent:
+	.byte 0						;@ RTC present in cartridge
+	.space 3					;@ alignment.
 
 wsHeader:
 romSpacePtr:

@@ -10,3 +10,6 @@ url=https://github.com/FluBBaOfWard/Sphinx.git
 [submodule "source/WSEEPROM"]
 	path = source/WSEEPROM
 	url = https://github.com/FluBBaOfWard/WSEEPROM.git
+[submodule "source/WSRTC"]
+	path = source/WSRTC
+	url = https://github.com/FluBBaOfWard/WSRTC.git

@@ -572,7 +572,7 @@
                 bit 5 - VBlank Timer
                 bit 4 - Drawing line detection
                 bit 3 - Serial receive
-                bit 2 - RTC Alarm
+                bit 2 - RTC Alarm (cartridge)
                 bit 1 - Key press
                 bit 0 - Serial transmit
  - $B3 - $00 - Communication direction
@@ -596,7 +596,7 @@
                 bit 5 - VBlank Timer
                 bit 4 - Drawing line detection
                 bit 3 - Serial receive
-                bit 2 - RTC Alarm
+                bit 2 - RTC Alarm (cartridge)
                 bit 1 - Key press
                 bit 0 - Serial transmit
  - $B5 - $40 - Controls
@@ -621,7 +621,7 @@
                 bit 5 - VBlank Timer
                 bit 4 - Drawing line detection
                 bit 3 - Serial receive
-                bit 2 - RTC Alarm
+                bit 2 - RTC Alarm (cartridge)
                 bit 1 - Key press
                 bit 0 - Serial transmit
  - $B7 - $00 - INT_NMI_CTRL, some games write 0x10/0x00
@@ -687,7 +687,7 @@ Mapped to cartridge. Luxor1 / Luxor2
                 bit 1 - Write complete (Read only)
                 bit 0 - Read complete (Read only)
  - $C9 - $D1 - ^^^
- - $CA - $D1 - RTC Command
+ - $CA - $D1 - RTC Command / Status
                 Write :
                         - $10 - Reset
                         - $12 - ??? Alarm ???

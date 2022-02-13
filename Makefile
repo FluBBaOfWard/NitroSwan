@@ -30,6 +30,7 @@ SOURCES		:=	source	\
 				source/ARMV30MZ \
 				source/Sphinx \
 				source/WSEEPROM \
+				source/WSRTC \
 				source/WSAudio
 DATA		:=	data
 INCLUDES	:=	include
