@@ -85,6 +85,7 @@ probably never have been made.
 Thanks to:
 Flavor & Koyote for WonderSwan info.
 Godzil for the boot rom stubs. https://github.com/Godzil/NewOswan
+lidnariq for RTC info.
 Dwedit for help and inspiration with a lot of things.
 
 

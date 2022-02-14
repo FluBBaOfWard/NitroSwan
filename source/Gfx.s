@@ -408,7 +408,6 @@ endFrameGfx:				;@ Called just before screen end (~line 152)	(r0-r3 safe to use)
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
-	bl updateSlowIO				;@ RTC/Alarm and more
 	bl updateLED
 	ldr r0,tmpScroll
 	bl copyScrollValues
@@ -431,6 +430,7 @@ endFrameGfx:				;@ Called just before screen end (~line 152)	(r0-r3 safe to use)
 
 	mov r0,#1
 	str r0,frameDone
+	bl updateSlowIO				;@ RTC/Alarm and more
 
 	ldmfd sp!,{lr}
 	bx lr
@@ -472,7 +472,7 @@ getInterruptVector:
 	adr spxptr,sphinx0
 	b wsvGetInterruptVector
 ;@----------------------------------------------------------------------------
-setInterruptExternal:			;@ r0=int number
+setInterruptExternal:			;@ r0=irq state
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvSetInterruptExternal

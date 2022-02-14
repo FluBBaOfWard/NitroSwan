@@ -386,6 +386,7 @@ cartRtcReset:
 	bxeq lr
 	stmfd sp!,{lr}
 	adr rtcptr,cartRtc
+	ldr r1,=setInterruptExternal
 	bl wsRtcReset
 	bl getTime					;@ r0 = ??ssMMHH, r1 = ??DDMMYY
 	ldmfd sp!,{lr}

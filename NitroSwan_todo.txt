@@ -1,6 +1,5 @@
 NitroSwan Todo
 
-	Check RTC emulation.
 	Add key mappings (for Y1-Y4).
 	Add border.
 	Add LCD icons.
@@ -41,7 +40,6 @@ Needs RTC:
 	Dokodemo Hamster 3 - O Dekake Saffron
 	Inu yasha
 	Judgement Sword.
-	Robot Works
 	Tenori-On
 
 Games With Glitches:
