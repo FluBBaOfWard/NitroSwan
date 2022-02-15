@@ -36,13 +36,14 @@
 	.global gRomSize
 	.global maxRomSize
 	.global romMask
+	.global gGameID
+	.global cartOrientation
 	.global gConfig
 	.global gMachine
 	.global gMachineSet
 	.global gSOC
 	.global gLang
 	.global gPaletteBank
-	.global gGameID
 
 	.global extEepromDataLowR
 	.global extEepromDataHighR
@@ -161,7 +162,12 @@ loadCart: 		;@ Called from C:
 	str r0,sramSize
 	str r1,eepromSize
 
-	add r4,r4,#2			;@ RTC present
+	add r4,r4,#1			;@ Orientation
+	ldrb r0,[r6,r4]
+	and r0,r0,#1
+	strb r0,cartOrientation
+
+	add r4,r4,#1			;@ RTC present
 	ldrb r0,[r6,r4]
 	strb r0,rtcPresent
 
@@ -429,7 +435,9 @@ gGameID:
 	.byte 0						;@ Game ID
 rtcPresent:
 	.byte 0						;@ RTC present in cartridge
-	.space 3					;@ alignment.
+cartOrientation:
+	.byte 0						;@ 1=Vertical, 0=Horizontal
+	.space 2					;@ alignment.
 
 wsHeader:
 romSpacePtr:

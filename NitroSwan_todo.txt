@@ -1,12 +1,12 @@
 NitroSwan Todo
 
-	Add key mappings (for Y1-Y4).
 	Add border.
 	Add LCD icons.
 	Port to GBA.
 	Graphics on menu screen?
 	Find speed hacks.
 	Fix better sound!
+	Better key mappings.
 	Add IO word access?
 	Add serial port emulation.
 

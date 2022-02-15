@@ -100,6 +100,11 @@ gfxReset:					;@ Called with CPU reset
 	bl paletteInit				;@ Do palette mapping
 	bl paletteTxAll				;@ Transfer it
 
+	ldr r0,=cartOrientation
+	ldr spxptr,=sphinx0
+	ldrb r0,[r0]
+	strb r0,[spxptr,#wsvOrientation]
+
 	ldmfd sp!,{pc}
 
 ;@----------------------------------------------------------------------------

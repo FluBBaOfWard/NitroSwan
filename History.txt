@@ -1,8 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.3.1 - 2022-02-11 (FluBBa)
-	Moved EEPROM chip...
+V0.3.1 - 2022-02-15 (FluBBa)
+	Added RTC emulation.
+	Better mapping of input.
 
 V0.3.0 - 2022-02-09 (FluBBa)
 	Added banked SRAM emulation.

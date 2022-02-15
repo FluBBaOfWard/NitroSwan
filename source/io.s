@@ -95,9 +95,9 @@ ioGetStateSize:		;@ Out r0=state size.
 refreshEMUjoypads:			;@ Call every frame
 ;@----------------------------------------------------------------------------
 
-		ldr r4,=frameTotal
-		ldr r4,[r4]
-		movs r0,r4,lsr#2		;@ C=frame&2 (autofire alternates every other frame)
+		ldr r0,=frameTotal
+		ldr r0,[r0]
+		movs r0,r0,lsr#2		;@ C=frame&2 (autofire alternates every other frame)
 	ldr r4,EMUinput
 	mov r3,r4
 	and r0,r4,#0xf0
@@ -108,29 +108,48 @@ refreshEMUjoypads:			;@ Call every frame
 	adr r1,dulr2dlur
 	ldrb r0,[r1,r0,lsr#4]
 
+	ldr spxptr,=sphinx0
+	ldrb r1,[spxptr,#wsvOrientation]
+	cmp r1,#0
+	bne verticalJoypad
+
+	tst r4,#0x200				;@ NDS L?
+	moveq r0,r0,lsl#4			;@ Map dpad to X or Y keys.
+
+	tst r4,#0x08				;@ NDS Start
+	orrne r0,r0,#0x200			;@ WS Start
 
 	ands r1,r3,#3				;@ A/B buttons
 	cmpne r1,#3
 	eorne r1,r1,#3
 	tst r2,#0x400				;@ Swap A/B?
 	andeq r1,r3,#3
-	orr r0,r0,r1,lsl#6
+	orr r0,r0,r1,lsl#10
 
-	tst r4,#0x08				;@ NDS Start
-	orrne r0,r0,#0x20			;@ WS Start
-
-	strb r0,joy0State
-
+	str r0,joy0State
 	bx lr
+;@----------------------------------------------------------------------------
+verticalJoypad:
+;@----------------------------------------------------------------------------
+	tst r4,#0x08				;@ NDS Start
+	orrne r0,r0,#0x200			;@ WS Start
 
+	and r1,r4,#0x3				;@ A/B buttons
+	and r2,r4,#0xC00			;@ X/Y buttons
+	orr r1,r1,r2,lsr#8
+	adr r2,abxy2ypad
+	ldrb r1,[r2,r1]
+	orr r0,r0,r1,lsl#4
+
+	str r0,joy0State
+	bx lr
+;@----------------------------------------------------------------------------
 joyCfg: .long 0x00ff01ff	;@ byte0=auto mask, byte1=(saves R), byte2=R auto mask
 							;@ bit 31=single/multi, 30,29=1P/2P, 27=(multi) link active, 24=reset signal received
 playerCount:.long 0			;@ Number of players in multilink.
-joy0State:	.byte 0
-			.byte 0
-			.byte 0
-			.byte 0
+joy0State:	.long 0
 dulr2dlur:	.byte 0x00,0x02,0x08,0x0A, 0x01,0x03,0x09,0x0B, 0x04,0x06,0x0C,0x0E, 0x05,0x07,0x0D,0x0F
+abxy2ypad:	.byte 0x00,0x02,0x04,0x06, 0x01,0x03,0x05,0x07, 0x08,0x0A,0x0C,0x0E, 0x09,0x0B,0x0D,0x0F
 
 EMUinput:			;@ This label here for main.c to use
 	.long 0			;@ EMUjoypad (this is what Emu sees)
@@ -140,14 +159,17 @@ IOPortA_R:		;@ Player1...
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
 	ldrb r1,[spxptr,#wsvControls]
-	and r1,r1,#0xF0
-	ldrb r0,joy0State
-	tst r1,#0x20
-	biceq r0,r0,#0x0F
-	tst r1,#0x40
-	movne r0,r0,lsr#4
+	and r1,r1,#0x70
+	ldr r0,joy0State
+	tst r1,#0x10		;@ Y keys enabled?
+	biceq r0,r0,#0x00F
+	tst r1,#0x20		;@ X keys enabled?
+	biceq r0,r0,#0x0F0
+	tst r1,#0x40		;@ Buttons enabled?
+	biceq r0,r0,#0xF00
+	orr r0,r0,r0,lsr#4
+	orr r0,r0,r0,lsr#4
 	and r0,r0,#0x0F
-
 	orr r0,r0,r1
 
 	bx lr
