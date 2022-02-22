@@ -1,8 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.3.1 - 2022-02-15 (FluBBa)
+V0.3.1 - 2022-02-22 (FluBBa)
 	Added RTC emulation.
+	Added a border to emu screen.
 	Better mapping of input.
 
 V0.3.0 - 2022-02-09 (FluBBa)

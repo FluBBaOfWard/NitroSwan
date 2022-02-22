@@ -9,6 +9,8 @@
 #include "Gui.h"
 #include "FileHandling.h"
 #include "EmuFont.h"
+#include "WSBorder.h"
+#include "WSCBorder.h"
 #include "Cart.h"
 #include "cpu.h"
 #include "Gfx.h"
@@ -176,6 +178,7 @@ static void setupGraphics() {
 				 | DISPLAY_SPR_ACTIVE
 				 | DISPLAY_WIN0_ON
 				 | DISPLAY_WIN1_ON
+				 | DISPLAY_BG_EXT_PALETTE
 				 ;
 	videoSetMode(GFX_DISPCNT);
 	GFX_BG0CNT = BG_32x32 | BG_MAP_BASE(0) | BG_COLOR_16 | BG_TILE_BASE(2) | BG_PRIORITY(1);
@@ -196,6 +199,14 @@ static void setupGraphics() {
 	REG_BG1VOFS_SUB = 0;
 	map0sub = BG_MAP_RAM_SUB(0);
 	map1sub = BG_MAP_RAM_SUB(1);
+
+//	decompress(WSBorderTiles, BG_TILE_RAM(1), LZ77Vram);
+//	decompress(WSBorderMap, BG_MAP_RAM(2), LZ77Vram);
+//	memcpy(VRAM_F, WSBorderPal, WSBorderPalLen);
+	decompress(WSCBorderTiles, BG_TILE_RAM(1), LZ77Vram);
+	decompress(WSCBorderMap, BG_MAP_RAM(2), LZ77Vram);
+	memcpy(VRAM_F, WSCBorderPal, WSCBorderPalLen);
+	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 
 	decompress(EmuFontTiles, BG_GFX_SUB+0x1200, LZ77Vram);
 	setupMenuPalette();

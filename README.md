@@ -62,9 +62,9 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 			Max: Games can run up to 4 times normal speed (might change).
 			50%: Game runs at half speed.
 		Autoload State: Toggle Savestate autoloading.
-			Automagically load the savestate associated with the current game.
+			Automagically load the savestate associated with the selected game.
 		Autoload NVRAM: Toggle EEPROM/SRAM autoloading.
-			Automagically load the EEPROM/SRAM associated with the current game.
+			Automagically load the EEPROM/SRAM associated with the selected game.
 		Autosave Settings: This will save settings when
 			leaving menu if any changes are made.
 		Autopause Game: Toggle if the game should pause when opening the menu.
@@ -77,6 +77,13 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 
 ### About:
 	Some info about the emulator and game...
+
+
+## Controls:
+In horizontal games the d-pad is mapped to WS X1-X4. A & B buttons are mapped to WS A & B.
+Holding L maps the dpad to WS Y1-Y4.
+
+In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS X1-X4.
 
 ## Credits:
 

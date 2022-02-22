@@ -2,13 +2,14 @@ NitroSwan Todo
 
 	Add border.
 	Add LCD icons.
-	Port to GBA.
 	Graphics on menu screen?
 	Find speed hacks.
+	Port to GBA.
 	Fix better sound!
 	Better key mappings.
 	Add IO word access?
 	Add serial port emulation.
+	SD Gundam Operation U.C pauses like hitting start, but with a message about the low battery.
 
 GFX:
 	Optimize color transfer?

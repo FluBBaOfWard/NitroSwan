@@ -1,0 +1,11 @@
+
+-gB 8
+
+# use lz77 compression
+-gzl
+
+# map output, lz77 compression
+-mzl
+
+# standard 8bpp tilereduction
+-mR8
