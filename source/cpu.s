@@ -49,8 +49,9 @@ runStart:
 //	ldrne r2,=systemMemory+0xB3
 //	ldrbne r2,[r2]
 //	tstne r2,#4					;@ Power button NMI enabled?
-//	movne r0,#0x08				;@ 0x08 = Power button on WS
-//	blne setInterruptExternal
+//	and r0,r3,#0x04				;@ NDS Select?
+//	ldr v30ptr,=V30OpTable
+//	bl V30SetNMIPin
 
 	bl refreshEMUjoypads		;@ Z=1 if communication ok
 

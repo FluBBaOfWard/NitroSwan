@@ -75,17 +75,6 @@
       $C000 - $FDFF                           WSC only
       $FE00 - $FFFF   Palettes (WSC)          WSC only
 
-      Some games required initialized (?) part of RAM, for example:
-
-        $75AC = $41 = "A"
-        $75AD = $5F = "_"
-        $75AE = $43 = "C"
-        $75AF = $31 = "1"
-        $75B0 = $6E = "n"
-        $75B1 = $5F = "_"
-        $75B2 = $63 = "c"
-        $75B3 = $31 = "1"
-
 4. VIDEO
 
    Screen size     - 224 x 144 pixels (28 x 18 tiles)
@@ -157,10 +146,10 @@
    Location of those samples is unknown.
 
    Volume of each audio channel is controlled by writing two 4 bit values ( for left/right output
-   channel) into ports $88 - $8B. Master volume is controlled by  port $91
-   (2 bit value = first  'used' bit in master volume output (11 bit wide)  , D/A converter can
-   read only 8 bits , starting from  bit set in port $91 , for example if first 'used' bit
-   is set to 2 , D/A using bits 2,3,4,5,6,7,8,9  for audio output)
+   channel) into ports $88 - $8B. Master volume is controlled by port $91
+   (2 bit value = first 'used' bit in master volume output (11 bit wide), D/A converter can
+   read only 8 bits, starting from bit set in port $91, for example if first 'used' bit
+   is set to 2, D/A using bits 2,3,4,5,6,7,8,9 for audio output)
 
    Additional (selectable) functions :
     - channel 2 - voice - can play 8 bit samples writing frequently data to ch2 volume I/O port
@@ -173,7 +162,7 @@
 
    There's also Audio DMA (please check ports $4a - $52).
    Transfer rate is 12KHz (HBlank).
-   I/O ports $4A-$4B and $4E-$4F are autoupdated during data transfer .
+   I/O ports $4A-$4B and $4E-$4F are autoupdated during data transfer.
 
 6. ROM HEADER
 
@@ -184,7 +173,7 @@
        00 - WS Mono
        01 - WS Color
  2   - Cart ID number for developer defined at byte 0
- 3   - ??
+ 3   - Cart revision
  4   - ROM Size
        01 - ?
        02 - 4Mbit
@@ -245,7 +234,7 @@
    and VBlank begin interrupt is 6)
 
 8. CONTROLS  -  It's easy to check buttons status reading/writing port $B5(see below).
-     There's required some delay between writing and reading  port $B5 ( few NOP-s)
+     There's required some delay between writing and reading port $B5 ( few NOP-s)
 
 9. Internal EEPROM Communication(?) and 'owner' info structure
    I/O Ports in range 0xBA -0xBE seems to be used for serial reading of internal
@@ -312,10 +301,10 @@
  - $05 - $00 - Determines the number of the sprite to start drawing with
  - $06 - $00 - Determines the number of the sprite to stop drawing.
  - $07 - $26 - Determines the location of the foreground and background screens in RAM.
-                bits 7-0 : ?fff?bbb
-                bit  7   - Unknown
+                bits 7-0 : ffffbbbb
+                bit  7   - MSB WSC
                 bits 6-4 - Determines foreground location (address is 00fff000 00000000)
-                bit  3   - Unknown
+                bit  3   - MSB WSC
                 bits 2-0 - Determines background location (address is 00bbb000 00000000)
 		        Back Ground Tile Map Base can move from $00000-$03800 ($800 bytes step)
  - $08 - $FE - x0 of FG window (x0,y0) = top left corner,  (x1,y1) = bottom right corner
@@ -401,7 +390,7 @@
  - $4A - $00 - sound DMA source address
  - $4B - $00 - ^^^
  - $4C - $00 - sound DMA source memory segment bank
- - $4D - $00 - ???
+ - $4D - $00 - 0
  - $4E - $00 - DMA transfer size (in bytes)
  - $4F - $00 - ^^^
  - $50 - $00 - ^^^
@@ -431,7 +420,7 @@
                 [bit 7 = 16/4 color/tile , bit 6 - color/mono mode, bit 5 - 'packed' mode on/off]
  - $61 - $00 - ???
  - $62 - $00 - WSC System
-               bit 7 = System (0=WonderSwan (Color), 1=SwanCrystal)
+               bit 7 = System (0=WonderSwan Color, 1=SwanCrystal)
                bit 0 = Power off, write 1
  - $63 - $00 - ???
  - $64 - $00 - ???
@@ -532,7 +521,7 @@
  - $9B - $00 - REG_SND_9B
  - $9C - $00 - REG_SND_9C
  - $9D - $00 - REG_SND_9D
- - $9E - $03 - REG_SND_9E
+ - $9E - $03 - Volume set from Bios 0-3.
  - $9F - $00 - ???
  - $A0 - $87 - Hardware type
                 bit 7 - 1 = finnished booting?
