@@ -75,6 +75,7 @@ ROM_Space:
 //	.incbin "wsroms/Kaze no Klonoa - Moonlight Museum (Japan).ws"
 //	.incbin "wsroms/Makaimura for WonderSwan (Japan).ws"
 //	.incbin "wsroms/Mr. Driller (J) [!].wsc"
+//	.incbin "wsroms/SD Gundam - Operation U.C. (Japan).wsc"
 //	.incbin "wsroms/Tetris (Japan).wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
 //	.incbin "wsroms/XI Little (Japan).wsc"

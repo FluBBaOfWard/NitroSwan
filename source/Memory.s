@@ -72,35 +72,35 @@ cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 	orr r0,r12,r0,lsl#8
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
-cpuReadMem20:		;@ r0=address set in top 20 bits
+cpuReadMem20:		;@ In r0=address set in top 20 bits. Out r0=val, r1=phyAdr
 ;@----------------------------------------------------------------------------
 	mvn r2,r0,lsr#28
 	ldr r1,[v30ptr,r2,lsl#2]
 	mov r2,r0,lsr#12
-	ldrb r0,[r1,r0,lsr#12]
+	ldrb r0,[r1,r0,lsr#12]!
 bootRomSwitch:
 	subs r2,r2,#0xFE000
 	bxcc lr
 	ldr r1,=biosBase
 	ldr r1,[r1]
-	ldrb r0,[r1,r2]
+	ldrb r0,[r1,r2]!
 	bx lr
 
 ;@----------------------------------------------------------------------------
-cpuReadMem20W:		;@ r0=address set in top 20 bits
+cpuReadMem20W:		;@ In r0=address set in top 20 bits. Out r0=val, r1=phyAdr
 ;@----------------------------------------------------------------------------
 	tst r0,#0x1000
 	bne cpuReadWordUnaligned
 	mvn r2,r0,lsr#28
 	ldr r1,[v30ptr,r2,lsl#2]
 	mov r2,r0,lsr#12
-	ldrh r0,[r1,r2]
+	ldrh r0,[r1,r2]!
 bootRomSwitch2:
 	subs r2,r2,#0xFE000
 	bxcc lr
 	ldr r1,=biosBase
 	ldr r1,[r1]
-	ldrh r0,[r1,r2]
+	ldrh r0,[r1,r2]!
 	bx lr
 
 

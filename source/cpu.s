@@ -2,6 +2,7 @@
 
 #include "Shared/nds_asm.h"
 #include "ARMV30MZ/ARMV30MZ.i"
+#include "ARMV30MZ/ARMV30MZmac.h"
 #include "Sphinx/Sphinx.i"
 
 #define CYCLE_PSL (256)
@@ -59,6 +60,7 @@ runStart:
 	ldr v30cyc,[v30ptr,#v30ICount]
 	ldr v30pc,[v30ptr,#v30IP]
 	ldr v30f,[v30ptr,#v30Flags]
+	v30EncodeFastPC
 ;@----------------------------------------------------------------------------
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
@@ -70,6 +72,7 @@ wsFrameLoop:
 	bne wsFrameLoop
 
 ;@----------------------------------------------------------------------------
+	v30DecodeFastPC
 	str v30cyc,[v30ptr,#v30ICount]
 	str v30pc,[v30ptr,#v30IP]
 	str v30f,[v30ptr,#v30Flags]
