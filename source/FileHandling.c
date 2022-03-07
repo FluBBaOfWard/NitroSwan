@@ -426,6 +426,7 @@ void checkMachine() {
 	else {
 		gMachine = gMachineSet;
 	}
+	setupEmuBackground();
 }
 
 //---------------------------------------------------------------------------------

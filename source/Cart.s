@@ -210,7 +210,6 @@ loadCart: 		;@ Called from C:
 	bl ioReset
 	bl soundReset
 	bl cpuReset
-skipHWSetup:
 	ldmfd sp!,{r4-r11,lr}
 	bx lr
 

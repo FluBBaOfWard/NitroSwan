@@ -27,6 +27,7 @@ Sound:
 
 Misc:
 	Cardcaptor Sakura, timing sensitive.
+	Mr. Driller, also sensitive to timing (fethc opcode, pl vs gt).
 
 Games Not Working:
 	Bakusou Dekotora Densetsu. Unzip craps out.

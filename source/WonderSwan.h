@@ -14,6 +14,9 @@ void unpackState(const void *statePtr);
 /// Gets the total state size in bytes.
 int getStateSize(void);
 
+/// Setup WonderSwan background for emulator screen.
+void setupEmuBackground(void);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

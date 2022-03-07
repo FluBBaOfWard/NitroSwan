@@ -9,8 +9,7 @@
 #include "Gui.h"
 #include "FileHandling.h"
 #include "EmuFont.h"
-#include "WSBorder.h"
-#include "WSCBorder.h"
+#include "WonderSwan.h"
 #include "Cart.h"
 #include "cpu.h"
 #include "Gfx.h"
@@ -200,13 +199,7 @@ static void setupGraphics() {
 	map0sub = BG_MAP_RAM_SUB(0);
 	map1sub = BG_MAP_RAM_SUB(1);
 
-//	decompress(WSBorderTiles, BG_TILE_RAM(1), LZ77Vram);
-//	decompress(WSBorderMap, BG_MAP_RAM(2), LZ77Vram);
-//	memcpy(VRAM_F, WSBorderPal, WSBorderPalLen);
-	decompress(WSCBorderTiles, BG_TILE_RAM(1), LZ77Vram);
-	decompress(WSCBorderMap, BG_MAP_RAM(2), LZ77Vram);
-	memcpy(VRAM_F, WSCBorderPal, WSCBorderPalLen);
-	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
+	setupEmuBackground();
 
 	decompress(EmuFontTiles, BG_GFX_SUB+0x1200, LZ77Vram);
 	setupMenuPalette();

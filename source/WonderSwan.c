@@ -1,6 +1,8 @@
 #include <nds.h>
 
 #include "WonderSwan.h"
+#include "WSBorder.h"
+#include "WSCBorder.h"
 #include "Cart.h"
 #include "Gfx.h"
 #include "Sound.h"
@@ -37,4 +39,29 @@ int getStateSize() {
 	size += sphinxGetStateSize();
 //	size += v30MZGetStateSize();
 	return size;
+}
+
+void setupWSBackground() {
+	vramSetBankF(VRAM_F_LCD);
+	decompress(WSBorderTiles, BG_TILE_RAM(1), LZ77Vram);
+	decompress(WSBorderMap, BG_MAP_RAM(2), LZ77Vram);
+	memcpy(VRAM_F, WSBorderPal, WSBorderPalLen);
+	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
+}
+
+void setupWSCBackground() {
+	vramSetBankF(VRAM_F_LCD);
+	decompress(WSCBorderTiles, BG_TILE_RAM(1), LZ77Vram);
+	decompress(WSCBorderMap, BG_MAP_RAM(2), LZ77Vram);
+	memcpy(VRAM_F, WSCBorderPal, WSCBorderPalLen);
+	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
+}
+
+void setupEmuBackground() {
+	if (gMachine == HW_WONDERSWANCOLOR) {
+		setupWSCBackground();
+	}
+	else {
+		setupWSBackground();
+	}
 }

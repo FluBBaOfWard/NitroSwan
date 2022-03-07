@@ -56,6 +56,7 @@ gfxInit:					;@ Called from machineInit
 	bl setupSpriteScaling
 
 	bl wsVideoInit
+	bl gfxWinInit
 
 	ldmfd sp!,{pc}
 
@@ -71,21 +72,7 @@ gfxReset:					;@ Called with CPU reset
 	mov r1,#5					;@ 5*4
 	bl memclr_					;@ Clear GFX regs
 
-	mov r1,#REG_BASE
-	;@ Horizontal start-end
-	ldr r0,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+(SCREEN_WIDTH+GAME_WIDTH)/2
-	strh r0,[r1,#REG_WIN0H]
-	strh r0,[r1,#REG_WIN1H]
-	;@ Vertical start-end
-	ldr r0,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+(SCREEN_HEIGHT+GAME_HEIGHT)/2
-	strh r0,[r1,#REG_WIN0V]
-	strh r0,[r1,#REG_WIN1V]
-
-	ldr r0,=0x3333				;@ WinIN0/1, BG0, BG1, SPR & COL inside Win0
-	strh r0,[r1,#REG_WININ]
-	mov r0,#0x002C				;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
-	strh r0,[r1,#REG_WINOUT]
-
+	bl gfxWinInit
 
 	mov r0,#0
 	mov r1,#0
@@ -107,6 +94,24 @@ gfxReset:					;@ Called with CPU reset
 
 	ldmfd sp!,{pc}
 
+;@----------------------------------------------------------------------------
+gfxWinInit:
+;@----------------------------------------------------------------------------
+	mov r1,#REG_BASE
+	;@ Horizontal start-end
+	ldr r0,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+(SCREEN_WIDTH+GAME_WIDTH)/2
+	strh r0,[r1,#REG_WIN0H]
+	strh r0,[r1,#REG_WIN1H]
+	;@ Vertical start-end
+	ldr r0,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+(SCREEN_HEIGHT+GAME_HEIGHT)/2
+	strh r0,[r1,#REG_WIN0V]
+	strh r0,[r1,#REG_WIN1V]
+
+	ldr r0,=0x3333				;@ WinIN0/1, BG0, BG1, SPR & COL inside Win0
+	strh r0,[r1,#REG_WININ]
+	mov r0,#0x002C				;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
+	strh r0,[r1,#REG_WINOUT]
+	bx lr
 ;@----------------------------------------------------------------------------
 monoPalInit:
 	.type monoPalInit STT_FUNC
@@ -222,9 +227,9 @@ txLoop:
 	and r3,r2,r3,lsl#1
 	ldrh r3,[r1,r3]
 	cmp r5,#0x00
-	strhne r3,[r0,r5]				;@ Background palette
+	strhne r3,[r0,r5]			;@ Background palette
 	cmp r5,#0x100
-	strhpl r3,[r6,r5]				;@ Sprite palette
+	strhpl r3,[r6,r5]			;@ Sprite palette
 
 	add r5,r5,#2
 	cmp r5,#0x200
@@ -243,8 +248,8 @@ col4TxLoop:
 	strh r3,[r0,#0x8]			;@ Opaque tiles palette
 	cmp r5,#0x100
 	addpl r6,r0,#0x100
-	strhpl r3,[r6]			;@ Sprite palette
-	strhpl r3,[r6,#0x8]		;@ Sprite palette opaque
+	strhpl r3,[r6]				;@ Sprite palette
+	strhpl r3,[r6,#0x8]			;@ Sprite palette opaque
 
 	add r0,r0,#2
 	add r5,r5,#2
@@ -356,13 +361,13 @@ vblIrqHandler:
 	ldr r0,GFX_DISPCNT
 	ldrb r1,[spxptr,#wsvDispCtrl]
 	tst r1,#1
-	biceq r0,r0,#0x0100				;@ Turn off bg
+	biceq r0,r0,#0x0100			;@ Turn off bg
 	tst r1,#0x02
-	biceq r0,r0,#0x0200				;@ Turn off fg
+	biceq r0,r0,#0x0200			;@ Turn off fg
 	tst r1,#0x04
-	biceq r0,r0,#0x1000				;@ Turn off sprites
-	tst r1,#0x20					;@ Win for FG on?
-	biceq r0,r0,#0x2000				;@ Turn off fg-window
+	biceq r0,r0,#0x1000			;@ Turn off sprites
+	tst r1,#0x20				;@ Win for FG on?
+	biceq r0,r0,#0x2000			;@ Turn off fg-window
 	ldrb r2,gGfxMask
 //	bic r0,r0,r2,lsl#8
 	strh r0,[r6,#REG_DISPCNT]
@@ -477,7 +482,7 @@ getInterruptVector:
 	adr spxptr,sphinx0
 	b wsvGetInterruptVector
 ;@----------------------------------------------------------------------------
-setInterruptExternal:			;@ r0=irq state
+setInterruptExternal:		;@ r0=irq state
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvSetInterruptExternal
