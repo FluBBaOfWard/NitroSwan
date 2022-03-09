@@ -312,18 +312,6 @@ bnwTxLoop:
 	ldmfd sp!,{r4-r8,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
-updateLED:
-;@----------------------------------------------------------------------------
-	ldrb r0,[spxptr,#kgeLedOnOff]
-	tst r0,#0x01
-	ldr r0,=BG_GFX+0x1000
-	ldr r1,[r0,#64*24]
-	movne r1,r1,ror#16
-	add r0,r0,#0x104
-	strh r1,[r0]
-	bx lr
-
-;@----------------------------------------------------------------------------
 vblIrqHandler:
 	.type vblIrqHandler STT_FUNC
 ;@----------------------------------------------------------------------------
@@ -414,13 +402,14 @@ refreshGfx:					;@ Called from C when changing scaling.
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 ;@----------------------------------------------------------------------------
-endFrameGfx:				;@ Called just before screen end (~line 152)	(r0-r3 safe to use)
+endFrameGfx:				;@ Called just before screen end (~line 143)	(r0-r3 safe to use)
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
-	bl updateLED
-	ldr r0,tmpScroll
+	ldr r0,tmpScroll			;@ Destination
 	bl copyScrollValues
+	ldr r0,tmpOamBuffer			;@ Destination
+	bl wsvConvertSprites
 	bl paletteTxAll
 ;@--------------------------
 
@@ -434,9 +423,9 @@ endFrameGfx:				;@ Called just before screen end (~line 152)	(r0-r3 safe to use)
 	str r0,tmpScroll
 	str r1,dmaScroll
 
-	ldr r0,=windowTop			;@ Load wTop, store in wTop+4.......load wTop+8, store in wTop+12
-	ldmia r0,{r1-r3}			;@ Load with increment after
-	stmib r0,{r1-r3}			;@ Store with increment before
+//	ldr r0,=windowTop			;@ Load wTop, store in wTop+4.......load wTop+8, store in wTop+12
+//	ldmia r0,{r1-r3}			;@ Load with increment after
+//	stmib r0,{r1-r3}			;@ Store with increment before
 
 	mov r0,#1
 	str r0,frameDone

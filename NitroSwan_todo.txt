@@ -1,7 +1,5 @@
 NitroSwan Todo
 
-	Add border.
-	Add LCD icons.
 	Graphics on menu screen?
 	Find speed hacks.
 	Port to GBA.
