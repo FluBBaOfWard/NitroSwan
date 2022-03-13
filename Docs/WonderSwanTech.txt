@@ -2,7 +2,7 @@
   /   |   \ ___ __/ \__ ___  ___  /\__
   \  / \  // __>\_   _// __|/ __\/    \
    \_____/_\__ \  \_/  \___|\___/\_/\_/
-          \____/      2021-10-21
+          \____/      2022-03-13
 
 1. ABOUT
    WStech original doc made by Judge and Dox
@@ -29,7 +29,7 @@
   Timing:
 
   Hblank : 256 CPU cycles
-  Vblank : 159 Hblank = 159*256/3072000 = 75.47Hz
+  Vblank : 159 Hblank = 3072000/159*256 = 75.47Hz
 
 
 3. MEMORY

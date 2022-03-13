@@ -74,7 +74,7 @@ gfxReset:					;@ Called with CPU reset
 
 	bl gfxWinInit
 
-	mov r0,#0
+	ldr r0,=V30SetIRQPin
 	mov r1,#0
 	ldr r2,=wsRAM
 	ldr r3,=gSOC
@@ -445,7 +445,7 @@ dmaScroll:		.long SCROLLBUFF2
 
 frameDone:		.long 0
 ;@----------------------------------------------------------------------------
-wsVideoReset0:		;@ r0=periodicIrqFunc, r1=frameIrqFunc, r2=frame2IrqFunc, r3=model
+wsVideoReset0:		;@ r0=periodicIrqFunc, r1=, r2=frame2IrqFunc, r3=model
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsVideoReset

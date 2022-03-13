@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.3.6 - 2022-03-13 (FluBBa)
+	Fixed sound DMA a bit.
+
 V0.3.5 - 2022-03-09 (FluBBa)
 	Added RTC emulation.
 	Added a border to emu screen.
