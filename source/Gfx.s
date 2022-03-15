@@ -35,7 +35,6 @@
 
 	.global sphinx0
 	.global DIRTYTILES
-	.global DIRTYTILES2
 
 
 	.syntax unified
@@ -210,7 +209,7 @@ paletteTx:					;@ r0=destination, spxptr=Sphinx
 	mov r5,#0
 	ldrb r3,[spxptr,#wsvBGColor]	;@ Background palette
 	ldrb r7,[spxptr,#wsvVideoMode]
-	tst r7,#0x80				;@ Color mode?
+	ands r7,r7,#0xC0			;@ Color mode?
 	beq bnwTx
 
 	ldr r4,=wsRAM+0xFE00
@@ -219,8 +218,8 @@ paletteTx:					;@ r0=destination, spxptr=Sphinx
 	and r3,r2,r3,lsl#1
 	ldrh r3,[r1,r3]
 	strh r3,[r0]				;@ Background palette
-	tst r7,#0x40				;@ 4bitplane mode?
-	beq col4Tx
+	cmp r7,#0xC0				;@ 4bitplane mode?
+	bne col4Tx
 	add r6,r0,#0x100			;@ Sprite pal ofs - r5
 txLoop:
 	ldrh r3,[r4],#2
@@ -509,9 +508,7 @@ MAPPED_RGB:
 EMUPALBUFF:
 	.space 0x400
 DIRTYTILES:
-	.space 0x400
-DIRTYTILES2:
-	.space 0x400
+	.space 0x800
 
 ;@----------------------------------------------------------------------------
 	.end

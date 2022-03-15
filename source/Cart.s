@@ -16,6 +16,7 @@
 	.global BankSwitch2_W
 	.global BankSwitch3_W
 	.global BankSwitch1_W
+	.global clearDirtyTiles
 
 	.global wsHeader
 	.global romSpacePtr
@@ -197,6 +198,7 @@ loadCart: 		;@ Called from C:
 	ldr r0,=wsRAM			;@ Clear RAM
 	mov r1,#0x10000/4
 	bl memclr_
+	bl clearDirtyTiles
 	cmp r4,#SOC_ASWAN
 	ldreq r0,=wsRAM+0x4000	;@ Clear mem outside of RAM
 	moveq r1,#0x90
@@ -214,6 +216,12 @@ loadCart: 		;@ Called from C:
 	bx lr
 
 
+;@----------------------------------------------------------------------------
+clearDirtyTiles:
+;@----------------------------------------------------------------------------
+	ldr r0,=DIRTYTILES			;@ Clear RAM
+	mov r1,#0x800/4
+	b memclr_
 ;@----------------------------------------------------------------------------
 reBankSwitch4_F_W:					;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------

@@ -68,8 +68,9 @@
   RAM Map :
 
       $0000 - $1FFF                           WS/WSC
-      $2000 - $3FFF    4 Col Tiles            WS/WSC
+      $2000 - $3FFF    4 Col Tiles (Bank 0)   WS/WSC
       -------------
+      $4000 - $5FFF    4 Col Tiles Bank 1     WSC only
       $4000 - $7FFF   16 Col Tiles Bank 0     WSC only
       $8000 - $BFFF   16 Col Tiles Bank 1     WSC only
       $C000 - $FDFF                           WSC only
@@ -82,7 +83,7 @@
    Map size        - 256 x 256 pixels (32 x 32 tiles)
    Layers          - Two layers - Background and Foreground (top layer)
    Maps locations  - Selectable using port $07
-   Tiles locations - Fixed, two banks - one at $4000 , second at $8000
+   Tiles locations - Fixed, two banks - first at $2000/$4000 , second at ($4000/)$8000
    Map format      - Each position in the map is defined by one word:
                       bits 0 - 8   - Tile number (0-511)
                       bits 9 - 12  - Palette number (0-15)
