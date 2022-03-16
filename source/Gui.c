@@ -114,10 +114,10 @@ void uiAbout() {
 	cls(1);
 	updateGameInfo();
 	drawTabs();
-	drawText(" B:        WS A button", 4, 0);
-	drawText(" A:        WS B button", 5, 0);
-	drawText(" Y/Select: Power button", 6, 0);
-	drawText(" X/Start:  Start button", 7, 0);
+	drawText(" A:        WS A button", 4, 0);
+	drawText(" B:        WS B button", 5, 0);
+	drawText(" Select:   Sound button", 6, 0);
+	drawText(" Start:    Start button", 7, 0);
 
 	drawText(gameInfoString, 9, 0);
 
@@ -285,7 +285,7 @@ void languageSet() {
 
 void machineSet() {
 	gMachineSet++;
-	if (gMachineSet >= HW_SELECT_END){
+	if (gMachineSet >= HW_SELECT_END) {
 		gMachineSet = 0;
 	}
 }

@@ -11,8 +11,6 @@
 	.global paletteTxAll
 	.global refreshGfx
 	.global endFrameGfx
-	.global ioReadByte
-	.global ioWriteByte
 	.global cpu_readport
 	.global cpu_writeport
 	.global getInterruptVector
@@ -449,16 +447,12 @@ wsVideoReset0:		;@ r0=periodicIrqFunc, r1=, r2=frame2IrqFunc, r3=model
 	adr spxptr,sphinx0
 	b wsVideoReset
 ;@----------------------------------------------------------------------------
-ioReadByte:
-	.type ioReadByte STT_FUNC
 cpu_readport:
 	.type cpu_readport STT_FUNC
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvRead
 ;@----------------------------------------------------------------------------
-ioWriteByte:				;@ r0=port, r1=value
-	.type ioWriteByte STT_FUNC
 cpu_writeport:
 	.type cpu_writeport STT_FUNC
 ;@----------------------------------------------------------------------------
