@@ -1,5 +1,6 @@
 NitroSwan Todo
 
+	Add different read mem functions.
 	Add UI for setting headphone on/off.
 	Fix better sound!
 	Graphics on menu screen?
@@ -29,7 +30,7 @@ Misc:
 
 Games Not Working:
 	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
-	Chou Denki Card Game.
+	Chou Denki Card Game. Needs initialization, last item on first page.
 	Tonpuusou. Can't start.
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 

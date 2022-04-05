@@ -4,7 +4,6 @@
 
 This is a Bandai WonderSwan (Color/Crystal) & PocketChallenge V2 emulator for the Nintendo DS.
 
-Savestates doesn't work yet
 ## How to use:
 
 1. Create a folder named "nitroswan" in either the root of your flash card or in the data folder.
@@ -84,6 +83,13 @@ In horizontal games the d-pad is mapped to WS X1-X4. A & B buttons are mapped to
 Holding L maps the dpad to WS Y1-Y4.
 
 In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS X1-X4.
+
+## Games:
+	There are 2 games that I know of that has problems.
+	Chou Denki Card Game.
+		You need to initialize NVRAM, this is the last item on the first page (初期化).
+	Tonpuusou.
+		Can't start, requires HBlank timer but it's not started.
 
 ## Credits:
 

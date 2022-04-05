@@ -12,10 +12,13 @@
 	.global cartFlags
 	.global romStart
 	.global reBankSwitch4_F_W
+	.global reBankSwitch1_W
+	.global reBankSwitch2_W
+	.global reBankSwitch3_W
 	.global BankSwitch4_F_W
+	.global BankSwitch1_W
 	.global BankSwitch2_W
 	.global BankSwitch3_W
-	.global BankSwitch1_W
 	.global clearDirtyTiles
 
 	.global wsHeader
@@ -31,6 +34,7 @@
 	.global g_BIOSBASE_CRYSTAL
 	.global wsRAM
 	.global wsSRAM
+	.global extEeprom
 	.global extEepromMem
 	.global sramSize
 	.global eepromSize
@@ -72,19 +76,23 @@
 ROM_Space:
 //	.incbin "wsroms/Anchorz Field (Japan).ws"
 //	.incbin "wsroms/Crazy Climber (J) [M][!].ws"
+//	.incbin "wsroms/Chaos Demo V2.1 by Charles Doty (PD).wsc"
 //	.incbin "wsroms/Guilty Gear Petit (J).wsc"
 //	.incbin "wsroms/Kaze no Klonoa - Moonlight Museum (Japan).ws"
 //	.incbin "wsroms/Makaimura for WonderSwan (Japan).ws"
 //	.incbin "wsroms/Mr. Driller (J) [!].wsc"
 //	.incbin "wsroms/SD Gundam - Operation U.C. (Japan).wsc"
 //	.incbin "wsroms/Tetris (Japan).wsc"
+//	.incbin "wsroms/Tonpuusou (Japan).wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
 //	.incbin "wsroms/XI Little (Japan).wsc"
 ROM_SpaceEnd:
 WS_BIOS_INTERNAL:
+//	.incbin "wsroms/boot.rom"
 	.incbin "wsroms/ws_irom.bin"
 WSC_BIOS_INTERNAL:
 SC_BIOS_INTERNAL:
+//	.incbin "wsroms/boot1.rom"
 	.incbin "wsroms/wc_irom.bin"
 //	.incbin "wsroms/wsc_irom.bin"
 
@@ -127,12 +135,12 @@ loadCart: 		;@ Called from C:
 
 	mov r1,#0xFF
 	bl BankSwitch4_F_W
-	mov r1,#0xFF
-	bl BankSwitch3_W
-	mov r1,#0xFF
-	bl BankSwitch2_W
 	mov r1,#0
 	bl BankSwitch1_W
+	mov r1,#0xFF
+	bl BankSwitch2_W
+	mov r1,#0xFF
+	bl BankSwitch3_W
 
 	ldr r1,=wsRAM
 	str r1,[v30ptr,#v30MemTblInv-0x1*4]		;@ 0 RAM
@@ -223,12 +231,12 @@ clearDirtyTiles:
 	mov r1,#0x800/4
 	b memclr_
 ;@----------------------------------------------------------------------------
-reBankSwitch4_F_W:					;@ 0x40000-0xFFFFF
+reBankSwitch4_F_W:				;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
 	ldrb r1,[spxptr,#wsvBnk0Slct]
 ;@----------------------------------------------------------------------------
-BankSwitch4_F_W:					;@ 0x40000-0xFFFFF
+BankSwitch4_F_W:				;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
 	strb r1,[spxptr,#wsvBnk0Slct]
@@ -250,6 +258,26 @@ tbLoop2:
 
 	bx lr
 ;@----------------------------------------------------------------------------
+reBankSwitch1_W:				;@ 0x10000-0x1FFFF
+;@----------------------------------------------------------------------------
+	ldr spxptr,=sphinx0
+	ldrb r1,[spxptr,#wsvBnk1Slct]
+;@----------------------------------------------------------------------------
+BankSwitch1_W:					;@ 0x10000-0x1FFFF
+;@----------------------------------------------------------------------------
+	ldr spxptr,=sphinx0
+	strb r1,[spxptr,#wsvBnk1Slct]
+
+	ldr r0,sramSize
+	movs r0,r0,lsr#16		;@ 64kB blocks.
+	subne r0,r0,#1
+	ldr r2,=wsSRAM-0x10000
+	and r3,r1,r0
+	add r3,r2,r3,lsl#16		;@ 64kB blocks.
+	str r3,[v30ptr,#v30MemTblInv-2*4]
+
+	bx lr
+;@----------------------------------------------------------------------------
 reBankSwitch2_W:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
@@ -268,7 +296,6 @@ BankSwitch2_W:					;@ 0x20000-0x2FFFF
 	str r3,[v30ptr,#v30MemTblInv-3*4]
 
 	bx lr
-
 ;@----------------------------------------------------------------------------
 reBankSwitch3_W:				;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
@@ -286,26 +313,6 @@ BankSwitch3_W:					;@ 0x30000-0x3FFFF
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTblInv-4*4]
-
-	bx lr
-;@----------------------------------------------------------------------------
-reBankSwitch1_W:				;@ 0x10000-0x1FFFF
-;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
-	ldrb r1,[spxptr,#wsvBnk1Slct]
-;@----------------------------------------------------------------------------
-BankSwitch1_W:					;@ 0x10000-0x1FFFF
-;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
-	strb r1,[spxptr,#wsvBnk1Slct]
-
-	ldr r0,sramSize
-	sub r0,r0,#1
-	mov r0,r0,lsr#16
-	ldr r2,=wsSRAM-0x10000
-	and r3,r1,r0
-	add r3,r2,r3,lsl#16		;@ 64kB blocks.
-	str r3,[v30ptr,#v30MemTblInv-2*4]
 
 	bx lr
 
@@ -473,12 +480,20 @@ sramSize:
 eepromSize:
 	.long 0
 
+#ifdef GBA
+	.section .sbss				;@ For the GBA
+#else
 	.section .bss
+#endif
 	.align 2
 wsRAM:
 	.space 0x10000
 wsSRAM:
+#ifdef GBA
+	.space 0x10000				;@ For the GBA
+#else
 	.space 0x40000
+#endif
 biosSpace:
 	.space 0x1000
 biosSpaceColor:

@@ -5,8 +5,6 @@
 #include "WSCBorder.h"
 #include "Cart.h"
 #include "Gfx.h"
-#include "Sound.h"
-#include "io.h"
 #include "ARMV30MZ/ARMV30MZ.h"
 
 
@@ -14,10 +12,11 @@ int packState(void *statePtr) {
 	int size = 0;
 	memcpy(statePtr+size, wsRAM, sizeof(wsRAM));
 	size += sizeof(wsRAM);
-	size += ioSaveState(statePtr+size);
-//	size += sn76496SaveState(statePtr+size, &k2Audio_0);
 	size += sphinxSaveState(statePtr+size, &sphinx0);
-//	size += v30MZSaveState(statePtr+size, &armV30MZState);
+	size += V30SaveState(statePtr+size, &V30OpTable);
+	memcpy(statePtr+size, wsSRAM, sizeof(wsSRAM));
+	size += sizeof(wsSRAM);
+	size += wsEepromSaveState(statePtr+size, &extEeprom);
 	return size;
 }
 
@@ -25,19 +24,20 @@ void unpackState(const void *statePtr) {
 	int size = 0;
 	memcpy(wsRAM, statePtr+size, sizeof(wsRAM));
 	size += sizeof(wsRAM);
-	size += ioLoadState(statePtr+size);
-//	size += sn76496LoadState(&k2Audio_0, statePtr+size);
 	size += sphinxLoadState(&sphinx0, statePtr+size);
-//	size += v30MZLoadState(&armV30MZState, statePtr+size);
+	size += V30LoadState(&V30OpTable, statePtr+size);
+	memcpy(wsSRAM, statePtr+size, sizeof(wsSRAM));
+	size += sizeof(wsSRAM);
+	size += wsEepromLoadState(&extEeprom, statePtr+size);
 }
 
 int getStateSize() {
 	int size = 0;
 	size += sizeof(wsRAM);
-	size += ioGetStateSize();
-//	size += sn76496GetStateSize();
 	size += sphinxGetStateSize();
-//	size += v30MZGetStateSize();
+	size += V30GetStateSize();
+	size += sizeof(wsSRAM);
+	size += wsEepromGetStateSize();
 	return size;
 }
 

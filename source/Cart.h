@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include "WSEEPROM/WSEEPROM.h"
+
 extern u32 gRomSize;
 extern u32 maxRomSize;
 extern u8 gConfig;
@@ -16,6 +18,7 @@ extern u8 gPaletteBank;
 extern u8 gGameID;
 extern int sramSize;
 extern int eepromSize;
+extern WSEEPROM extEeprom;
 
 extern u8 wsRAM[0x10000];
 extern u8 wsSRAM[0x8000];

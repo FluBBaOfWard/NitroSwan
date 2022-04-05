@@ -245,9 +245,9 @@ void saveNVRAM() {
 	}
 }
 
-void loadState(void) {
-	u32 *statePtr;
+void loadState() {
 	FILE *file;
+	u32 *statePtr;
 	char stateName[FILENAMEMAXLENGTH];
 
 	if (findFolder(folderName)) {
@@ -272,9 +272,9 @@ void loadState(void) {
 	return;
 }
 
-void saveState(void) {
-	u32 *statePtr;
+void saveState() {
 	FILE *file;
+	u32 *statePtr;
 	char stateName[FILENAMEMAXLENGTH];
 
 	if (findFolder(folderName)) {

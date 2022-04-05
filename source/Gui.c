@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.3.6 2022-03-15"
+#define EMUVERSION "V0.3.6 2022-04-05"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 
@@ -114,8 +114,8 @@ void uiAbout() {
 	cls(1);
 	updateGameInfo();
 	drawTabs();
-	drawText(" A:        WS A button", 4, 0);
-	drawText(" B:        WS B button", 5, 0);
+	drawText(" B:        WS B button", 4, 0);
+	drawText(" A:        WS A button", 5, 0);
 	drawText(" Select:   Sound button", 6, 0);
 	drawText(" Start:    Start button", 7, 0);
 
@@ -220,6 +220,12 @@ void debugIOUnmappedR(u8 port) {
 }
 void debugIOUnmappedW(u8 port, u8 val) {
 	debugIO(port, val, "Unmapped W port:");
+}
+void debugDivideError() {
+	debugOutput("Divide Error.");
+}
+void debugIllegalInstruction() {
+	debugOutput("Illegal Instruction.");
 }
 //---------------------------------------------------------------------------------
 /// Switch between Player 1 & Player 2 controls

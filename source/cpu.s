@@ -58,9 +58,9 @@ runStart:
 	bl refreshEMUjoypads		;@ Z=1 if communication ok
 
 	ldr v30ptr,=V30OpTable
-	ldr v30cyc,[v30ptr,#v30ICount]
-	ldr v30pc,[v30ptr,#v30IP]
 	ldr v30f,[v30ptr,#v30Flags]
+	ldr v30pc,[v30ptr,#v30IP]
+	ldr v30cyc,[v30ptr,#v30ICount]
 ;@----------------------------------------------------------------------------
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
@@ -72,9 +72,9 @@ wsFrameLoop:
 	bne wsFrameLoop
 
 ;@----------------------------------------------------------------------------
-	str v30cyc,[v30ptr,#v30ICount]
-	str v30pc,[v30ptr,#v30IP]
 	str v30f,[v30ptr,#v30Flags]
+	str v30pc,[v30ptr,#v30IP]
+	str v30cyc,[v30ptr,#v30ICount]
 	ldr r1,=fpsValue
 	ldr r0,[r1]
 	add r0,r0,#1

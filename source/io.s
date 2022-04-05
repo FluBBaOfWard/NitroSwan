@@ -259,8 +259,7 @@ intEepromReset:
 	ldrmi r2,=wsEepromMem
 	ldreq r2,=wscEepromMem
 	ldrhi r2,=scEepromMem
-	movmi r1,#0x080				;@  1kbit
-	movpl r1,#0x800				;@ 16kbit
+	mov r1,#0x080				;@  1kbit, 16kbit is switched to for Color _Games_.
 	adr eeptr,intEeprom
 	b wsEepromReset
 ;@----------------------------------------------------------------------------
