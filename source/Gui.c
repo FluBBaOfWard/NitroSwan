@@ -12,15 +12,17 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.3.6 2022-04-05"
+#define EMUVERSION "V0.3.6 2022-04-07"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
+#define ENABLE_HEADPHONES	(1<<18)
 
 static void paletteChange(void);
 static void languageSet(void);
 static void machineSet(void);
 static void batteryChange(void);
 static void speedHackSet(void);
+static void headphonesSet(void);
 
 static void uiMachine(void);
 static void updateGameInfo(void);
@@ -33,7 +35,7 @@ const fptr fnList2[] = {ui4, ui5, ui6, ui7};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList5[] = {/*scalingSet, flickSet,*/ gammaSet, paletteChange, fgrLayerSet, bgrLayerSet, sprLayerSet};
-const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, languageSet};
+const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, headphonesSet /*languageSet*/};
 const fptr fnList7[] = {speedSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, debugTextSet, sleepSet};
 const fptr fnList8[] = {exitEmulator, backOutOfMenu};
 const fptr fnList9[] = {uiDummy};
@@ -153,8 +155,8 @@ static void uiMachine() {
 	drawMenuItem(" Clear internal EEPROM");
 	drawSubItem("Cpu speed hacks: ",autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
 	drawMenuItem(" Change Battery");
-	drawSubItem("Language: ",langTxt[gLang]);
-//	drawMenuItem(" Change Sub Battery");
+	drawSubItem("Headphones: ",autoTxt[(emuSettings&ENABLE_HEADPHONES)>>18]);
+//	drawSubItem("Language: ",langTxt[gLang]);
 }
 
 void uiSettings() {
@@ -300,6 +302,12 @@ void speedHackSet() {
 	emuSettings ^= ALLOW_SPEED_HACKS;
 }
 
+void headphonesSet() {
+	emuSettings ^= ENABLE_HEADPHONES;
+	setLowBattery(emuSettings & ENABLE_HEADPHONES);
+}
+
 void batteryChange() {
-	batteryLevel = 0xFFFF;				// 0xFFFF for 2 days battery?
+	batteryLevel = 15000;				// 0x15000 for 24h battery?
+	setLowBattery(0);
 }

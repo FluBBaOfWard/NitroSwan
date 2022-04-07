@@ -13,6 +13,9 @@
 	.global endFrameGfx
 	.global cpu_readport
 	.global cpu_writeport
+	.global pushVolumeButton
+	.global setHeadphones
+	.global setLowBattery
 	.global getInterruptVector
 	.global setInterruptExternal
 
@@ -88,6 +91,11 @@ gfxReset:					;@ Called with CPU reset
 	ldr spxptr,=sphinx0
 	ldrb r0,[r0]
 	strb r0,[spxptr,#wsvOrientation]
+
+	ldr r0,=emuSettings
+	ldr r0,[r0]
+	and r0,r0,#1<<18
+	bl setHeadphones
 
 	ldmfd sp!,{pc}
 
@@ -458,6 +466,23 @@ cpu_writeport:
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvWrite
+;@----------------------------------------------------------------------------
+pushVolumeButton:
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvPushVolumeButton
+;@----------------------------------------------------------------------------
+setHeadphones:				;@ r0 = on/off
+	.type setHeadphones STT_FUNC
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvSetHeadphones
+;@----------------------------------------------------------------------------
+setLowBattery:				;@ r0 = on/off
+	.type setLowBattery STT_FUNC
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvSetLowBattery
 ;@----------------------------------------------------------------------------
 getInterruptVector:
 ;@----------------------------------------------------------------------------

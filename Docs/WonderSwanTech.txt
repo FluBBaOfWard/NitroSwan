@@ -2,7 +2,7 @@
   /   |   \ ___ __/ \__ ___  ___  /\__
   \  / \  // __>\_   _// __|/ __\/    \
    \_____/_\__ \  \_/  \___|\___/\_/\_/
-          \____/      2022-03-13
+          \____/      2022-04-07
 
 1. ABOUT
    WStech original doc made by Judge and Dox
@@ -245,7 +245,7 @@
     0xBC (Word) - Address (calculated probably Modulo EEPROM size (unknown))
     0xBE (Byte) - Communication (?)
                    bit 4 set before reading data
-                   bit 1 set by hardware , when data is ready to read
+                   bit 1 set by hardware, when data is ready to read
 
     Example :
 
@@ -296,8 +296,7 @@
  - $04 - $00 - Determines the base address for the sprite table.
                 bit 5-0 - bit 14-9 of address (WSC).
                 bit 4-0 - bit 13-9 of address (WS).
-                To get the address of the table, shift this value left 9 times
-                and clear MSB.
+                To get the address of the table, shift this value left 9 times.
 		        (Sprite Attribute Table Base can move from $00000-$07E00 with $200 bytes step)
  - $05 - $00 - Determines the number of the sprite to start drawing with
  - $06 - $00 - Determines the number of the sprite to stop drawing.
@@ -382,7 +381,7 @@
  - $45 - $00 - ^^^
  - $46 - $00 - size of copied data (in bytes)
  - $47 - $00 - ^^^
- - $48 - $00 - bit  7 = 1  -> copy start
+ - $48 - $00 - bit 7 = 1  -> copy start
                 (bit 7=0 when data transfer is finished)
                 ports $40-$48 are updated during copy process
                bit 6 inc/dec
@@ -495,21 +494,21 @@
                 7 - Audio 4 Noise
                 6 - Audio 3 Sweep
                 5 - Audio 2 Voice
-                4 - ???
+                4 - 0
                 3 - Audio 4 on/off
                 2 - Audio 3 on/off
                 1 - Audio 2 on/off
                 0 - Audio 1 on/off
  - $91 - $00 - Audio Output
                 Bits :
-                7 - External Speaker (set by hardware)
-                6 - ???
-                5 - ???
-                4 - ???
-                3 - External Stereo
-                2 - ^^^
-                1 - Output Volume
-                0 - Mono
+                7 - Headphones connected
+                6 - 0
+                5 - 0
+                4 - 0
+                3 - Enable headphones
+                2 - Output Volume
+                1 - ^^^
+                0 - Main speaker enable
  - $92 - $00 - Noise Counter Shift Register (15 bits)
  - $93 - $00 - ^^^
  - $94 - $00 - Voice Volume (4 bit)
@@ -526,6 +525,7 @@
  - $9F - $00 - ???
  - $A0 - $87 - Hardware type
                 bit 7 - 1 = finnished booting?
+                bit 3     = Cart ROM speed (0=3 cycle, 1=1 cycle)
                 bit 2 - 1 = 16bit cart access
                 bit 1 - 1 = color, 0 = mono
                 bit 0 - 1 = lock the boot rom

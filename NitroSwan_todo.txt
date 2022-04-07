@@ -1,7 +1,6 @@
 NitroSwan Todo
 
 	Add different read mem functions.
-	Add UI for setting headphone on/off.
 	Fix better sound!
 	Graphics on menu screen?
 	Find speed hacks.

@@ -1,6 +1,6 @@
 #ifdef __arm__
 
-#include "ARMV30MZ/ARMV30MZ.i"
+#include "ARMV30MZ/ARMV30MZmac.h"
 #include "Sphinx/Sphinx.i"
 
 	.global empty_IO_R
@@ -63,6 +63,7 @@ commandList:
 ;@----------------------------------------------------------------------------
 cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 ;@----------------------------------------------------------------------------
+	eatCycles 1
 	stmfd sp!,{lr}
 	mov r3,r0
 	bl cpuReadMem20
@@ -107,6 +108,7 @@ bootRomSwitch2:
 ;@----------------------------------------------------------------------------
 cpuWriteWordUnaligned:	;@ Make sure cpuWriteMem20 does not change r0 or r1!
 ;@----------------------------------------------------------------------------
+	eatCycles 1
 	stmfd sp!,{lr}
 	bl cpuWriteMem20
 	ldmfd sp!,{lr}

@@ -46,7 +46,7 @@ runStart:
 	str r0,joyClick
 
 	tst r3,#0x04				;@ NDS Select?
-	blne wsvPushVolumeButton
+	blne pushVolumeButton
 //	tsteq r3,#0x800				;@ NDS Y?
 //	ldrne r2,=systemMemory+0xB3
 //	ldrbne r2,[r2]

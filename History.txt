@@ -1,7 +1,7 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.3.6 - 2022-04-05 (FluBBa)
+V0.3.6 - 2022-04-06 (FluBBa)
 	Fixed sound DMA a bit.
 	Added savestates.
 
