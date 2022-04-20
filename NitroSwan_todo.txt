@@ -2,6 +2,7 @@ NitroSwan Todo
 
 	Add different read mem functions.
 	Fix better sound!
+	Link NDS battery to WS battery.
 	Graphics on menu screen?
 	Find speed hacks.
 	Better key mappings.
@@ -30,6 +31,7 @@ Misc:
 Games Not Working:
 	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
 	Chou Denki Card Game. Needs initialization, last item on first page.
+	Riviera freezes on a black screen after the chapter 1 screen. (DSi) #16
 	Tonpuusou. Can't start.
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 

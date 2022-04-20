@@ -269,7 +269,7 @@ col4TxLoop:
 	bx lr
 
 bnwTx:
-	add r4,spxptr,#wsvPalette00
+	add r4,spxptr,#wsvPalette0
 	and r3,r3,#0x7
 	tst r3,#1
 	add r7,spxptr,#wsvColor01

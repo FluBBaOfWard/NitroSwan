@@ -183,12 +183,15 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 	strb r0,slowTimer
 	bxpl lr
 
+	stmfd sp!,{r12,lr}
+//	blx getBatteryLevel
 	ldr r0,batteryLevel
 	subs r0,r0,#1
 	movmi r0,#1
 	str r0,batteryLevel
 	cmp r0,#10
-	beq setLowBattery
+	blmi setLowBattery
+	ldmfd sp!,{r12,lr}
 
 	b cartRtcUpdate
 
