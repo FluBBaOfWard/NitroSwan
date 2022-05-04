@@ -167,15 +167,18 @@
 
 6. ROM HEADER
 
- Header taking last 10 bytes of each ROM file.
+ Header taking last 16 bytes of each ROM file.
  Bytes  :
- 0   - Developer ID
- 1   - Minimum support system
+ 0-4 Long jump instruction
+ 5   - bit 7 - Skip custom boot screen
+ 6   - Developer ID
+ 7   - Minimum support system
        00 - WS Mono
        01 - WS Color
- 2   - Cart ID number for developer defined at byte 0
- 3   - Cart revision
- 4   - ROM Size
+ 8   - Cart ID number for developer defined at byte 0
+ 9   - Cart revision
+       bit 7 = allow full EEPROM access
+ 10  - ROM Size
        01 - ?
        02 - 4Mbit
        03 - 8Mbit
@@ -185,7 +188,7 @@
        07 - ?
        08 - 64Mbit
        09 - 128Mbit
- 5   - SRAM/EEPROM Size
+ 11  - SRAM/EEPROM Size
        00 - 0k
        01 - 64k SRAM
        02 - 256k SRAM
@@ -195,12 +198,12 @@
        10 - 1k EEPROM
        20 - 16k EEPROM
        50 - 8k EEPROM
- 6   - Additional capabilities(?)
+ 12  - Additional capabilities(?)
        - bit 0 - 1 - vertical position , 1 - horizontal position
        - bit 2 - always 1
 
- 7   - 1 - RTC (Real Time Clock)
- 8,9 - Checksum = sum of all ROM bytes except two last ones ( where checksum is stored)
+ 13  - 1 - RTC (Real Time Clock)
+ 14,15 - Checksum = sum of all ROM bytes except two last ones ( where checksum is stored)
 
 7. INTERRUPTS
    The Wonderswan CPU recognizes 7 interrupts from the hardware, these are:
@@ -633,7 +636,7 @@
  - $BF - $00 - ???
 
 ---------------------------------------------------------------------
-Mapped to cartridge. Luxor1 / Luxor2
+Mapped to cartridge. 2001/Luxsor1 & 2003/Luxsor2
 ---------------------------------------------------------------------
  - $C0 - $2F - ROM Bank Base Selector for segments 4-$F
  - $C1 - $3F - SRAM Bank selector (0x10000))
@@ -677,6 +680,7 @@ Mapped to cartridge. Luxor1 / Luxor2
                 bit 1 - Write complete (Read only)
                 bit 0 - Read complete (Read only)
  - $C9 - $D1 - ^^^
+ // The rest only 2003/Luxor 2
  - $CA - $D1 - RTC Command / Status
                 Write :
                         - $10 - Reset
@@ -712,8 +716,8 @@ Mapped to cartridge. Luxor1 / Luxor2
                                 - Sec
  - $CC - $D1 - GPIO enable
  - $CD - $D1 - GPIO data
- - $CE - $D1 - MEMORY_CTRL
- - $CF - $D1 - ???
+ - $CE - $D1 - MEMORY_CTRL, bit 0 switch between "ROM" and SRAM @ 0x10000.
+ - $CF - $D1 - ROM Bank selector for segment 0
  - $D0 - $D1 - SRAM Bank selector low
  - $D1 - $D1 - SRAM Bank selector high
  - $D2 - $D1 - BNK2SLCT - ROM Bank selector for segment 2 low
