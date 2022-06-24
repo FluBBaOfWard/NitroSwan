@@ -1,5 +1,6 @@
 NitroSwan Todo
 
+	Make sure sound is on in the WSC BIOS eeprom.
 	Add different read mem functions.
 	Fix better sound!
 	Link NDS battery to WS battery.

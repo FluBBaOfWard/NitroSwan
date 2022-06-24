@@ -17,8 +17,14 @@
 	.global reBankSwitch3_W
 	.global BankSwitch4_F_W
 	.global BankSwitch1_W
+	.global BankSwitch1_L_W
+	.global BankSwitch1_H_W
 	.global BankSwitch2_W
+	.global BankSwitch2_L_W
+	.global BankSwitch2_H_W
 	.global BankSwitch3_W
+	.global BankSwitch3_L_W
+	.global BankSwitch3_H_W
 	.global clearDirtyTiles
 
 	.global wsHeader
@@ -85,6 +91,7 @@ ROM_Space:
 //	.incbin "wsroms/Tetris (Japan).wsc"
 //	.incbin "wsroms/Tonpuusou (Japan).wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
+//	.incbin "wsroms/WSCpuTest.wsc"
 //	.incbin "wsroms/XI Little (Japan).wsc"
 ROM_SpaceEnd:
 WS_BIOS_INTERNAL:
@@ -234,12 +241,12 @@ clearDirtyTiles:
 reBankSwitch4_F_W:				;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
-	ldrb r1,[spxptr,#wsvBnk0Slct]
+	ldrb r1,[spxptr,#wsvBnk0SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch4_F_W:				;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
-	strb r1,[spxptr,#wsvBnk0Slct]
+	strb r1,[spxptr,#wsvBnk0SlctX]
 	mov r1,r1,lsl#4
 	orr r1,r1,#4
 
@@ -258,15 +265,21 @@ tbLoop2:
 
 	bx lr
 ;@----------------------------------------------------------------------------
+BankSwitch1_H_W:				;@ 0x10000-0x1FFFF
+;@----------------------------------------------------------------------------
+	ldr spxptr,=sphinx0
+	strb r1,[spxptr,#wsvBnk1SlctX+1]
+;@----------------------------------------------------------------------------
 reBankSwitch1_W:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
-	ldrb r1,[spxptr,#wsvBnk1Slct]
+	ldrh r1,[spxptr,#wsvBnk1SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch1_W:					;@ 0x10000-0x1FFFF
+BankSwitch1_L_W:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
-	strb r1,[spxptr,#wsvBnk1Slct]
+	strb r1,[spxptr,#wsvBnk1SlctX]
 
 	ldr r0,sramSize
 	movs r0,r0,lsr#16		;@ 64kB blocks.
@@ -278,15 +291,21 @@ BankSwitch1_W:					;@ 0x10000-0x1FFFF
 
 	bx lr
 ;@----------------------------------------------------------------------------
+BankSwitch2_H_W:				;@ 0x20000-0x2FFFF
+;@----------------------------------------------------------------------------
+	ldr spxptr,=sphinx0
+	strb r1,[spxptr,#wsvBnk2SlctX+1]
+;@----------------------------------------------------------------------------
 reBankSwitch2_W:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
-	ldrb r1,[spxptr,#wsvBnk2Slct]
+	ldrb r1,[spxptr,#wsvBnk2SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch2_W:					;@ 0x20000-0x2FFFF
+BankSwitch2_L_W:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
-	strb r1,[spxptr,#wsvBnk2Slct]
+	strb r1,[spxptr,#wsvBnk2SlctX]
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
@@ -297,15 +316,21 @@ BankSwitch2_W:					;@ 0x20000-0x2FFFF
 
 	bx lr
 ;@----------------------------------------------------------------------------
+BankSwitch3_H_W:				;@ 0x30000-0x3FFFF
+;@----------------------------------------------------------------------------
+	ldr spxptr,=sphinx0
+	strb r1,[spxptr,#wsvBnk3SlctX+1]
+;@----------------------------------------------------------------------------
 reBankSwitch3_W:				;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
-	ldrb r1,[spxptr,#wsvBnk3Slct]
+	ldrh r1,[spxptr,#wsvBnk3SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch3_W:					;@ 0x30000-0x3FFFF
+BankSwitch3_L_W:				;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
 	ldr spxptr,=sphinx0
-	strb r1,[spxptr,#wsvBnk3Slct]
+	strb r1,[spxptr,#wsvBnk3SlctX]
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
