@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.3.6 2022-06-24"
+#define EMUVERSION "V0.4.0 2022-07-14"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -226,8 +226,11 @@ void debugIOUnmappedW(u8 port, u8 val) {
 void debugDivideError() {
 	debugOutput("Divide Error.");
 }
-void debugIllegalInstruction() {
-	debugOutput("Illegal Instruction.");
+void debugUndefinedInstruction() {
+	debugOutput("Undefined Instruction.");
+}
+void debugCrashInstruction() {
+	debugOutput("CPU Crash! (0xF1)");
 }
 //---------------------------------------------------------------------------------
 /// Switch between Player 1 & Player 2 controls

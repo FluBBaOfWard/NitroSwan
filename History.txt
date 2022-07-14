@@ -1,6 +1,10 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.4.0 - 2022-07-14 (FluBBa)
+	Fixed flag calculation for most opcodes.
+	Fixed emulation of undefined opcodes.
+
 V0.3.6 - 2022-04-20 (FluBBa)
 	Fixed sound DMA a bit.
 	Added savestates.
