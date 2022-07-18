@@ -9,7 +9,6 @@ extern "C" {
 
 extern u8 gFlicker;
 extern u8 gTwitch;
-extern u8 gScaling;
 extern u8 gGfxMask;
 
 extern Sphinx sphinx0;

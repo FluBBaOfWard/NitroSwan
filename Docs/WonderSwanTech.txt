@@ -273,12 +273,12 @@
     - Year of birth   -  2 bytes (BCD)
     - Month of birth  -  1 byte  (BCD)
     - Day of birth    -  1 byte  (BCD)
-    - Sex             -  1 byte (1 - male , 2 - female)
-    - Blood           -  1 byte (1 - A, 2 - B, 3 - O, 4 - AB)
+    - Sex             -  1 byte (0 - ?, 1 - male , 2 - female)
+    - Blood           -  1 byte (0 - ?, 1 - A, 2 - B, 3 - O, 4 - AB)
 
 
     Struct size - 22 bytes  = 11 reads,
-    Address range = 0x1B0 - 0x1BA
+    Address range = 0x40 - 0x4A
 
 10. I/O PORTS (port number /initial value / description)
 
@@ -717,7 +717,7 @@ Mapped to cartridge. 2001/Luxsor1 & 2003/Luxsor2
  - $CC - $D1 - GPIO enable
  - $CD - $D1 - GPIO data
  - $CE - $D1 - MEMORY_CTRL, bit 0 switch between "ROM" and SRAM @ 0x10000.
- - $CF - $D1 - ROM Bank selector for segment 0
+ - $CF - $D1 - ROM Bank selector for segment 4-F
  - $D0 - $D1 - SRAM Bank selector low
  - $D1 - $D1 - SRAM Bank selector high
  - $D2 - $D1 - BNK2SLCT - ROM Bank selector for segment 2 low

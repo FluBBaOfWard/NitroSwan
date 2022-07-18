@@ -23,10 +23,8 @@
 	.global gGammaValue
 	.global gFlicker
 	.global gTwitch
-	.global gScaling
 	.global gGfxMask
 	.global vblIrqHandler
-	.global yStart
 	.global GFX_DISPCNT
 	.global GFX_BG0CNT
 	.global GFX_BG1CNT
@@ -52,17 +50,12 @@ gfxInit:					;@ Called from machineInit
 	mov r1,#0x200+SCREEN_HEIGHT
 	mov r2,#0x100
 	bl memset_
-	adr r0,scaleParms
-	bl setupSpriteScaling
 
 	bl wsVideoInit
 	bl gfxWinInit
 
 	ldmfd sp!,{pc}
 
-;@----------------------------------------------------------------------------
-scaleParms:					;@  NH     FH     NV     FV
-	.long OAM_BUFFER1,0x0000,0x0100,0xff01,0x0120,0xfee1
 ;@----------------------------------------------------------------------------
 gfxReset:					;@ Called with CPU reset
 ;@----------------------------------------------------------------------------
@@ -353,16 +346,16 @@ vblIrqHandler:
 	str r0,[r6,#REG_BG0CNT]
 	ldr r0,GFX_DISPCNT
 	ldrb r1,[spxptr,#wsvDispCtrl]
-	tst r1,#1
-	biceq r0,r0,#0x0100			;@ Turn off bg
+	tst r1,#0x01
+	biceq r0,r0,#0x0100			;@ Turn off Bg
 	tst r1,#0x02
-	biceq r0,r0,#0x0200			;@ Turn off fg
+	biceq r0,r0,#0x0200			;@ Turn off Fg
 	tst r1,#0x04
-	biceq r0,r0,#0x1000			;@ Turn off sprites
-	tst r1,#0x20				;@ Win for FG on?
-	biceq r0,r0,#0x2000			;@ Turn off fg-window
+	biceq r0,r0,#0x1000			;@ Turn off Sprites
+	tst r1,#0x20				;@ Win for Fg on?
+	biceq r0,r0,#0x2000			;@ Turn off Fg-Window
 	ldrb r2,gGfxMask
-//	bic r0,r0,r2,lsl#8
+	bic r0,r0,r2,lsl#8
 	strh r0,[r6,#REG_DISPCNT]
 
 	ldr r0,[spxptr,#windowData]
@@ -378,29 +371,20 @@ vblIrqHandler:
 	strh r0,[r6,#REG_WININ]
 
 
-	ldr r0,frameDone
+	ldrb r0,frameDone
 	cmp r0,#0
 	beq nothingNew
 //	bl wsvConvertTiles
 	mov r0,#BG_GFX
 	bl wsvConvertTileMaps
 	mov r0,#0
-	str r0,frameDone
+	strb r0,frameDone
 nothingNew:
 
 	blx scanKeys
 	ldmfd sp!,{r4-r8,pc}
 
 
-;@----------------------------------------------------------------------------
-gFlicker:		.byte 1
-				.space 2
-gTwitch:		.byte 0
-
-gScaling:		.byte 0
-gGfxMask:		.byte 0
-yStart:			.byte 0
-				.byte 0
 ;@----------------------------------------------------------------------------
 refreshGfx:					;@ Called from C when changing scaling.
 	.type refreshGfx STT_FUNC
@@ -428,12 +412,8 @@ endFrameGfx:				;@ Called just before screen end (~line 143)	(r0-r3 safe to use)
 	str r0,tmpScroll
 	str r1,dmaScroll
 
-//	ldr r0,=windowTop			;@ Load wTop, store in wTop+4.......load wTop+8, store in wTop+12
-//	ldmia r0,{r1-r3}			;@ Load with increment after
-//	stmib r0,{r1-r3}			;@ Store with increment before
-
 	mov r0,#1
-	str r0,frameDone
+	strb r0,frameDone
 	bl updateSlowIO				;@ RTC/Alarm and more
 
 	ldmfd sp!,{lr}
@@ -448,7 +428,13 @@ tmpScroll:		.long SCROLLBUFF1
 dmaScroll:		.long SCROLLBUFF2
 
 
-frameDone:		.long 0
+gFlicker:		.byte 1
+				.space 2
+gTwitch:		.byte 0
+
+gGfxMask:		.byte 0
+frameDone:		.byte 0
+				.byte 0,0
 ;@----------------------------------------------------------------------------
 wsVideoReset0:		;@ r0=periodicIrqFunc, r1=, r2=frame2IrqFunc, r3=model
 ;@----------------------------------------------------------------------------
@@ -498,12 +484,9 @@ sphinx0:
 ;@----------------------------------------------------------------------------
 
 gfxState:
-adjustBlend:
 	.long 0
-windowTop:
 	.long 0
-wTop:
-	.long 0,0,0		;@ windowTop  (this label too)   L/R scrolling in unscaled mode
+	.long 0,0,0
 
 GFX_DISPCNT:
 	.long 0

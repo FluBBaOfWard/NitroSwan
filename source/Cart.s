@@ -11,10 +11,10 @@
 	.global romNum
 	.global cartFlags
 	.global romStart
-	.global reBankSwitch4_F_W
-	.global reBankSwitch1_W
-	.global reBankSwitch2_W
-	.global reBankSwitch3_W
+	.global reBankSwitch4_F
+	.global reBankSwitch1
+	.global reBankSwitch2
+	.global reBankSwitch3
 	.global BankSwitch4_F_W
 	.global BankSwitch1_W
 	.global BankSwitch1_L_W
@@ -140,6 +140,7 @@ loadCart: 		;@ Called from C:
 	subne r2,r2,#1
 	str r2,romMask			;@ romMask=romBlocks-1
 
+	ldr spxptr,=sphinx0
 	mov r1,#0xFF
 	bl BankSwitch4_F_W
 	mov r1,#0
@@ -237,15 +238,15 @@ clearDirtyTiles:
 	ldr r0,=DIRTYTILES			;@ Clear RAM
 	mov r1,#0x800/4
 	b memclr_
+
 ;@----------------------------------------------------------------------------
-reBankSwitch4_F_W:				;@ 0x40000-0xFFFFF
+reBankSwitch4_F:				;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	ldrb r1,[spxptr,#wsvBnk0SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch4_F_W:				;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
+	stmfd sp!,{lr}
 	strb r1,[spxptr,#wsvBnk0SlctX]
 	mov r1,r1,lsl#4
 	orr r1,r1,#4
@@ -253,32 +254,29 @@ BankSwitch4_F_W:				;@ 0x40000-0xFFFFF
 	ldr r0,romMask
 	ldr r2,romSpacePtr
 	sub r2,r2,#0x40000
-	add r12,v30ptr,#v30MemTblInv-4*4
+	add lr,v30ptr,#v30MemTblInv-4*4
 tbLoop2:
 	and r3,r0,r1
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	sub r2,r2,#0x10000
-	str r3,[r12,#-4]!
+	str r3,[lr,#-4]!
 	add r1,r1,#1
 	ands r3,r1,#0xF
 	bne tbLoop2
 
-	bx lr
+	ldmfd sp!,{lr}
 ;@----------------------------------------------------------------------------
 BankSwitch1_H_W:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	strb r1,[spxptr,#wsvBnk1SlctX+1]
 ;@----------------------------------------------------------------------------
-reBankSwitch1_W:				;@ 0x10000-0x1FFFF
+reBankSwitch1:					;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	ldrh r1,[spxptr,#wsvBnk1SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch1_W:					;@ 0x10000-0x1FFFF
 BankSwitch1_L_W:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	strb r1,[spxptr,#wsvBnk1SlctX]
 
 	ldr r0,sramSize
@@ -293,18 +291,15 @@ BankSwitch1_L_W:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 BankSwitch2_H_W:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	strb r1,[spxptr,#wsvBnk2SlctX+1]
 ;@----------------------------------------------------------------------------
-reBankSwitch2_W:				;@ 0x20000-0x2FFFF
+reBankSwitch2:					;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	ldrb r1,[spxptr,#wsvBnk2SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch2_W:					;@ 0x20000-0x2FFFF
 BankSwitch2_L_W:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	strb r1,[spxptr,#wsvBnk2SlctX]
 
 	ldr r0,romMask
@@ -318,18 +313,15 @@ BankSwitch2_L_W:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 BankSwitch3_H_W:				;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	strb r1,[spxptr,#wsvBnk3SlctX+1]
 ;@----------------------------------------------------------------------------
-reBankSwitch3_W:				;@ 0x30000-0x3FFFF
+reBankSwitch3:					;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	ldrh r1,[spxptr,#wsvBnk3SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch3_W:					;@ 0x30000-0x3FFFF
 BankSwitch3_L_W:				;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
 	strb r1,[spxptr,#wsvBnk3SlctX]
 
 	ldr r0,romMask

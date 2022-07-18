@@ -35,6 +35,9 @@ int ioGetStateSize(void);
 /// Initializes internal EEPROM.
 void initIntEeprom(void *eepromAdr);
 
+/// Initializes internal EEPROM on Color consoles.
+void initIntEepromColor(void *eepromAdr);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

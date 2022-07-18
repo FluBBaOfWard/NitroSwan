@@ -10,6 +10,7 @@
 	.global ioLoadState
 	.global ioGetStateSize
 	.global initIntEeprom
+	.global initIntEepromColor
 
 	.global updateSlowIO
 	.global IOPortA_R
@@ -46,6 +47,12 @@ ioReset:
 	bl intEepromReset
 
 	ldmfd sp!,{pc}
+;@----------------------------------------------------------------------------
+initIntEepromColor:			;@ r0 = eepromAdr
+	.type   initIntEepromColor STT_FUNC
+;@----------------------------------------------------------------------------
+	mov r1,#0x03
+	strb r1,[r0,#0x83]	;@ Default sound volume
 ;@----------------------------------------------------------------------------
 initIntEeprom:				;@ r0 = eepromAdr
 	.type   initIntEeprom STT_FUNC

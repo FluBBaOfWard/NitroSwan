@@ -331,8 +331,24 @@ int saveIntEeprom(const char *name, u8 *source, int size) {
 	return 0;
 }
 
+static void clearIntEepromWS() {
+	memset(wsEepromMem, 0, sizeof(wsEepromMem));
+	initIntEeprom(wsEepromMem);
+}
+static void clearIntEepromWSC() {
+	memset(wscEepromMem, 0, sizeof(wscEepromMem));
+	initIntEepromColor(wscEepromMem);
+}
+static void clearIntEepromSC() {
+	memset(scEepromMem, 0, sizeof(scEepromMem));
+	initIntEepromColor(scEepromMem);
+}
+
 int loadIntEeproms() {
 	int status = 1;
+	clearIntEepromWS();
+	clearIntEepromWSC();
+	clearIntEepromSC();
 	if (!findFolder(folderName)) {
 		status = loadIntEeprom(wsEepromName, wsEepromMem, sizeof(wsEepromMem));
 		status |= loadIntEeprom(wscEepromName, wscEepromMem, sizeof(wscEepromMem));
@@ -370,16 +386,13 @@ void selectEEPROM() {
 void clearIntEeproms() {
 	switch (gSOC) {
 		case SOC_ASWAN:
-			memset(wsEepromMem, 0, sizeof(wsEepromMem));
-			initIntEeprom(wsEepromMem);
+			clearIntEepromWS();
 			break;
 		case SOC_SPHINX:
-			memset(wscEepromMem, 0, sizeof(wscEepromMem));
-			initIntEeprom(wscEepromMem);
+			clearIntEepromWSC();
 			break;
 		case SOC_SPHINX2:
-			memset(scEepromMem, 0, sizeof(scEepromMem));
-			initIntEeprom(scEepromMem);
+			clearIntEepromSC();
 			break;
 	}
 }

@@ -16,15 +16,15 @@ struct userdata_t
 	uint8_t birthYear[2];	// BCD encoded BIG endian
 	uint8_t birthMonth;		// BCD encoded
 	uint8_t birthDay;		// BCD encoded
-	uint8_t sex;			// 1 = male, 2 = female
-	uint8_t bloodType;		// 1 = A, 2 = B, 3 = O, 4 = AB
+	uint8_t sex;			// 0 = ?, 1 = male, 2 = female
+	uint8_t bloodType;		// 0 = ?, 1 = A, 2 = B, 3 = O, 4 = AB
 };
 
 // Starts at 0x80
 struct bootsplash_t
 {
 	uint8_t padding[3];
-	uint8_t consoleFlags;
+	uint8_t consoleFlags;		// Bit 0 & 1 = Volume, bit 6 = High Contrast (WSC), bit 7 = Custom Boot.
 	uint8_t consoleNameColor;
 	uint8_t padding2;
 	uint8_t size;

@@ -1,15 +1,14 @@
 NitroSwan Todo
 
-	Make sure sound is on in the WSC BIOS eeprom.
 	Add different read mem functions.
 	Fix better sound!
-	Link NDS battery to WS battery.
 	Graphics on menu screen?
 	Find speed hacks.
 	Better key mappings.
 	Add IO word access?
 	Add serial port emulation.
-	SD Gundam Operation U.C pauses like hitting start, but with a message about the low battery.
+	SD Gundam Operation U.C pauses like hitting start, but with a message about low battery.
+	Link NDS battery to WS battery?
 
 GFX:
 	See Sphinx todo.
@@ -30,10 +29,11 @@ Misc:
 	Mr. Driller, also sensitive to timing (fetch opcode, pl vs gt).
 
 Games Not Working:
-	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
-	Chou Denki Card Game. Needs initialization, last item on first page.
 	Riviera freezes on a black screen after the chapter 1 screen. (DSi) #16
 	Tonpuusou. Can't start.
+Games Fixed:
+	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
+	Chou Denki Card Game. Needs initialization, last item on first page.
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 
 Needs Large (256kB) SRAM:
@@ -45,12 +45,14 @@ Needs RTC:
 	Dicing Knight.
 	Dokodemo Hamster 3 - O Dekake Saffron
 	Inu yasha
-	Judgement Sword.
+	Judgement Silversword Rebirth Edition
 	Tenori-On
 
 Games With Glitches:
-	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
+	Magical Drop, playfield flickers horizontaly.
+	Makai Toushi Sa-Ga, textboxes overlap Characters and background.
 	Sorobang, needs all 1024 tiles in 4color mode.
+	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
 
 Speedhacks:
 	Halt (0xf4).

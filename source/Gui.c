@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.0 2022-07-14"
+#define EMUVERSION "V0.4.0 2022-07-18"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -34,7 +34,7 @@ const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, 
 const fptr fnList2[] = {ui4, ui5, ui6, ui7};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
-const fptr fnList5[] = {/*scalingSet, flickSet,*/ gammaSet, paletteChange, fgrLayerSet, bgrLayerSet, sprLayerSet};
+const fptr fnList5[] = {gammaSet, paletteChange, fgrLayerSet, bgrLayerSet, sprLayerSet};
 const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, headphonesSet /*languageSet*/};
 const fptr fnList7[] = {speedSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, debugTextSet, sleepSet};
 const fptr fnList8[] = {exitEmulator, backOutOfMenu};
@@ -140,8 +140,8 @@ void uiDisplay() {
 	setupSubMenu("Display Settings");
 	drawSubItem("Gamma: ", brighTxt[gGammaValue]);
 	drawSubItem("B&W Palette: ", palTxt[gPaletteBank]);
-	drawSubItem("Disable Foreground: ", autoTxt[gGfxMask&1]);
-	drawSubItem("Disable Background: ", autoTxt[(gGfxMask>>1)&1]);
+	drawSubItem("Disable Foreground: ", autoTxt[(gGfxMask>>1)&1]);
+	drawSubItem("Disable Background: ", autoTxt[gGfxMask&1]);
 	drawSubItem("Disable Sprites: ", autoTxt[(gGfxMask>>4)&1]);
 }
 
@@ -243,12 +243,6 @@ void swapABSet() {
 	joyCfg ^= 0x400;
 }
 
-/// Turn on/off scaling
-void scalingSet() {
-	gScaling ^= 0x01;
-	refreshGfx();
-}
-
 /// Change gamma (brightness)
 void gammaSet() {
 	gGammaValue++;
@@ -261,11 +255,11 @@ void gammaSet() {
 
 /// Turn on/off rendering of foreground
 void fgrLayerSet() {
-	gGfxMask ^= 0x01;
+	gGfxMask ^= 0x02;
 }
 /// Turn on/off rendering of background
 void bgrLayerSet() {
-	gGfxMask ^= 0x02;
+	gGfxMask ^= 0x01;
 }
 /// Turn on/off rendering of sprites
 void sprLayerSet() {
