@@ -7,8 +7,12 @@ extern "C" {
 
 #include <nds.h>
 
-void cpuWriteByte(u32 addr, u8 value);
-u8 cpuReadByte(u32 addr);
+u8 cpuReadMem20(u32 addr);
+u16 cpuReadMem20W(u32 addr);
+u16 dmaReadMem20W(u32 addr);
+void cpuWriteMem20(u32 addr, u8 value);
+void cpuWriteMem20W(u32 addr, u16 value);
+void dmaWriteMem20W(u32 addr, u16 value);
 
 #ifdef __cplusplus
 } // extern "C"

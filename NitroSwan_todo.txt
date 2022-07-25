@@ -30,10 +30,10 @@ Misc:
 
 Games Not Working:
 	Riviera freezes on a black screen after the chapter 1 screen. (DSi) #16
-	Tonpuusou. Can't start.
 Games Fixed:
 	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
 	Chou Denki Card Game. Needs initialization, last item on first page.
+	Tonpuusou. Can't start. HBlank interrupt.
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 
 Needs Large (256kB) SRAM:
@@ -49,7 +49,7 @@ Needs RTC:
 	Tenori-On
 
 Games With Glitches:
-	Magical Drop, playfield flickers horizontaly.
+	Magical Drop, playfield flickers horizontaly. HBlank interrupt?
 	Makai Toushi Sa-Ga, textboxes overlap Characters and background.
 	Sorobang, needs all 1024 tiles in 4color mode.
 	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.

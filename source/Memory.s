@@ -8,8 +8,10 @@
 	.global rom_W
 	.global cpuReadMem20
 	.global cpuReadMem20W
+	.global dmaReadMem20W
 	.global cpuWriteMem20
 	.global cpuWriteMem20W
+	.global dmaWriteMem20W
 	.global setBootRomOverlay
 
 
@@ -92,6 +94,7 @@ cpuReadMem20W:		;@ In r0=address set in top 20 bits. Out r0=val, r1=phyAdr
 ;@----------------------------------------------------------------------------
 	tst r0,#0x1000
 	bne cpuReadWordUnaligned
+dmaReadMem20W:
 	mvn r2,r0,lsr#28
 	ldr r1,[v30ptr,r2,lsl#2]
 	mov r2,r0,lsr#12
@@ -148,6 +151,7 @@ cpuWriteMem20W:		;@ r0=address set in top 20 bits
 	bne tstSRAM_WW
 ;@----------------------------------------------------------------------------
 ram_WW:				;@ Write ram ($00000-$0FFFF)
+dmaWriteMem20W:
 ;@----------------------------------------------------------------------------
 	ldr r2,[v30ptr,#v30MemTblInv-1*4]
 	add r2,r2,r0,lsr#12
