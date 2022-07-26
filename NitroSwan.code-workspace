@@ -4,5 +4,10 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"terminal.integrated.env.osx": {
+			"DEVKITARM": "/opt/devkitPro/devkitARM",
+			"DEVKITPRO": "/opt/devkitPro"
+		}
+	}
 }

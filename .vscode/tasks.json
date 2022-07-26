@@ -10,7 +10,7 @@
                 "command": "taskkill /im mGBA.exe /F"
             },
             "osx": {
-                "command": "killall mGBA"
+                "command": "killall desmume"
             }
         },
         {
@@ -53,7 +53,7 @@
             "osx": {
                 "command": "/Applications/desmume.app/Contents/MacOS/desmume",
                 "args": [
-                    "-g",
+                    //"--arm9gdb=20000",
                     "${workspaceFolder}/${workspaceFolderBasename}.nds"
                 ]
             },
@@ -64,6 +64,14 @@
             },
             "command": "debuggerReady",
             "problemMatcher": {
+                "pattern": [
+                    {
+                        "regexp": ".",
+                        "file": 1,
+                        "location": 2,
+                        "message": 3
+                    }
+                ],
                 "background": {
                     "activeOnStart": true,
                     "beginsPattern": "^.*debuggerReady.*$",
@@ -74,9 +82,15 @@
         {
             "label": "run",
             "type": "shell",
+            "dependsOn": [
+                "make release"
+            ],
             "isBackground": true,
-            "command": "C:/NO$GBADebugger/NO$GBA.exe  ${workspaceFolder}/${workspaceFolderBasename}.elf",
-            "problemMatcher": []
+            "command": "C:/NO$GBA/NO$GBA.exe ${workspaceFolder}/${workspaceFolderBasename}.nds",
+            "osx": {
+                "command": "/Applications/desmume.app/Contents/MacOS/desmume ${workspaceFolder}/${workspaceFolderBasename}.nds",
+            },
+           "problemMatcher": []
         }
     ]
 }

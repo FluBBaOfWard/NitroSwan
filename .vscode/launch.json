@@ -17,25 +17,20 @@
             "externalConsole": true,
             "cwd": "${workspaceFolder}",
             "targetArchitecture": "arm",
-            "miDebuggerServerAddress": "localhost:2345",
+            "miDebuggerServerAddress": "localhost:20000",
             "windows": {
-                "miDebuggerPath": "C:/devkitPro/devkitARM/bin/arm-none-eabi-gdb.exe",
-                "setupCommands": [
-                    {
-                    "description": "Enable pretty-printing for gdb",
-                    "ignoreFailures": true,
-                        "text": "file ${workspaceFolder}/${workspaceFolderBasename}.elf -enable-pretty-printing"
-                    }]
+                "miDebuggerPath": "C:/devkitPro/devkitARM/bin/arm-none-eabi-gdb.exe"
             },
             "osx":{
-                "miDebuggerPath": "/opt/devkitPro/devkitARM/bin/arm-none-eabi-gdb",
-                "setupCommands": [
-                    {
+                "miDebuggerPath": "/opt/devkitPro/devkitARM/bin/arm-none-eabi-gdb"
+            },
+            "setupCommands": [
+                {
                     "description": "Enable pretty-printing for gdb",
                     "ignoreFailures": true,
-                        "text": "file ${workspaceFolder}/${workspaceFolderBasename}.elf -enable-pretty-printing"
-                    }]
-            },
+                    "text": "file ${workspaceFolder}/${workspaceFolderBasename}.elf -enable-pretty-printing"
+                }
+            ]
         }
     ]
 }
