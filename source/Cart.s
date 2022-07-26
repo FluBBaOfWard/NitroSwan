@@ -85,6 +85,7 @@ ROM_Space:
 //	.incbin "wsroms/Chaos Demo V2.1 by Charles Doty (PD).wsc"
 //	.incbin "wsroms/Guilty Gear Petit (J).wsc"
 //	.incbin "wsroms/Kaze no Klonoa - Moonlight Museum (Japan).ws"
+//	.incbin "wsroms/Magical Drop for WonderSwan (Japan).ws"
 //	.incbin "wsroms/Makaimura for WonderSwan (Japan).ws"
 //	.incbin "wsroms/Mr. Driller (J) [!].wsc"
 //	.incbin "wsroms/SD Gundam - Operation U.C. (Japan).wsc"
