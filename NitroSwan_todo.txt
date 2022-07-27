@@ -49,7 +49,7 @@ Needs RTC:
 	Tenori-On
 
 Games With Glitches:
-	Magical Drop, playfield flickers horizontaly. HBlank interrupt?
+	Magical Drop, playfield flickers horizontaly. Sensitive to interrupt (and IRET, HALT) timing.
 	Makai Toushi Sa-Ga, textboxes overlap Characters and background.
 	Sorobang, needs all 1024 tiles in 4color mode.
 	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.

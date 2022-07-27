@@ -58,9 +58,8 @@ runStart:
 	bl refreshEMUjoypads		;@ Z=1 if communication ok
 
 	ldr v30ptr,=V30OpTable
-	ldr v30f,[v30ptr,#v30Flags]
-	ldr v30pc,[v30ptr,#v30IP]
-	ldr v30cyc,[v30ptr,#v30ICount]
+	add r1,v30ptr,#v30Flags
+	ldmia r1,{v30f-v30cyc}		;@ Restore V30MZ state
 ;@----------------------------------------------------------------------------
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
@@ -72,9 +71,8 @@ wsFrameLoop:
 	bne wsFrameLoop
 
 ;@----------------------------------------------------------------------------
-	str v30f,[v30ptr,#v30Flags]
-	str v30pc,[v30ptr,#v30IP]
-	str v30cyc,[v30ptr,#v30ICount]
+	add r0,v30ptr,#v30Flags
+	stmia r0,{v30f-v30cyc}		;@ Save V30MZ state
 	ldr r1,=fpsValue
 	ldr r0,[r1]
 	add r0,r0,#1
