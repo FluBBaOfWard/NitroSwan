@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.0 2022-07-25"
+#define EMUVERSION "V0.4.0 2022-07-30"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -25,24 +25,26 @@ static void speedHackSet(void);
 static void headphonesSet(void);
 
 static void uiMachine(void);
+static void uiDebug(void);
 static void updateGameInfo(void);
 
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
 const fptr fnList0[] = {uiDummy};
 const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, saveSettings, ejectGame, resetGame, ui8};
-const fptr fnList2[] = {ui4, ui5, ui6, ui7};
+const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList5[] = {gammaSet, paletteChange, fgrLayerSet, bgrLayerSet, sprLayerSet};
 const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, headphonesSet /*languageSet*/};
-const fptr fnList7[] = {speedSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, debugTextSet, sleepSet};
-const fptr fnList8[] = {exitEmulator, backOutOfMenu};
-const fptr fnList9[] = {uiDummy};
-const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9};
-u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9)};
-const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDummy, uiDummy};
-const u8 menuXBack[] = {0,0,0,0,2,2,2,2,1,1};
+const fptr fnList7[] = {speedSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
+const fptr fnList8[] = {debugTextSet, run};
+const fptr fnList9[] = {exitEmulator, backOutOfMenu};
+const fptr fnList10[] = {uiDummy};
+const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9, fnList10};
+u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9), ARRSIZE(fnList10)};
+const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDebug, uiDummy, uiDummy};
+const u8 menuXBack[] = {0,0,0,0,2,2,2,2,2,1,1};
 
 u8 gGammaValue = 0;
 char gameInfoString[32];
@@ -110,6 +112,7 @@ void uiOptions() {
 	drawMenuItem("Display");
 	drawMenuItem("Machine");
 	drawMenuItem("Settings");
+	drawMenuItem("Debug");
 }
 
 void uiAbout() {
@@ -168,8 +171,13 @@ void uiSettings() {
 	drawSubItem("Autopause Game: ", autoTxt[emuSettings&1]);
 	drawSubItem("Powersave 2nd Screen: ",autoTxt[(emuSettings>>1)&1]);
 	drawSubItem("Emulator on Bottom: ", autoTxt[(emuSettings>>8)&1]);
-	drawSubItem("Debug Output: ", autoTxt[gDebugSet&1]);
 	drawSubItem("Autosleep: ", sleepTxt[(emuSettings>>4)&3]);
+}
+
+void uiDebug() {
+	setupSubMenu("Debug");
+	drawSubItem("Debug Output: ", autoTxt[gDebugSet&1]);
+	drawSubItem("Run Frame. ", NULL);
 }
 
 

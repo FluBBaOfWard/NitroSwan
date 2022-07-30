@@ -71,8 +71,10 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 			GUI screen when menu is not active.
 		Emulator on Bottom: Select if top or bottom screen should be used for
 			emulator, when menu is active emulator screen is allways on top.
-		Debug Output: Show an FPS meter for now.
 		Autosleep: Doesn't work.
+	Debug:
+		Debug Output: Show an FPS meter for now.
+		Run Frame: Emulate one frame.
 
 ### About:
 	Some info about the emulator and game...
@@ -88,8 +90,8 @@ In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS 
 	There are 2 games that I know of that has problems.
 	Chou Denki Card Game.
 		You need to initialize NVRAM, this is the last item on the first page (初期化).
-	Tonpuusou.
-		Can't start, requires HBlank timer but it's not started.
+	Magical Drop.
+		Playfield flickers horizontaly, something to do with cpu/interrupt timing.
 
 ## Credits:
 

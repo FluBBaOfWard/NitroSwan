@@ -11,8 +11,8 @@
 	.global paletteTxAll
 	.global refreshGfx
 	.global endFrameGfx
-	.global cpu_readport
-	.global cpu_writeport
+	.global v30ReadPort
+	.global v30WritePort
 	.global pushVolumeButton
 	.global setHeadphones
 	.global setLowBattery
@@ -441,14 +441,14 @@ wsVideoReset0:		;@ r0=periodicIrqFunc, r1=, r2=frame2IrqFunc, r3=model
 	adr spxptr,sphinx0
 	b wsVideoReset
 ;@----------------------------------------------------------------------------
-cpu_readport:
-	.type cpu_readport STT_FUNC
+v30ReadPort:
+	.type v30ReadPort STT_FUNC
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvRead
 ;@----------------------------------------------------------------------------
-cpu_writeport:
-	.type cpu_writeport STT_FUNC
+v30WritePort:
+	.type v30WritePort STT_FUNC
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvWrite

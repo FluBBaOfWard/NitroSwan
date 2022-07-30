@@ -23,8 +23,8 @@ void monoPalInit(void);
 void paletteInit(u8 gammaVal);
 void paletteTxAll(void);
 void refreshGfx(void);
-u8 cpu_readport(u16 port);
-void cpu_writeport(u16 port, u8 value);
+u8 v30ReadPort(u16 port);
+void v30WritePort(u16 port, u8 value);
 
 void setHeadphones(bool enable);
 void setLowBattery(bool enable);
