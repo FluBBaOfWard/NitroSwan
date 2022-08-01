@@ -41,9 +41,6 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 	Display:
 		Mono Palette: Here you can select the palette for B & W games.
 		Gamma: Lets you change the gamma ("brightness").
-		Disable Foreground: Turn on/off foreground rendering.
-		Disable Background: Turn on/off background rendering.
-		Disable Sprites: Turn on/off sprite rendering.
 	Machine Settings:
 		Machine: Select the emulated machine.
 		Select WS Bios: Load a real WS Bios.
@@ -73,7 +70,10 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 			emulator, when menu is active emulator screen is allways on top.
 		Autosleep: Doesn't work.
 	Debug:
-		Debug Output: Show an FPS meter for now.
+		Debug Output: Show FPS and logged text.
+		Disable Foreground: Turn on/off foreground rendering.
+		Disable Background: Turn on/off background rendering.
+		Disable Sprites: Turn on/off sprite rendering.
 		Run Frame: Emulate one frame.
 
 ### About:
@@ -81,10 +81,12 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 
 
 ## Controls:
-In horizontal games the d-pad is mapped to WS X1-X4. A & B buttons are mapped to WS A & B.
-Holding L maps the dpad to WS Y1-Y4.
+	Start is mapped to WS Start.
+	Select is mapped to WS Sound.
+	In horizontal games the d-pad is mapped to WS X1-X4. A & B buttons are mapped to WS A & B.
+	Holding L maps the dpad to WS Y1-Y4.
 
-In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS X1-X4.
+	In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS X1-X4.
 
 ## Games:
 	There are 2 games that I know of that has problems.

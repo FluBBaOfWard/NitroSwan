@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.0 2022-07-30"
+#define EMUVERSION "V0.4.0 2022-08-01"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -35,10 +35,10 @@ const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, 
 const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
-const fptr fnList5[] = {gammaSet, paletteChange, fgrLayerSet, bgrLayerSet, sprLayerSet};
+const fptr fnList5[] = {gammaSet, paletteChange};
 const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, headphonesSet /*languageSet*/};
 const fptr fnList7[] = {speedSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
-const fptr fnList8[] = {debugTextSet, run};
+const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, runFrame};
 const fptr fnList9[] = {exitEmulator, backOutOfMenu};
 const fptr fnList10[] = {uiDummy};
 const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9, fnList10};
@@ -143,23 +143,20 @@ void uiDisplay() {
 	setupSubMenu("Display Settings");
 	drawSubItem("Gamma: ", brighTxt[gGammaValue]);
 	drawSubItem("B&W Palette: ", palTxt[gPaletteBank]);
-	drawSubItem("Disable Foreground: ", autoTxt[(gGfxMask>>1)&1]);
-	drawSubItem("Disable Background: ", autoTxt[gGfxMask&1]);
-	drawSubItem("Disable Sprites: ", autoTxt[(gGfxMask>>4)&1]);
 }
 
 static void uiMachine() {
 	setupSubMenu("Machine Settings");
-	drawSubItem("Machine: ",machTxt[gMachineSet]);
-	drawMenuItem(" Select WS Bios");
-	drawMenuItem(" Select WS Color Bios");
-	drawMenuItem(" Select WS Crystal Bios");
-	drawMenuItem(" Import internal EEPROM");
-	drawMenuItem(" Clear internal EEPROM");
-	drawSubItem("Cpu speed hacks: ",autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
-	drawMenuItem(" Change Battery");
-	drawSubItem("Headphones: ",autoTxt[(emuSettings&ENABLE_HEADPHONES)>>18]);
-//	drawSubItem("Language: ",langTxt[gLang]);
+	drawSubItem("Machine: ", machTxt[gMachineSet]);
+	drawSubItem("Select WS Bios -> ", NULL);
+	drawSubItem("Select WS Color Bios -> ", NULL);
+	drawSubItem("Select WS Crystal Bios -> ", NULL);
+	drawSubItem("Import internal EEPROM -> ", NULL);
+	drawSubItem("Clear internal EEPROM ", NULL);
+	drawSubItem("Cpu speed hacks: ", autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
+	drawSubItem("Change Battery ", NULL);
+	drawSubItem("Headphones: ", autoTxt[(emuSettings&ENABLE_HEADPHONES)>>18]);
+//	drawSubItem("Language: ", langTxt[gLang]);
 }
 
 void uiSettings() {
@@ -177,7 +174,10 @@ void uiSettings() {
 void uiDebug() {
 	setupSubMenu("Debug");
 	drawSubItem("Debug Output: ", autoTxt[gDebugSet&1]);
-	drawSubItem("Run Frame. ", NULL);
+	drawSubItem("Disable Foreground: ", autoTxt[(gGfxMask>>1)&1]);
+	drawSubItem("Disable Background: ", autoTxt[gGfxMask&1]);
+	drawSubItem("Disable Sprites: ", autoTxt[(gGfxMask>>4)&1]);
+	drawSubItem("Run Frame ", NULL);
 }
 
 

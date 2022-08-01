@@ -402,15 +402,15 @@ endFrameGfx:				;@ Called just before screen end (~line 143)	(r0-r3 safe to use)
 	bl paletteTxAll
 ;@--------------------------
 
-	ldr r0,dmaOamBuffer
-	ldr r1,tmpOamBuffer
-	str r0,tmpOamBuffer
-	str r1,dmaOamBuffer
+	ldr r0,tmpOamBuffer
+	ldr r1,dmaOamBuffer
+	str r0,dmaOamBuffer
+	str r1,tmpOamBuffer
 
-	ldr r0,dmaScroll
-	ldr r1,tmpScroll
-	str r0,tmpScroll
-	str r1,dmaScroll
+	ldr r0,tmpScroll
+	ldr r1,dmaScroll
+	str r0,dmaScroll
+	str r1,tmpScroll
 
 	mov r0,#1
 	strb r0,frameDone

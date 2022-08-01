@@ -142,37 +142,33 @@ be_end:
 ;@----------------------------------------------------------------------------
 sngJR_hack0:				;@
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
-	getNextByte
+	getNextSignedByte
 	mov r0,r0
 	mov r0,r0
 	tst v30f,#PSR_Z
 	beq hack1End
-	mov r0,r0,lsl#24
-	add v30pc,v30pc,r0,asr#8
+	add v30pc,v30pc,r0
 	sub v30cyc,v30cyc,#3*CYCLE
-	cmp r0,#0xFA000000				;@ Speedhack 0
-	andeq v30cyc,v30cyc,#CYC_MASK
+	cmp r0,#-4					;@ Speedhack 0
+	andcs v30cyc,v30cyc,#CYC_MASK
 hack0End:
-	sub v30cyc,v30cyc,#1*CYCLE
-	ldmfd sp!,{pc}
+	eatCycles 1
+	bx lr
 ;@----------------------------------------------------------------------------
 sngJR_hack1:				;@
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
-	getNextByte
+	getNextSignedByte
 	mov r0,r0
 	mov r0,r0
 	tst r1,#PSR_V
 	beq hack1End
-	mov r0,r0,lsl#24
-	add v30pc,v30pc,r0,asr#8
+	add v30pc,v30pc,r0
 	sub v30cyc,v30cyc,#3*CYCLE
-	cmp r0,#0xF9000000				;@ Speedhack 1
-	andeq v30cyc,v30cyc,#CYC_MASK
+	cmp r0,#-5					;@ Speedhack 1
+	andcs v30cyc,v30cyc,#CYC_MASK
 hack1End:
-	sub v30cyc,v30cyc,#1*CYCLE
-	ldmfd sp!,{pc}
+	eatCycles 1
+	bx lr
 
 ;@----------------------------------------------------------------------------
 	.end

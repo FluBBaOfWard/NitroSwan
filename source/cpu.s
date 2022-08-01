@@ -8,6 +8,7 @@
 #define CYCLE_PSL (256)
 
 	.global run
+	.global runFrame
 	.global cpuInit
 	.global cpuReset
 	.global isConsoleRunning
@@ -25,7 +26,13 @@
 	.section .text
 	.align 2
 ;@----------------------------------------------------------------------------
-run:		;@ Return after 1 frame
+runFrame:		;@ Return after 1 frame
+	.type runFrame STT_FUNC
+;@----------------------------------------------------------------------------
+	stmfd sp!,{r4-r11,lr}
+	b skipInput
+;@----------------------------------------------------------------------------
+run:		;@ Return after X frame(s)
 	.type run STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldrh r0,waitCountIn
@@ -56,7 +63,7 @@ runStart:
 //	bl V30SetNMIPin
 
 	bl refreshEMUjoypads		;@ Z=1 if communication ok
-
+skipInput:
 	ldr v30ptr,=V30OpTable
 	add r1,v30ptr,#v30Flags
 	ldmia r1,{v30f-v30cyc}		;@ Restore V30MZ state

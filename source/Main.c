@@ -77,6 +77,8 @@ int main(int argc, char **argv) {
 	setupGUI();
 	getInput();
 	initSettings();
+	machineInit();
+	loadCart();
 	if ( initFileHelper() ) {
 		loadSettings();
 		loadBnWBIOS();
@@ -92,7 +94,6 @@ int main(int argc, char **argv) {
 	else {
 		infoOutput("fatInitDefault() failure.");
 	}
-	machineInit();
 
 	while (1) {
 		waitVBlank();
