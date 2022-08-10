@@ -33,7 +33,6 @@
 
 
 	.global sphinx0
-	.global DIRTYTILES
 
 
 	.syntax unified
@@ -495,7 +494,11 @@ GFX_BG0CNT:
 GFX_BG1CNT:
 	.short 0
 
+#ifdef GBA
+	.section .sbss				;@ For the GBA
+#else
 	.section .bss
+#endif
 	.align 2
 OAM_BUFFER1:
 	.space 0x400
@@ -509,8 +512,6 @@ MAPPED_RGB:
 	.space 0x2000				;@ 4096*2
 EMUPALBUFF:
 	.space 0x400
-DIRTYTILES:
-	.space 0x800
 
 ;@----------------------------------------------------------------------------
 	.end

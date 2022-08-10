@@ -9,6 +9,7 @@ NitroSwan Todo
 	Add serial port emulation.
 	SD Gundam Operation U.C pauses like hitting start, but with a message about low battery.
 	Link NDS battery to WS battery?
+	Fix odd sized roms? Rom need to be at the end of the rom space.
 
 GFX:
 	See Sphinx todo.
@@ -27,8 +28,12 @@ Sound:
 Misc:
 	Cardcaptor Sakura, timing sensitive.
 	Mr. Driller, also sensitive to timing (fetch opcode, pl vs gt).
+	Nazo Ou Pocket, slow.
+	Side Pocket, slow.
+	Time Bokan Series, slow.
 
 Games Not Working:
+	Kurupara, crashes.
 	Riviera freezes on a black screen after the chapter 1 screen. (DSi) #16
 Games Fixed:
 	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
@@ -86,7 +91,3 @@ Speedhacks:
 	* Zakull Bootsplash
 
 	"Guilty Gear Petit"		- JR (0x72,0xF9) @0x2002
-
-	"Bios"								- JR (0x67,0xF9) @0xFF
-										- JR (0x6E,0xF9) @0xFF
-

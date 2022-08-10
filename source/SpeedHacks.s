@@ -34,7 +34,7 @@ origLoop:
 
 	ldr r4,=gGameID
 	ldrb r0,[r4]
-	cmp r0,#0x1A
+	cmp r0,#0x1B
 	bpl noHacks
 
 	adr r4,SpeedHacks
@@ -106,6 +106,7 @@ SpeedHacks:
 	.byte 0x00,0x00	;@ #0x18
 	.byte 0x00,0x00	;@ #0x19
 	.byte 0x00,0x00	;@ #0x1A Cardcaptor Sakura
+	.byte 0x00,0x00	;@ #0x1B Inuyasha - Kagome no Sengoku Nikki, EB ED, Branch Short -19
 noHack:
 	.byte 0x00,0x00
 	.align 2

@@ -8,7 +8,7 @@
 #define CYCLE_PSL (256)
 
 	.global run
-	.global runFrame
+	.global stepFrame
 	.global cpuInit
 	.global cpuReset
 	.global isConsoleRunning
@@ -25,12 +25,6 @@
 
 	.section .text
 	.align 2
-;@----------------------------------------------------------------------------
-runFrame:		;@ Return after 1 frame
-	.type runFrame STT_FUNC
-;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r11,lr}
-	b skipInput
 ;@----------------------------------------------------------------------------
 run:		;@ Return after X frame(s)
 	.type run STT_FUNC
@@ -106,6 +100,38 @@ waitMaskIn:			.byte 0
 waitCountOut:		.byte 0
 waitMaskOut:		.byte 0
 
+;@----------------------------------------------------------------------------
+stepFrame:		;@ Return after 1 frame
+	.type stepFrame STT_FUNC
+;@----------------------------------------------------------------------------
+	stmfd sp!,{r4-r11,lr}
+	ldr v30ptr,=V30OpTable
+	add r1,v30ptr,#v30Flags
+	ldmia r1,{v30f-v30cyc}		;@ Restore V30MZ state
+;@----------------------------------------------------------------------------
+wsFrameLoop2:
+;@----------------------------------------------------------------------------
+	mov r0,#CYCLE_PSL
+	bl V30RunXCycles
+	ldr spxptr,=sphinx0
+	bl wsvDoScanline
+	cmp r0,#0
+	bne wsFrameLoop2
+
+	mov r0,#CYCLE_PSL
+	bl V30RunXCycles
+	ldr spxptr,=sphinx0
+	bl wsvDoScanline
+;@----------------------------------------------------------------------------
+	add r0,v30ptr,#v30Flags
+	stmia r0,{v30f-v30cyc}		;@ Save V30MZ state
+
+	ldr r1,frameTotal
+	add r1,r1,#1
+	str r1,frameTotal
+
+	ldmfd sp!,{r4-r11,lr}
+	bx lr
 ;@----------------------------------------------------------------------------
 cpuInit:					;@ Called by machineInit
 ;@----------------------------------------------------------------------------

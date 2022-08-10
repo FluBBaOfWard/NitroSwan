@@ -39,6 +39,7 @@
 	.global g_BIOSBASE_COLOR
 	.global g_BIOSBASE_CRYSTAL
 	.global wsRAM
+	.global DIRTYTILES
 	.global wsSRAM
 	.global extEeprom
 	.global extEepromMem
@@ -84,6 +85,7 @@ ROM_Space:
 //	.incbin "wsroms/Crazy Climber (J) [M][!].ws"
 //	.incbin "wsroms/Chaos Demo V2.1 by Charles Doty (PD).wsc"
 //	.incbin "wsroms/Guilty Gear Petit (J).wsc"
+//	.incbin "wsroms/Inuyasha - Kagome no Sengoku Nikki (Japan).wsc"
 //	.incbin "wsroms/Kaze no Klonoa - Moonlight Museum (Japan).ws"
 //	.incbin "wsroms/Magical Drop for WonderSwan (Japan).ws"
 //	.incbin "wsroms/Makaimura for WonderSwan (Japan).ws"
@@ -506,6 +508,8 @@ eepromSize:
 	.align 2
 wsRAM:
 	.space 0x10000
+DIRTYTILES:
+	.space 0x800
 wsSRAM:
 #ifdef GBA
 	.space 0x10000				;@ For the GBA

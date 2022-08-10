@@ -74,7 +74,7 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 		Disable Foreground: Turn on/off foreground rendering.
 		Disable Background: Turn on/off background rendering.
 		Disable Sprites: Turn on/off sprite rendering.
-		Run Frame: Emulate one frame.
+		Step Frame: Emulate one frame.
 
 ### About:
 	Some info about the emulator and game...
