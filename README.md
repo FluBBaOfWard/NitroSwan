@@ -92,8 +92,8 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 	There are 2 games that I know of that has problems.
 	Chou Denki Card Game.
 		You need to initialize NVRAM, this is the last item on the first page (初期化).
-	Magical Drop.
-		Playfield flickers horizontaly, something to do with cpu/interrupt timing.
+	Kurupara.
+		Crashes after intro.
 
 ## Credits:
 
