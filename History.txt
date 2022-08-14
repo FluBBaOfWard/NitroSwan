@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.4.1 - 2022-08-14 (FluBBa)
+	Fixed background for PCV2 mode.
+
 V0.4.0 - 2022-08-11 (FluBBa)
 	Fixed flag calculation for most opcodes.
 	Fixed emulation of undefined opcodes.

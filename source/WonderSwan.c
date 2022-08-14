@@ -1,6 +1,7 @@
 #include <nds.h>
 
 #include "WonderSwan.h"
+#include "PCV2Border.h"
 #include "WSBorder.h"
 #include "WSCBorder.h"
 #include "Cart.h"
@@ -41,6 +42,14 @@ int getStateSize() {
 	return size;
 }
 
+void setupPCV2Background() {
+	vramSetBankF(VRAM_F_LCD);
+	decompress(PCV2BorderTiles, BG_TILE_RAM(1), LZ77Vram);
+	decompress(PCV2BorderMap, BG_MAP_RAM(2), LZ77Vram);
+	memcpy(VRAM_F, PCV2BorderPal, PCV2BorderPalLen);
+	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
+}
+
 void setupWSBackground() {
 	vramSetBankF(VRAM_F_LCD);
 	decompress(WSBorderTiles, BG_TILE_RAM(1), LZ77Vram);
@@ -61,7 +70,10 @@ void setupEmuBackground() {
 	if (gMachine == HW_WONDERSWANCOLOR) {
 		setupWSCBackground();
 	}
-	else {
+	else if (gMachine == HW_WONDERSWAN) {
 		setupWSBackground();
+	}
+	else {
+		setupPCV2Background();
 	}
 }

@@ -70,6 +70,8 @@
 		9CAB1A14274D4C0C00182F62 /* Sphinx_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sphinx_todo.txt; sourceTree = "<group>"; };
 		9CBC0C8E26DD7C2A0039D17E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9CC013FC2668FDD9005714F7 /* Emubase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Emubase.h; sourceTree = "<group>"; };
+		9CC4FA7028A9131C00976B02 /* PCV2Border.grit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PCV2Border.grit; sourceTree = "<group>"; };
+		9CC4FA7128A9131C00976B02 /* PCV2Border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PCV2Border.png; sourceTree = "<group>"; };
 		9CED081727BD8E4200EA127A /* WSCBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WSCBorder.png; sourceTree = "<group>"; };
 		9CED081827BD8E4200EA127A /* WSCBorder.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WSCBorder.grit; sourceTree = "<group>"; };
 		A47F092B20863AF5004E1DA6 /* EmuMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuMenu.h; sourceTree = "<group>"; };
@@ -94,6 +96,8 @@
 		350E1C3418AFB50800074DD5 /* graphics */ = {
 			isa = PBXGroup;
 			children = (
+				9CC4FA7128A9131C00976B02 /* PCV2Border.png */,
+				9CC4FA7028A9131C00976B02 /* PCV2Border.grit */,
 				9C19569E276D2D8F0044B938 /* WSBorder.png */,
 				9C19569D276D2D8F0044B938 /* WSBorder.grit */,
 				9CED081727BD8E4200EA127A /* WSCBorder.png */,
