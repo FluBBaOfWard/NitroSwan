@@ -329,7 +329,7 @@ setScreenRefresh:			;@ r0 in = WS scan line count.
 	swi 0x090000				;@ Division r0/r1, r0=result, r1=remainder.
 	movs r0,r0,lsr#1
 	adc r0,r0,#0
-	mov r5,r6
+	mov r5,r0
 	bl setLCDFPS
 	ldr r0,=emuSettings
 	ldr r0,[r0]
