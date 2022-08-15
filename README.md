@@ -1,4 +1,4 @@
-# NitroSwan V0.4.0
+# NitroSwan V0.4.1
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -57,6 +57,7 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 			200%: Game runs at double speed.
 			Max: Games can run up to 4 times normal speed (might change).
 			50%: Game runs at half speed.
+		Allow Refresh Change: Allow the Wonderswan to change NDS refresh rate.
 		Autoload State: Toggle Savestate autoloading.
 			Automagically load the savestate associated with the selected game.
 		Autoload NVRAM: Toggle EEPROM/SRAM autoloading.

@@ -12,10 +12,11 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.1 2022-08-14"
+#define EMUVERSION "V0.4.1 2022-08-15"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
+#define ALLOW_REFRESH_CHG	(1<<19)
 
 static void paletteChange(void);
 static void languageSet(void);
@@ -23,6 +24,7 @@ static void machineSet(void);
 static void batteryChange(void);
 static void speedHackSet(void);
 static void headphonesSet(void);
+static void refreshChgSet(void);
 
 static void uiMachine(void);
 static void uiDebug(void);
@@ -37,7 +39,7 @@ const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList5[] = {gammaSet, paletteChange};
 const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, headphonesSet /*languageSet*/};
-const fptr fnList7[] = {speedSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
+const fptr fnList7[] = {speedSet, refreshChgSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
 const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, stepFrame};
 const fptr fnList9[] = {exitEmulator, backOutOfMenu};
 const fptr fnList10[] = {uiDummy};
@@ -162,6 +164,7 @@ static void uiMachine() {
 void uiSettings() {
 	setupSubMenu("Settings");
 	drawSubItem("Speed: ", speedTxt[(emuSettings>>6)&3]);
+	drawSubItem("Allow Refresh Change: ", autoTxt[(emuSettings&ALLOW_REFRESH_CHG)>>19]);
 	drawSubItem("Autoload State: ", autoTxt[(emuSettings>>2)&1]);
 	drawSubItem("Autoload NVRAM: ", autoTxt[(emuSettings>>10)&1]);
 	drawSubItem("Autosave Settings: ", autoTxt[(emuSettings>>9)&1]);
@@ -310,6 +313,11 @@ void speedHackSet() {
 void headphonesSet() {
 	emuSettings ^= ENABLE_HEADPHONES;
 	setLowBattery(emuSettings & ENABLE_HEADPHONES);
+}
+
+void refreshChgSet() {
+	emuSettings ^= ALLOW_REFRESH_CHG;
+	updateLCDRefresh();
 }
 
 void batteryChange() {

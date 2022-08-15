@@ -16,6 +16,8 @@
 	.global pushVolumeButton
 	.global setHeadphones
 	.global setLowBattery
+	.global updateLCDRefresh
+	.global setScreenRefresh
 	.global getInterruptVector
 	.global setInterruptExternal
 
@@ -309,6 +311,48 @@ bnwTxLoop:
 	ldmfd sp!,{r4-r8,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
+updateLCDRefresh:
+	.type updateLCDRefresh STT_FUNC
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	ldrb r1,[spxptr,#wsvTotalLines]
+	b wsvRefW
+;@----------------------------------------------------------------------------
+setScreenRefresh:			;@ r0 in = WS scan line count.
+	.type setScreenRefresh STT_FUNC
+;@----------------------------------------------------------------------------
+	stmfd sp!,{r4-r6,lr}
+	mov r4,r0
+	ldr r6,=12000				;@ WS scanline frequency = 12kHz
+	mov r0,r6,lsl#1
+	mov r1,r4
+	swi 0x090000				;@ Division r0/r1, r0=result, r1=remainder.
+	movs r0,r0,lsr#1
+	adc r0,r0,#0
+	mov r5,r6
+	bl setLCDFPS
+	ldr r0,=emuSettings
+	ldr r0,[r0]
+	ands r0,r0,#1<<19
+	moveq r0,#59
+	subne r0,r5,#1
+	ldr r1,=fpsNominal
+	strb r0,[r1]
+
+	ldr r0,=15734				;@ DS scanline frequency = 15734.3Hz
+	mul r0,r4,r0				;@ DS scanline freq * WS scanlines
+	mov r1,r6					;@ / WS scanline freq = DS scanlines.
+	swi 0x090000				;@ Division r0/r1, r0=result, r1=remainder.
+	ldr r1,=263
+	sub r0,r1,r0
+	cmp r0,#3
+	movmi r0,#0
+	str r0,lcdSkip
+
+	ldmfd sp!,{r4-r6,lr}
+	bx lr
+
+;@----------------------------------------------------------------------------
 vblIrqHandler:
 	.type vblIrqHandler STT_FUNC
 ;@----------------------------------------------------------------------------
@@ -344,7 +388,7 @@ vblIrqHandler:
 	ldr r0,GFX_BG0CNT
 	str r0,[r6,#REG_BG0CNT]
 	ldr r0,GFX_DISPCNT
-	ldrb r1,[spxptr,#wsvDispCtrl]
+	ldrb r1,[spxptr,#wsvLatchedDispCtrl]
 	tst r1,#0x01
 	biceq r0,r0,#0x0100			;@ Turn off Bg
 	tst r1,#0x02
@@ -369,6 +413,27 @@ vblIrqHandler:
 	biceq r0,r0,#0x0002
 	strh r0,[r6,#REG_WININ]
 
+	ldr r0,=emuSettings
+	ldr r0,[r0]
+	ands r0,r0,#1<<19
+	beq exit75Hz
+	ldr r0,=pauseEmulation
+	ldrb r0,[r0]
+	cmp r0,#0
+	bne exit75Hz
+	ldr r0,lcdSkip
+	cmp r0,#0
+	beq exit75Hz
+hz75Start:
+hz75Loop:
+	ldrh r1,[r6,#REG_VCOUNT]
+	cmp r1,#202
+	bmi hz75Loop
+	add r1,r1,r0			;@ Skip 55(?) scan lines for 75Hz.
+	cmp r1,#260
+	movpl r1,#260
+	strh r1,[r6,#REG_VCOUNT]
+exit75Hz:
 
 	ldrb r0,frameDone
 	cmp r0,#0
@@ -485,7 +550,9 @@ sphinx0:
 gfxState:
 	.long 0
 	.long 0
-	.long 0,0,0
+	.long 0,0
+lcdSkip:
+	.long 0
 
 GFX_DISPCNT:
 	.long 0
