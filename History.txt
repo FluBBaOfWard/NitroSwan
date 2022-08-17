@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.4.2 - 2022-08-17 (FluBBa)
+	Fixed reset of mapper registers.
+
 V0.4.1 - 2022-08-15 (FluBBa)
 	Fixed background for PCV2 mode.
 	WS refresh rate can control NDS refresh rate.

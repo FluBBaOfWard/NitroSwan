@@ -84,6 +84,7 @@ ROM_Space:
 //	.incbin "wsroms/Anchorz Field (Japan).ws"
 //	.incbin "wsroms/Crazy Climber (J) [M][!].ws"
 //	.incbin "wsroms/Chaos Demo V2.1 by Charles Doty (PD).wsc"
+//	.incbin "wsroms/Dicing Knight. (J).wsc"
 //	.incbin "wsroms/Guilty Gear Petit (J).wsc"
 //	.incbin "wsroms/Inuyasha - Kagome no Sengoku Nikki (Japan).wsc"
 //	.incbin "wsroms/Kaze no Klonoa - Moonlight Museum (Japan).ws"
@@ -143,15 +144,7 @@ loadCart: 		;@ Called from C:
 	subne r2,r2,#1
 	str r2,romMask			;@ romMask=romBlocks-1
 
-	ldr spxptr,=sphinx0
-	mov r1,#0xFF
-	bl BankSwitch4_F_W
-	mov r1,#0
-	bl BankSwitch1_W
-	mov r1,#0xFF
-	bl BankSwitch2_W
-	mov r1,#0xFF
-	bl BankSwitch3_W
+	bl resetCartridgeBanks
 
 	ldr r1,=wsRAM
 	str r1,[v30ptr,#v30MemTblInv-0x1*4]		;@ 0 RAM
@@ -228,6 +221,7 @@ loadCart: 		;@ Called from C:
 	bl extEepromReset
 	bl cartRtcReset
 	bl gfxReset
+	bl resetCartridgeBanks
 	bl ioReset
 	bl soundReset
 	bl cpuReset
@@ -243,6 +237,20 @@ clearDirtyTiles:
 	b memclr_
 
 ;@----------------------------------------------------------------------------
+resetCartridgeBanks:
+;@----------------------------------------------------------------------------
+	stmfd sp!,{lr}
+	ldr spxptr,=sphinx0
+	mov r1,#0xFF
+	bl BankSwitch4_F_W
+	mov r1,#0
+	bl BankSwitch1_W
+	mov r1,#0xFF
+	bl BankSwitch2_W
+	mov r1,#0xFF
+	bl BankSwitch3_W
+	ldmfd sp!,{pc}
+;@----------------------------------------------------------------------------
 reBankSwitch4_F:				;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 	ldrb r1,[spxptr,#wsvBnk0SlctX]
@@ -251,23 +259,21 @@ BankSwitch4_F_W:				;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 	strb r1,[spxptr,#wsvBnk0SlctX]
-	mov r1,r1,lsl#4
-	orr r1,r1,#4
+	orr r1,r1,#0x40000000
 
 	ldr r0,romMask
 	ldr r2,romSpacePtr
 	sub r2,r2,#0x40000
-	add lr,v30ptr,#v30MemTblInv-4*4
+	add lr,v30ptr,#v30MemTblInv-5*4
 tbLoop2:
-	and r3,r0,r1
+	and r3,r0,r1,ror#28
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	sub r2,r2,#0x10000
-	str r3,[lr,#-4]!
-	add r1,r1,#1
-	ands r3,r1,#0xF
-	bne tbLoop2
+	str r3,[lr],#-4
+	adds r1,r1,#0x10000000
+	bcc tbLoop2
 
-	ldmfd sp!,{lr}
+	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
 BankSwitch1_H_W:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
@@ -298,7 +304,7 @@ BankSwitch2_H_W:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 reBankSwitch2:					;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	ldrb r1,[spxptr,#wsvBnk2SlctX]
+	ldrh r1,[spxptr,#wsvBnk2SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch2_W:					;@ 0x20000-0x2FFFF
 BankSwitch2_L_W:				;@ 0x20000-0x2FFFF

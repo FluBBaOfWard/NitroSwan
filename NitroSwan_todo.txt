@@ -10,6 +10,7 @@ NitroSwan Todo
 	SD Gundam Operation U.C pauses like hitting start, but with a message about low battery.
 	Link NDS battery to WS battery?
 	Fix odd sized roms? Rom need to be at the end of the rom space.
+	Sprite priority can't be fixed.
 
 GFX:
 	See Sphinx todo.
@@ -34,11 +35,12 @@ Misc:
 
 Games Not Working:
 	Kurupara, crashes. Crashes because of LineCompareIRQ on line 0.
-	Riviera freezes on a black screen after the chapter 1 screen. (DSi) #16
 	Ultraman, division by zero crash. If watching the whole intro before starting.
 Games Not Working Fixed:
 	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
 	Chou Denki Card Game. Needs initialization, last item on first page.
+	Hanjuku Hero, crashes. Reads mapper register 0xC0 which was not reset correctly.
+	Riviera freezes on a black screen after the chapter 1 screen. Fixed in V0.4.0.
 	Tonpuusou. Can't start. HBlank interrupt.
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 
