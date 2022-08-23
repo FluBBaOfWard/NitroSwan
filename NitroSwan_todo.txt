@@ -9,7 +9,6 @@ NitroSwan Todo
 	Add serial port emulation.
 	SD Gundam Operation U.C pauses like hitting start, but with a message about low battery.
 	Link NDS battery to WS battery?
-	Fix odd sized roms? Rom need to be at the end of the rom space.
 	Sprite priority can't be fixed.
 
 GFX:

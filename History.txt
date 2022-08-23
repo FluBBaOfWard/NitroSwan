@@ -1,8 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.4.2 - 2022-08-17 (FluBBa)
+V0.4.2 - 2022-08-23 (FluBBa)
 	Fixed reset of mapper registers.
+	Fixed loading of roms that are not power of 2.
 
 V0.4.1 - 2022-08-15 (FluBBa)
 	Fixed background for PCV2 mode.

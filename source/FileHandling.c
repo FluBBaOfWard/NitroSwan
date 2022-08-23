@@ -11,7 +11,7 @@
 #include "Shared/EmuMenu.h"
 #include "Shared/EmuSettings.h"
 #include "Shared/FileHelper.h"
-#include "Shared/unzip/unzipnds.h"
+#include "Shared/Unzip/unzipnds.h"
 #include "Shared/AsmExtra.h"
 #include "Main.h"
 #include "Gui.h"

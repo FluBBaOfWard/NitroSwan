@@ -139,10 +139,7 @@ loadCart: 		;@ Called from C:
 	stmfd sp!,{r4-r11,lr}
 	ldr v30ptr,=V30OpTable
 
-	ldr r0,romSize
-	movs r2,r0,lsr#16		;@ 64kB blocks.
-	subne r2,r2,#1
-	str r2,romMask			;@ romMask=romBlocks-1
+	bl fixRomSizeAndPtr
 
 	bl resetCartridgeBanks
 
@@ -237,6 +234,28 @@ clearDirtyTiles:
 	b memclr_
 
 ;@----------------------------------------------------------------------------
+fixRomSizeAndPtr:
+;@----------------------------------------------------------------------------
+	ldr r0,romSize
+	sub r1,r0,#1
+	orr r1,r1,r1,lsr#1
+	orr r1,r1,r1,lsr#2
+	orr r1,r1,r1,lsr#4
+	orr r1,r1,r1,lsr#8
+	orr r1,r1,r1,lsr#16
+	add r1,r1,#1			;@ RomSize Power of 2
+
+	movs r2,r1,lsr#16		;@ 64kB blocks.
+	subne r2,r2,#1
+	str r2,romMask			;@ romMask=romBlocks-1
+
+	ldr r2,romSpacePtr
+	add r2,r2,r0
+	sub r2,r2,r1
+	str r2,romPtr
+
+	bx lr
+;@----------------------------------------------------------------------------
 resetCartridgeBanks:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
@@ -262,7 +281,7 @@ BankSwitch4_F_W:				;@ 0x40000-0xFFFFF
 	orr r1,r1,#0x40000000
 
 	ldr r0,romMask
-	ldr r2,romSpacePtr
+	ldr r2,romPtr
 	sub r2,r2,#0x40000
 	add lr,v30ptr,#v30MemTblInv-5*4
 tbLoop2:
@@ -312,7 +331,7 @@ BankSwitch2_L_W:				;@ 0x20000-0x2FFFF
 	strb r1,[spxptr,#wsvBnk2SlctX]
 
 	ldr r0,romMask
-	ldr r2,romSpacePtr
+	ldr r2,romPtr
 	sub r2,r2,#0x20000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
@@ -334,7 +353,7 @@ BankSwitch3_L_W:				;@ 0x30000-0x3FFFF
 	strb r1,[spxptr,#wsvBnk3SlctX]
 
 	ldr r0,romMask
-	ldr r2,romSpacePtr
+	ldr r2,romPtr
 	sub r2,r2,#0x30000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
@@ -485,6 +504,8 @@ cartOrientation:
 
 wsHeader:
 romSpacePtr:
+	.long 0
+romPtr:
 	.long 0
 g_BIOSBASE_BNW:
 	.long 0
