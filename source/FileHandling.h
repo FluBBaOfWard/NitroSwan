@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include "Emubase.h"
+#include "WonderSwan.h"
 
 #define FILEEXTENSIONS ".ws.wsc.pc2"
 

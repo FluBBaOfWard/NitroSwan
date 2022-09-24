@@ -1,6 +1,5 @@
 #ifdef __arm__
 
-#include "Equates.h"
 #include "WSEEPROM/WSEEPROM.i"
 #include "WSRTC/WSRTC.i"
 #include "Sphinx/Sphinx.i"
@@ -109,7 +108,7 @@ SC_BIOS_INTERNAL:
 
 	.align 2
 ;@----------------------------------------------------------------------------
-machineInit: 	;@ Called from C
+machineInit: 				;@ Called from C
 	.type   machineInit STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
@@ -126,14 +125,13 @@ machineInit: 	;@ Called from C
 	bl soundInit
 	bl cpuInit
 
-skipBiosSettings:
 	ldmfd sp!,{r4-r11,lr}
 	bx lr
 
 	.section .ewram,"ax"
 	.align 2
 ;@----------------------------------------------------------------------------
-loadCart: 		;@ Called from C:
+loadCart: 					;@ Called from C:
 	.type   loadCart STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
@@ -147,49 +145,49 @@ loadCart: 		;@ Called from C:
 	str r1,[v30ptr,#v30MemTblInv-0x1*4]		;@ 0 RAM
 	ldr r6,[v30ptr,#v30MemTblInv-0x10*4]	;@ MemMap
 
-	ldr r4,=0xFFFF8			;@ Game ID
+	ldr r4,=0xFFFF8				;@ Game ID
 	ldrb r0,[r6,r4]
 	strb r0,gGameID
-	add r4,r4,#3			;@ NVRAM size
+	add r4,r4,#3				;@ NVRAM size
 	ldrb r3,[r6,r4]
-	mov r0,#0				;@ r0 = sram size
-	mov r1,#0				;@ r1 = eeprom size
-	cmp r3,#0x01			;@ 64kbit sram
+	mov r0,#0					;@ r0 = sram size
+	mov r1,#0					;@ r1 = eeprom size
+	cmp r3,#0x01				;@ 64kbit sram
 	moveq r0,#0x2000
-	cmp r3,#0x02			;@ 256kbit sram
+	cmp r3,#0x02				;@ 256kbit sram
 	moveq r0,#0x8000
-	cmp r3,#0x03			;@ 1Mbit sram
+	cmp r3,#0x03				;@ 1Mbit sram
 	moveq r0,#0x20000
-	cmp r3,#0x04			;@ 2Mbit sram
+	cmp r3,#0x04				;@ 2Mbit sram
 	moveq r0,#0x40000
-	cmp r3,#0x05			;@ 4Mbit sram
+	cmp r3,#0x05				;@ 4Mbit sram
 	moveq r0,#0x80000
-	cmp r3,#0x10			;@ 1kbit eeprom
+	cmp r3,#0x10				;@ 1kbit eeprom
 	moveq r1,#0x80
-	cmp r3,#0x20			;@ 16kbit eeprom
+	cmp r3,#0x20				;@ 16kbit eeprom
 	moveq r1,#0x800
-	cmp r3,#0x50			;@ 8kbit eeprom
+	cmp r3,#0x50				;@ 8kbit eeprom
 	moveq r1,#0x400
 	str r0,sramSize
 	str r1,eepromSize
 
-	add r4,r4,#1			;@ Orientation
+	add r4,r4,#1				;@ Orientation
 	ldrb r0,[r6,r4]
 	and r0,r0,#1
 	strb r0,cartOrientation
 
-	add r4,r4,#1			;@ RTC present
+	add r4,r4,#1				;@ RTC present
 	ldrb r0,[r6,r4]
 	strb r0,rtcPresent
 
 	ldrb r5,gMachine
 	cmp r5,#HW_WONDERSWAN
 	cmpne r5,#HW_POCKETCHALLENGEV2
-	moveq r0,#1				;@ Set boot rom overlay (size small)
+	moveq r0,#1					;@ Set boot rom overlay (size small)
 	ldreq r1,g_BIOSBASE_BNW
 	ldreq r2,=WS_BIOS_INTERNAL
 	moveq r4,#SOC_ASWAN
-	movne r0,#2				;@ Set boot rom overlay (size big)
+	movne r0,#2					;@ Set boot rom overlay (size big)
 	ldrne r1,g_BIOSBASE_COLOR
 	ldrne r2,=WSC_BIOS_INTERNAL
 	movne r4,#SOC_SPHINX
@@ -199,17 +197,17 @@ loadCart: 		;@ Called from C:
 	moveq r4,#SOC_SPHINX2
 	strb r4,gSOC
 	cmp r1,#0
-	moveq r1,r2				;@ Use internal bios
+	moveq r1,r2					;@ Use internal bios
 	str r1,biosBase
 	bl setBootRomOverlay
 
 
-	ldr r0,=wsRAM			;@ Clear RAM
+	ldr r0,=wsRAM				;@ Clear RAM
 	mov r1,#0x10000/4
 	bl memclr_
 	bl clearDirtyTiles
 	cmp r4,#SOC_ASWAN
-	ldreq r0,=wsRAM+0x4000	;@ Clear mem outside of RAM
+	ldreq r0,=wsRAM+0x4000		;@ Clear mem outside of RAM
 	moveq r1,#0x90
 	moveq r2,#0xC000
 	bleq memset
@@ -243,11 +241,11 @@ fixRomSizeAndPtr:
 	orr r1,r1,r1,lsr#4
 	orr r1,r1,r1,lsr#8
 	orr r1,r1,r1,lsr#16
-	add r1,r1,#1			;@ RomSize Power of 2
+	add r1,r1,#1				;@ RomSize Power of 2
 
-	movs r2,r1,lsr#16		;@ 64kB blocks.
+	movs r2,r1,lsr#16			;@ 64kB blocks.
 	subne r2,r2,#1
-	str r2,romMask			;@ romMask=romBlocks-1
+	str r2,romMask				;@ romMask=romBlocks-1
 
 	ldr r2,romSpacePtr
 	add r2,r2,r0
@@ -270,63 +268,61 @@ resetCartridgeBanks:
 	bl BankSwitch3_W
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
-reBankSwitch4_F:				;@ 0x40000-0xFFFFF
+reBankSwitch4_F:			;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 	ldrb r1,[spxptr,#wsvBnk0SlctX]
 ;@----------------------------------------------------------------------------
-BankSwitch4_F_W:				;@ 0x40000-0xFFFFF
+BankSwitch4_F_W:			;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
 	strb r1,[spxptr,#wsvBnk0SlctX]
 	orr r1,r1,#0x40000000
 
 	ldr r0,romMask
 	ldr r2,romPtr
 	sub r2,r2,#0x40000
-	add lr,v30ptr,#v30MemTblInv-5*4
+	and r0,r0,r1,ror#28
+	add r2,r2,r0,lsl#16			;@ 64kB blocks.
+	add r3,v30ptr,#v30MemTblInv-5*4
 tbLoop2:
-	and r3,r0,r1,ror#28
-	add r3,r2,r3,lsl#16		;@ 64kB blocks.
-	sub r2,r2,#0x10000
-	str r3,[lr],#-4
+	str r2,[r3],#-4
 	adds r1,r1,#0x10000000
 	bcc tbLoop2
 
-	ldmfd sp!,{pc}
+	bx lr
 ;@----------------------------------------------------------------------------
-BankSwitch1_H_W:				;@ 0x10000-0x1FFFF
+BankSwitch1_H_W:			;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 	strb r1,[spxptr,#wsvBnk1SlctX+1]
 ;@----------------------------------------------------------------------------
-reBankSwitch1:					;@ 0x10000-0x1FFFF
+reBankSwitch1:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 	ldrh r1,[spxptr,#wsvBnk1SlctX]
 ;@----------------------------------------------------------------------------
-BankSwitch1_W:					;@ 0x10000-0x1FFFF
-BankSwitch1_L_W:				;@ 0x10000-0x1FFFF
+BankSwitch1_W:				;@ 0x10000-0x1FFFF
+BankSwitch1_L_W:			;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 	strb r1,[spxptr,#wsvBnk1SlctX]
 
 	ldr r0,sramSize
-	movs r0,r0,lsr#16		;@ 64kB blocks.
+	movs r0,r0,lsr#16			;@ 64kB blocks.
 	subne r0,r0,#1
 	ldr r2,=wsSRAM-0x10000
 	and r3,r1,r0
-	add r3,r2,r3,lsl#16		;@ 64kB blocks.
+	add r3,r2,r3,lsl#16			;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTblInv-2*4]
 
 	bx lr
 ;@----------------------------------------------------------------------------
-BankSwitch2_H_W:				;@ 0x20000-0x2FFFF
+BankSwitch2_H_W:			;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 	strb r1,[spxptr,#wsvBnk2SlctX+1]
 ;@----------------------------------------------------------------------------
-reBankSwitch2:					;@ 0x20000-0x2FFFF
+reBankSwitch2:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 	ldrh r1,[spxptr,#wsvBnk2SlctX]
 ;@----------------------------------------------------------------------------
-BankSwitch2_W:					;@ 0x20000-0x2FFFF
-BankSwitch2_L_W:				;@ 0x20000-0x2FFFF
+BankSwitch2_W:				;@ 0x20000-0x2FFFF
+BankSwitch2_L_W:			;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 	strb r1,[spxptr,#wsvBnk2SlctX]
 
@@ -334,21 +330,21 @@ BankSwitch2_L_W:				;@ 0x20000-0x2FFFF
 	ldr r2,romPtr
 	sub r2,r2,#0x20000
 	and r3,r1,r0
-	add r3,r2,r3,lsl#16		;@ 64kB blocks.
+	add r3,r2,r3,lsl#16			;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTblInv-3*4]
 
 	bx lr
 ;@----------------------------------------------------------------------------
-BankSwitch3_H_W:				;@ 0x30000-0x3FFFF
+BankSwitch3_H_W:			;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
 	strb r1,[spxptr,#wsvBnk3SlctX+1]
 ;@----------------------------------------------------------------------------
-reBankSwitch3:					;@ 0x30000-0x3FFFF
+reBankSwitch3:				;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
 	ldrh r1,[spxptr,#wsvBnk3SlctX]
 ;@----------------------------------------------------------------------------
-BankSwitch3_W:					;@ 0x30000-0x3FFFF
-BankSwitch3_L_W:				;@ 0x30000-0x3FFFF
+BankSwitch3_W:				;@ 0x30000-0x3FFFF
+BankSwitch3_L_W:			;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
 	strb r1,[spxptr,#wsvBnk3SlctX]
 
@@ -356,7 +352,7 @@ BankSwitch3_L_W:				;@ 0x30000-0x3FFFF
 	ldr r2,romPtr
 	sub r2,r2,#0x30000
 	and r3,r1,r0
-	add r3,r2,r3,lsl#16		;@ 64kB blocks.
+	add r3,r2,r3,lsl#16			;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTblInv-4*4]
 
 	bx lr
@@ -461,7 +457,7 @@ cartRtcReset:
 	adr rtcptr,cartRtc
 	b wsRtcSetDateTime
 ;@----------------------------------------------------------------------------
-cartRtcUpdate:		;@ r0=rtcptr. Call every second.
+cartRtcUpdate:				;@ r0=rtcptr. Call every second.
 ;@----------------------------------------------------------------------------
 	ldrb r0,rtcPresent
 	cmp r0,#0
@@ -476,7 +472,7 @@ romNum:
 	.long 0						;@ romnumber
 romInfo:						;@
 emuFlags:
-	.byte 0						;@ emuflags      (label this so UI.C can take a peek) see equates.h for bitfields
+	.byte 0						;@ emuflags      (label this so GUI.c can take a peek) see EmuSettings.h for bitfields
 //scaling:
 	.byte 0						;@ (display type)
 	.byte 0,0					;@ (sprite follow val)

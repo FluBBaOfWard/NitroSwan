@@ -11,7 +11,6 @@
 #include "Shared/EmuMenu.h"
 #include "Shared/EmuSettings.h"
 #include "Shared/FileHelper.h"
-#include "Shared/Unzip/unzipnds.h"
 #include "Shared/AsmExtra.h"
 #include "Main.h"
 #include "Gui.h"
@@ -20,7 +19,6 @@
 #include "Gfx.h"
 #include "io.h"
 #include "Memory.h"
-#include "WonderSwan.h"
 
 static const char *const folderName = "nitroswan";
 static const char *const settingName = "settings.cfg";
@@ -169,23 +167,21 @@ void saveSettings() {
 	saveIntEeproms();
 }
 
-//void loadSaveGameFile()
 void loadNVRAM() {
 	FILE *wssFile;
-	char nvramName[FILENAMEMAXLENGTH];
+	char nvRamName[FILENAMEMAXLENGTH];
 	int saveSize = 0;
 	void *nvMem = NULL;
 
-	strlcpy(nvramName, currentFilename, sizeof(nvramName));
 	if (sramSize > 0) {
 		saveSize = sramSize;
 		nvMem = wsSRAM;
-		setFileExtension(nvramName, ".ram", sizeof(nvramName));
+		setFileExtension(nvRamName, currentFilename, ".ram", sizeof(nvRamName));
 	}
 	else if (eepromSize > 0) {
 		saveSize = eepromSize;
 		nvMem = extEepromMem;
-		setFileExtension(nvramName, ".eeprom", sizeof(nvramName));
+		setFileExtension(nvRamName, currentFilename, ".eeprom", sizeof(nvRamName));
 	}
 	else {
 		return;
@@ -193,10 +189,10 @@ void loadNVRAM() {
 	if (findFolder(folderName)) {
 		return;
 	}
-	if ( (wssFile = fopen(nvramName, "r")) ) {
+	if ( (wssFile = fopen(nvRamName, "r")) ) {
 		if (fread(nvMem, 1, saveSize, wssFile) != saveSize) {
 			infoOutput("Bad NVRAM file:");
-			infoOutput(nvramName);
+			infoOutput(nvRamName);
 		}
 		fclose(wssFile);
 		infoOutput("Loaded NVRAM.");
@@ -204,27 +200,25 @@ void loadNVRAM() {
 	else {
 //		memset(nvMem, 0, saveSize);
 		infoOutput("Couldn't open NVRAM file:");
-		infoOutput(nvramName);
+		infoOutput(nvRamName);
 	}
 }
 
-//void writeSaveGameFile() {
 void saveNVRAM() {
 	FILE *wssFile;
-	char nvramName[FILENAMEMAXLENGTH];
+	char nvRamName[FILENAMEMAXLENGTH];
 	int saveSize = 0;
 	void *nvMem = NULL;
 
-	strlcpy(nvramName, currentFilename, sizeof(nvramName));
 	if (sramSize > 0) {
 		saveSize = sramSize;
 		nvMem = wsSRAM;
-		setFileExtension(nvramName, ".ram", sizeof(nvramName));
+		setFileExtension(nvRamName, currentFilename, ".ram", sizeof(nvRamName));
 	}
 	else if (eepromSize > 0) {
 		saveSize = eepromSize;
 		nvMem = extEepromMem;
-		setFileExtension(nvramName, ".eeprom", sizeof(nvramName));
+		setFileExtension(nvRamName, currentFilename, ".eeprom", sizeof(nvRamName));
 	}
 	else {
 		return;
@@ -232,7 +226,7 @@ void saveNVRAM() {
 	if (findFolder(folderName)) {
 		return;
 	}
-	if ( (wssFile = fopen(nvramName, "w")) ) {
+	if ( (wssFile = fopen(nvRamName, "w")) ) {
 		if (fwrite(nvMem, 1, saveSize, wssFile) != saveSize) {
 			infoOutput("Couldn't write correct number of bytes.");
 		}
@@ -241,62 +235,16 @@ void saveNVRAM() {
 	}
 	else {
 		infoOutput("Couldn't open NVRAM file:");
-		infoOutput(nvramName);
+		infoOutput(nvRamName);
 	}
 }
 
 void loadState() {
-	FILE *file;
-	u32 *statePtr;
-	char stateName[FILENAMEMAXLENGTH];
-
-	if (findFolder(folderName)) {
-		return;
-	}
-	strlcpy(stateName, currentFilename, sizeof(stateName));
-	setFileExtension(stateName, ".sta", sizeof(stateName));
-	int stateSize = getStateSize();
-	if ( (file = fopen(stateName, "r")) ) {
-		if ( (statePtr = malloc(stateSize)) ) {
-			cls(0);
-			drawText("        Loading state...", 11, 0);
-			fread(statePtr, 1, stateSize, file);
-			unpackState(statePtr);
-			free(statePtr);
-			infoOutput("Loaded state.");
-		} else {
-			infoOutput("Couldn't alloc mem for state.");
-		}
-		fclose(file);
-	}
-	return;
+	loadDeviceState(folderName);
 }
 
 void saveState() {
-	FILE *file;
-	u32 *statePtr;
-	char stateName[FILENAMEMAXLENGTH];
-
-	if (findFolder(folderName)) {
-		return;
-	}
-	strlcpy(stateName, currentFilename, sizeof(stateName));
-	setFileExtension(stateName, ".sta", sizeof(stateName));
-	int stateSize = getStateSize();
-	if ( (file = fopen(stateName, "w")) ) {
-		if ( (statePtr = malloc(stateSize)) ) {
-			cls(0);
-			drawText("        Saving state...", 11, 0);
-			packState(statePtr);
-			fwrite(statePtr, 1, stateSize, file);
-			free(statePtr);
-			infoOutput("Saved state.");
-		}
-		else {
-			infoOutput("Couldn't alloc mem for state.");
-		}
-		fclose(file);
-	}
+	saveDeviceState(folderName);
 }
 
 //---------------------------------------------------------------------------------

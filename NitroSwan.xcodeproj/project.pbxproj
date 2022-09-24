@@ -77,7 +77,6 @@
 		A47F092B20863AF5004E1DA6 /* EmuMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuMenu.h; sourceTree = "<group>"; };
 		A47F092C20863AF5004E1DA6 /* EmuMenu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EmuMenu.c; sourceTree = "<group>"; };
 		A49D34381757E54900BD9B4B /* cpu.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = cpu.s; sourceTree = "<group>"; };
-		A49D343A1757E54900BD9B4B /* Equates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Equates.h; sourceTree = "<group>"; };
 		A49D34401757E54900BD9B4B /* io.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = io.s; sourceTree = "<group>"; };
 		A4AA02141B04077F0043E4D4 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 		A4D0E10A208930D100401463 /* crc32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crc32.h; sourceTree = "<group>"; };
@@ -96,12 +95,12 @@
 		350E1C3418AFB50800074DD5 /* graphics */ = {
 			isa = PBXGroup;
 			children = (
-				9CC4FA7128A9131C00976B02 /* PCV2Border.png */,
 				9CC4FA7028A9131C00976B02 /* PCV2Border.grit */,
-				9C19569E276D2D8F0044B938 /* WSBorder.png */,
+				9CC4FA7128A9131C00976B02 /* PCV2Border.png */,
 				9C19569D276D2D8F0044B938 /* WSBorder.grit */,
-				9CED081727BD8E4200EA127A /* WSCBorder.png */,
+				9C19569E276D2D8F0044B938 /* WSBorder.png */,
 				9CED081827BD8E4200EA127A /* WSCBorder.grit */,
+				9CED081727BD8E4200EA127A /* WSCBorder.png */,
 			);
 			path = graphics;
 			sourceTree = "<group>";
@@ -232,7 +231,6 @@
 				9C8347E427B800C2004106B0 /* WSRTC */,
 				A47F092A20863AF5004E1DA6 /* Shared */,
 				9CC013FC2668FDD9005714F7 /* Emubase.h */,
-				A49D343A1757E54900BD9B4B /* Equates.h */,
 				9C50820725D45A9A00A8E1BA /* Main.h */,
 				9C50820C25D45A9B00A8E1BA /* Main.c */,
 				9C50821025D45A9B00A8E1BA /* Gui.h */,

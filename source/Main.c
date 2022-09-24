@@ -1,5 +1,4 @@
 #include <nds.h>
-
 #include <maxmod9.h>
 
 #include "Main.h"

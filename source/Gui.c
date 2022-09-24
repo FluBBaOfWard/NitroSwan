@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.2 2022-08-23"
+#define EMUVERSION "V0.4.2 2022-09-24"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -33,7 +33,7 @@ static void updateGameInfo(void);
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
 const fptr fnList0[] = {uiDummy};
-const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, saveSettings, ejectGame, resetGame, ui8};
+const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, saveSettings, ejectGame, resetGame, ui9};
 const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
@@ -53,20 +53,21 @@ char gameInfoString[32];
 
 const char *const autoTxt[]  = {"Off", "On", "With R"};
 const char *const speedTxt[] = {"Normal", "200%", "Max", "50%"};
-const char *const sleepTxt[] = {"5min", "10min", "30min", "Off"};
 const char *const brighTxt[] = {"I", "II", "III", "IIII", "IIIII"};
+const char *const sleepTxt[] = {"5min", "10min", "30min", "Off"};
 const char *const ctrlTxt[]  = {"1P", "2P"};
 const char *const dispTxt[]  = {"Unscaled", "Scaled"};
 const char *const flickTxt[] = {"No Flicker", "Flicker"};
+
+const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "SwanCrystal", "Pocket Challenge V2"};
 const char *const bordTxt[]  = {"Black", "Border Color", "None"};
 const char *const palTxt[]   = {"Black & White", "Red", "Green", "Blue", "Classic"};
 const char *const langTxt[]  = {"Japanese", "English"};
-const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "SwanCrystal", "Pocket Challenge V2"};
 
 
 void setupGUI() {
 	emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | ALLOW_SPEED_HACKS | AUTOSLEEP_OFF;
-	keysSetRepeat(25, 4);	// delay, repeat.
+	keysSetRepeat(25, 4);	// Delay, repeat.
 	menuXItems[1] = ARRSIZE(fnList1) - (enableExit?0:1);
 	openMenu();
 }

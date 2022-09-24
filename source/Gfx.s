@@ -1,7 +1,6 @@
 #ifdef __arm__
 
 #include "Shared/nds_asm.h"
-#include "Equates.h"
 #include "Sphinx/Sphinx.i"
 
 	.global gfxInit
@@ -212,7 +211,7 @@ paletteTx:					;@ r0=destination, spxptr=Sphinx
 	ands r7,r7,#0xC0			;@ Color mode?
 	beq bnwTx
 
-	ldr r4,=wsRAM+0xFE00
+	ldr r4,[spxptr,#paletteRAM]
 	mov r3,r3,lsl#1
 	ldrh r3,[r4,r3]
 	and r3,r2,r3,lsl#1
@@ -484,8 +483,6 @@ endFrameGfx:				;@ Called just before screen end (~line 143)	(r0-r3 safe to use)
 	bx lr
 
 ;@----------------------------------------------------------------------------
-DMA0BUFPTR:		.long 0
-
 tmpOamBuffer:	.long OAM_BUFFER1
 dmaOamBuffer:	.long OAM_BUFFER2
 tmpScroll:		.long SCROLLBUFF1

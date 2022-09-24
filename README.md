@@ -101,7 +101,9 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 Huge thanks to Loopy for the incredible PocketNES, without it this emu would
 probably never have been made.
 Thanks to:
-Flavor & Koyote for WonderSwan info.
+Ed Mandy (Flavor) for WonderSwan info & flashcart. https://www.flashmasta.com
+Koyote for WonderSwan info.
+Alex Marshall (trap15) for WonderSwan info. http://daifukkat.su/docs/wsman/
 Godzil for the boot rom stubs. https://github.com/Godzil/NewOswan
 lidnariq for RTC info.
 Dwedit for help and inspiration with a lot of things.
