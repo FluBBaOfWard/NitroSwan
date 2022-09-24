@@ -16,8 +16,8 @@ extern u8 gSOC;
 extern u8 gLang;
 extern u8 gPaletteBank;
 extern u8 gGameID;
-extern int sramSize;
-extern int eepromSize;
+extern const int sramSize;
+extern const int eepromSize;
 extern WSEEPROM extEeprom;
 
 extern u8 wsRAM[0x10000];

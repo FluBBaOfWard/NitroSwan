@@ -274,21 +274,23 @@ reBankSwitch4_F:			;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 BankSwitch4_F_W:			;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
+	stmfd sp!,{lr}
 	strb r1,[spxptr,#wsvBnk0SlctX]
 	orr r1,r1,#0x40000000
 
 	ldr r0,romMask
 	ldr r2,romPtr
 	sub r2,r2,#0x40000
-	and r0,r0,r1,ror#28
-	add r2,r2,r0,lsl#16			;@ 64kB blocks.
-	add r3,v30ptr,#v30MemTblInv-5*4
+	add lr,v30ptr,#v30MemTblInv-5*4
 tbLoop2:
-	str r2,[r3],#-4
+	and r3,r0,r1,ror#28
+	add r3,r2,r3,lsl#16		;@ 64kB blocks.
+	sub r2,r2,#0x10000
+	str r3,[lr],#-4
 	adds r1,r1,#0x10000000
 	bcc tbLoop2
 
-	bx lr
+	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
 BankSwitch1_H_W:			;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
