@@ -67,7 +67,8 @@ eepromLoop:
 	bne eepromLoop
 	bx lr
 ;@----------------------------------------------------------------------------
-eepromDefault: // From adr 0x60, "@ NITROSWAN @"
+eepromDefault: // From adr 0x60
+	// "@ NITROSWAN @"
 	.byte 0x25, 0x00, 0x18, 0x13, 0x1E, 0x1C, 0x19, 0x1D, 0x21, 0x0B, 0x18, 0x00, 0x25, 0x00, 0x00, 0x00
 
 ;@----------------------------------------------------------------------------

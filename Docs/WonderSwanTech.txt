@@ -130,7 +130,7 @@
                               0 -  3  Blue
                               4 -  7  Green
                               8 - 11  Red
-                             12 - 14  unused
+                             12 - 15  unused
                      Color palettes are stored in the RAM (segment 0) , at address $FE00
 
    Scrolling       - Each of layers can be scrolled horizontal or vertical using ports $10 - $13

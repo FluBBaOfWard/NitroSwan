@@ -235,6 +235,8 @@
 				9C50820C25D45A9B00A8E1BA /* Main.c */,
 				9C50821025D45A9B00A8E1BA /* Gui.h */,
 				9C50820D25D45A9B00A8E1BA /* Gui.c */,
+				9C50820B25D45A9B00A8E1BA /* FileHandling.h */,
+				9C50820A25D45A9B00A8E1BA /* FileHandling.c */,
 				9C4EB1C5271CB16A0072D38E /* WonderSwan.h */,
 				9C4EB1C4271CB16A0072D38E /* WonderSwan.c */,
 				9C715145265645DD0084BE99 /* WSHeader.h */,
@@ -252,8 +254,6 @@
 				9C715146265661CE0084BE99 /* Memory.h */,
 				9C50820E25D45A9B00A8E1BA /* Memory.s */,
 				9C8347E327B7AD70004106B0 /* SpeedHacks.s */,
-				9C50820B25D45A9B00A8E1BA /* FileHandling.h */,
-				9C50820A25D45A9B00A8E1BA /* FileHandling.c */,
 			);
 			path = source;
 			sourceTree = "<group>";

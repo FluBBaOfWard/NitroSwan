@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.2 2022-09-24"
+#define EMUVERSION "V0.4.2 2022-11-04"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -46,7 +46,6 @@ const fptr fnList10[] = {uiDummy};
 const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9, fnList10};
 u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9), ARRSIZE(fnList10)};
 const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDebug, uiDummy, uiDummy};
-const u8 menuXBack[] = {0,0,0,0,2,2,2,2,2,1,1};
 
 u8 gGammaValue = 0;
 char gameInfoString[32];
@@ -122,66 +121,66 @@ void uiAbout() {
 	cls(1);
 	updateGameInfo();
 	drawTabs();
-	drawText(" B:        WS B button", 4, 0);
-	drawText(" A:        WS A button", 5, 0);
-	drawText(" Select:   Sound button", 6, 0);
-	drawText(" Start:    Start button", 7, 0);
+	drawMenuText("B:        WS B button", 4, 0);
+	drawMenuText("A:        WS A button", 5, 0);
+	drawMenuText("Select:   Sound button", 6, 0);
+	drawMenuText("Start:    Start button", 7, 0);
 
-	drawText(gameInfoString, 9, 0);
+	drawMenuText(gameInfoString, 9, 0);
 
-	drawText(" NitroSwan    " EMUVERSION, 21, 0);
-	drawText(" Sphinx       " SPHINXVERSION, 22, 0);
-	drawText(" ARMV30MZ     " ARMV30MZVERSION, 23, 0);
+	drawMenuText("NitroSwan    " EMUVERSION, 21, 0);
+	drawMenuText("Sphinx       " SPHINXVERSION, 22, 0);
+	drawMenuText("ARMV30MZ     " ARMV30MZVERSION, 23, 0);
 }
 
 void uiController() {
 	setupSubMenu("Controller Settings");
-	drawSubItem("B Autofire: ", autoTxt[autoB]);
-	drawSubItem("A Autofire: ", autoTxt[autoA]);
-	drawSubItem("Controller: ", ctrlTxt[(joyCfg>>29)&1]);
-	drawSubItem("Swap A-B:   ", autoTxt[(joyCfg>>10)&1]);
+	drawSubItem("B Autofire:", autoTxt[autoB]);
+	drawSubItem("A Autofire:", autoTxt[autoA]);
+	drawSubItem("Controller:", ctrlTxt[(joyCfg>>29)&1]);
+	drawSubItem("Swap A-B:  ", autoTxt[(joyCfg>>10)&1]);
 }
 
 void uiDisplay() {
 	setupSubMenu("Display Settings");
-	drawSubItem("Gamma: ", brighTxt[gGammaValue]);
-	drawSubItem("B&W Palette: ", palTxt[gPaletteBank]);
+	drawSubItem("Gamma:", brighTxt[gGammaValue]);
+	drawSubItem("B&W Palette:", palTxt[gPaletteBank]);
 }
 
 static void uiMachine() {
 	setupSubMenu("Machine Settings");
-	drawSubItem("Machine: ", machTxt[gMachineSet]);
-	drawSubItem("Select WS Bios -> ", NULL);
-	drawSubItem("Select WS Color Bios -> ", NULL);
-	drawSubItem("Select WS Crystal Bios -> ", NULL);
-	drawSubItem("Import internal EEPROM -> ", NULL);
-	drawSubItem("Clear internal EEPROM ", NULL);
-	drawSubItem("Cpu speed hacks: ", autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
-	drawSubItem("Change Battery ", NULL);
-	drawSubItem("Headphones: ", autoTxt[(emuSettings&ENABLE_HEADPHONES)>>18]);
+	drawSubItem("Machine:", machTxt[gMachineSet]);
+	drawSubItem("Select WS Bios ->", NULL);
+	drawSubItem("Select WS Color Bios ->", NULL);
+	drawSubItem("Select WS Crystal Bios ->", NULL);
+	drawSubItem("Import internal EEPROM ->", NULL);
+	drawSubItem("Clear internal EEPROM", NULL);
+	drawSubItem("Cpu speed hacks:", autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
+	drawSubItem("Change Battery", NULL);
+	drawSubItem("Headphones:", autoTxt[(emuSettings&ENABLE_HEADPHONES)>>18]);
 //	drawSubItem("Language: ", langTxt[gLang]);
 }
 
 void uiSettings() {
 	setupSubMenu("Settings");
-	drawSubItem("Speed: ", speedTxt[(emuSettings>>6)&3]);
-	drawSubItem("Allow Refresh Change: ", autoTxt[(emuSettings&ALLOW_REFRESH_CHG)>>19]);
-	drawSubItem("Autoload State: ", autoTxt[(emuSettings>>2)&1]);
-	drawSubItem("Autoload NVRAM: ", autoTxt[(emuSettings>>10)&1]);
-	drawSubItem("Autosave Settings: ", autoTxt[(emuSettings>>9)&1]);
-	drawSubItem("Autopause Game: ", autoTxt[emuSettings&1]);
-	drawSubItem("Powersave 2nd Screen: ",autoTxt[(emuSettings>>1)&1]);
-	drawSubItem("Emulator on Bottom: ", autoTxt[(emuSettings>>8)&1]);
-	drawSubItem("Autosleep: ", sleepTxt[(emuSettings>>4)&3]);
+	drawSubItem("Speed:", speedTxt[(emuSettings>>6)&3]);
+	drawSubItem("Allow Refresh Change:", autoTxt[(emuSettings&ALLOW_REFRESH_CHG)>>19]);
+	drawSubItem("Autoload State:", autoTxt[(emuSettings>>2)&1]);
+	drawSubItem("Autoload NVRAM:", autoTxt[(emuSettings>>10)&1]);
+	drawSubItem("Autosave Settings:", autoTxt[(emuSettings>>9)&1]);
+	drawSubItem("Autopause Game:", autoTxt[emuSettings&1]);
+	drawSubItem("Powersave 2nd Screen:",autoTxt[(emuSettings>>1)&1]);
+	drawSubItem("Emulator on Bottom:", autoTxt[(emuSettings>>8)&1]);
+	drawSubItem("Autosleep:", sleepTxt[(emuSettings>>4)&3]);
 }
 
 void uiDebug() {
 	setupSubMenu("Debug");
-	drawSubItem("Debug Output: ", autoTxt[gDebugSet&1]);
-	drawSubItem("Disable Foreground: ", autoTxt[(gGfxMask>>1)&1]);
-	drawSubItem("Disable Background: ", autoTxt[gGfxMask&1]);
-	drawSubItem("Disable Sprites: ", autoTxt[(gGfxMask>>4)&1]);
-	drawSubItem("Step Frame ", NULL);
+	drawSubItem("Debug Output:", autoTxt[gDebugSet&1]);
+	drawSubItem("Disable Foreground:", autoTxt[(gGfxMask>>1)&1]);
+	drawSubItem("Disable Background:", autoTxt[gGfxMask&1]);
+	drawSubItem("Disable Sprites:", autoTxt[(gGfxMask>>4)&1]);
+	drawSubItem("Step Frame", NULL);
 }
 
 
@@ -209,7 +208,7 @@ void resetGame() {
 void updateGameInfo() {
 	char catalog[8];
 	char2HexStr(catalog, gGameID);
-	strlMerge(gameInfoString, " Game #: 0x", catalog, sizeof(gameInfoString));
+	strlMerge(gameInfoString, "Game #: 0x", catalog, sizeof(gameInfoString));
 }
 //---------------------------------------------------------------------------------
 void debugIO(u8 port, u8 val, const char *message) {

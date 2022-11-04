@@ -1,11 +1,6 @@
 #include <nds.h>
-#include <fat.h>
-
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/dir.h>
 
 #include "FileHandling.h"
 #include "Shared/EmuMenu.h"
@@ -371,7 +366,7 @@ bool loadGame(const char *gameName) {
 
 void selectGame() {
 	pauseEmulation = true;
-	setSelectedMenu(9);
+	ui10();
 	const char *gameName = browseForFileType(FILEEXTENSIONS".zip");
 	if ( loadGame(gameName) ) {
 		backOutOfMenu();
