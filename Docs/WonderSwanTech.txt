@@ -2,7 +2,7 @@
   /   |   \ ___ __/ \__ ___  ___  /\__
   \  / \  // __>\_   _// __|/ __\/    \
    \_____/_\__ \  \_/  \___|\___/\_/\_/
-          \____/      2022-04-07
+          \____/      2022-11-13
 
 1. ABOUT
    WStech original doc made by Judge and Dox
@@ -338,7 +338,11 @@
  - $17 - $9B - VSync, which line vsync is sent? Doesn't exist on SwanCrystal.
  - $18 - $00 - ???
  - $19 - $00 - ???
- - $1A - $00 - ???
+ - $1A - $00 - LCD Volume
+                bit 4 - Set when the LCD volume icon is being displayed.
+                bit 2-3 - Volume level
+                bit 1 - 0
+                bit 0 - LCD Sleep
  - $1B - $00 - ???
  - $1C - $99 - PALCOL10
  - $1D - $FD - PALCOL32
@@ -617,7 +621,10 @@
                 bit 2 - RTC Alarm (cartridge)
                 bit 1 - Key press
                 bit 0 - Serial transmit
- - $B7 - $00 - INT_NMI_CTRL, some games write 0x10/0x00
+ - $B7 - $00 - INT_NMI_CTRL
+                bit 5-7 - ???
+                bit 4 - Enable/disable NMI when battery low
+                bit 0-3 - ???
  - $B8 - $00 - ???
  - $B9 - $00 - ???
  - $BA - $01 - Internal EEPROM Data

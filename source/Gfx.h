@@ -28,7 +28,6 @@ u8 v30ReadPort(u16 port);
 void v30WritePort(u16 port, u8 value);
 
 void setHeadphones(bool enable);
-void setLowBattery(bool enable);
 
 #ifdef __cplusplus
 } // extern "C"

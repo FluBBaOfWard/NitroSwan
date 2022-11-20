@@ -1,9 +1,10 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.4.2 - 2022-11-04 (FluBBa)
+V0.4.2 - 2022-11-20 (FluBBa)
 	Fixed reset of mapper registers.
 	Fixed loading of roms that are not power of 2.
+	Added support for battery low.
 	Added new debug menu.
 	Better menu traversing.
 

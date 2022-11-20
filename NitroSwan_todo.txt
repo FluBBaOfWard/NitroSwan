@@ -1,13 +1,12 @@
 NitroSwan Todo
 
 	Add different read mem functions.
+	Better key mappings, PCV2.
 	Fix better sound!
 	Graphics on menu screen?
 	Find speed hacks.
-	Better key mappings.
 	Add IO word access?
 	Add serial port emulation.
-	SD Gundam Operation U.C pauses like hitting start, but with a message about low battery.
 	Link NDS battery to WS battery?
 	Sprite priority can't be fixed.
 
@@ -64,6 +63,11 @@ Needs RTC:
 	Inu yasha
 	Judgement Silversword Rebirth Edition
 	Tenori-On
+
+Games which enable NMI:
+	Engacho.
+	Inuyasha - Kagome no Sengoku Nikki
+	SD Gundam Operation U.C pauses like hitting start, but with a message about low battery.
 
 Speedhacks:
 	Halt (0xf4).

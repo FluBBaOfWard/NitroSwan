@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.2 2022-11-04"
+#define EMUVERSION "V0.4.2 2022-11-20"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -222,14 +222,14 @@ void debugIO(u8 port, u8 val, const char *message) {
 	debugOutput(debugString);
 }
 //---------------------------------------------------------------------------------
-void debugIOUnimplR(u8 port) {
-	debugIO(port, 0, "Unimpl R port:");
+void debugIOUnimplR(u8 port, u8 val) {
+	debugIO(port, val, "Unimpl R port:");
 }
 void debugIOUnimplW(u8 port, u8 val) {
 	debugIO(port, val, "Unimpl W port:");
 }
-void debugIOUnmappedR(u8 port) {
-	debugIO(port, 0, "Unmapped R port:");
+void debugIOUnmappedR(u8 port, u8 val) {
+	debugIO(port, val, "Unmapped R port:");
 }
 void debugIOUnmappedW(u8 port, u8 val) {
 	debugIO(port, val, "Unmapped W port:");
@@ -312,7 +312,7 @@ void speedHackSet() {
 
 void headphonesSet() {
 	emuSettings ^= ENABLE_HEADPHONES;
-	setLowBattery(emuSettings & ENABLE_HEADPHONES);
+	setHeadphones(emuSettings & ENABLE_HEADPHONES);
 }
 
 void refreshChgSet() {
@@ -321,6 +321,5 @@ void refreshChgSet() {
 }
 
 void batteryChange() {
-	batteryLevel = 15000;				// 0x15000 for 24h battery?
-	setLowBattery(0);
+	batteryLevel = 150;				// 0x15000 for 24h battery?
 }

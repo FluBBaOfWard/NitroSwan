@@ -24,9 +24,9 @@ void uiOptions(void);
 void uiController(void);
 void uiDisplay(void);
 
-void debugIOUnmappedR(u8 port);
+void debugIOUnmappedR(u8 port, u8 val);
 void debugIOUnmappedW(u8 port, u8 val);
-void debugIOUnimplR(u8 port);
+void debugIOUnimplR(u8 port, u8 val);
 void debugIOUnimplW(u8 port, u8 val);
 void debugDivideError(void);
 void debugUndefinedInstruction(void);

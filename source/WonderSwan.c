@@ -45,7 +45,7 @@ int getStateSize() {
 void setupPCV2Background() {
 	vramSetBankF(VRAM_F_LCD);
 	decompress(PCV2BorderTiles, BG_TILE_RAM(1), LZ77Vram);
-	decompress(PCV2BorderMap, BG_MAP_RAM(2), LZ77Vram);
+	decompress(PCV2BorderMap, BG_MAP_RAM(11), LZ77Vram);
 	memcpy(VRAM_F, PCV2BorderPal, PCV2BorderPalLen);
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 }
@@ -53,7 +53,7 @@ void setupPCV2Background() {
 void setupWSBackground() {
 	vramSetBankF(VRAM_F_LCD);
 	decompress(WSBorderTiles, BG_TILE_RAM(1), LZ77Vram);
-	decompress(WSBorderMap, BG_MAP_RAM(2), LZ77Vram);
+	decompress(WSBorderMap, BG_MAP_RAM(11), LZ77Vram);
 	memcpy(VRAM_F, WSBorderPal, WSBorderPalLen);
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 }
@@ -61,7 +61,7 @@ void setupWSBackground() {
 void setupWSCBackground() {
 	vramSetBankF(VRAM_F_LCD);
 	decompress(WSCBorderTiles, BG_TILE_RAM(1), LZ77Vram);
-	decompress(WSCBorderMap, BG_MAP_RAM(2), LZ77Vram);
+	decompress(WSCBorderMap, BG_MAP_RAM(11), LZ77Vram);
 	memcpy(VRAM_F, WSCBorderPal, WSCBorderPalLen);
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 }
