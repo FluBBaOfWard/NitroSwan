@@ -12,19 +12,19 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.2 2022-11-20"
+#define EMUVERSION "V0.4.2 2022-11-30"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
 #define ALLOW_REFRESH_CHG	(1<<19)
 
 static void paletteChange(void);
-static void languageSet(void);
 static void machineSet(void);
 static void batteryChange(void);
-static void speedHackSet(void);
 static void headphonesSet(void);
+static void speedHackSet(void);
 static void refreshChgSet(void);
+static void languageSet(void);
 
 static void uiMachine(void);
 static void uiDebug(void);
@@ -38,7 +38,7 @@ const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList5[] = {gammaSet, paletteChange};
-const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, speedHackSet, batteryChange, headphonesSet /*languageSet*/};
+const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, batteryChange, headphonesSet, speedHackSet /*languageSet*/};
 const fptr fnList7[] = {speedSet, refreshChgSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
 const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, stepFrame};
 const fptr fnList9[] = {exitEmulator, backOutOfMenu};
@@ -155,9 +155,9 @@ static void uiMachine() {
 	drawSubItem("Select WS Crystal Bios ->", NULL);
 	drawSubItem("Import internal EEPROM ->", NULL);
 	drawSubItem("Clear internal EEPROM", NULL);
-	drawSubItem("Cpu speed hacks:", autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
 	drawSubItem("Change Battery", NULL);
 	drawSubItem("Headphones:", autoTxt[(emuSettings&ENABLE_HEADPHONES)>>18]);
+	drawSubItem("Cpu speed hacks:", autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
 //	drawSubItem("Language: ", langTxt[gLang]);
 }
 

@@ -32,7 +32,6 @@
 	.global EMUPALBUFF
 	.global tmpOamBuffer
 
-
 	.global sphinx0
 
 

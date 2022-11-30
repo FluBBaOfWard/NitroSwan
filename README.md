@@ -97,16 +97,16 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 		Crashes after intro.
 
 ## Credits:
-
-Huge thanks to Loopy for the incredible PocketNES, without it this emu would
-probably never have been made.
-Thanks to:
-Ed Mandy (Flavor) for WonderSwan info & flashcart. https://www.flashmasta.com
-Koyote for WonderSwan info.
-Alex Marshall (trap15) for WonderSwan info. http://daifukkat.su/docs/wsman/
-Godzil for the boot rom stubs. https://github.com/Godzil/NewOswan
-lidnariq for RTC info.
-Dwedit for help and inspiration with a lot of things.
+	Huge thanks to Loopy for the incredible PocketNES, without it this emu would probably never have been made.
+	Thanks to:
+	Ed Mandy (Flavor) for WonderSwan info & flashcart. https://www.flashmasta.com
+	Koyote for WonderSwan info.
+	Alex Marshall (trap15) for WonderSwan info. http://daifukkat.su/docs/wsman/
+	Guy Perfect for WonderSwan info http://perfectkiosk.net/stsws.html
+	asie for info and inspiration.
+	Godzil for the boot rom stubs. https://github.com/Godzil/NewOswan
+	lidnariq for RTC info.
+	Dwedit for help and inspiration with a lot of things.
 
 
 Fredrik Ahlström

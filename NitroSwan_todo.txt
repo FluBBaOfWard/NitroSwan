@@ -43,6 +43,7 @@ Games Not Working Fixed:
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 
 Games With Glitches:
+	Mahjong Touryuumon, speed way too fast, no sound.
 	Makai Toushi Sa-Ga, textboxes overlap Characters and background.
 	Sorobang, needs all 1024 tiles in 4color mode.
 	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
@@ -101,3 +102,11 @@ Speedhacks:
 	* Zakull Bootsplash
 
 	"Guilty Gear Petit"		- JR (0x72,0xF9) @0x2002
+
+
+Mahjong Touryuumon:
+	Speed way too fast, no sound.
+	Runs without _ANY_ interrupts enabled.
+	Reads port 0x90 irregulary and port 0xB5 (joypad) 27/54 times per frame.
+	The stack i located in SRAM.
+	

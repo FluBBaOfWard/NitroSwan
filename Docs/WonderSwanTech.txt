@@ -533,7 +533,7 @@
  - $A0 - $87 - Hardware type
                 bit 7 - 1 = finnished booting?
                 bit 3     = Cart ROM speed (0=3 cycle, 1=1 cycle)
-                bit 2 - 1 = 16bit cart access
+                bit 2 - 1 = 16bit cart access, 0 = 8 bit access
                 bit 1 - 1 = color, 0 = mono
                 bit 0 - 1 = lock the boot rom
  - $A1 - $00 - ???
@@ -573,15 +573,15 @@
                 bit 1 - Key press
                 bit 0 - Serial transmit
  - $B3 - $00 - Communication direction
-                bit 7 - Receive data interrupt generation
+                bit 7 - Serial Enable
                 bit 6 - Connection Speed
                         0 - 9600  bps
                         1 - 38400 bps
-                bit 5 - Send data interrupt generation
-                bit 4 - ???
-                bit 3 - ???
-                bit 2 - Send Complete
-                bit 1 - Error
+                bit 5 - Overrun Reset
+                bit 4 - 0
+                bit 3 - 0
+                bit 2 - Send Buffer Empty
+                bit 1 - Overrun
                 bit 0 - Receive Complete
 
                         write $00-$7f = read $00
@@ -599,7 +599,7 @@
  - $B5 - $40 - Controls
                 bits 4-7 : read/write - Select line of inputs to read
                         0001 - read vertical cursors
-                        0010 - read hozizontal cursors
+                        0010 - read horizontal cursors
                         0100 - read buttons
                 bits 0-3 : read only - Read the current state of the input lines (positive logic) after having written 10h,20h, or 40h.
                         Meaning of the bits when reading cursors:
@@ -640,7 +640,7 @@
                 bit 2 - Erase complete (Read only)
                 bit 1 - Write complete (Read only)
                 bit 0 - Read complete (Read only)
- - $BF - $00 - ???
+ - $BF - $00 - ^^^
 
 ---------------------------------------------------------------------
 Mapped to cartridge. 2001/Luxsor1 & 2003/Luxsor2
