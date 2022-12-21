@@ -55,8 +55,8 @@ runStart:
 	bl refreshEMUjoypads
 
 	ldr v30ptr,=V30OpTable
-	add r1,v30ptr,#v30Flags
-	ldmia r1,{v30f-v30cyc}		;@ Restore V30MZ state
+	add r1,v30ptr,#v30PrefixBase
+	ldmia r1,{v30bsr-v30cyc}	;@ Restore V30MZ state
 ;@----------------------------------------------------------------------------
 wsFrameLoop:
 ;@----------------------------------------------------------------------------
@@ -68,8 +68,8 @@ wsFrameLoop:
 	bne wsFrameLoop
 
 ;@----------------------------------------------------------------------------
-	add r0,v30ptr,#v30Flags
-	stmia r0,{v30f-v30cyc}		;@ Save V30MZ state
+	add r0,v30ptr,#v30PrefixBase
+	stmia r0,{v30bsr-v30cyc}	;@ Save V30MZ state
 	ldr r1,=fpsValue
 	ldr r0,[r1]
 	add r0,r0,#1
@@ -102,8 +102,8 @@ stepFrame:					;@ Return after 1 frame
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
 	ldr v30ptr,=V30OpTable
-	add r1,v30ptr,#v30Flags
-	ldmia r1,{v30f-v30cyc}		;@ Restore V30MZ state
+	add r1,v30ptr,#v30PrefixBase
+	ldmia r1,{v30bsr-v30cyc}		;@ Restore V30MZ state
 ;@----------------------------------------------------------------------------
 wsStepLoop:
 ;@----------------------------------------------------------------------------
@@ -119,8 +119,8 @@ wsStepLoop:
 	ldr spxptr,=sphinx0
 	bl wsvDoScanline
 ;@----------------------------------------------------------------------------
-	add r0,v30ptr,#v30Flags
-	stmia r0,{v30f-v30cyc}		;@ Save V30MZ state
+	add r0,v30ptr,#v30PrefixBase
+	stmia r0,{v30bsr-v30cyc}		;@ Save V30MZ state
 
 	ldr r1,frameTotal
 	add r1,r1,#1

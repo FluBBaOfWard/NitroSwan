@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.2 2022-11-30"
+#define EMUVERSION "V0.4.2 2022-12-21"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -211,27 +211,27 @@ void updateGameInfo() {
 	strlMerge(gameInfoString, "Game #: 0x", catalog, sizeof(gameInfoString));
 }
 //---------------------------------------------------------------------------------
-void debugIO(u8 port, u8 val, const char *message) {
+void debugIO(u16 port, u8 val, const char *message) {
 	char debugString[32];
 
 	debugString[0] = 0;
 	strlcat(debugString, message, sizeof(debugString));
-	char2HexStr(&debugString[strlen(debugString)], port);
+	short2HexStr(&debugString[strlen(debugString)], port);
 	strlcat(debugString, " val:", sizeof(debugString));
 	char2HexStr(&debugString[strlen(debugString)], val);
 	debugOutput(debugString);
 }
 //---------------------------------------------------------------------------------
-void debugIOUnimplR(u8 port, u8 val) {
+void debugIOUnimplR(u16 port, u8 val) {
 	debugIO(port, val, "Unimpl R port:");
 }
-void debugIOUnimplW(u8 port, u8 val) {
+void debugIOUnimplW(u16 port, u8 val) {
 	debugIO(port, val, "Unimpl W port:");
 }
-void debugIOUnmappedR(u8 port, u8 val) {
+void debugIOUnmappedR(u16 port, u8 val) {
 	debugIO(port, val, "Unmapped R port:");
 }
-void debugIOUnmappedW(u8 port, u8 val) {
+void debugIOUnmappedW(u16 port, u8 val) {
 	debugIO(port, val, "Unmapped W port:");
 }
 void debugDivideError() {
