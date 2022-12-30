@@ -26,6 +26,7 @@ Sound:
 
 Misc:
 	Cardcaptor Sakura, timing sensitive.
+	Mingle Magnet, slow.
 	Mr. Driller, also sensitive to timing (fetch opcode, pl vs gt).
 	Nazo Ou Pocket, slow.
 	Side Pocket, slow.
@@ -33,7 +34,9 @@ Misc:
 
 Games Not Working:
 	Kurupara, crashes. Crashes because of LineCompareIRQ on line 0.
-	Ultraman, division by zero crash. If watching the whole intro before starting.
+	Ultraman, division by zero crash.
+		* If watching the whole intro before starting.
+		* Logo slide down doesn't reach top of screen as on real HW.
 Games Not Working Fixed:
 	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
 	Chou Denki Card Game. Needs initialization, last item on first page.
@@ -43,7 +46,9 @@ Games Not Working Fixed:
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 
 Games With Glitches:
-	Mahjong Touryuumon, speed way too fast, no sound.
+	Mahjong Touryuumon, speed too fast.
+		* Sound fix by emulating serial out buffer empty irq.
+		* Apparently it sets the ROM waitstate to 3(?).
 	Makai Toushi Sa-Ga, textboxes overlap Characters and background.
 	Sorobang, needs all 1024 tiles in 4color mode.
 	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.

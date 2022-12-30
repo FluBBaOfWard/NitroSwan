@@ -453,7 +453,7 @@
  - $6D - $00 - ???
  - $6E - $00 - ???
  - $6F - $00 - ???
- - $70 - $00 - REG_UNK_70 SwanCrystal=$D0
+ - $70 - $00 - REG_UNK_70 SwanCrystal=$D0 Written by SC Bootrom
  - $71 - $00 - REG_UNK_71 SwanCrystal=$77
  - $72 - $00 - REG_UNK_72 SwanCrystal=$F7
  - $73 - $00 - REG_UNK_73 SwanCrystal=$06

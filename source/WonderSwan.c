@@ -67,7 +67,7 @@ void setupWSCBackground() {
 }
 
 void setupEmuBackground() {
-	if (gMachine == HW_WONDERSWANCOLOR) {
+	if (gMachine == HW_WONDERSWANCOLOR || gMachine == HW_SWANCRYSTAL) {
 		setupWSCBackground();
 	}
 	else if (gMachine == HW_WONDERSWAN) {
