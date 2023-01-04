@@ -10,8 +10,10 @@
 	.global cpuReadMem20
 	.global cpuReadMem20W
 	.global dmaReadMem20W
+	.global v30ReadEA1
 	.global v30ReadEA
 	.global v30ReadSegOfs
+	.global v30ReadEAW1
 	.global v30ReadEAW
 	.global v30ReadSegOfsW
 
@@ -86,6 +88,10 @@ cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 	ldmfd sp!,{pc}
 
 ;@----------------------------------------------------------------------------
+v30ReadEA1:			;@ In r0=second byte of opcode.
+;@----------------------------------------------------------------------------
+	eatCycles 1
+;@----------------------------------------------------------------------------
 v30ReadEA:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	add r2,v30ptr,#v30EATable
@@ -110,6 +116,10 @@ bootRomSwitch:
 	ldrb r0,[r1,r2]!
 	bx lr
 
+;@----------------------------------------------------------------------------
+v30ReadEAW1:			;@ In r0=second byte of opcode.
+;@----------------------------------------------------------------------------
+	eatCycles 1
 ;@----------------------------------------------------------------------------
 v30ReadEAW:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
