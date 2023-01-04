@@ -9,13 +9,15 @@
 	.global cpuReadMem20
 	.global cpuReadMem20W
 	.global dmaReadMem20W
-	.global cpuReadMemSegOfs
-	.global cpuReadMemSegOfsW
+	.global v30ReadEA
+	.global v30ReadSegOfs
+	.global v30ReadEAW
+	.global v30ReadSegOfsW
 	.global cpuWriteMem20
 	.global cpuWriteMem20W
 	.global dmaWriteMem20W
-	.global cpuWriteMemSegOfs
-	.global cpuWriteMemSegOfsW
+	.global v30WriteSegOfs
+	.global v30WriteSegOfsW
 	.global setBootRomOverlay
 
 
@@ -80,7 +82,13 @@ cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 	ldmfd sp!,{pc}
 
 ;@----------------------------------------------------------------------------
-cpuReadMemSegOfs:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
+v30ReadEA:			;@ In r0=second byte of opcode.
+;@----------------------------------------------------------------------------
+	add r2,v30ptr,#v30EATable
+	mov r12,pc					;@ Return reg for EA
+	ldr pc,[r2,r0,lsl#2]
+;@----------------------------------------------------------------------------
+v30ReadSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
 //	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
@@ -99,7 +107,13 @@ bootRomSwitch:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-cpuReadMemSegOfsW:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
+v30ReadEAW:			;@ In r0=second byte of opcode.
+;@----------------------------------------------------------------------------
+	add r2,v30ptr,#v30EATable
+	mov r12,pc					;@ Return reg for EA
+	ldr pc,[r2,r0,lsl#2]
+;@----------------------------------------------------------------------------
+v30ReadSegOfsW:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
 //	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
@@ -132,9 +146,9 @@ cpuWriteWordUnaligned:	;@ Make sure cpuWriteMem20 does not change r0 or r1!
 	b cpuWriteMem20
 
 ;@----------------------------------------------------------------------------
-cpuWriteMemSegOfs:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
+v30WriteSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
-//	add r0,v30csr,v30ofs,lsr#4
+	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuWriteMem20:		;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------
@@ -161,9 +175,9 @@ sram_WB:			;@ Write sram ($10000-$1FFFF)
 	bx lr
 
 ;@----------------------------------------------------------------------------
-cpuWriteMemSegOfsW:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
+v30WriteSegOfsW:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
-//	add r0,v30csr,v30ofs,lsr#4
+	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuWriteMem20W:		;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------
