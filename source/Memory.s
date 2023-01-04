@@ -16,7 +16,9 @@
 	.global cpuWriteMem20
 	.global cpuWriteMem20W
 	.global dmaWriteMem20W
+	.global v30WriteEA
 	.global v30WriteSegOfs
+	.global v30WriteEAW
 	.global v30WriteSegOfsW
 	.global setBootRomOverlay
 
@@ -146,9 +148,15 @@ cpuWriteWordUnaligned:	;@ Make sure cpuWriteMem20 does not change r0 or r1!
 	b cpuWriteMem20
 
 ;@----------------------------------------------------------------------------
+v30WriteEA:				;@ In r0=second byte of opcode.
+;@----------------------------------------------------------------------------
+	add r2,v30ptr,#v30EATable
+	mov r12,pc					;@ Return reg for EA
+	ldr pc,[r2,r0,lsl#2]
+;@----------------------------------------------------------------------------
 v30WriteSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
-	add r0,v30csr,v30ofs,lsr#4
+//	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuWriteMem20:		;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------
@@ -159,7 +167,7 @@ ram_WB:				;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
 	ldr r2,[v30ptr,#v30MemTblInv-1*4]
 	strb r1,[r2,r0,lsr#12]
-	add r2,r2,#0x10000		;@ Size of wsRAM, ptr to DIRTYTILES.
+	add r2,r2,#0x10000			;@ Size of wsRAM, ptr to DIRTYTILES.
 	strb r0,[r2,r0,lsr#17]
 	bx lr
 ;@----------------------------------------------------------------------------
@@ -175,9 +183,15 @@ sram_WB:			;@ Write sram ($10000-$1FFFF)
 	bx lr
 
 ;@----------------------------------------------------------------------------
+v30WriteEAW:		;@ In r0=second byte of opcode.
+;@----------------------------------------------------------------------------
+	add r2,v30ptr,#v30EATable
+	mov r12,pc					;@ Return reg for EA
+	ldr pc,[r2,r0,lsl#2]
+;@----------------------------------------------------------------------------
 v30WriteSegOfsW:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
-	add r0,v30csr,v30ofs,lsr#4
+//	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuWriteMem20W:		;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------
@@ -190,7 +204,7 @@ ram_WW:				;@ Write ram ($00000-$0FFFF)
 dmaWriteMem20W:
 ;@----------------------------------------------------------------------------
 	ldr r2,[v30ptr,#v30MemTblInv-1*4]
-	add r3,r2,#0x10000		;@ Size of wsRAM, ptr to DIRTYTILES.
+	add r3,r2,#0x10000			;@ Size of wsRAM, ptr to DIRTYTILES.
 	add r2,r2,r0,lsr#12
 	strh r1,[r2]
 	strb r0,[r3,r0,lsr#17]
