@@ -520,15 +520,15 @@
  - $93 - $00 - ^^^
  - $94 - $00 - Voice Volume (4 bit)
  - $95 - $00 - REG_SND_HYPERVOICE
- - $96 - $00 - REG_SND_9697
- - $97 - $00 - ???
- - $98 - $00 - REG_SND_9899
- - $99 - $00 - ???
- - $9A - $00 - REG_SND_9A
- - $9B - $00 - REG_SND_9B
+ - $96 - $00 - APU sequencer (channels 1-4) right channel output, 10-bit, read-only
+ - $97 - $00 - ^^^
+ - $98 - $00 - APU sequencer (channels 1-4) left channel output, 10-bit, read-only
+ - $99 - $00 - ^^^
+ - $9A - $00 - APU sequencer left+right channels sum, 11-bit, read-only just the sequencer - no Hyper Voice
+ - $9B - $00 - ^^^
  - $9C - $00 - REG_SND_9C
  - $9D - $00 - REG_SND_9D
- - $9E - $03 - Volume set from Bios 0-3.
+ - $9E - $03 - Volume set from Bios 0-3. Changes the volume as well as the corresponding LCD segments.
  - $9F - $00 - ???
  - $A0 - $87 - Hardware type
                 bit 7 - 1 = finnished booting?

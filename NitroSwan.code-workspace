@@ -5,6 +5,11 @@
 		}
 	],
 	"settings": {
+		"files.exclude": {
+			"*.elf": true,
+			"*.nds": true,
+			"*.zip": true
+		},
 		"terminal.integrated.env.osx": {
 			"DEVKITARM": "/opt/devkitPro/devkitARM",
 			"DEVKITPRO": "/opt/devkitPro"

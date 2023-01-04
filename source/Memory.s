@@ -9,9 +9,13 @@
 	.global cpuReadMem20
 	.global cpuReadMem20W
 	.global dmaReadMem20W
+	.global cpuReadMemSegOfs
+	.global cpuReadMemSegOfsW
 	.global cpuWriteMem20
 	.global cpuWriteMem20W
 	.global dmaWriteMem20W
+	.global cpuWriteMemSegOfs
+	.global cpuWriteMemSegOfsW
 	.global setBootRomOverlay
 
 
@@ -74,6 +78,11 @@ cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 	bl cpuReadMem20
 	orr r0,r12,r0,lsl#8
 	ldmfd sp!,{pc}
+
+;@----------------------------------------------------------------------------
+cpuReadMemSegOfs:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
+;@----------------------------------------------------------------------------
+//	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuReadMem20:		;@ In r0=address set in top 20 bits. Out r0=val, r1=phyAdr
 ;@----------------------------------------------------------------------------
@@ -89,6 +98,10 @@ bootRomSwitch:
 	ldrb r0,[r1,r2]!
 	bx lr
 
+;@----------------------------------------------------------------------------
+cpuReadMemSegOfsW:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
+;@----------------------------------------------------------------------------
+//	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuReadMem20W:		;@ In r0=address set in top 20 bits. Out r0=val, r1=phyAdr
 ;@----------------------------------------------------------------------------
@@ -116,8 +129,14 @@ cpuWriteWordUnaligned:	;@ Make sure cpuWriteMem20 does not change r0 or r1!
 	ldmfd sp!,{lr}
 	add r0,r0,#0x1000
 	mov r1,r1,lsr#8
+	b cpuWriteMem20
+
 ;@----------------------------------------------------------------------------
-cpuWriteMem20:		;@ r0=address set in top 20 bits
+cpuWriteMemSegOfs:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
+;@----------------------------------------------------------------------------
+//	add r0,v30csr,v30ofs,lsr#4
+;@----------------------------------------------------------------------------
+cpuWriteMem20:		;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------
 	movs r2,r0,lsr#28
 	bne tstSRAM_WB
@@ -142,7 +161,11 @@ sram_WB:			;@ Write sram ($10000-$1FFFF)
 	bx lr
 
 ;@----------------------------------------------------------------------------
-cpuWriteMem20W:		;@ r0=address set in top 20 bits
+cpuWriteMemSegOfsW:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
+;@----------------------------------------------------------------------------
+//	add r0,v30csr,v30ofs,lsr#4
+;@----------------------------------------------------------------------------
+cpuWriteMem20W:		;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------
 	tst r0,#0x1000
 	bne cpuWriteWordUnaligned
