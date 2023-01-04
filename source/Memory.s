@@ -6,6 +6,7 @@
 	.global empty_IO_R
 	.global empty_IO_W
 	.global rom_W
+
 	.global cpuReadMem20
 	.global cpuReadMem20W
 	.global dmaReadMem20W
@@ -13,6 +14,7 @@
 	.global v30ReadSegOfs
 	.global v30ReadEAW
 	.global v30ReadSegOfsW
+
 	.global cpuWriteMem20
 	.global cpuWriteMem20W
 	.global dmaWriteMem20W
@@ -92,7 +94,7 @@ v30ReadEA:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 v30ReadSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
-//	add r0,v30csr,v30ofs,lsr#4
+	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuReadMem20:		;@ In r0=address set in top 20 bits. Out r0=val, r1=phyAdr
 ;@----------------------------------------------------------------------------
@@ -117,7 +119,7 @@ v30ReadEAW:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 v30ReadSegOfsW:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
-//	add r0,v30csr,v30ofs,lsr#4
+	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuReadMem20W:		;@ In r0=address set in top 20 bits. Out r0=val, r1=phyAdr
 ;@----------------------------------------------------------------------------
@@ -156,7 +158,7 @@ v30WriteEA:				;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 v30WriteSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
-//	add r0,v30csr,v30ofs,lsr#4
+	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuWriteMem20:		;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------
@@ -191,7 +193,7 @@ v30WriteEAW:		;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 v30WriteSegOfsW:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
-//	add r0,v30csr,v30ofs,lsr#4
+	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuWriteMem20W:		;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------

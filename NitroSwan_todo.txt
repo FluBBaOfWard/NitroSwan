@@ -11,6 +11,7 @@ NitroSwan Todo
 	Sprite priority can't be fixed.
 
 	v30mz size = 0x1000240 - 0x100590c = 0x56cc
+	56b4
 GFX:
 	See Sphinx todo.
 
