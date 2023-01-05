@@ -10,6 +10,7 @@
 	.global cpuReadMem20
 	.global cpuReadMem20W
 	.global dmaReadMem20W
+	.global v30ReadEAr4
 	.global v30ReadEA1
 	.global v30ReadEA
 	.global v30ReadSegOfs
@@ -20,6 +21,7 @@
 	.global cpuWriteMem20
 	.global cpuWriteMem20W
 	.global dmaWriteMem20W
+	.global v30ReadEAWr4
 	.global v30WriteEA
 	.global v30WriteSegOfs
 	.global v30WriteEAW
@@ -88,6 +90,12 @@ cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 	ldmfd sp!,{pc}
 
 ;@----------------------------------------------------------------------------
+v30ReadEAr4:		;@ In r4=second byte of opcode.
+;@----------------------------------------------------------------------------
+	add r2,v30ptr,#v30EATable
+	adr r12,v30ReadSegOfs		;@ Return reg for EA
+	ldr pc,[r2,r4,lsl#2]
+;@----------------------------------------------------------------------------
 v30ReadEA1:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	eatCycles 1
@@ -95,7 +103,7 @@ v30ReadEA1:			;@ In r0=second byte of opcode.
 v30ReadEA:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	add r2,v30ptr,#v30EATable
-	mov r12,pc					;@ Return reg for EA
+	adr r12,v30ReadSegOfs		;@ Return reg for EA
 	ldr pc,[r2,r0,lsl#2]
 ;@----------------------------------------------------------------------------
 v30ReadSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
@@ -103,6 +111,7 @@ v30ReadSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
 cpuReadMem20:		;@ In r0=address set in top 20 bits. Out r0=val, r1=phyAdr
+;@ If this is updated, remember to also update V30EncodePC
 ;@----------------------------------------------------------------------------
 	mvn r2,r0,lsr#28
 	ldr r1,[v30ptr,r2,lsl#2]
@@ -117,14 +126,20 @@ bootRomSwitch:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-v30ReadEAW1:			;@ In r0=second byte of opcode.
+v30ReadEAWr4:		;@ In r4=second byte of opcode.
+;@----------------------------------------------------------------------------
+	add r2,v30ptr,#v30EATable
+	adr r12,v30ReadSegOfsW		;@ Return reg for EA
+	ldr pc,[r2,r4,lsl#2]
+;@----------------------------------------------------------------------------
+v30ReadEAW1:		;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	eatCycles 1
 ;@----------------------------------------------------------------------------
 v30ReadEAW:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	add r2,v30ptr,#v30EATable
-	mov r12,pc					;@ Return reg for EA
+	adr r12,v30ReadSegOfsW		;@ Return reg for EA
 	ldr pc,[r2,r0,lsl#2]
 ;@----------------------------------------------------------------------------
 v30ReadSegOfsW:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
