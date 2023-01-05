@@ -25,6 +25,7 @@
 	.global v30WriteEA
 	.global v30WriteSegOfs
 	.global v30WriteEAW
+	.global v30PushW
 	.global v30WriteSegOfsW
 	.global setBootRomOverlay
 
@@ -178,7 +179,7 @@ cpuWriteWordUnaligned:	;@ Make sure cpuWriteMem20 does not change r0 or r1!
 v30WriteEA:				;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	add r2,v30ptr,#v30EATable
-	mov r12,pc					;@ Return reg for EA
+	adr r12,v30WriteSegOfs		;@ Return reg for EA
 	ldr pc,[r2,r0,lsl#2]
 ;@----------------------------------------------------------------------------
 v30WriteSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
@@ -213,8 +214,15 @@ sram_WB:			;@ Write sram ($10000-$1FFFF)
 v30WriteEAW:		;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	add r2,v30ptr,#v30EATable
-	mov r12,pc					;@ Return reg for EA
+	adr r12,v30WriteSegOfsW		;@ Return reg for EA
 	ldr pc,[r2,r0,lsl#2]
+;@----------------------------------------------------------------------------
+v30PushW:		;@ In r1=value.
+;@----------------------------------------------------------------------------
+	ldr v30ofs,[v30ptr,#v30RegSP]
+	ldr v30csr,[v30ptr,#v30SRegSS]
+	sub v30ofs,v30ofs,#0x20000
+	str v30ofs,[v30ptr,#v30RegSP]
 ;@----------------------------------------------------------------------------
 v30WriteSegOfsW:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
