@@ -13,7 +13,9 @@
 	.global v30ReadEAr4
 	.global v30ReadEA1
 	.global v30ReadEA
+	.global v30StackReadW
 	.global v30ReadSegOfs
+	.global v30ReadEAWr4
 	.global v30ReadEAW1
 	.global v30ReadEAW
 	.global v30ReadSegOfsW
@@ -21,11 +23,11 @@
 	.global cpuWriteMem20
 	.global cpuWriteMem20W
 	.global dmaWriteMem20W
-	.global v30ReadEAWr4
 	.global v30WriteEA
 	.global v30WriteSegOfs
 	.global v30WriteEAW
 	.global v30PushW
+	.global v30PushLastW
 	.global v30WriteSegOfsW
 	.global setBootRomOverlay
 
@@ -143,6 +145,11 @@ v30ReadEAW:			;@ In r0=second byte of opcode.
 	adr r12,v30ReadSegOfsW		;@ Return reg for EA
 	ldr pc,[r2,r0,lsl#2]
 ;@----------------------------------------------------------------------------
+v30StackReadW:		;@ Read a word from the stack, r0=value on stack.
+;@----------------------------------------------------------------------------
+	ldr v30ofs,[v30ptr,#v30RegSP]
+	ldr v30csr,[v30ptr,#v30SRegSS]
+;@----------------------------------------------------------------------------
 v30ReadSegOfsW:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
 	add r0,v30csr,v30ofs,lsr#4
@@ -221,6 +228,9 @@ v30PushW:		;@ In r1=value.
 ;@----------------------------------------------------------------------------
 	ldr v30ofs,[v30ptr,#v30RegSP]
 	ldr v30csr,[v30ptr,#v30SRegSS]
+;@----------------------------------------------------------------------------
+v30PushLastW:	;@ In r1=value.
+;@----------------------------------------------------------------------------
 	sub v30ofs,v30ofs,#0x20000
 	str v30ofs,[v30ptr,#v30RegSP]
 ;@----------------------------------------------------------------------------
