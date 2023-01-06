@@ -95,9 +95,9 @@ cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 ;@----------------------------------------------------------------------------
 v30ReadEAr4:		;@ In r4=second byte of opcode.
 ;@----------------------------------------------------------------------------
-	add r2,v30ptr,#v30EATable
+	add r2,v30ptr,r4,lsl#2
 	adr r12,v30ReadSegOfs		;@ Return reg for EA
-	ldr pc,[r2,r4,lsl#2]
+	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
 v30ReadEA1:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
@@ -105,9 +105,9 @@ v30ReadEA1:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 v30ReadEA:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
-	add r2,v30ptr,#v30EATable
+	add r2,v30ptr,r0,lsl#2
 	adr r12,v30ReadSegOfs		;@ Return reg for EA
-	ldr pc,[r2,r0,lsl#2]
+	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
 v30ReadSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
@@ -131,9 +131,9 @@ bootRomSwitch:
 ;@----------------------------------------------------------------------------
 v30ReadEAWr4:		;@ In r4=second byte of opcode.
 ;@----------------------------------------------------------------------------
-	add r2,v30ptr,#v30EATable
+	add r2,v30ptr,r4,lsl#2
 	adr r12,v30ReadSegOfsW		;@ Return reg for EA
-	ldr pc,[r2,r4,lsl#2]
+	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
 v30ReadEAW1:		;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
@@ -141,9 +141,9 @@ v30ReadEAW1:		;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 v30ReadEAW:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
-	add r2,v30ptr,#v30EATable
+	add r2,v30ptr,r0,lsl#2
 	adr r12,v30ReadSegOfsW		;@ Return reg for EA
-	ldr pc,[r2,r0,lsl#2]
+	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
 v30StackReadW:		;@ Read a word from the stack, r0=value on stack.
 ;@----------------------------------------------------------------------------
@@ -183,11 +183,11 @@ cpuWriteWordUnaligned:	;@ Make sure cpuWriteMem20 does not change r0 or r1!
 	b cpuWriteMem20
 
 ;@----------------------------------------------------------------------------
-v30WriteEA:				;@ In r0=second byte of opcode.
+v30WriteEA:				;@ In r0=second byte of opcode, r1=value
 ;@----------------------------------------------------------------------------
-	add r2,v30ptr,#v30EATable
+	add r2,v30ptr,r0,lsl#2
 	adr r12,v30WriteSegOfs		;@ Return reg for EA
-	ldr pc,[r2,r0,lsl#2]
+	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
 v30WriteSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
@@ -220,9 +220,9 @@ sram_WB:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
 v30WriteEAW:		;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
-	add r2,v30ptr,#v30EATable
+	add r2,v30ptr,r0,lsl#2
 	adr r12,v30WriteSegOfsW		;@ Return reg for EA
-	ldr pc,[r2,r0,lsl#2]
+	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
 v30PushW:		;@ In r1=value.
 ;@----------------------------------------------------------------------------
