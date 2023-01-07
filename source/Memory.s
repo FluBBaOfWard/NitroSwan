@@ -10,7 +10,6 @@
 	.global cpuReadMem20
 	.global cpuReadMem20W
 	.global dmaReadMem20W
-	.global v30ReadEAr4
 	.global v30ReadEA1
 	.global v30ReadEA
 	.global v30StackReadW
@@ -94,17 +93,11 @@ cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 	ldmfd sp!,{pc}
 
 ;@----------------------------------------------------------------------------
-v30ReadEAr4:		;@ In r4=second byte of opcode.
-;@----------------------------------------------------------------------------
-	add r2,v30ptr,r4,lsl#2
-	adr r12,v30ReadSegOfs		;@ Return reg for EA
-	ldr pc,[r2,#v30EATable]
-;@----------------------------------------------------------------------------
-v30ReadEA1:			;@ In r0=second byte of opcode.
+v30ReadEA1:			;@ In r2=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	eatCycles 1
 ;@----------------------------------------------------------------------------
-v30ReadEA:			;@ In r0=second byte of opcode.
+v30ReadEA:			;@ In r2=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	adr r12,v30ReadSegOfs		;@ Return reg for EA
 	ldr pc,[r2,#v30EATable]
