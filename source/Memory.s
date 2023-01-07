@@ -18,6 +18,7 @@
 	.global v30ReadEAWr4
 	.global v30ReadEAW1
 	.global v30ReadEAW
+	.global v30ReadEAW_noAdd
 	.global v30ReadSegOfsW
 
 	.global cpuWriteMem20
@@ -135,13 +136,16 @@ v30ReadEAWr4:		;@ In r4=second byte of opcode.
 	adr r12,v30ReadSegOfsW		;@ Return reg for EA
 	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
-v30ReadEAW1:		;@ In r0=second byte of opcode.
+v30ReadEAW1:		;@ In r2=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	eatCycles 1
+	adr r12,v30ReadSegOfsW		;@ Return reg for EA
+	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
 v30ReadEAW:			;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	add r2,v30ptr,r0,lsl#2
+v30ReadEAW_noAdd:
 	adr r12,v30ReadSegOfsW		;@ Return reg for EA
 	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
@@ -218,9 +222,8 @@ sram_WB:			;@ Write sram ($10000-$1FFFF)
 	bx lr
 
 ;@----------------------------------------------------------------------------
-v30WriteEAW:		;@ In r0=second byte of opcode.
+v30WriteEAW:		;@ In r2=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
-	add r2,v30ptr,r0,lsl#2
 	adr r12,v30WriteSegOfsW		;@ Return reg for EA
 	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
