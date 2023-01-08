@@ -179,9 +179,8 @@ cpuWriteWordUnaligned:	;@ Make sure cpuWriteMem20 does not change r0 or r1!
 	b cpuWriteMem20
 
 ;@----------------------------------------------------------------------------
-v30WriteEA:				;@ In r0=second byte of opcode, r1=value
+v30WriteEA:				;@ In r2=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
-	add r2,v30ptr,r0,lsl#2
 	adr r12,v30WriteSegOfs		;@ Return reg for EA
 	ldr pc,[r2,#v30EATable]
 ;@----------------------------------------------------------------------------
