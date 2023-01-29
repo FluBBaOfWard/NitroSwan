@@ -12,11 +12,13 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.4.2 2023-01-22"
+#define EMUVERSION "V0.4.2 2023-01-29"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
 #define ALLOW_REFRESH_CHG	(1<<19)
+
+void hacksInit(void);
 
 static void paletteChange(void);
 static void machineSet(void);
@@ -65,7 +67,7 @@ const char *const langTxt[]  = {"Japanese", "English"};
 
 
 void setupGUI() {
-	emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | ALLOW_SPEED_HACKS | AUTOSLEEP_OFF;
+	emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | AUTOSLEEP_OFF;
 	keysSetRepeat(25, 4);	// Delay, repeat.
 	menuXItems[1] = ARRSIZE(fnList1) - (enableExit?0:1);
 	openMenu();
@@ -308,6 +310,7 @@ void machineSet() {
 
 void speedHackSet() {
 	emuSettings ^= ALLOW_SPEED_HACKS;
+	hacksInit();
 }
 
 void headphonesSet() {

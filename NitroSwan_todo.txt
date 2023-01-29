@@ -51,6 +51,7 @@ Games With Glitches:
 	Mahjong Touryuumon, speed too fast.
 		* Sound fix by emulating serial out buffer empty irq.
 		* Apparently it sets the ROM waitstate to 3(?).
+	Makaimura, first boss sprites are glitchy.
 	Makai Toushi Sa-Ga, textboxes overlap Characters and background.
 	Sorobang, needs all 1024 tiles in 4color mode.
 	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
@@ -109,6 +110,9 @@ Speedhacks:
 	* Zakull Bootsplash
 
 	"Guilty Gear Petit"		- JR (0x72,0xF9) @0x2002
+	Mingle Magnet			- 0x74,0xF3
+	Nazo Ou Pocket			- 0x74,0xEE
+	Time Bokan Series		- 0x74,0xF6
 
 
 Mahjong Touryuumon:

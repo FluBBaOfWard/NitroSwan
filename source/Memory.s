@@ -10,13 +10,10 @@
 	.global cpuReadMem20
 	.global cpuReadMem20W
 	.global dmaReadMem20W
-	.global v30ReadEA2
 	.global v30ReadEA1
 	.global v30ReadEA
-	.global v30StackReadW
+	.global v30ReadStack
 	.global v30ReadSegOfs
-	.global v30ReadEAWr41
-	.global v30ReadEAWr4
 	.global v30ReadEAW1
 	.global v30ReadEAW
 	.global v30ReadEAW_noAdd
@@ -26,6 +23,7 @@
 	.global cpuWriteMem20W
 	.global dmaWriteMem20W
 	.global v30WriteEA
+	.global v30ReadDsIx
 	.global v30WriteSegOfs
 	.global v30WriteEAW2
 	.global v30WriteEAW
@@ -96,10 +94,6 @@ cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 	ldmfd sp!,{pc}
 
 ;@----------------------------------------------------------------------------
-v30ReadEA2:			;@ In v30ofs=v30ptr+second byte of opcode.
-;@----------------------------------------------------------------------------
-	eatCycles 1
-;@----------------------------------------------------------------------------
 v30ReadEA1:			;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	eatCycles 1
@@ -108,6 +102,12 @@ v30ReadEA:			;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	adr r12,v30ReadSegOfs		;@ Return reg for EA
 	ldr pc,[v30ofs,#v30EATable]
+;@----------------------------------------------------------------------------
+v30ReadDsIx:		;@
+;@----------------------------------------------------------------------------
+	TestSegmentPrefix
+	ldreq v30csr,[v30ptr,#v30SRegDS]
+	ldr v30ofs,[v30ptr,#v30RegIX]
 ;@----------------------------------------------------------------------------
 v30ReadSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
@@ -129,16 +129,6 @@ bootRomSwitch:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-v30ReadEAWr41:		;@ In r4=second byte of opcode.
-;@----------------------------------------------------------------------------
-	eatCycles 1
-;@----------------------------------------------------------------------------
-v30ReadEAWr4:		;@ In r4=second byte of opcode.
-;@----------------------------------------------------------------------------
-	add v30ofs,v30ptr,r4,lsl#2
-	adr r12,v30ReadSegOfsW		;@ Return reg for EA
-	ldr pc,[v30ofs,#v30EATable]
-;@----------------------------------------------------------------------------
 v30ReadEAW1:		;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	eatCycles 1
@@ -152,7 +142,7 @@ v30ReadEAW_noAdd:
 	adr r12,v30ReadSegOfsW		;@ Return reg for EA
 	ldr pc,[v30ofs,#v30EATable]
 ;@----------------------------------------------------------------------------
-v30StackReadW:		;@ Read a word from the stack, r0=value on stack.
+v30ReadStack:		;@ Read a word from the stack, r0=value on stack.
 ;@----------------------------------------------------------------------------
 	ldr v30ofs,[v30ptr,#v30RegSP]
 	ldr v30csr,[v30ptr,#v30SRegSS]
@@ -215,13 +205,13 @@ ram_WB:				;@ Write ram ($00000-$0FFFF)
 tstSRAM_WB:
 ;@----------------------------------------------------------------------------
 	cmp r2,#1
-	bne rom_W
 ;@----------------------------------------------------------------------------
 sram_WB:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
-	ldr r2,[v30ptr,#v30MemTblInv-2*4]
-	strb r1,[r2,r0,lsr#12]
-	bx lr
+	ldreq r2,[v30ptr,#v30MemTblInv-2*4]
+	strbeq r1,[r2,r0,lsr#12]
+	bxeq lr
+	b rom_W
 
 ;@----------------------------------------------------------------------------
 v30WriteEAW2:		;@ In v30ofs=v30ptr+second byte of opcode.
@@ -267,15 +257,15 @@ dmaWriteMem20W:
 tstSRAM_WW:
 ;@----------------------------------------------------------------------------
 	cmp r2,#1
-	bne rom_W
 ;@----------------------------------------------------------------------------
 sram_WW:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
-	eatCycles 1
-	ldr r2,[v30ptr,#v30MemTblInv-2*4]
-	mov r0,r0,lsr#12
-	strh r1,[r2,r0]
-	bx lr
+	subeq v30cyc,v30cyc,#1*CYCLE
+	ldreq r2,[v30ptr,#v30MemTblInv-2*4]
+	moveq r0,r0,lsr#12
+	strheq r1,[r2,r0]
+	bxeq lr
+	b rom_W
 ;@----------------------------------------------------------------------------
 	.end
 #endif // #ifdef __arm__
