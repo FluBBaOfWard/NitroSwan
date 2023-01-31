@@ -35,16 +35,19 @@ Misc:
 	Time Bokan Series, slow.
 
 Games Not Working:
-	Kurupara, crashes. Crashes because of LineCompareIRQ on line 0.
-	Ultraman, division by zero crash.
-		* If watching the whole intro before starting.
-		* Logo slide down doesn't reach top of screen as on real HW.
+
 Games Not Working Fixed:
 	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
 	Chou Denki Card Game. Needs initialization, last item on first page.
 	Hanjuku Hero, crashes. Reads mapper register 0xC0 which was not reset correctly.
+	Kurupara, crashes. Crashes because of LineCompareIRQ on line 0.
+		Fixing interrupt handling in Sphinx fixed it.
 	Riviera freezes on a black screen after the chapter 1 screen. Fixed in V0.4.0.
 	Tonpuusou. Can't start. HBlank interrupt.
+	Ultraman, division by zero crash.
+		* If watching the whole intro before starting.
+		* Logo slide down doesn't reach top of screen as on real HW.
+		Crash fixed by interrupt handling.
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 
 Games With Glitches:
@@ -120,4 +123,3 @@ Mahjong Touryuumon:
 	Runs without _ANY_ interrupts enabled.
 	Reads port 0x90 irregulary and port 0xB5 (joypad) 27/54 times per frame.
 	The stack i located in SRAM.
-	
