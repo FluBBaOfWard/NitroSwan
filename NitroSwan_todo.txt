@@ -43,7 +43,7 @@ Games Not Working Fixed:
 	Kurupara, crashes. Crashes because of LineCompareIRQ on line 0.
 		Fixing interrupt handling in Sphinx fixed it.
 	Riviera freezes on a black screen after the chapter 1 screen. Fixed in V0.4.0.
-	Tonpuusou. Can't start. HBlank interrupt.
+	Tonpuusou. Can't start. HBlank interrupt should always be run when value = 1.
 	Ultraman, division by zero crash.
 		* If watching the whole intro before starting.
 		* Logo slide down doesn't reach top of screen as on real HW.
@@ -57,6 +57,7 @@ Games With Glitches:
 	Makaimura, first boss sprites are glitchy.
 	Makai Toushi Sa-Ga, textboxes overlap Characters and background.
 	Sorobang, needs all 1024 tiles in 4color mode.
+	Ultraman, Logo slide down doesn't reach top of screen as on real HW.
 	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
 Games With Glitches Fixed:
 	Magical Drop, playfield flickers horizontaly. Sensitive to interrupt (and IRET, HALT) timing.

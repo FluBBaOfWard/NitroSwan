@@ -8,8 +8,9 @@
 	.global monoPalInit
 	.global paletteInit
 	.global paletteTxAll
-	.global refreshGfx
-	.global endFrameGfx
+	.global gfxPreSpriteDma
+	.global gfxRefresh
+	.global gfxEndFrame
 	.global v30ReadPort
 	.global v30WritePort
 	.global pushVolumeButton
@@ -447,19 +448,23 @@ nothingNew:
 
 
 ;@----------------------------------------------------------------------------
-refreshGfx:					;@ Called from C when changing scaling.
-	.type refreshGfx STT_FUNC
+gfxPreSpriteDma:				;@ Called just before last scanline (line 143)	(r0-r3 safe to use)
+;@----------------------------------------------------------------------------
+	ldr r0,tmpOamBuffer			;@ Destination
+	b wsvConvertSprites
+
+;@----------------------------------------------------------------------------
+gfxRefresh:					;@ Called from C when changing scaling.
+	.type gfxRefresh STT_FUNC
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 ;@----------------------------------------------------------------------------
-endFrameGfx:				;@ Called just before screen end (~line 143)	(r0-r3 safe to use)
+gfxEndFrame:				;@ Called just after screen end (line 144)	(r0-r3 safe to use)
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
 	ldr r0,tmpScroll			;@ Destination
 	bl copyScrollValues
-	ldr r0,tmpOamBuffer			;@ Destination
-	bl wsvConvertSprites
 	bl paletteTxAll
 ;@--------------------------
 
