@@ -8,7 +8,6 @@
 	.global monoPalInit
 	.global paletteInit
 	.global paletteTxAll
-	.global gfxPreSpriteDma
 	.global gfxRefresh
 	.global gfxEndFrame
 	.global v30ReadPort
@@ -448,12 +447,6 @@ nothingNew:
 
 
 ;@----------------------------------------------------------------------------
-gfxPreSpriteDma:				;@ Called just before last scanline (line 143)	(r0-r3 safe to use)
-;@----------------------------------------------------------------------------
-	ldr r0,tmpOamBuffer			;@ Destination
-	b wsvConvertSprites
-
-;@----------------------------------------------------------------------------
 gfxRefresh:					;@ Called from C when changing scaling.
 	.type gfxRefresh STT_FUNC
 ;@----------------------------------------------------------------------------
@@ -465,6 +458,8 @@ gfxEndFrame:				;@ Called just after screen end (line 144)	(r0-r3 safe to use)
 
 	ldr r0,tmpScroll			;@ Destination
 	bl copyScrollValues
+	ldr r0,tmpOamBuffer			;@ Destination
+	bl wsvConvertSprites
 	bl paletteTxAll
 ;@--------------------------
 

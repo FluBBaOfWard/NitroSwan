@@ -1,4 +1,4 @@
-# NitroSwan V0.4.2
+# NitroSwan V0.5.0
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -90,11 +90,9 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 	In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS X1-X4.
 
 ## Games:
-	There are 2 games that I know of that has problems.
+	There is 1 game that I know of that has problems.
 	Chou Denki Card Game.
 		You need to initialize NVRAM, this is the last item on the first page (初期化).
-	Kurupara.
-		Crashes after intro.
 
 ## Credits:
 	Huge thanks to Loopy for the incredible PocketNES, without it this emu would probably never have been made.
