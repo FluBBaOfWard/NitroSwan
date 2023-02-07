@@ -51,7 +51,6 @@ Games Not Working Fixed:
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 
 Games With Glitches:
-	Chaos Gear, Intro not showing.
 	Mahjong Touryuumon, speed too fast.
 		* Sound fix by emulating serial out buffer empty irq.
 		* Apparently it sets the ROM waitstate to 3(?).
@@ -62,6 +61,8 @@ Games With Glitches:
 		* Interrupts are not acknowledged during rep instructions.
 	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
 Games With Glitches Fixed:
+	Chaos Gear, Intro not showing.
+		* Sensitive to serial interrupt.
 	Magical Drop, playfield flickers horizontaly. Sensitive to interrupt (and IRET, HALT) timing.
 		* Fix: Sprite DMA consumes cycles.
 	Final Fantasy. Characters when inputing name can glitch.
