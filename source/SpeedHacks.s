@@ -135,7 +135,7 @@ i_be_hack:				;@ 0x74
 	beq be_end
 be_end:
 
-#if GBA
+#ifdef GBA
 	.section .ewram, "ax", %progbits	;@ For the GBA
 	.align 2
 #endif

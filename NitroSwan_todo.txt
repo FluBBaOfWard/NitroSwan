@@ -1,8 +1,8 @@
 NitroSwan Todo
 
-	Add different read mem functions.
-	Better key mappings, PCV2.
+	Optimize/reduce sound mixer.
 	Fix better sound!
+	Better key mappings, PCV2.
 	Graphics on menu screen?
 	Find speed hacks.
 	Add IO word access?
