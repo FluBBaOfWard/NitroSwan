@@ -381,9 +381,9 @@
  - $3E - $10 - PALF0
  - $3F - $73 - PALF1
  - $40 - $00 - DMA (?) copy source address
- - $41 - $00 -  ^^^
+ - $41 - $00 - ^^^
  - $42 - $00 - copy source bank
- - $43 - $00 - ???
+ - $43 - $00 - 0
  - $44 - $00 - copy destination address
  - $45 - $00 - ^^^
  - $46 - $00 - size of copied data (in bytes)
@@ -392,18 +392,24 @@
                 (bit 7=0 when data transfer is finished)
                 ports $40-$48 are updated during copy process
                bit 6 inc/dec
- - $49 - $00 - ???
+ - $49 - $00 - 0
 
- - $4A - $00 - sound DMA source address
+ - $4A - $00 - Sound DMA source address
  - $4B - $00 - ^^^
- - $4C - $00 - sound DMA source memory segment bank
+ - $4C - $00 - Sound DMA source memory segment bank
  - $4D - $00 - 0
- - $4E - $00 - DMA transfer size (in bytes)
+ - $4E - $00 - Sound DMA transfer size (in bytes)
  - $4F - $00 - ^^^
  - $50 - $00 - ^^^
- - $51 - $00 - ???
- - $52 - $00 - DMA control bit  7 = 1  -> DMA start
- - $53 - $00 - ???
+ - $51 - $00 - 0
+ - $52 - $00 - Sound DMA control
+               bit 7 = 1 -> DMA start
+               bit 6 = inc/dec
+               bit 4 = destination, 0=SND_VOL_2, 1=HYPER_VOICE
+               bit 3 = 1 -> DMA loop
+               bit 2 = ???, if set DMA doesn't appear to work.
+               bit 0-1 = rate, 0=4kHz, 1=6kHz, 2=12kHz, 3=24kHz.
+ - $53 - $00 - 0
  - $54 - $00 - ???
  - $55 - $00 - ???
  - $56 - $00 - ???

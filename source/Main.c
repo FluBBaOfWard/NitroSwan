@@ -15,8 +15,8 @@
 #include "io.h"
 #include "Sound.h"
 
-#define sample_rate 48000
-#define buffer_size (256+10)
+#define sample_rate 24000
+#define buffer_size (160)
 
 static void checkTimeOut(void);
 static void setupGraphics(void);
