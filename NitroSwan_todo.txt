@@ -1,6 +1,5 @@
 NitroSwan Todo
 
-	Optimize/reduce sound mixer.
 	Fix better sound!
 	Better key mappings, PCV2.
 	Graphics on menu screen?
@@ -41,32 +40,36 @@ Games Not Working Fixed:
 	Chou Denki Card Game. Needs initialization, last item on first page.
 	Hanjuku Hero, crashes. Reads mapper register 0xC0 which was not reset correctly.
 	Kurupara, crashes. Crashes because of LineCompareIRQ on line 0.
-		Fixing interrupt handling in Sphinx fixed it.
-	Riviera freezes on a black screen after the chapter 1 screen. Fixed in V0.4.0.
-	Tonpuusou. Can't start. HBlank interrupt should always be run when value = 1.
+		* Fixing interrupt handling in Sphinx fixed it.
+	Riviera freezes on a black screen after the chapter 1 screen.
+		* Fixed in V0.4.0.
+	Tonpuusou. Can't start.
+		* HBlank interrupt should always be run when value = 1.
 	Ultraman, division by zero crash.
 		* If watching the whole intro before starting.
-		* Logo slide down doesn't reach top of screen as on real HW.
-		Crash fixed by interrupt handling.
+		* Fixing interrupt handling in Sphinx fixed it.
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 
 Games With Glitches:
 	Mahjong Touryuumon, speed too fast.
-		* Sound fix by emulating serial out buffer empty irq.
 		* Apparently it sets the ROM waitstate to 3(?).
 	Makaimura, first boss sprites are glitchy.
 	Makai Toushi Sa-Ga, textboxes overlap Characters and background.
 	Sorobang, needs all 1024 tiles in 4color mode.
-	Ultraman, Logo slide down doesn't reach top of screen as on real HW.
-		* Interrupts are not acknowledged during rep instructions.
 	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
 Games With Glitches Fixed:
 	Chaos Gear, Intro not showing.
 		* Sensitive to serial interrupt.
-	Magical Drop, playfield flickers horizontaly. Sensitive to interrupt (and IRET, HALT) timing.
-		* Fix: Sprite DMA consumes cycles.
+		* IRQ are taken 1 instruction after SEI/STI.
 	Final Fantasy. Characters when inputing name can glitch.
 		* Depending on which scan line VBlank is and how many total scan lines.
+		* Interrupts were not acknowledged during rep instructions.
+	Magical Drop, playfield flickers horizontaly. Sensitive to interrupt (and IRET, HALT) timing.
+		* Fix: Sprite DMA consumes cycles.
+	Mahjong Touryuumon, no sound.
+		* Sound fix by emulating serial out buffer empty irq.
+	Ultraman, Logo slide down doesn't reach top of screen as on real HW.
+		* Interrupts were not acknowledged during rep instructions.
 
 Needs Large (256kB) SRAM:
 	Dicing Knight.
