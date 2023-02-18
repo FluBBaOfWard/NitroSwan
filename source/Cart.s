@@ -196,6 +196,8 @@ loadCart: 					;@ Called from C:
 	ldreq r2,=SC_BIOS_INTERNAL
 	moveq r4,#SOC_SPHINX2
 	strb r4,gSOC
+	cmp r5,#HW_POCKETCHALLENGEV2
+	moveq r0,#0					;@ Set boot rom overlay (none)
 	cmp r1,#0
 	moveq r1,r2					;@ Use internal bios
 	str r1,biosBase

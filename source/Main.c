@@ -189,7 +189,7 @@ static void setupGraphics() {
 	REG_BG0CNT = GFX_BG0CNT;
 	REG_BG1CNT = GFX_BG1CNT;
 	// Background 2 for border
-	REG_BG2CNT = BG_32x32 | BG_MAP_BASE(12) | BG_COLOR_256 | BG_TILE_BASE(1) | BG_PRIORITY(2);
+	REG_BG2CNT = BG_32x32 | BG_MAP_BASE(15) | BG_COLOR_256 | BG_TILE_BASE(1) | BG_PRIORITY(2);
 
 	// Set up the sub display
 	videoSetModeSub(MODE_0_2D

@@ -1,7 +1,7 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.5.0 - 2023-02-08 (FluBBa)
+V0.5.0 - 2023-02-18 (FluBBa)
 	Fixed reset of mapper registers.
 	Fixed loading of roms that are not power of 2.
 	Fixed timing of several opcodes.
@@ -10,6 +10,8 @@ V0.5.0 - 2023-02-08 (FluBBa)
 	Fixed some cpu opcodes.
 	Fixed interrupt handling.
 	Fixed timers.
+	Fixed sweep on sound channel 3.
+	Fixed noise feedback selection.
 	Optimized cpu core a bit.
 	Added support for serial port interrupts.
 	Added support for battery low.

@@ -9,8 +9,6 @@ NitroSwan Todo
 	Link NDS battery to WS battery?
 	Sprite priority can't be fixed.
 
-	v30mz size = 0x1000240 - 0x100590c = 0x56cc
-	5128
 GFX:
 	See Sphinx todo.
 
