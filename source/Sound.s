@@ -6,6 +6,7 @@
 	.global soundReset
 	.global VblSound2
 	.global setMuteSoundGUI
+	.global soundUpdate
 
 	.extern pauseEmulation
 
@@ -30,6 +31,8 @@ soundReset:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 	mov r0,#0
+	str r0,pcmWritePtr
+	str r0,pcmReadPtr
 	ldr spxptr,=sphinx0
 	bl wsAudioReset			;@ sound
 	ldmfd sp!,{lr}
@@ -47,60 +50,72 @@ setMuteSoundGUI:
 VblSound2:					;@ r0=length, r1=pointer
 ;@----------------------------------------------------------------------------
 ;@	mov r11,r11
-	stmfd sp!,{r0,r1,lr}
+	stmfd sp!,{r0,r1,r4,lr}
 
 	ldr r2,muteSound
 	cmp r2,#0
 	bne silenceMix
-//	ldrb r2,muteSoundChip
-//	cmp r2,#0
-//	bne playSamples
 
 	ldr spxptr,=sphinx0
-//	mov r0,r0,lsl#2
-	bl wsAudioMixer
-	ldmfd sp!,{r0,r1,lr}
-	bx lr
+	ldrb r2,[spxptr,#wsvHWVolume]
+	cmp r2,#0
+	beq silenceMix
+	ldr r2,pcmWritePtr
+	ldr r4,pcmReadPtr
+	add r3,r4,r0
+	str r3,pcmReadPtr
+	sub r2,r2,r4
+	subs r0,r0,r2
+	blhi soundUpdateMore
 
-playSamples:
-	stmfd sp!,{r4-r6}
-	mov r12,r0
-	ldr r6,pcmReadPtr
-	ldr r4,pcmWritePtr
-	mov r2,#27
-//	subs r2,r4,r6
-//	addmi r2,r2,#0x1000
-	add r4,r6,r2
-	str r4,pcmReadPtr
+	ldmfd sp,{r0,r1}
+	bl soundCopyBuff
+
+	ldmfd sp!,{r0,r1,r4,lr}
+	bx lr
+;@----------------------------------------------------------------------------
+soundCopyBuff:
+;@----------------------------------------------------------------------------
 	ldr r3,=WAVBUFFER
-	mov r6,r6,lsl#20
-	mov r5,r0
-wavLoop:
-	ldrb r4,[r3,r6,lsr#20]
-	subs r5,r5,r2
-	addmi r6,r6,#0x00100000
-	addmi r5,r0
-	mov r4,r4,lsl#8
-	orr r4,r4,r4,lsl#16
-	str r4,[r1],#4
-	subs r12,r12,#1
-	bhi wavLoop
-
-	ldmfd sp!,{r4-r6}
-	ldmfd sp!,{r0,r1,lr}
+	mov r4,r4,lsl#22
+sndCopyLoop:
+	subs r0,r0,#1
+	ldrpl r2,[r3,r4,lsr#20]
+	strpl r2,[r1],#4
+	add r4,r4,#0x00400000
+	bhi sndCopyLoop
 	bx lr
-
+;@----------------------------------------------------------------------------
 silenceMix:
-	ldmfd sp!,{r0,r1}
-	mov r12,r0
+;@----------------------------------------------------------------------------
 	ldr r2,=0x80008000
 silenceLoop:
-	subs r12,r12,#1
+	subs r0,r0,#1
 	strpl r2,[r1],#4
 	bhi silenceLoop
 
-	ldmfd sp!,{lr}
+	ldmfd sp!,{r0,r1,r4,lr}
 	bx lr
+
+soundUpdateMore:
+	stmfd sp!,{r4,lr}
+	mov r4,r0
+updLoop:
+	bl soundUpdate
+	subs r4,r4,#2
+	bhi updLoop
+	ldmfd sp!,{r4,pc}
+;@----------------------------------------------------------------------------
+soundUpdate:			;@ Should be called at every scanline
+;@----------------------------------------------------------------------------
+	mov r0,#2			;@ 24kHz / (75Hz * 160 scanlines) = 2
+	ldr r1,pcmWritePtr
+	mov r2,r1,lsl#22	;@ Only keep 10 bits
+	add r1,r1,r0
+	str r1,pcmWritePtr
+	ldr r1,=WAVBUFFER
+	add r1,r1,r2,lsr#20
+	b wsAudioMixer
 
 ;@----------------------------------------------------------------------------
 pcmWritePtr:	.long 0
@@ -120,7 +135,7 @@ soundLatch:
 	.section .bss
 	.align 2
 WAVBUFFER:
-	.space 0x1000
+	.space 0x2000
 ;@----------------------------------------------------------------------------
 	.end
 #endif // #ifdef __arm__

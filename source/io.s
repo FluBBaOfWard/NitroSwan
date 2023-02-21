@@ -287,6 +287,13 @@ intEepromSetSize:			;@ r0 = size, 0=1kbit, !0=16kbit
 	.pool
 intEeprom:
 	.space wsEepromSize
+
+#ifdef GBA
+	.section .sbss				;@ For the GBA
+#else
+	.section .bss
+#endif
+	.align 2
 wsEepromMem:
 	.space 0x80
 wscEepromMem:

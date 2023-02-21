@@ -32,6 +32,7 @@ Misc:
 	Time Bokan Series, slow.
 
 Games Not Working:
+	With You - Mitsumete Itai, halts at black screen.
 
 Games Not Working Fixed:
 	Bakusou Dekotora Densetsu. Unzip craps out. Fixed

@@ -15,9 +15,6 @@
 #include "io.h"
 #include "Sound.h"
 
-#define sample_rate 24000
-#define buffer_size (160)
-
 static void checkTimeOut(void);
 static void setupGraphics(void);
 static void setupStream(void);
@@ -108,8 +105,9 @@ int main(int argc, char **argv) {
 //---------------------------------------------------------------------------------
 void pausVBlank(int count) {
 //---------------------------------------------------------------------------------
-	while (--count)
+	while (--count) {
 		waitVBlank();
+	}
 }
 
 //---------------------------------------------------------------------------------
