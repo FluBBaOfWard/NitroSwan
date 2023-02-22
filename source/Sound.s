@@ -71,7 +71,7 @@ VblSound2:					;@ r0=length, r1=pointer
 	bl soundCopyBuff
 	ldr r2,pcmWritePtr
 	sub r2,r5,r2
-	adds r2,#buffer_size/2
+	adds r2,r2,#buffer_size/2
 	strpl r2,[spxptr,#missingSamplesCnt]
 
 	ldmfd sp!,{r0,r4,r5,lr}
