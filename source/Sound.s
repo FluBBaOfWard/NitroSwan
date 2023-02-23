@@ -34,11 +34,15 @@ soundInit:
 soundReset:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
-	mov r0,#0
+	mov r0,#WRITE_BUFFER_SIZE/2
 	str r0,pcmWritePtr
+	mov r0,#0
 	str r0,pcmReadPtr
 	ldr spxptr,=sphinx0
 	bl wsAudioReset			;@ sound
+	mov r0,#WRITE_BUFFER_SIZE
+	ldr r1,=WAVBUFFER
+	bl silenceMix
 	ldmfd sp!,{lr}
 	bx lr
 
@@ -54,7 +58,6 @@ setMuteSoundGUI:
 VblSound2:					;@ r0=length, r1=pointer
 ;@----------------------------------------------------------------------------
 ;@	mov r11,r11
-	stmfd sp!,{r0,r4,r5,lr}
 
 	ldr r2,muteSound
 	cmp r2,#0
@@ -64,15 +67,23 @@ VblSound2:					;@ r0=length, r1=pointer
 	ldrb r2,[spxptr,#wsvHWVolume]
 	cmp r2,#0
 	beq silenceMix
+
+	stmfd sp!,{r0,r4,r5,lr}
 	ldr r4,pcmReadPtr
 	add r5,r4,r0
 	str r5,pcmReadPtr
 
 	bl soundCopyBuff
-	ldr r2,pcmWritePtr
-	sub r2,r5,r2
-	adds r2,r2,#buffer_size/2
-	strpl r2,[spxptr,#missingSamplesCnt]
+
+	ldr r0,pcmWritePtr
+	sub r0,r5,r0
+	add r0,r0,#WRITE_BUFFER_SIZE/2
+	ldr r2,neededExtra
+	rsb r2,r2,r2,lsl#3		;@ mul 7
+	add r0,r0,r2
+	mov r0,r0,asr#3
+	str r0,neededExtra
+	str r0,[spxptr,#missingSamplesCnt]
 
 	ldmfd sp!,{r0,r4,r5,lr}
 	bx lr
@@ -91,23 +102,16 @@ sndCopyLoop:
 ;@----------------------------------------------------------------------------
 silenceMix:
 ;@----------------------------------------------------------------------------
+	mov r3,r0
 	ldr r2,=0x80008000
 silenceLoop:
 	subs r0,r0,#1
 	strpl r2,[r1],#4
 	bhi silenceLoop
 
-	ldmfd sp!,{r0,r4,r5,lr}
+	mov r0,r3				;@ Return same amount as requested.
 	bx lr
 
-soundUpdateMore:
-	stmfd sp!,{r4,lr}
-	mov r4,r0
-updLoop:
-	bl soundUpdate
-	subs r4,r4,#2
-	bhi updLoop
-	ldmfd sp!,{r4,pc}
 ;@----------------------------------------------------------------------------
 soundUpdate:			;@ Should be called at every scanline
 ;@----------------------------------------------------------------------------
@@ -123,6 +127,7 @@ soundUpdate:			;@ Should be called at every scanline
 ;@----------------------------------------------------------------------------
 pcmWritePtr:	.long 0
 pcmReadPtr:		.long 0
+neededExtra:	.long 0
 
 muteSound:
 muteSoundGUI:
@@ -138,7 +143,7 @@ soundLatch:
 	.section .bss
 	.align 2
 WAVBUFFER:
-	.space 0x2000
+	.space WRITE_BUFFER_SIZE*4
 ;@----------------------------------------------------------------------------
 	.end
 #endif // #ifdef __arm__
