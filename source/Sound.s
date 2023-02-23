@@ -83,6 +83,7 @@ VblSound2:					;@ r0=length, r1=pointer
 	add r0,r0,r2
 	mov r0,r0,asr#3
 	str r0,neededExtra
+	bic r0,r0,#1
 	str r0,[spxptr,#missingSamplesCnt]
 
 	ldmfd sp!,{r0,r4,r5,lr}
