@@ -18,6 +18,13 @@ struct userdata_t
 	uint8_t birthDay;		// BCD encoded
 	uint8_t sex;			// 0 = ?, 1 = male, 2 = female
 	uint8_t bloodType;		// 0 = ?, 1 = A, 2 = B, 3 = O, 4 = AB
+	uint8_t publisher;		// Copy of ROM header field Publisher ID from the previous boot
+	uint8_t color;			// Copy of ROM header field Color from the previous boot
+	uint8_t gameID;			// Copy of ROM header field Game ID from the previous boot
+	uint8_t unknown0[3];	// (Unknown)
+	uint8_t gameChgCount;	// Number of times the cartridge has been changed
+	uint8_t nameChgCount;	// Number of times the owner name has been changed
+	uint16_t bootCount;		// Number of times the system has booted
 };
 
 // Starts at 0x80

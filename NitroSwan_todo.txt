@@ -32,7 +32,6 @@ Misc:
 	Time Bokan Series, slow.
 
 Games Not Working:
-	With You - Mitsumete Itai, halts at black screen.
 
 Games Not Working Fixed:
 	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
@@ -47,6 +46,8 @@ Games Not Working Fixed:
 	Ultraman, division by zero crash.
 		* If watching the whole intro before starting.
 		* Fixing interrupt handling in Sphinx fixed it.
+	With You - Mitsumete Itai, halts at black screen.
+		* Waiting for EEPROM ready.
 	Xi Little. Can't start. Waiting on sample playing. Fixed.
 
 Games With Glitches:
