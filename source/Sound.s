@@ -10,8 +10,6 @@
 
 	.extern pauseEmulation
 
-#define buffer_size (640)
-
 #define WRITE_BUFFER_SIZE (0x800)
 
 ;@----------------------------------------------------------------------------
@@ -61,12 +59,8 @@ VblSound2:					;@ r0=length, r1=pointer
 	cmp r2,#0
 	bne silenceMix
 
-	ldr spxptr,=sphinx0
-	ldrb r2,[spxptr,#wsvHWVolume]
-	cmp r2,#0
-	beq silenceMix
-
 	stmfd sp!,{r0,r4,r5,lr}
+	ldr spxptr,=sphinx0
 	ldr r4,pcmReadPtr
 	add r5,r4,r0
 	str r5,pcmReadPtr
@@ -134,10 +128,6 @@ muteSoundGUI:
 muteSoundChip:
 	.byte 0
 	.space 2
-
-soundLatch:
-	.byte 0
-	.space 3
 
 	.section .bss
 	.align 2
