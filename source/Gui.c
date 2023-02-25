@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.5.0 2023-02-24"
+#define EMUVERSION "V0.5.0 2023-02-25"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -67,7 +67,7 @@ const char *const langTxt[]  = {"Japanese", "English"};
 
 
 void setupGUI() {
-	emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | AUTOSLEEP_OFF;
+	emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | AUTOSLEEP_OFF | ENABLE_HEADPHONES;
 	keysSetRepeat(25, 4);	// Delay, repeat.
 	menuXItems[1] = ARRSIZE(fnList1) - (enableExit?0:1);
 	openMenu();
