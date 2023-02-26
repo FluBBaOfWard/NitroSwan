@@ -1,7 +1,7 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.5.0 - 2023-02-25 (FluBBa)
+V0.5.0 - 2023-02-26 (FluBBa)
 	Fixed reset of mapper registers.
 	Fixed loading of roms that are not power of 2.
 	Fixed timing of several opcodes.
@@ -17,6 +17,7 @@ V0.5.0 - 2023-02-25 (FluBBa)
 	Added support for serial port interrupts.
 	Added support for battery low.
 	Added new debug menu.
+	Linked NDS battery to WS battery.
 	Better menu traversing.
 
 V0.4.1 - 2022-08-15 (FluBBa)

@@ -6,7 +6,6 @@ NitroSwan Todo
 	Find speed hacks.
 	Add IO word access?
 	Add serial port emulation.
-	Link NDS battery to WS battery?
 	Sprite priority can't be fixed.
 
 GFX:
@@ -84,6 +83,7 @@ Needs RTC:
 	Tenori-On
 
 Games which enable NMI:
+	Cardcaptor Sakura, shows message.
 	Engacho.
 	Inuyasha - Kagome no Sengoku Nikki
 	SD Gundam Operation U.C, pauses like hitting start, but with a message about low battery.

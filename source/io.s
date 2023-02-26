@@ -44,6 +44,8 @@ ioReset:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
+	mov r0,#0xF
+	strb r0,lastBattery
 	bl intEepromReset
 
 	ldmfd sp!,{pc}
@@ -192,13 +194,15 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 	bxpl lr
 
 	stmfd sp!,{r12,lr}
-//	blx getBatteryLevel
-	ldr r0,batteryLevel
-	subs r0,r0,#1
-	movmi r0,#1
-	str r0,batteryLevel
-	cmp r0,#10
-	blmi setLowBattery
+	blx getBatteryLevel
+	ldrb r1,lastBattery
+	strb r0,lastBattery
+	eor r1,r1,r0
+	ands r0,r0,#0xC
+	mov r0,#0
+	moveq r0,#1
+	tst r1,#0xF
+	blne setLowBattery
 	ldmfd sp!,{r12,lr}
 
 	b cartRtcUpdate
@@ -208,6 +212,7 @@ batteryLevel:
 	.long 0x15000				;@ Around 24h (60*60*24)
 slowTimer:
 	.byte 0
+lastBattery:
 	.byte 0
 	.byte 0
 	.byte 0
