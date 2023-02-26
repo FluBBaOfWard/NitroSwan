@@ -49,8 +49,6 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 		Import internal EEPROM: Load a special internal EEPROM.
 		Clear internal EEPROM: Reset internal EEPROM.
 		Cpu speed hacks: Allow speed hacks.
-		Change Battery: Change to a new main battery (AA/LR6).
-		Language: Select between Japanese and English.
 	Settings:
 		Speed: Switch between speed modes.
 			Normal: Game runs at it's normal speed.

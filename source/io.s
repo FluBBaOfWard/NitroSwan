@@ -29,7 +29,6 @@
 
 	.global joyCfg
 	.global EMUinput
-	.global batteryLevel
 	.global wsEepromMem
 	.global wscEepromMem
 	.global scEepromMem
@@ -208,8 +207,6 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 	b cartRtcUpdate
 
 ;@----------------------------------------------------------------------------
-batteryLevel:
-	.long 0x15000				;@ Around 24h (60*60*24)
 slowTimer:
 	.byte 0
 lastBattery:

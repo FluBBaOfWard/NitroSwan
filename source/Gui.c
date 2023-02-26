@@ -22,7 +22,6 @@ void hacksInit(void);
 
 static void paletteChange(void);
 static void machineSet(void);
-static void batteryChange(void);
 static void headphonesSet(void);
 static void speedHackSet(void);
 static void refreshChgSet(void);
@@ -40,7 +39,7 @@ const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList5[] = {gammaSet, paletteChange};
-const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, batteryChange, headphonesSet, speedHackSet /*languageSet*/};
+const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, headphonesSet, speedHackSet /*languageSet*/};
 const fptr fnList7[] = {speedSet, refreshChgSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
 const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, stepFrame};
 const fptr fnList9[] = {exitEmulator, backOutOfMenu};
@@ -157,7 +156,6 @@ static void uiMachine() {
 	drawSubItem("Select WS Crystal Bios ->", NULL);
 	drawSubItem("Import internal EEPROM ->", NULL);
 	drawSubItem("Clear internal EEPROM", NULL);
-	drawSubItem("Change Battery", NULL);
 	drawSubItem("Headphones:", autoTxt[(emuSettings&ENABLE_HEADPHONES)>>18]);
 	drawSubItem("Cpu speed hacks:", autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
 //	drawSubItem("Language: ", langTxt[gLang]);
@@ -321,8 +319,4 @@ void headphonesSet() {
 void refreshChgSet() {
 	emuSettings ^= ALLOW_REFRESH_CHG;
 	updateLCDRefresh();
-}
-
-void batteryChange() {
-	batteryLevel = 150;				// 0x15000 for 24h battery?
 }

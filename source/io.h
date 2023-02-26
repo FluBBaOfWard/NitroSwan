@@ -7,7 +7,6 @@ extern "C" {
 
 extern u32 joyCfg;
 extern u32 EMUinput;
-extern u32 batteryLevel;
 extern u8 wsEepromMem[0x80];
 extern u8 wscEepromMem[0x800];
 extern u8 scEepromMem[0x800];
