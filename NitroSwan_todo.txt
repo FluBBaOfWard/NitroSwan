@@ -24,6 +24,7 @@ Sound:
 
 Misc:
 	Cardcaptor Sakura, timing sensitive.
+	Dekadence - Vesilintu, very slow.
 	Mingle Magnet, slow.
 	Mr. Driller, also sensitive to timing (fetch opcode, pl vs gt).
 	Nazo Ou Pocket, slow.
