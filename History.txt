@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.5.1 - 2023-03-05 (FluBBa)
+	Fixed noise calculation.
+
 V0.5.0 - 2023-03-01 (FluBBa)
 	Fixed reset of mapper registers.
 	Fixed loading of roms that are not power of 2.

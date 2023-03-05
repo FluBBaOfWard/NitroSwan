@@ -1,6 +1,7 @@
 NitroSwan Todo
 
 	Fix better sound!
+	Check the palette selection on WS mono.
 	Better key mappings, PCV2.
 	Graphics on menu screen?
 	Find speed hacks.
