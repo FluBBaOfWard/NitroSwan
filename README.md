@@ -1,4 +1,4 @@
-# NitroSwan V0.5.0
+# NitroSwan V0.5.1
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -46,8 +46,8 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 		Select WS Bios: Load a real WS Bios.
 		Select WS Color Bios: Load a real WS Color Bios.
 		Select WS Crystal Bios: Load a real WS Crystal Bios.
-		Import internal EEPROM: Load a special internal EEPROM.
-		Clear internal EEPROM: Reset internal EEPROM.
+		Import Internal EEPROM: Load a special internal EEPROM.
+		Clear Internal EEPROM: Reset internal EEPROM.
 		Cpu speed hacks: Allow speed hacks.
 	Settings:
 		Speed: Switch between speed modes.

@@ -1,7 +1,8 @@
 NitroSwan Todo
 
-	Fix better sound!
 	Check the palette selection on WS mono.
+	Fix better sound!
+	Use R to map WS Y keys to d-pad?
 	Better key mappings, PCV2.
 	Graphics on menu screen?
 	Find speed hacks.
@@ -59,6 +60,8 @@ Games With Glitches:
 	Sorobang, needs all 1024 tiles in 4color mode.
 	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
 Games With Glitches Fixed:
+	Cardcaptor Sakura, book dissolve in intro glitches the second time.
+		* Requires "correct" noise calculation.
 	Chaos Gear, Intro not showing.
 		* Sensitive to serial interrupt.
 		* IRQ are taken 1 instruction after SEI/STI.
@@ -66,7 +69,7 @@ Games With Glitches Fixed:
 		* Depending on which scan line VBlank is and how many total scan lines.
 		* Interrupts were not acknowledged during rep instructions.
 	Magical Drop, playfield flickers horizontaly. Sensitive to interrupt (and IRET, HALT) timing.
-		* Fix: Sprite DMA consumes cycles.
+		* Fix: Sprite DMA consumes cycles?
 	Mahjong Touryuumon, no sound.
 		* Sound fix by emulating serial out buffer empty irq.
 	Ultraman, Logo slide down doesn't reach top of screen as on real HW.

@@ -12,7 +12,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.5.0 2023-03-01"
+#define EMUVERSION "V0.5.1 2023-03-07"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -154,10 +154,10 @@ static void uiMachine() {
 	drawSubItem("Select WS Bios ->", NULL);
 	drawSubItem("Select WS Color Bios ->", NULL);
 	drawSubItem("Select WS Crystal Bios ->", NULL);
-	drawSubItem("Import internal EEPROM ->", NULL);
-	drawSubItem("Clear internal EEPROM", NULL);
+	drawSubItem("Import Internal EEPROM ->", NULL);
+	drawSubItem("Clear Internal EEPROM", NULL);
 	drawSubItem("Headphones:", autoTxt[(emuSettings&ENABLE_HEADPHONES)>>18]);
-	drawSubItem("Cpu speed hacks:", autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
+	drawSubItem("Cpu Speed Hacks:", autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
 //	drawSubItem("Language: ", langTxt[gLang]);
 }
 
