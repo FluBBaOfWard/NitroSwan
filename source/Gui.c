@@ -5,6 +5,7 @@
 #include "Shared/EmuSettings.h"
 #include "Main.h"
 #include "FileHandling.h"
+#include "WonderSwan.h"
 #include "Cart.h"
 #include "Gfx.h"
 #include "io.h"
@@ -12,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.5.1 2023-03-07"
+#define EMUVERSION "V0.5.1 2023-03-08"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -38,7 +39,7 @@ const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, 
 const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
-const fptr fnList5[] = {gammaSet, paletteChange};
+const fptr fnList5[] = {gammaSet, contrastSet, paletteChange};
 const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, headphonesSet, speedHackSet /*languageSet*/};
 const fptr fnList7[] = {speedSet, refreshChgSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
 const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, stepFrame};
@@ -49,6 +50,7 @@ u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE
 const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDebug, uiDummy, uiDummy};
 
 u8 gGammaValue = 0;
+u8 gContrastValue = 3;
 char gameInfoString[32];
 
 const char *const autoTxt[]  = {"Off", "On", "With R"};
@@ -61,7 +63,7 @@ const char *const flickTxt[] = {"No Flicker", "Flicker"};
 
 const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "SwanCrystal", "Pocket Challenge V2"};
 const char *const bordTxt[]  = {"Black", "Border Color", "None"};
-const char *const palTxt[]   = {"Black & White", "Red", "Green", "Blue", "Classic"};
+const char *const palTxt[]   = {"Classic", "Black & White", "Red", "Green", "Blue"};
 const char *const langTxt[]  = {"Japanese", "English"};
 
 
@@ -145,6 +147,7 @@ void uiController() {
 void uiDisplay() {
 	setupSubMenu("Display Settings");
 	drawSubItem("Gamma:", brighTxt[gGammaValue]);
+	drawSubItem("Contrast:", brighTxt[gContrastValue]);
 	drawSubItem("B&W Palette:", palTxt[gPaletteBank]);
 }
 
@@ -258,9 +261,22 @@ void swapABSet() {
 void gammaSet() {
 	gGammaValue++;
 	if (gGammaValue > 4) gGammaValue = 0;
-	paletteInit(gGammaValue);
+	paletteInit(gGammaValue, gContrastValue);
+	monoPalInit(gGammaValue, gContrastValue);
 	paletteTxAll();					// Make new palette visible
+	setupEmuBorderPalette();
 	setupMenuPalette();
+	settingsChanged = true;
+}
+
+/// Change contrast
+void contrastSet() {
+	gContrastValue++;
+	if (gContrastValue > 4) gContrastValue = 0;
+	paletteInit(gGammaValue, gContrastValue);
+	monoPalInit(gGammaValue, gContrastValue);
+	paletteTxAll();					// Make new palette visible
+	setupEmuBorderPalette();
 	settingsChanged = true;
 }
 
@@ -282,8 +298,9 @@ void paletteChange() {
 	if (gPaletteBank > 4) {
 		gPaletteBank = 0;
 	}
-	monoPalInit();
+	monoPalInit(gGammaValue, gContrastValue);
 	paletteTxAll();
+	setupEmuBorderPalette();
 	settingsChanged = true;
 }
 /*

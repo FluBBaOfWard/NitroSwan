@@ -30,6 +30,7 @@
 	.global GFX_BG0CNT
 	.global GFX_BG1CNT
 	.global EMUPALBUFF
+	.global MAPPED_BNW
 	.global tmpOamBuffer
 
 	.global sphinx0
@@ -58,7 +59,7 @@ gfxInit:					;@ Called from machineInit
 ;@----------------------------------------------------------------------------
 gfxReset:					;@ Called with CPU reset
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
+	stmfd sp!,{r4,r5,lr}
 
 	ldr r0,=gfxState
 	mov r1,#5					;@ 5*4
@@ -72,11 +73,17 @@ gfxReset:					;@ Called with CPU reset
 	ldr r3,=gSOC
 	ldrb r3,[r3]
 	bl wsVideoReset0
-	bl monoPalInit
 
-	ldr r0,=gGammaValue
-	ldrb r0,[r0]
+	ldr r4,=gGammaValue
+	ldr r5,=gContrastValue
+	ldrb r4,[r4]
+	ldrb r5,[r5]
+	mov r0,r4
+	mov r1,r5
 	bl paletteInit				;@ Do palette mapping
+	mov r0,r4
+	mov r1,r5
+	bl monoPalInit				;@ Do mono palette mapping
 	bl paletteTxAll				;@ Transfer it
 
 	ldr r0,=cartOrientation
@@ -89,7 +96,7 @@ gfxReset:					;@ Called with CPU reset
 	and r0,r0,#1<<18
 	bl setHeadphones
 
-	ldmfd sp!,{pc}
+	ldmfd sp!,{r4,r5,pc}
 
 ;@----------------------------------------------------------------------------
 gfxWinInit:
@@ -112,44 +119,80 @@ gfxWinInit:
 ;@----------------------------------------------------------------------------
 monoPalInit:
 	.type monoPalInit STT_FUNC
+;@ Called by ui.c:  void monoPalInit(gammaVal, contrast);
 ;@----------------------------------------------------------------------------
+	stmfd sp!,{r4-r8,lr}
+	mov r8,#30
+	rsb r1,r1,#4
+	mul r8,r1,r8
+	mov r1,r0					;@ Gamma value = 0 -> 4
 	ldr spxptr,=sphinx0
-	stmfd sp!,{r4-r6,lr}
-	ldr r0,=gPaletteBank
+	ldr r0,=gMachine
 	ldrb r0,[r0]
-	adr r1,monoPalette
-	add r1,r1,r0,lsl#4
-	ldr r0,[spxptr,#paletteRAM]
-	add r0,r0,#0x180
+	cmp r0,#HW_WONDERSWAN
+	movne r0,#1
+	ldreq r0,=gPaletteBank
+	ldrbeq r0,[r0]
+	adr r5,monoPalette			;@ 3*16 for each palette
+	add r5,r5,r0,lsl#4			;@ +16
+	add r5,r5,r0,lsl#5			;@ +32
+	ldr r6,=MAPPED_BNW
 
-	mov r2,#8
-	ldmia r1,{r3-r6}
+	mov r4,#16
 monoPalLoop:
-	stmia r0!,{r3-r6}
-	subs r2,r2,#1
+	ldrb r0,[r5],#1				;@ Red
+	bl cPrefix
+	mov r7,r0
+	ldrb r0,[r5],#1				;@ Green
+	bl cPrefix
+	orr r7,r7,r0,lsl#5
+	ldrb r0,[r5],#1				;@ Blue
+	bl cPrefix
+	orr r7,r7,r0,lsl#10
+	strh r7,[r6],#2
+
+	subs r4,r4,#1
 	bne monoPalLoop
 
-	ldmfd sp!,{r4-r6,lr}
+	ldmfd sp!,{r4-r8,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 monoPalette:
 
-;@ Black & White
-	.short 0xFFF,0xDDD,0xBBB,0x999,0x777,0x444,0x333,0x000
-;@ Red
-	.short 0xFFF,0xCCF,0x99F,0x55F,0x11D,0x009,0x006,0x000
-;@ Green
-	.short 0xFFF,0xBFB,0x7F7,0x3D3,0x0B0,0x080,0x050,0x000
-;@ Blue
-	.short 0xFFF,0xFCC,0xFAA,0xF88,0xE55,0xB22,0x700,0x000
 ;@ Classic
-	.short 0xFFF,0xADE,0x8BD,0x59B,0x379,0x157,0x034,0x000
+	.byte 0xF6,0xFE,0xAE, 0xE7,0xEE,0xA2, 0xD8,0xDE,0x96, 0xCA,0xCE,0x8B
+	.byte 0xBB,0xBE,0x7F, 0xAC,0xAE,0x74, 0x9E,0x9E,0x68, 0x8F,0x8E,0x5C
+	.byte 0x80,0x7F,0x51, 0x72,0x6F,0x45, 0x63,0x5F,0x3A, 0x54,0x4F,0x2E
+	.byte 0x46,0x3F,0x22, 0x37,0x2F,0x17, 0x28,0x1F,0x0B, 0x19,0x0F,0x00
+;@ Black & White
+	.byte 0xFF,0xFF,0xFF, 0xEE,0xEE,0xEE, 0xDD,0xDD,0xDD, 0xCC,0xCC,0xCC
+	.byte 0xBB,0xBB,0xBB, 0xAA,0xAA,0xAA, 0x99,0x99,0x99, 0x88,0x88,0x88
+	.byte 0x77,0x77,0x77, 0x66,0x66,0x66, 0x55,0x55,0x55, 0x44,0x44,0x44
+	.byte 0x33,0x33,0x33, 0x22,0x22,0x22, 0x11,0x11,0x11, 0x00,0x00,0x00
+;@ Red
+	.byte 0xFF,0xC0,0xC0, 0xEE,0xB3,0xB3, 0xDD,0xA6,0xA6, 0xCC,0x99,0x99
+	.byte 0xBB,0x8C,0x8C, 0xAA,0x80,0x80, 0x99,0x73,0x73, 0x88,0x66,0x66
+	.byte 0x77,0x59,0x59, 0x66,0x4C,0x4C, 0x55,0x40,0x40, 0x44,0x33,0x33
+	.byte 0x33,0x26,0x26, 0x22,0x19,0x19, 0x11,0x0C,0x0C, 0x00,0x00,0x00
+;@ Green
+	.byte 0xC0,0xFF,0xC0, 0xB3,0xEE,0xB3, 0xA6,0xDD,0xA6, 0x99,0xCC,0x99
+	.byte 0x8C,0xBB,0x8C, 0x80,0xAA,0x80, 0x73,0x99,0x73, 0x66,0x88,0x66
+	.byte 0x59,0x77,0x59, 0x4C,0x66,0x4C, 0x40,0x55,0x40, 0x33,0x44,0x33
+	.byte 0x26,0x33,0x26, 0x19,0x22,0x19, 0x0C,0x11,0x0C, 0x00,0x00,0x00
+;@ Blue
+	.byte 0xC0,0xC0,0xFF, 0xB3,0xB3,0xEE, 0xA6,0xA6,0xDD, 0x99,0x99,0xCC
+	.byte 0x8C,0x8C,0xBB, 0x80,0x80,0xAA, 0x73,0x73,0x99, 0x66,0x66,0x88
+	.byte 0x59,0x59,0x77, 0x4C,0x4C,0x66, 0x40,0x40,0x55, 0x33,0x33,0x44
+	.byte 0x26,0x26,0x33, 0x19,0x19,0x22, 0x0C,0x0C,0x11, 0x00,0x00,0x00
 ;@----------------------------------------------------------------------------
 paletteInit:		;@ r0-r3 modified.
 	.type paletteInit STT_FUNC
-;@ Called by ui.c:  void paletteInit(gammaVal);
+;@ Called by ui.c:  void paletteInit(gammaVal, contrast);
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r7,lr}
+	stmfd sp!,{r4-r8,lr}
+	mov r8,#30
+	rsb r1,r1,#4
+	mul r8,r1,r8
 	mov r1,r0					;@ Gamma value = 0 -> 4
 	mov r7,#0xF					;@ mask
 	ldr r6,=MAPPED_RGB
@@ -163,7 +206,6 @@ noMap:							;@ Map 0000rrrrggggbbbb  ->  0bbbbbgggggrrrrr
 	and r0,r7,r4,lsr#5			;@ Green ready
 	bl gPrefix
 	orr r5,r5,r0,lsl#5
-	orrcs r5,r5,#0x8000
 
 	and r0,r7,r4,lsr#9			;@ Red ready
 	bl gPrefix
@@ -173,12 +215,21 @@ noMap:							;@ Map 0000rrrrggggbbbb  ->  0bbbbbgggggrrrrr
 	subs r4,r4,#2
 	bpl noMap
 
-	ldmfd sp!,{r4-r7,lr}
+	ldmfd sp!,{r4-r8,lr}
 	bx lr
 
 ;@----------------------------------------------------------------------------
 gPrefix:
 	orr r0,r0,r0,lsl#4
+cPrefix:
+	mov r2,r8
+;@----------------------------------------------------------------------------
+contrastConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4), contrast in r2(0-255) returns new value in r0=0x1F
+;@----------------------------------------------------------------------------
+	rsb r3,r2,#256
+	mul r0,r3,r0
+	add r0,r0,r2,lsl#7
+	mov r0,r0,lsr#8
 ;@----------------------------------------------------------------------------
 gammaConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4),returns new value in r0=0x1F
 ;@----------------------------------------------------------------------------
@@ -261,17 +312,15 @@ col4TxLoop:
 	bx lr
 
 bnwTx:
+	add r1,r1,#MAPPED_BNW-MAPPED_RGB
+	mov r2,#0x1E
 	add r4,spxptr,#wsvPalette0
 	and r3,r3,#0x7
 	tst r3,#1
 	add r7,spxptr,#wsvColor01
 	ldrb r3,[r7,r3,lsr#1]
-	movne r3,r3,lsr#4
-	and r3,r3,#0xF
-	eor r3,r3,#0xF
-	orr r3,r3,r3,lsl#4
-	orr r3,r3,r3,lsl#4
-	and r3,r2,r3,lsl#1
+	andeq r3,r2,r3,lsl#1
+	andne r3,r2,r3,lsr#3
 	ldrh r3,[r1,r3]
 	strh r3,[r0]				;@ Background palette
 bnwTxLoop2:
@@ -281,12 +330,8 @@ bnwTxLoop:
 	mov r6,r6,lsr#4
 	tst r3,#1
 	ldrb r3,[r7,r3,lsr#1]
-	movne r3,r3,lsr#4
-	and r3,r3,#0xF
-	eor r3,r3,#0xF
-	orr r3,r3,r3,lsl#4
-	orr r3,r3,r3,lsl#4
-	and r3,r2,r3,lsl#1
+	andeq r3,r2,r3,lsl#1
+	andne r3,r2,r3,lsr#3
 	ldrh r3,[r1,r3]
 
 	cmp r5,#0x0
@@ -572,6 +617,8 @@ SCROLLBUFF2:
 	.space 0x100*8				;@ Scrollbuffer.
 MAPPED_RGB:
 	.space 0x2000				;@ 4096*2
+MAPPED_BNW:
+	.space 0x20
 EMUPALBUFF:
 	.space 0x400
 

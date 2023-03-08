@@ -4,7 +4,7 @@
 
 This is a Bandai WonderSwan (Color/Crystal) & PocketChallenge V2 emulator for the Nintendo DS.
 
-## How to use:
+## How to use
 
 1. Create a folder named "nitroswan" in either the root of your flash card or in the data folder.
 This is where settings and save files end up.
@@ -22,9 +22,10 @@ To select between the tabs use R & L or the touchscreen.
 
 Hold Start while starting a game to enter the boot rom settings, the internal EEPROM is saved when saving settings.
 
-## Menu:
+## Menu
 
-### File:
+### File
+
 	Load Game: Select a game to load.
 	Load State: Load a previously saved state of the currently running game.
 	Save State: Save a state of the currently running game.
@@ -33,14 +34,16 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 	Save Settings: Save the current settings (and internal EEPROM).
 	Reset Game: Reset the currently running game.
 
-### Options:
+### Options
+
 	Controller:
 		Autofire: Select if you want autofire.
 		Controller: 2P start a 2 player game.
 		Swap A/B: Swap which NDS button is mapped to which WS button.
 	Display:
-		Mono Palette: Here you can select the palette for B & W games.
 		Gamma: Lets you change the gamma ("brightness").
+		Contrast: Lets you change the contrast.
+		B&W Palette: Here you can select the palette for B & W games.
 	Machine Settings:
 		Machine: Select the emulated machine.
 		Select WS Bios: Load a real WS Bios.
@@ -75,11 +78,12 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 		Disable Sprites: Turn on/off sprite rendering.
 		Step Frame: Emulate one frame.
 
-### About:
+### About
+
 	Some info about the emulator and game...
 
+## Controls
 
-## Controls:
 	Start is mapped to WS Start.
 	Select is mapped to WS Sound.
 	In horizontal games the d-pad is mapped to WS X1-X4. A & B buttons are mapped to WS A & B.
@@ -87,14 +91,16 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 
 	In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS X1-X4.
 
-## Games:
+## Games
+
 	There are 2 games that I know of that has serious problems.
 	Beatmania:
 		Game is too large even for the DSi.
 	Chou Denki Card Game:
 		You need to initialize NVRAM, this is the last item on the first page (初期化).
 
-## Credits:
+## Credits
+
 	Huge thanks to Loopy for the incredible PocketNES, without it this emu would probably never have been made.
 	Thanks to:
 	Ed Mandy (Flavor) for WonderSwan info & flashcart. https://www.flashmasta.com

@@ -4,6 +4,7 @@
 #include "PCV2Border.h"
 #include "WSBorder.h"
 #include "WSCBorder.h"
+#include "Gui.h"
 #include "Cart.h"
 #include "Gfx.h"
 #include "ARMV30MZ/ARMV30MZ.h"
@@ -43,37 +44,57 @@ int getStateSize() {
 }
 
 void setupPCV2Background() {
-	vramSetBankF(VRAM_F_LCD);
 	decompress(PCV2BorderTiles, BG_TILE_RAM(1), LZ77Vram);
 	decompress(PCV2BorderMap, BG_MAP_RAM(15), LZ77Vram);
+	vramSetBankF(VRAM_F_LCD);
 	memcpy(VRAM_F, PCV2BorderPal, PCV2BorderPalLen);
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 }
 
 void setupWSBackground() {
-	vramSetBankF(VRAM_F_LCD);
 	decompress(WSBorderTiles, BG_TILE_RAM(1), LZ77Vram);
 	decompress(WSBorderMap, BG_MAP_RAM(15), LZ77Vram);
+}
+
+void setupWSBorderPalette() {
+	vramSetBankF(VRAM_F_LCD);
 	memcpy(VRAM_F, WSBorderPal, WSBorderPalLen);
+	memcpy(VRAM_F + 0xF0, MAPPED_BNW, sizeof(MAPPED_BNW));
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 }
 
 void setupWSCBackground() {
-	vramSetBankF(VRAM_F_LCD);
 	decompress(WSCBorderTiles, BG_TILE_RAM(1), LZ77Vram);
 	decompress(WSCBorderMap, BG_MAP_RAM(15), LZ77Vram);
+}
+
+void setupWSCBorderPalette() {
+	vramSetBankF(VRAM_F_LCD);
 	memcpy(VRAM_F, WSCBorderPal, WSCBorderPalLen);
+	memcpy(VRAM_F + 0xF0, MAPPED_BNW, sizeof(MAPPED_BNW));
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 }
 
 void setupEmuBackground() {
+	monoPalInit(gGammaValue, gContrastValue);
 	if (gMachine == HW_WONDERSWANCOLOR || gMachine == HW_SWANCRYSTAL) {
 		setupWSCBackground();
+		setupWSCBorderPalette();
 	}
 	else if (gMachine == HW_WONDERSWAN) {
 		setupWSBackground();
+		setupWSBorderPalette();
 	}
 	else {
 		setupPCV2Background();
+	}
+}
+
+void setupEmuBorderPalette() {
+	if (gMachine == HW_WONDERSWANCOLOR || gMachine == HW_SWANCRYSTAL) {
+		setupWSCBorderPalette();
+	}
+	else if (gMachine == HW_WONDERSWAN) {
+		setupWSBorderPalette();
 	}
 }

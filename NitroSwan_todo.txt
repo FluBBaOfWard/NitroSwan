@@ -1,6 +1,6 @@
 NitroSwan Todo
 
-	Check the palette selection on WS mono.
+	Check save states, sprite problems in FFI.
 	Fix better sound!
 	Use R to map WS Y keys to d-pad?
 	Better key mappings, PCV2.
