@@ -77,6 +77,7 @@ int main(int argc, char **argv) {
 	loadCart();
 	if ( initFileHelper() ) {
 		loadSettings();
+		setupEmuBorderPalette();
 		loadBnWBIOS();
 		loadColorBIOS();
 		loadCrystalBIOS();

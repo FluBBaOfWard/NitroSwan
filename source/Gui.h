@@ -7,6 +7,7 @@ extern "C" {
 
 extern u8 gGammaValue;
 extern u8 gContrastValue;
+extern u8 gBorderEnable;
 
 void setupGUI(void);
 void enterGUI(void);

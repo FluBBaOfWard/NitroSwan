@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.5.1 2023-03-08"
+#define EMUVERSION "V0.5.1 2023-03-09"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -26,6 +26,7 @@ static void machineSet(void);
 static void headphonesSet(void);
 static void speedHackSet(void);
 static void refreshChgSet(void);
+static void borderSet(void);
 static void languageSet(void);
 
 static void uiMachine(void);
@@ -39,7 +40,7 @@ const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, 
 const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
-const fptr fnList5[] = {gammaSet, contrastSet, paletteChange};
+const fptr fnList5[] = {gammaSet, contrastSet, paletteChange, borderSet};
 const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, headphonesSet, speedHackSet /*languageSet*/};
 const fptr fnList7[] = {speedSet, refreshChgSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
 const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, stepFrame};
@@ -51,6 +52,7 @@ const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, 
 
 u8 gGammaValue = 0;
 u8 gContrastValue = 3;
+u8 gBorderEnable = 1;
 char gameInfoString[32];
 
 const char *const autoTxt[]  = {"Off", "On", "With R"};
@@ -149,6 +151,7 @@ void uiDisplay() {
 	drawSubItem("Gamma:", brighTxt[gGammaValue]);
 	drawSubItem("Contrast:", brighTxt[gContrastValue]);
 	drawSubItem("B&W Palette:", palTxt[gPaletteBank]);
+	drawSubItem("Border:", autoTxt[gBorderEnable]);
 }
 
 static void uiMachine() {
@@ -303,15 +306,12 @@ void paletteChange() {
 	setupEmuBorderPalette();
 	settingsChanged = true;
 }
-/*
+
 void borderSet() {
-	bcolor++;
-	if (bcolor > 2) {
-		bcolor = 0;
-	}
-	makeborder();
+	gBorderEnable ^= 0x01;
+	setupEmuBorderPalette();
 }
-*/
+
 void languageSet() {
 	gLang ^= 0x01;
 }

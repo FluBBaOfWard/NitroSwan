@@ -58,7 +58,12 @@ void setupWSBackground() {
 
 void setupWSBorderPalette() {
 	vramSetBankF(VRAM_F_LCD);
-	memcpy(VRAM_F, WSBorderPal, WSBorderPalLen);
+	if (gBorderEnable == 0) {
+		memset(VRAM_F, 0, WSBorderPalLen);
+	}
+	else {
+		memcpy(VRAM_F, WSBorderPal, WSBorderPalLen);
+	}
 	memcpy(VRAM_F + 0xF0, MAPPED_BNW, sizeof(MAPPED_BNW));
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 }
@@ -70,7 +75,12 @@ void setupWSCBackground() {
 
 void setupWSCBorderPalette() {
 	vramSetBankF(VRAM_F_LCD);
-	memcpy(VRAM_F, WSCBorderPal, WSCBorderPalLen);
+	if (gBorderEnable == 0) {
+		memset(VRAM_F, 0, WSCBorderPalLen);
+	}
+	else {
+		memcpy(VRAM_F, WSCBorderPal, WSCBorderPalLen);
+	}
 	memcpy(VRAM_F + 0xF0, MAPPED_BNW, sizeof(MAPPED_BNW));
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 }

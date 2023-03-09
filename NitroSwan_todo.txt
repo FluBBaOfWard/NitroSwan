@@ -1,12 +1,13 @@
 NitroSwan Todo
 
+	Fix sound icon for WS mono. (#9)
 	Check save states, sprite problems in FFI.
-	Fix better sound!
 	Use R to map WS Y keys to d-pad?
 	Better key mappings, PCV2.
 	Graphics on menu screen?
 	Find speed hacks.
 	Add IO word access?
+	Fix better sound?
 	Add serial port emulation.
 	Sprite priority can't be fixed.
 

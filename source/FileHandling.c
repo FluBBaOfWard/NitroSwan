@@ -25,6 +25,7 @@ ConfigData cfg;
 
 //---------------------------------------------------------------------------------
 int initSettings() {
+	cfg.config = 0;
 	cfg.palette = 0;
 	cfg.gammaValue = 0x30;
 	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM;
@@ -102,12 +103,13 @@ int loadSettings() {
 		return 1;
 	}
 
-	gPaletteBank = cfg.palette;
-	gGammaValue  = cfg.gammaValue & 0xF;
+	gBorderEnable = (cfg.config & 1) ^ 1;
+	gPaletteBank  = cfg.palette;
+	gGammaValue   = cfg.gammaValue & 0xF;
 	gContrastValue = (cfg.gammaValue>>4) & 0xF;
-	emuSettings  = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
-	sleepTime    = cfg.sleepTime;
-	joyCfg       = (joyCfg & ~0x400)|((cfg.controller & 1)<<10);
+	emuSettings   = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
+	sleepTime     = cfg.sleepTime;
+	joyCfg        = (joyCfg & ~0x400)|((cfg.controller & 1)<<10);
 	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
 
 	infoOutput("Settings loaded.");
@@ -118,6 +120,7 @@ void saveSettings() {
 	FILE *file;
 
 	strcpy(cfg.magic,"cfg");
+	cfg.config      = (gBorderEnable & 1) ^ 1;
 	cfg.palette     = gPaletteBank;
 	cfg.gammaValue  = (gGammaValue & 0xF) | (gContrastValue<<4);
 	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;		// Clear speed setting.
