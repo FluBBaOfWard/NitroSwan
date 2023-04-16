@@ -4,6 +4,29 @@
 #include "Sphinx/Sphinx.i"
 #include "WSEEPROM/WSEEPROM.i"
 
+#define WS_KEY_START	(1<<1)
+#define WS_KEY_A		(1<<2)
+#define WS_KEY_B		(1<<3)
+#define WS_KEY_X1		(1<<4)
+#define WS_KEY_X2		(1<<5)
+#define WS_KEY_X3		(1<<6)
+#define WS_KEY_X4		(1<<7)
+#define WS_KEY_Y1		(1<<8)
+#define WS_KEY_Y2		(1<<9)
+#define WS_KEY_Y3		(1<<10)
+#define WS_KEY_Y4		(1<<11)
+#define WS_KEY_SOUND	(1<<16)
+
+#define PCV2_KEY_LEFT	(1<<0)
+#define PCV2_KEY_DOWN	(1<<2)
+#define PCV2_KEY_UP		(1<<3)
+#define PCV2_KEY_VIEW	(1<<4)
+#define PCV2_KEY_ESCAPE	(1<<6)
+#define PCV2_KEY_RIGHT	(1<<7)
+#define PCV2_KEY_CLEAR	(1<<8)
+#define PCV2_KEY_CIRCLE	(1<<10)
+#define PCV2_KEY_PASS	(1<<11)
+
 	.global ioReset
 	.global refreshEMUjoypads
 	.global ioSaveState
@@ -29,6 +52,7 @@
 
 	.global joyCfg
 	.global EMUinput
+	.global joy0State
 	.global wsEepromMem
 	.global wscEepromMem
 	.global scEepromMem
@@ -104,17 +128,21 @@ ioGetStateSize:				;@ Out r0=state size.
 refreshEMUjoypads:			;@ Call every frame
 ;@----------------------------------------------------------------------------
 
-		ldr r0,=frameTotal
-		ldr r0,[r0]
-		movs r0,r0,lsr#2		;@ C=frame&2 (autofire alternates every other frame)
 	ldr r4,EMUinput
-	mov r3,r4
 	and r0,r4,#0xf0
+	ldr r1,=gMachine
+	ldrb r1,[r1]
+	cmp r1,#HW_POCKETCHALLENGEV2
+	beq pcv2Joypad
+		ldr r1,=frameTotal
+		ldr r1,[r1]
+		movs r1,r1,lsr#2		;@ C=frame&2 (autofire alternates every 4:th frame)
+	mov r3,r4
 		ldr r2,joyCfg
 		andcs r3,r3,r2
 		tstcs r3,r3,lsr#10		;@ NDS L?
 		andcs r3,r3,r2,lsr#16
-	adr r1,dulr2dlur
+	adr r1,rlud2urdl
 	ldrb r0,[r1,r0,lsr#4]
 
 	ldr spxptr,=sphinx0
@@ -123,32 +151,57 @@ refreshEMUjoypads:			;@ Call every frame
 	bne verticalJoypad
 
 	tst r4,#0x200				;@ NDS L?
-	moveq r0,r0,lsl#4			;@ Map dpad to X or Y keys.
+	movne r0,r0,lsl#4			;@ Map dpad to X or Y keys.
 
 	tst r4,#0x08				;@ NDS Start
-	orrne r0,r0,#0x200			;@ WS Start
+	orrne r0,r0,#WS_KEY_START	;@ WS Start
+	tst r4,#0x04				;@ NDS Select
+	orrne r0,r0,#WS_KEY_SOUND	;@ WS Sound
 
 	ands r1,r3,#3				;@ A/B buttons
 	cmpne r1,#3
 	eorne r1,r1,#3
 	tst r2,#0x400				;@ Swap A/B?
 	andeq r1,r3,#3
-	orr r0,r0,r1,lsl#10
+	orr r0,r0,r1,lsl#2
 
 	str r0,joy0State
 	bx lr
 ;@----------------------------------------------------------------------------
 verticalJoypad:
 ;@----------------------------------------------------------------------------
+	mov r0,r0,lsl#4				;@ Map dpad to Y keys.
+
 	tst r4,#0x08				;@ NDS Start
-	orrne r0,r0,#0x200			;@ WS Start
+	orrne r0,r0,#WS_KEY_START	;@ WS Start
+	tst r4,#0x04				;@ NDS Select
+	orrne r0,r0,#WS_KEY_SOUND	;@ WS Sound
 
 	and r1,r4,#0x3				;@ A/B buttons
 	and r2,r4,#0xC00			;@ X/Y buttons
 	orr r1,r1,r2,lsr#8
-	adr r2,abxy2ypad
+	adr r2,abxy2xpad
 	ldrb r1,[r2,r1]
 	orr r0,r0,r1,lsl#4
+
+	str r0,joy0State
+	bx lr
+;@----------------------------------------------------------------------------
+pcv2Joypad:
+;@----------------------------------------------------------------------------
+	adr r1,rlud2ldur
+	ldrb r0,[r1,r0,lsr#4]
+	and r3,r4,#0xf00
+	adr r1,rlxy2pcv2
+	ldrb r1,[r1,r3]
+	orr r0,r0,r1,lsl#4
+
+	tst r4,#0x01				;@ NDS A
+	orrne r0,r0,#PCV2_KEY_CLEAR	;@ PCV2 Clear
+	tst r4,#0x02				;@ NDS B
+	orrne r0,r0,#PCV2_KEY_CIRCLE	;@ PCV2 Circle
+	ldr r1,=0x222
+	orr r0,r0,r1
 
 	str r0,joy0State
 	bx lr
@@ -156,12 +209,16 @@ verticalJoypad:
 joyCfg: .long 0x00ff01ff	;@ byte0=auto mask, byte1=(saves R), byte2=R auto mask
 							;@ bit 31=single/multi, 30,29=1P/2P, 27=(multi) link active, 24=reset signal received
 playerCount:.long 0			;@ Number of players in multilink.
+			;@  Bit: 11   10     9  8     7     6      5  4    3  2    1     0
+			;@   WS: Y4   Y3     Y2 Y1    X4    X3     X2 X1   B  A    Start 0
+			;@ PCV2: Pass Circle 1  Clear Right Escape 1  View Up Down 1     Left
 joy0State:	.long 0
-dulr2dlur:	.byte 0x00,0x02,0x08,0x0A, 0x01,0x03,0x09,0x0B, 0x04,0x06,0x0C,0x0E, 0x05,0x07,0x0D,0x0F
-abxy2ypad:	.byte 0x00,0x02,0x04,0x06, 0x01,0x03,0x05,0x07, 0x08,0x0A,0x0C,0x0E, 0x09,0x0B,0x0D,0x0F
+rlud2urdl:	.byte 0x00,0x20,0x80,0xA0, 0x10,0x30,0x90,0xB0, 0x40,0x60,0xC0,0xE0, 0x50,0x70,0xD0,0xF0
+rlud2ldur:	.byte 0x00,0x80,0x01,0x81, 0x08,0x88,0x09,0x89, 0x04,0x84,0x05,0x85, 0x0C,0x8C,0x0D,0x8D
+abxy2xpad:	.byte 0x00,0x02,0x04,0x06, 0x01,0x03,0x05,0x07, 0x08,0x0A,0x0C,0x0E, 0x09,0x0B,0x0D,0x0F
+rlxy2pcv2:	.byte 0x00,0x01,0x04,0x05, 0x01,0x01,0x05,0x05, 0x80,0x81,0x84,0x85, 0x81,0x81,0x85,0x85
 
-EMUinput:			;@ This label here for Main.c to use
-	.long 0			;@ EMUjoypad (this is what Emu sees)
+EMUinput:	.long 0				;@ This label here for Main.c to use
 
 ;@----------------------------------------------------------------------------
 IOPortA_R:					;@ Player1...
@@ -171,11 +228,11 @@ IOPortA_R:					;@ Player1...
 	and r1,r1,#0x70
 	ldr r0,joy0State
 	tst r1,#0x10				;@ Y keys enabled?
-	biceq r0,r0,#0x00F
+	biceq r0,r0,#0xF00
 	tst r1,#0x20				;@ X keys enabled?
 	biceq r0,r0,#0x0F0
 	tst r1,#0x40				;@ Buttons enabled?
-	biceq r0,r0,#0xF00
+	biceq r0,r0,#0x00F
 	orr r0,r0,r0,lsr#4
 	orr r0,r0,r0,lsr#4
 	and r0,r0,#0x0F

@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.5.1 2023-03-09"
+#define EMUVERSION "V0.5.2 2023-04-16"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -65,7 +65,7 @@ const char *const flickTxt[] = {"No Flicker", "Flicker"};
 
 const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "SwanCrystal", "Pocket Challenge V2"};
 const char *const bordTxt[]  = {"Black", "Border Color", "None"};
-const char *const palTxt[]   = {"Classic", "Black & White", "Red", "Green", "Blue"};
+const char *const palTxt[]   = {"Classic", "Black & White", "Red", "Green", "Blue", "Other"};
 const char *const langTxt[]  = {"Japanese", "English"};
 
 
@@ -298,7 +298,7 @@ void sprLayerSet() {
 
 void paletteChange() {
 	gPaletteBank++;
-	if (gPaletteBank > 4) {
+	if (gPaletteBank > 5) {
 		gPaletteBank = 0;
 	}
 	monoPalInit(gGammaValue, gContrastValue);

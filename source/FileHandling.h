@@ -8,7 +8,7 @@ extern "C" {
 #include "Emubase.h"
 #include "WonderSwan.h"
 
-#define FILEEXTENSIONS ".ws.wsc.pc2"
+#define FILEEXTENSIONS ".ws.wsc.pc2.pcv2"
 
 extern ConfigData cfg;
 

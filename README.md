@@ -1,4 +1,4 @@
-# NitroSwan V0.5.1
+# NitroSwan V0.5.2
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -90,6 +90,14 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 	Holding L maps the dpad to WS Y1-Y4.
 
 	In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS X1-X4.
+
+	For Pocket Challenge V2:
+	Dpad is mapped to up, down, left & right.
+	L is mapped to Escape.
+	R & X is mapped to View.
+	A is mapped to Clear.
+	B is mapped to Circle.
+	Y is mapped to Pass.
 
 ## Games
 

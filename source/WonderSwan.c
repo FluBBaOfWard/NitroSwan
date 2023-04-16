@@ -43,12 +43,25 @@ int getStateSize() {
 	return size;
 }
 
+static void setupBorderPalette(const void *palette, int len) {
+	vramSetBankF(VRAM_F_LCD);
+	if (gBorderEnable == 0) {
+		memset(VRAM_F, 0, len);
+	}
+	else {
+		memcpy(VRAM_F, palette, len);
+	}
+	memcpy(VRAM_F + 0xF0, MAPPED_BNW, sizeof(MAPPED_BNW));
+	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
+}
+
 void setupPCV2Background() {
 	decompress(PCV2BorderTiles, BG_TILE_RAM(1), LZ77Vram);
 	decompress(PCV2BorderMap, BG_MAP_RAM(15), LZ77Vram);
-	vramSetBankF(VRAM_F_LCD);
-	memcpy(VRAM_F, PCV2BorderPal, PCV2BorderPalLen);
-	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
+}
+
+void setupPCV2BorderPalette() {
+	setupBorderPalette(PCV2BorderPal, PCV2BorderPalLen);
 }
 
 void setupWSBackground() {
@@ -57,15 +70,7 @@ void setupWSBackground() {
 }
 
 void setupWSBorderPalette() {
-	vramSetBankF(VRAM_F_LCD);
-	if (gBorderEnable == 0) {
-		memset(VRAM_F, 0, WSBorderPalLen);
-	}
-	else {
-		memcpy(VRAM_F, WSBorderPal, WSBorderPalLen);
-	}
-	memcpy(VRAM_F + 0xF0, MAPPED_BNW, sizeof(MAPPED_BNW));
-	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
+	setupBorderPalette(WSBorderPal, WSBorderPalLen);
 }
 
 void setupWSCBackground() {
@@ -74,15 +79,7 @@ void setupWSCBackground() {
 }
 
 void setupWSCBorderPalette() {
-	vramSetBankF(VRAM_F_LCD);
-	if (gBorderEnable == 0) {
-		memset(VRAM_F, 0, WSCBorderPalLen);
-	}
-	else {
-		memcpy(VRAM_F, WSCBorderPal, WSCBorderPalLen);
-	}
-	memcpy(VRAM_F + 0xF0, MAPPED_BNW, sizeof(MAPPED_BNW));
-	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
+	setupBorderPalette(WSCBorderPal, WSCBorderPalLen);
 }
 
 void setupEmuBackground() {
@@ -97,6 +94,7 @@ void setupEmuBackground() {
 	}
 	else {
 		setupPCV2Background();
+		setupPCV2BorderPalette();
 	}
 }
 
@@ -106,5 +104,8 @@ void setupEmuBorderPalette() {
 	}
 	else if (gMachine == HW_WONDERSWAN) {
 		setupWSBorderPalette();
+	}
+	else {
+		setupPCV2BorderPalette();
 	}
 }

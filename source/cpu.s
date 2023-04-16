@@ -38,19 +38,15 @@ run:						;@ Return after X frame(s)
 ;@----------------------------------------------------------------------------
 runStart:
 ;@----------------------------------------------------------------------------
-	ldr r0,=EMUinput
+	ldr r0,=joy0State
 	ldr r0,[r0]
 	ldr r3,joyClick
 	eor r3,r3,r0
 	and r3,r3,r0
 	str r0,joyClick
 
-	tst r3,#0x04				;@ NDS Select?
+	tst r3,#0x10000				;@ WS Sound?
 	blne pushVolumeButton
-//	tsteq r3,#0x800				;@ NDS Y?
-//	and r0,r3,#0x04				;@ NDS Select?
-//	ldr v30ptr,=V30OpTable
-//	bl V30SetNMIPin
 
 	bl refreshEMUjoypads
 

@@ -1,6 +1,10 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.5.2 - 2023-04-16 (FluBBa)
+	Fixed controls for PCV2.
+	Added more BnW palettes.
+
 V0.5.1 - 2023-03-09 (FluBBa)
 	Fixed noise calculation.
 	Fixed BnW palettes.

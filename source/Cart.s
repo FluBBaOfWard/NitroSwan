@@ -182,7 +182,6 @@ loadCart: 					;@ Called from C:
 
 	ldrb r5,gMachine
 	cmp r5,#HW_WONDERSWAN
-	cmpne r5,#HW_POCKETCHALLENGEV2
 	moveq r0,#1					;@ Set boot rom overlay (size small)
 	ldreq r1,g_BIOSBASE_BNW
 	ldreq r2,=WS_BIOS_INTERNAL
