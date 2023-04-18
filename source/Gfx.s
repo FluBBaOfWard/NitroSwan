@@ -68,7 +68,8 @@ gfxReset:					;@ Called with CPU reset
 	bl gfxWinInit
 
 	ldr r0,=V30SetIRQPin
-	mov r1,#0
+	ldr r1,=gMachine
+	ldrb r1,[r1]
 	ldr r2,=wsRAM
 	ldr r3,=gSOC
 	ldrb r3,[r3]
@@ -545,7 +546,7 @@ gGfxMask:		.byte 0
 frameDone:		.byte 0
 				.byte 0,0
 ;@----------------------------------------------------------------------------
-wsVideoReset0:		;@ r0=periodicIrqFunc, r1=, r2=frame2IrqFunc, r3=model
+wsVideoReset0:		;@ r0=periodicIrqFunc, r1=model, r2=frame2IrqFunc, r3=SOC
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsVideoReset
