@@ -10,6 +10,7 @@
 	.global romNum
 	.global cartFlags
 	.global romStart
+	.global reBankSwitchAll
 	.global reBankSwitch4_F
 	.global reBankSwitch1
 	.global reBankSwitch2
@@ -268,6 +269,17 @@ resetCartridgeBanks:
 	mov r1,#0xFF
 	bl BankSwitch3_W
 	ldmfd sp!,{pc}
+;@----------------------------------------------------------------------------
+reBankSwitchAll:
+;@----------------------------------------------------------------------------
+	stmfd sp!,{v30ptr,lr}
+	ldr v30ptr,=V30OpTable
+	bl reBankSwitch4_F
+	bl reBankSwitch1
+	bl reBankSwitch2
+	bl reBankSwitch3
+	ldmfd sp!,{v30ptr,lr}
+	bx lr
 ;@----------------------------------------------------------------------------
 reBankSwitch4_F:			;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------

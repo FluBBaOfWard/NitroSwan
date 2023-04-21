@@ -118,7 +118,8 @@ Hold Start while starting a game to enter the boot rom settings, the internal EE
 	asie for info and inspiration.
 	Godzil for the boot rom stubs. https://github.com/Godzil/NewOswan
 	lidnariq for RTC info.
-	Dwedit for help and inspiration with a lot of things.
+	plasturion for some BnW palettes.
+	Dwedit for help and inspiration with a lot of things. https://www.dwedit.org
 
 
 Fredrik Ahlström

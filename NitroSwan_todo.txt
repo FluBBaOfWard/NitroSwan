@@ -1,8 +1,7 @@
 NitroSwan Todo
 
 	Use R to map WS Y keys to d-pad?
-	Fix sound icon for WS mono. (#9)
-	Check save states, sprite problems in FFI.
+	Check save states, sprite problems in FFI?
 	Graphics on menu screen?
 	Find speed hacks.
 	Add IO word access?

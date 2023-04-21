@@ -1,10 +1,11 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.5.2 - 2023-04-19 (FluBBa)
+V0.5.2 - 2023-04-21 (FluBBa)
 	Fixed controls for PCV2.
 	Fixed WS sound levels.
 	Fixed WS sound icon.
+	Fixed save state.
 	Added more BnW palettes.
 
 V0.5.1 - 2023-03-09 (FluBBa)
