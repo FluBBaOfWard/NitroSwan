@@ -110,7 +110,7 @@ SC_BIOS_INTERNAL:
 	.align 2
 ;@----------------------------------------------------------------------------
 machineInit: 				;@ Called from C
-	.type   machineInit STT_FUNC
+	.type machineInit STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
 
@@ -133,7 +133,7 @@ machineInit: 				;@ Called from C
 	.align 2
 ;@----------------------------------------------------------------------------
 loadCart: 					;@ Called from C:
-	.type   loadCart STT_FUNC
+	.type loadCart STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
 	ldr v30ptr,=V30OpTable

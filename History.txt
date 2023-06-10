@@ -1,6 +1,8 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.5.3 - 2023-06-10 (FluBBa)
+
 V0.5.2 - 2023-04-21 (FluBBa)
 	Fixed controls for PCV2.
 	Fixed WS sound levels.

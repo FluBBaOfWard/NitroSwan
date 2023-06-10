@@ -46,7 +46,7 @@ soundReset:
 
 ;@----------------------------------------------------------------------------
 setMuteSoundGUI:
-	.type   setMuteSoundGUI STT_FUNC
+	.type setMuteSoundGUI STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldr r1,=pauseEmulation		;@ Output silence when emulation paused.
 	ldrb r0,[r1]

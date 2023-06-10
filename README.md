@@ -1,4 +1,4 @@
-# NitroSwan V0.5.2
+# NitroSwan V0.5.3
 
 <img align="right" width="220" src="./logo.png" />
 

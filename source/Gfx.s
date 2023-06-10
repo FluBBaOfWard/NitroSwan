@@ -134,7 +134,7 @@ monoPalInit:
 	movne r0,#1
 	ldreq r0,=gPaletteBank
 	ldrbeq r0,[r0]
-	adr r5,monoPalette			;@ 3*16 for each palette
+	adr r5,monoPalettes			;@ 3*16 for each palette
 	add r5,r5,r0,lsl#4			;@ +16
 	add r5,r5,r0,lsl#5			;@ +32
 	ldr r6,=MAPPED_BNW
@@ -158,7 +158,7 @@ monoPalLoop:
 	ldmfd sp!,{r4-r8,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
-monoPalette:
+monoPalettes:
 
 ;@ Classic
 	.byte 0xF6,0xFE,0xAE, 0xE7,0xEE,0xA2, 0xD8,0xDE,0x96, 0xCA,0xCE,0x8B

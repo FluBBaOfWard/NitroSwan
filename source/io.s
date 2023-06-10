@@ -74,13 +74,13 @@ ioReset:
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
 initIntEepromColor:			;@ r0 = eepromAdr
-	.type   initIntEepromColor STT_FUNC
+	.type initIntEepromColor STT_FUNC
 ;@----------------------------------------------------------------------------
 	mov r1,#0x03
 	strb r1,[r0,#0x83]			;@ Default sound volume
 ;@----------------------------------------------------------------------------
 initIntEeprom:				;@ r0 = eepromAdr
-	.type   initIntEeprom STT_FUNC
+	.type initIntEeprom STT_FUNC
 ;@----------------------------------------------------------------------------
 	add r0,r0,#0x60				;@ Name offset
 	ldr r1,=eepromDefault
@@ -98,7 +98,7 @@ eepromDefault: // From adr 0x60
 
 ;@----------------------------------------------------------------------------
 ioSaveState:				;@ In r0=destination. Out r0=size.
-	.type   ioSaveState STT_FUNC
+	.type ioSaveState STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
@@ -111,7 +111,7 @@ ioSaveState:				;@ In r0=destination. Out r0=size.
 	bx lr
 ;@----------------------------------------------------------------------------
 ioLoadState:				;@ In r0=source. Out r0=size.
-	.type   ioLoadState STT_FUNC
+	.type ioLoadState STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 
@@ -120,7 +120,7 @@ ioLoadState:				;@ In r0=source. Out r0=size.
 	ldmfd sp!,{lr}
 ;@----------------------------------------------------------------------------
 ioGetStateSize:				;@ Out r0=state size.
-	.type   ioGetStateSize STT_FUNC
+	.type ioGetStateSize STT_FUNC
 ;@----------------------------------------------------------------------------
 	mov r0,#0x100
 	bx lr
