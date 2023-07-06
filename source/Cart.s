@@ -15,16 +15,6 @@
 	.global reBankSwitch1
 	.global reBankSwitch2
 	.global reBankSwitch3
-	.global BankSwitch4_F_W
-	.global BankSwitch1_W
-	.global BankSwitch1_L_W
-	.global BankSwitch1_H_W
-	.global BankSwitch2_W
-	.global BankSwitch2_L_W
-	.global BankSwitch2_H_W
-	.global BankSwitch3_W
-	.global BankSwitch3_L_W
-	.global BankSwitch3_H_W
 	.global clearDirtyTiles
 
 	.global wsHeader
@@ -57,21 +47,6 @@
 	.global gLang
 	.global gPaletteBank
 
-	.global extEepromDataLowR
-	.global extEepromDataHighR
-	.global extEepromAdrLowR
-	.global extEepromAdrHighR
-	.global extEepromStatusR
-	.global extEepromDataLowW
-	.global extEepromDataHighW
-	.global extEepromAdrLowW
-	.global extEepromAdrHighW
-	.global extEepromCommandW
-
-	.global cartRtcStatusR
-	.global cartRtcCommandW
-	.global cartRtcDataR
-	.global cartRtcDataW
 	.global cartRtcUpdate
 
 	.syntax unified
@@ -214,6 +189,14 @@ loadCart: 					;@ Called from C:
 	moveq r2,#0xC000
 	bleq memset
 
+	ldr r0,eepromSize
+	cmp r0,#0					;@ Does the cart use EEPROM?
+	ldreq r0,=Luxsor2003R		;@ Nope, use new Mapper Chip.
+	ldreq r1,=Luxsor2003W
+	ldrne r0,=Luxsor2001R		;@ Yes, use old Mapper Chip.
+	ldrne r1,=Luxsor2001W
+	bl wsvSetCartMap
+
 //	bl hacksInit
 	bl extEepromReset
 	bl cartRtcReset
@@ -288,6 +271,7 @@ reBankSwitch4_F:			;@ 0x40000-0xFFFFF
 BankSwitch4_F_W:			;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
+	and r1,r1,#0x3F
 	strb r1,[spxptr,#wsvBnk0SlctX]
 	orr r1,r1,#0x40000000
 
@@ -307,6 +291,7 @@ tbLoop2:
 ;@----------------------------------------------------------------------------
 BankSwitch1_H_W:			;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
+	and r1,r1,#0x3
 	strb r1,[spxptr,#wsvBnk1SlctX+1]
 ;@----------------------------------------------------------------------------
 reBankSwitch1:				;@ 0x10000-0x1FFFF
@@ -330,6 +315,7 @@ BankSwitch1_L_W:			;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 BankSwitch2_H_W:			;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
+	and r1,r1,#0x3
 	strb r1,[spxptr,#wsvBnk2SlctX+1]
 ;@----------------------------------------------------------------------------
 reBankSwitch2:				;@ 0x20000-0x2FFFF
@@ -352,6 +338,7 @@ BankSwitch2_L_W:			;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 BankSwitch3_H_W:			;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
+	and r1,r1,#0x3
 	strb r1,[spxptr,#wsvBnk3SlctX+1]
 ;@----------------------------------------------------------------------------
 reBankSwitch3:				;@ 0x30000-0x3FFFF
@@ -373,52 +360,114 @@ BankSwitch3_L_W:			;@ 0x30000-0x3FFFF
 	bx lr
 
 ;@----------------------------------------------------------------------------
-extEepromDataLowR:
+BankSwitch4_F_R:			;@ 0xC0
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvBnk0SlctX]
+	bx lr
+;@----------------------------------------------------------------------------
+BankSwitch1_R:				;@ 0xC1
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvBnk1SlctX]
+	bx lr
+;@----------------------------------------------------------------------------
+BankSwitch2_R:				;@ 0xC2
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvBnk2SlctX]
+	bx lr
+;@----------------------------------------------------------------------------
+BankSwitch3_R:				;@ 0xC3
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvBnk3SlctX]
+	bx lr
+
+;@----------------------------------------------------------------------------
+cartGPIODirR:				;@ 0xCC General Purpose I/O enable/dir?, bit 3-0.
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvGPIOEnable]
+	bx lr
+;@----------------------------------------------------------------------------
+cartGPIODataR:				;@ 0xCD General Purpose I/O data, bit 3-0.
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvGPIOData]
+	bx lr
+;@----------------------------------------------------------------------------
+cartWWFlashR:				;@ 0xCE WonderWitch Flash/SRAM select
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvWWitch]
+	bx lr
+;@----------------------------------------------------------------------------
+cartUnmR:
+;@----------------------------------------------------------------------------
+	mov r0,#0xFF
+	bx lr
+
+;@----------------------------------------------------------------------------
+cartGPIODirW:				;@ 0xCC General Purpose I/O enable, bit 3-0.
+;@----------------------------------------------------------------------------
+	strb r1,[spxptr,wsvGPIOEnable]
+	bx lr
+;@----------------------------------------------------------------------------
+cartGPIODataW:				;@ 0xCD General Purpose I/O data, bit 3-0.
+;@----------------------------------------------------------------------------
+	strb r1,[spxptr,wsvGPIOData]
+	bx lr
+;@----------------------------------------------------------------------------
+cartWWFlashW:				;@ 0xCE WonderWitch flash
+;@----------------------------------------------------------------------------
+	and r1,r1,#1
+	strb r1,[spxptr,wsvWWitch]
+	bx lr
+;@----------------------------------------------------------------------------
+cartUnmW:
+;@----------------------------------------------------------------------------
+	bx lr
+;@----------------------------------------------------------------------------
+extEepromDataLowR:			;@ 0xC4
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromDataLowR
 ;@----------------------------------------------------------------------------
-extEepromDataHighR:
+extEepromDataHighR:			;@ 0xC5
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromDataHighR
 ;@----------------------------------------------------------------------------
-extEepromAdrLowR:
+extEepromAdrLowR:			;@ 0xC6
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromAddressLowR
 ;@----------------------------------------------------------------------------
-extEepromAdrHighR:
+extEepromAdrHighR:			;@ 0xC7
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromAddressHighR
 ;@----------------------------------------------------------------------------
-extEepromStatusR:
+extEepromStatusR:			;@ 0xC8
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromStatusR
 ;@----------------------------------------------------------------------------
-extEepromDataLowW:
+extEepromDataLowW:			;@ 0xC4
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromDataLowW
 ;@----------------------------------------------------------------------------
-extEepromDataHighW:
+extEepromDataHighW:			;@ 0xC5
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromDataHighW
 ;@----------------------------------------------------------------------------
-extEepromAdrLowW:
+extEepromAdrLowW:			;@ 0xC6
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromAddressLowW
 ;@----------------------------------------------------------------------------
-extEepromAdrHighW:
+extEepromAdrHighW:			;@ 0xC7
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromAddressHighW
 ;@----------------------------------------------------------------------------
-extEepromCommandW:
+extEepromCommandW:			;@ 0xC8
 ;@----------------------------------------------------------------------------
 	adr eeptr,extEeprom
 	b wsEepromCommandW
@@ -436,22 +485,22 @@ extEeprom:
 	.space wsEepromSize
 
 ;@----------------------------------------------------------------------------
-cartRtcStatusR:
+cartRtcStatusR:				;@ 0xCA
 ;@----------------------------------------------------------------------------
 	adr rtcptr,cartRtc
 	b wsRtcStatusR
 ;@----------------------------------------------------------------------------
-cartRtcCommandW:
-;@----------------------------------------------------------------------------
-	adr rtcptr,cartRtc
-	b wsRtcCommandW
-;@----------------------------------------------------------------------------
-cartRtcDataR:
+cartRtcDataR:				;@ 0xCB
 ;@----------------------------------------------------------------------------
 	adr rtcptr,cartRtc
 	b wsRtcDataR
 ;@----------------------------------------------------------------------------
-cartRtcDataW:
+cartRtcCommandW:			;@ 0xCA
+;@----------------------------------------------------------------------------
+	adr rtcptr,cartRtc
+	b wsRtcCommandW
+;@----------------------------------------------------------------------------
+cartRtcDataW:				;@ 0xCB
 ;@----------------------------------------------------------------------------
 	adr rtcptr,cartRtc
 	b wsRtcDataW
@@ -537,7 +586,125 @@ sramSize:
 	.long 0
 eepromSize:
 	.long 0
+;@----------------------------------------------------------------------------
+	.section .rodata
+	.align 2
 
+Luxsor2001R:
+	.long BankSwitch4_F_R		;@ 0xC0 Bank ROM 0x40000-0xF0000
+	.long BankSwitch1_R			;@ 0xC1 Bank SRAM 0x10000
+	.long BankSwitch2_R			;@ 0xC2 Bank ROM 0x20000
+	.long BankSwitch3_R			;@ 0xC3 Bank ROM 0x30000
+	.long extEepromDataLowR		;@ 0xC4 ext-eeprom data low
+	.long extEepromDataHighR	;@ 0xC5 ext-eeprom data high
+	.long extEepromAdrLowR		;@ 0xC6 ext-eeprom address low
+	.long extEepromAdrHighR		;@ 0xC7 ext-eeprom address high
+	.long extEepromStatusR		;@ 0xC8 ext-eeprom status
+
+	;@ 0xC9-0xCF
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	;@ 0xD0-0xDF
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	;@ 0xE0-0xEF
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	;@ 0xF0-0xFF
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+
+Luxsor2001W:
+	.long BankSwitch4_F_W		;@ 0xC0 Bank switch 0x40000-0xF0000
+	.long BankSwitch1_W			;@ 0xC1 Bank switch 0x10000 (SRAM)
+	.long BankSwitch2_W			;@ 0xC2 Bank switch 0x20000
+	.long BankSwitch3_W			;@ 0xC3 Bank switch 0x30000
+	.long extEepromDataLowW		;@ 0xC4 ext-eeprom data low
+	.long extEepromDataHighW	;@ 0xC5 ext-eeprom data high
+	.long extEepromAdrLowW		;@ 0xC6 ext-eeprom address low
+	.long extEepromAdrHighW		;@ 0xC7 ext-eeprom address high
+	.long extEepromCommandW		;@ 0xC8 ext-eeprom command
+	;@ 0xC9-0xCF
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	;@ 0xD6-0xDF
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	;@ 0xE0-0xEF
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	;@ 0xF0-0xFF
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+
+;@----------------------------------------------------------------------------
+Luxsor2003R:
+	.long BankSwitch4_F_R		;@ 0xC0 Bank ROM 0x40000-0xF0000
+	.long BankSwitch1_R			;@ 0xC1 Bank SRAM 0x10000
+	.long BankSwitch2_R			;@ 0xC2 Bank ROM 0x20000
+	.long BankSwitch3_R			;@ 0xC3 Bank ROM 0x30000
+	.long cartUnmR				;@ 0xC4
+	.long cartUnmR				;@ 0xC5
+	.long cartUnmR				;@ 0xC6
+	.long cartUnmR				;@ 0xC7
+	.long cartUnmR				;@ 0xC8
+	.long cartUnmR				;@ 0xC9
+	.long cartRtcStatusR		;@ 0xCA RTC status
+	.long cartRtcDataR			;@ 0xCB RTC data read
+	.long cartGPIODirR			;@ 0xCC General purpose input/output enable, bit 3-0.
+	.long cartGPIODataR			;@ 0xCD General purpose input/output data, bit 3-0.
+	.long cartWWFlashR			;@ 0xCE WonderWitch flash
+	.long BankSwitch4_F_R		;@ 0xCF Alias to 0xC0
+
+	.long BankSwitch1_R			;@ 0xD0 Alias to 0xC1
+	.long wsvRegR				;@ 0xD1 2 more bits for 0xC1
+	.long BankSwitch2_R			;@ 0xD2 Alias to 0xC2
+	.long wsvRegR				;@ 0xD3 2 more bits for 0xC2
+	.long BankSwitch3_R			;@ 0xD4 Alias to 0xC3
+	.long wsvRegR				;@ 0xD5 2 more bits for 0xC3
+	;@ 0xD6-0xDF
+	.long cartUnmR,cartUnmR
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	;@ 0xE0-0xEF
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	;@ 0xF0-0xFF
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+
+Luxsor2003W:
+	.long BankSwitch4_F_W		;@ 0xC0 Bank switch 0x40000-0xF0000
+	.long BankSwitch1_W			;@ 0xC1 Bank switch 0x10000 (SRAM)
+	.long BankSwitch2_W			;@ 0xC2 Bank switch 0x20000
+	.long BankSwitch3_W			;@ 0xC3 Bank switch 0x30000
+	.long cartUnmW				;@ 0xC4
+	.long cartUnmW				;@ 0xC5
+	.long cartUnmW				;@ 0xC6
+	.long cartUnmW				;@ 0xC7
+	.long cartUnmW				;@ 0xC8
+	.long cartUnmW				;@ 0xC9
+	.long cartRtcCommandW		;@ 0xCA RTC command
+	.long cartRtcDataW			;@ 0xCB RTC data write
+	.long cartGPIODirW			;@ 0xCC General purpose input/output enable, bit 3-0.
+	.long cartGPIODataW			;@ 0xCD General purpose input/output data, bit 3-0.
+	.long cartWWFlashW			;@ 0xCE WonderWitch flash
+	.long BankSwitch4_F_W		;@ 0xCF Alias to 0xC0
+
+	.long BankSwitch1_L_W		;@ 0xD0 Alias to 0xC1
+	.long BankSwitch1_H_W		;@ 0xD1 2 more bits for 0xC1
+	.long BankSwitch2_L_W		;@ 0xD2 Alias to 0xC2
+	.long BankSwitch2_H_W		;@ 0xD3 2 more bits for 0xC2
+	.long BankSwitch3_L_W		;@ 0xD4 Alias to 0xC3
+	.long BankSwitch3_H_W		;@ 0xD5 2 more bits for 0xC3
+	;@ 0xD6-0xDF
+	.long cartUnmW,cartUnmW
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	;@ 0xE0-0xEF
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	;@ 0xF0-0xFF
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+
+;@----------------------------------------------------------------------------
 #ifdef GBA
 	.section .sbss				;@ For the GBA
 #else
