@@ -4,7 +4,6 @@ NitroSwan Todo
 	Check save states, sprite problems in FFI?
 	Graphics on menu screen?
 	Find speed hacks.
-	Add IO word access?
 	Fix better sound?
 	Add serial port emulation.
 	Sprite priority can't be fixed.

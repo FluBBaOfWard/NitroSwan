@@ -360,24 +360,39 @@ BankSwitch3_L_W:			;@ 0x30000-0x3FFFF
 	bx lr
 
 ;@----------------------------------------------------------------------------
-BankSwitch4_F_R:			;@ 0xC0
+BankSwitch4_F_R:			;@ 0xC0/0xCF
 ;@----------------------------------------------------------------------------
 	ldrb r0,[spxptr,wsvBnk0SlctX]
 	bx lr
 ;@----------------------------------------------------------------------------
-BankSwitch1_R:				;@ 0xC1
+BankSwitch1_R:				;@ 0xC1/0xD0
 ;@----------------------------------------------------------------------------
 	ldrb r0,[spxptr,wsvBnk1SlctX]
 	bx lr
 ;@----------------------------------------------------------------------------
-BankSwitch2_R:				;@ 0xC2
+BankSwitch1_H_R:			;@ 0xD1
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvBnk1SlctX+1]
+	bx lr
+;@----------------------------------------------------------------------------
+BankSwitch2_R:				;@ 0xC2/0xD2
 ;@----------------------------------------------------------------------------
 	ldrb r0,[spxptr,wsvBnk2SlctX]
 	bx lr
 ;@----------------------------------------------------------------------------
-BankSwitch3_R:				;@ 0xC3
+BankSwitch2_H_R:			;@ 0xD3
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvBnk2SlctX+1]
+	bx lr
+;@----------------------------------------------------------------------------
+BankSwitch3_R:				;@ 0xC3/0xD4
 ;@----------------------------------------------------------------------------
 	ldrb r0,[spxptr,wsvBnk3SlctX]
+	bx lr
+;@----------------------------------------------------------------------------
+BankSwitch3_H_R:			;@ 0xD5
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,wsvBnk3SlctX+1]
 	bx lr
 
 ;@----------------------------------------------------------------------------
@@ -655,11 +670,11 @@ Luxsor2003R:
 	.long BankSwitch4_F_R		;@ 0xCF Alias to 0xC0
 
 	.long BankSwitch1_R			;@ 0xD0 Alias to 0xC1
-	.long wsvRegR				;@ 0xD1 2 more bits for 0xC1
+	.long BankSwitch1_H_R		;@ 0xD1 2 more bits for 0xC1
 	.long BankSwitch2_R			;@ 0xD2 Alias to 0xC2
-	.long wsvRegR				;@ 0xD3 2 more bits for 0xC2
+	.long BankSwitch2_H_R		;@ 0xD3 2 more bits for 0xC2
 	.long BankSwitch3_R			;@ 0xD4 Alias to 0xC3
-	.long wsvRegR				;@ 0xD5 2 more bits for 0xC3
+	.long BankSwitch3_H_R		;@ 0xD5 2 more bits for 0xC3
 	;@ 0xD6-0xDF
 	.long cartUnmR,cartUnmR
 	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR

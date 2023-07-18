@@ -11,7 +11,9 @@
 	.global gfxRefresh
 	.global gfxEndFrame
 	.global v30ReadPort
+	.global v30ReadPort16
 	.global v30WritePort
+	.global v30WritePort16
 	.global pushVolumeButton
 	.global setHeadphones
 	.global setLowBattery
@@ -567,11 +569,23 @@ v30ReadPort:
 	adr spxptr,sphinx0
 	b wsvRead
 ;@----------------------------------------------------------------------------
+v30ReadPort16:
+	.type v30ReadPort16 STT_FUNC
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvRead16
+;@----------------------------------------------------------------------------
 v30WritePort:
 	.type v30WritePort STT_FUNC
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvWrite
+;@----------------------------------------------------------------------------
+v30WritePort16:
+	.type v30WritePort16 STT_FUNC
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvWrite16
 ;@----------------------------------------------------------------------------
 pushVolumeButton:
 ;@----------------------------------------------------------------------------

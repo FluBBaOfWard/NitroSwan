@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.5.3 2023-07-06"
+#define EMUVERSION "V0.5.3 2023-07-18"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -128,8 +128,8 @@ void uiAbout() {
 	drawTabs();
 	drawMenuText("B:        WS B button", 4, 0);
 	drawMenuText("A:        WS A button", 5, 0);
-	drawMenuText("Select:   Sound button", 6, 0);
-	drawMenuText("Start:    Start button", 7, 0);
+	drawMenuText("Start:    WS Start button", 6, 0);
+	drawMenuText("Select:   Sound button", 7, 0);
 
 	drawMenuText(gameInfoString, 9, 0);
 
@@ -188,7 +188,6 @@ void uiDebug() {
 	drawSubItem("Disable Sprites:", autoTxt[(gGfxMask>>4)&1]);
 	drawSubItem("Step Frame", NULL);
 }
-
 
 void nullUINormal(int key) {
 	if (key & KEY_TOUCH) {
