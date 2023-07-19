@@ -13,6 +13,7 @@
 	.global v30ReadEA1
 	.global v30ReadEA
 	.global v30ReadStack
+	.global v30ReadDsIx
 	.global v30ReadSegOfs
 	.global v30ReadEAW1
 	.global v30ReadEAW
@@ -23,7 +24,7 @@
 	.global cpuWriteMem20W
 	.global dmaWriteMem20W
 	.global v30WriteEA
-	.global v30ReadDsIx
+	.global v30WriteEsIy
 	.global v30WriteSegOfs
 	.global v30WriteEAW2
 	.global v30WriteEAW
@@ -105,9 +106,12 @@ v30ReadEA:			;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 v30ReadDsIx:		;@
 ;@----------------------------------------------------------------------------
+	ldrsb r4,[v30ptr,#v30DF]
+	ldr v30ofs,[v30ptr,#v30RegIX]
 	TestSegmentPrefix
 	ldreq v30csr,[v30ptr,#v30SRegDS]
-	ldr v30ofs,[v30ptr,#v30RegIX]
+	add r0,v30ofs,r4,lsl#16
+	str r0,[v30ptr,#v30RegIX]
 ;@----------------------------------------------------------------------------
 v30ReadSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
@@ -184,6 +188,12 @@ v30WriteEA:				;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	adr r12,v30WriteSegOfs		;@ Return reg for EA
 	ldr pc,[v30ofs,#v30EATable]
+;@----------------------------------------------------------------------------
+v30WriteEsIy:		;@
+;@----------------------------------------------------------------------------
+	GetIyOfsESegment
+	add r2,v30ofs,r4,lsl#16
+	str r2,[v30ptr,#v30RegIY]
 ;@----------------------------------------------------------------------------
 v30WriteSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
