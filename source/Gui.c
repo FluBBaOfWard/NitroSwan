@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.5.3 2023-07-19"
+#define EMUVERSION "V0.5.3 2023-07-22"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -43,7 +43,7 @@ const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList5[] = {gammaSet, contrastSet, paletteChange, borderSet};
 const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, headphonesSet, speedHackSet /*languageSet*/};
 const fptr fnList7[] = {speedSet, refreshChgSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
-const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, stepFrame};
+const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, winLayerSet, stepFrame};
 const fptr fnList9[] = {exitEmulator, backOutOfMenu};
 const fptr fnList10[] = {uiDummy};
 const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9, fnList10};
@@ -186,6 +186,7 @@ void uiDebug() {
 	drawSubItem("Disable Foreground:", autoTxt[(gGfxMask>>1)&1]);
 	drawSubItem("Disable Background:", autoTxt[gGfxMask&1]);
 	drawSubItem("Disable Sprites:", autoTxt[(gGfxMask>>4)&1]);
+	drawSubItem("Disable Windows:", autoTxt[(gGfxMask>>5)&1]);
 	drawSubItem("Step Frame", NULL);
 }
 
@@ -293,6 +294,10 @@ void bgrLayerSet() {
 /// Turn on/off rendering of sprites
 void sprLayerSet() {
 	gGfxMask ^= 0x10;
+}
+/// Turn on/off windows
+void winLayerSet() {
+	gGfxMask ^= 0x20;
 }
 
 void paletteChange() {

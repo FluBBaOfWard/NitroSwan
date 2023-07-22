@@ -56,6 +56,23 @@ gfxInit:					;@ Called from machineInit
 	bl wsVideoInit
 	bl gfxWinInit
 
+	ldr r0,=DISP_CTRL_LUT		;@ Destination
+	mov r1,#0
+dispLutLoop:
+	and r2,r1,#0x03				;@ BG & FG
+	tst r1,#0x04
+	orrne r2,r2,#0x10			;@ Sprites
+	orr r2,r2,r2,lsl#8			;@ Set both Win0 & Win1
+	and r3,r1,#0x30				;@ FG Win Ctrl
+	cmp r3,#0x20				;@ FG only inside Win0
+	biceq r2,r2,#0x0200
+	cmp r3,#0x30				;@ FG only outside Win0
+	biceq r2,r2,#0x0002
+	strh r2,[r0],#2
+	add r1,r1,#1
+	cmp r1,#64
+	bne dispLutLoop
+
 	ldmfd sp!,{pc}
 
 ;@----------------------------------------------------------------------------
@@ -449,15 +466,11 @@ vblIrqHandler:
 	str r0,[r6,#REG_BG0CNT]
 	ldr r0,GFX_DISPCNT
 	ldrb r1,[spxptr,#wsvLatchedDispCtrl]
-	tst r1,#0x01
-	biceq r0,r0,#0x0100			;@ Turn off Bg
-	tst r1,#0x02
-	biceq r0,r0,#0x0200			;@ Turn off Fg
-	tst r1,#0x04
-	biceq r0,r0,#0x1000			;@ Turn off Sprites
+	ldrb r2,gGfxMask
+	tst r2,#0x20
+	bicne r1,r1,#0x20
 	tst r1,#0x20				;@ Win for Fg on?
 	biceq r0,r0,#0x2000			;@ Turn off Fg-Window
-	ldrb r2,gGfxMask
 	bic r0,r0,r2,lsl#8
 	strh r0,[r6,#REG_DISPCNT]
 
@@ -465,12 +478,10 @@ vblIrqHandler:
 	strh r0,[r6,#REG_WIN0H]
 	mov r0,r0,lsr#16
 	strh r0,[r6,#REG_WIN0V]
-	ldr r0,=0x3333				;@ WinIN0/1, BG0, BG1, SPR & COL inside Win0
-	and r2,r1,#0x30
-	cmp r2,#0x20
-	biceq r0,r0,#0x0200
-	cmp r2,#0x30
-	biceq r0,r0,#0x0002
+
+	ldr r2,=DISP_CTRL_LUT
+	mov r1,r1,lsl#1
+	ldrh r0,[r2,r1]
 	strh r0,[r6,#REG_WININ]
 
 	ldr r0,=emuSettings
@@ -645,6 +656,8 @@ SCROLLBUFF1:
 	.space 0x100*8				;@ Scrollbuffer.
 SCROLLBUFF2:
 	.space 0x100*8				;@ Scrollbuffer.
+DISP_CTRL_LUT:
+	.space 64*2					;@ Convert from WS DispCtrl to NDS/GBA WinCtrl
 MAPPED_RGB:
 	.space 0x2000				;@ 4096*2
 MAPPED_BNW:

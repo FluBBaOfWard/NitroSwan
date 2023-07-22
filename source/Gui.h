@@ -42,6 +42,7 @@ void contrastSet(void);
 void fgrLayerSet(void);
 void bgrLayerSet(void);
 void sprLayerSet(void);
+void winLayerSet(void);
 
 #ifdef __cplusplus
 } // extern "C"
