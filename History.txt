@@ -1,7 +1,8 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.5.3 - 2023-07-19 (FluBBa)
+V0.5.3 - 2023-07-23 (FluBBa)
+	Added per line emulation of display control register.
 	Added differences for the 2 cart mappers.
 	Optimized cpu core.
 

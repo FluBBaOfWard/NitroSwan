@@ -439,26 +439,35 @@ vblIrqHandler:
 
 	mov r6,#REG_BASE
 	strh r6,[r6,#REG_DMA0CNT_H]	;@ DMA0 stop
+	strh r6,[r6,#REG_DMA3CNT_H]	;@ DMA3 stop
 
 	add r1,r6,#REG_DMA0SAD
 	ldr r2,dmaScroll			;@ Setup DMA buffer for scrolling:
 	ldmia r2!,{r4-r5}			;@ Read
 	add r3,r6,#REG_BG0HOFS		;@ DMA0 always goes here
-	stmia r3,{r4-r5}			;@ Set 1st value manually, HBL is AFTER 1st line
-	ldr r4,=0x96600002			;@ noIRQ hblank 32bit repeat incsrc inc_reloaddst, 2 word
+	stmia r3,{r4-r5}			;@ Set 1st values manually, HBL is AFTER 1st line
+	ldr r4,=0x96600002			;@ hblank 32bit repeat incsrc inc_reloaddst, 2 word
 	stmia r1,{r2-r4}			;@ DMA0 go
 
 	add r1,r6,#REG_DMA3SAD
 	ldr r2,dmaOamBuffer			;@ DMA3 src, OAM transfer:
 	mov r3,#OAM					;@ DMA3 dst
-	mov r4,#0x84000000			;@ noIRQ 32bit incsrc incdst
+	mov r4,#0x84000000			;@ 32bit incsrc incdst
 	orr r4,r4,#128*2			;@ 128 sprites * 2 longwords
 	stmia r1,{r2-r4}			;@ DMA3 go
 
 	ldr r2,=EMUPALBUFF			;@ DMA3 src, Palette transfer:
 	mov r3,#BG_PALETTE			;@ DMA3 dst
-	mov r4,#0x84000000			;@ noIRQ 32bit incsrc incdst
+	mov r4,#0x84000000			;@ 32bit incsrc incdst
 	orr r4,r4,#0x100			;@ 256 words (1024 bytes)
+	stmia r1,{r2-r4}			;@ DMA3 go
+
+	add r1,r6,#REG_DMA3SAD
+	ldr r2,dmaWinInOut			;@ Setup DMA buffer for scrolling:
+	ldrh r4,[r2],#2				;@ Read
+	add r3,r6,#REG_WININ		;@ DMA3 always goes here
+	strh r4,[r3]				;@ Set 1st value manually, HBL is AFTER 1st line
+	ldr r4,=0x92600001			;@ hblank 16bit repeat incsrc inc_reloaddst, 1 word
 	stmia r1,{r2-r4}			;@ DMA3 go
 
 	adr spxptr,sphinx0
@@ -478,11 +487,6 @@ vblIrqHandler:
 	strh r0,[r6,#REG_WIN0H]
 	mov r0,r0,lsr#16
 	strh r0,[r6,#REG_WIN0V]
-
-	ldr r2,=DISP_CTRL_LUT
-	mov r1,r1,lsl#1
-	ldrh r0,[r2,r1]
-	strh r0,[r6,#REG_WININ]
 
 	ldr r0,=emuSettings
 	ldr r0,[r0]
@@ -519,6 +523,26 @@ nothingNew:
 	blx scanKeys
 	ldmfd sp!,{r4-r8,pc}
 
+;@----------------------------------------------------------------------------
+copyWindowValues:		;@ r0 = destination
+;@----------------------------------------------------------------------------
+	stmfd sp!,{r4}
+	mov r1,#(SCREEN_HEIGHT-GAME_HEIGHT)/2
+	add r0,r0,r1,lsl#1			;@ 2 bytes per row
+	ldr r1,[spxptr,#dispBuff]
+	ldr r2,=DISP_CTRL_LUT
+
+	mov r3,#GAME_HEIGHT
+setDispLoop:
+	ldrb r4,[r1],#1
+	mov r4,r4,lsl#1
+	ldrh r4,[r2,r4]
+	strh r4,[r0],#2
+	subs r3,r3,#1
+	bne setDispLoop
+
+	ldmfd sp!,{r4}
+	bx lr
 
 ;@----------------------------------------------------------------------------
 gfxRefresh:					;@ Called from C when changing scaling.
@@ -532,6 +556,8 @@ gfxEndFrame:				;@ Called just after screen end (line 144)	(r0-r3 safe to use)
 
 	ldr r0,tmpScroll			;@ Destination
 	bl copyScrollValues
+	ldr r0,tmpWinInOut			;@ Destination
+	bl copyWindowValues
 	ldr r0,tmpOamBuffer			;@ Destination
 	bl wsvConvertSprites
 	bl paletteTxAll
@@ -547,6 +573,11 @@ gfxEndFrame:				;@ Called just after screen end (line 144)	(r0-r3 safe to use)
 	str r0,dmaScroll
 	str r1,tmpScroll
 
+	ldr r0,tmpWinInOut
+	ldr r1,dmaWinInOut
+	str r0,dmaWinInOut
+	str r1,tmpWinInOut
+
 	mov r0,#1
 	strb r0,frameDone
 	bl updateSlowIO				;@ RTC/Alarm and more
@@ -559,6 +590,8 @@ tmpOamBuffer:	.long OAM_BUFFER1
 dmaOamBuffer:	.long OAM_BUFFER2
 tmpScroll:		.long SCROLLBUFF1
 dmaScroll:		.long SCROLLBUFF2
+tmpWinInOut:	.long WININOUTBUFF1
+dmaWinInOut:	.long WININOUTBUFF2
 
 
 gFlicker:		.byte 1
@@ -653,9 +686,13 @@ OAM_BUFFER1:
 OAM_BUFFER2:
 	.space 0x400
 SCROLLBUFF1:
-	.space 0x100*8				;@ Scrollbuffer.
+	.space SCREEN_HEIGHT*8		;@ Scrollbuffer.
 SCROLLBUFF2:
-	.space 0x100*8				;@ Scrollbuffer.
+	.space SCREEN_HEIGHT*8		;@ Scrollbuffer.
+WININOUTBUFF1:
+	.space SCREEN_HEIGHT*2		;@ Scrollbuffer.
+WININOUTBUFF2:
+	.space SCREEN_HEIGHT*2		;@ Scrollbuffer.
 DISP_CTRL_LUT:
 	.space 64*2					;@ Convert from WS DispCtrl to NDS/GBA WinCtrl
 MAPPED_RGB:

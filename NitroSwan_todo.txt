@@ -34,9 +34,11 @@ Misc:
 Games Not Working:
 
 Games Not Working Fixed:
-	Bakusou Dekotora Densetsu. Unzip craps out. Fixed
-	Chou Denki Card Game. Needs initialization, last item on first page.
-	Hanjuku Hero, crashes. Reads mapper register 0xC0 which was not reset correctly.
+	Bakusou Dekotora Densetsu. Unzip craps out.
+	Chou Denki Card Game, crashes.
+		* Needs initialization, last item on first page.
+	Hanjuku Hero, crashes.
+		* Reads mapper register 0xC0 which was not reset correctly.
 	Kurupara, crashes. Crashes because of LineCompareIRQ on line 0.
 		* Fixing interrupt handling in Sphinx fixed it.
 	Riviera freezes on a black screen after the chapter 1 screen.
@@ -48,7 +50,8 @@ Games Not Working Fixed:
 		* Fixing interrupt handling in Sphinx fixed it.
 	With You - Mitsumete Itai, halts at black screen.
 		* Waiting for EEPROM ready.
-	Xi Little. Can't start. Waiting on sample playing. Fixed.
+	Xi Little. Can't start.
+		* Waiting on sample playing.
 
 Games With Glitches:
 	Mahjong Touryuumon, speed too fast.
@@ -127,9 +130,3 @@ Speedhacks:
 	Nazo Ou Pocket			- 0x74,0xEE
 	Time Bokan Series		- 0x74,0xF6
 
-
-Mahjong Touryuumon:
-	Speed way too fast, no sound.
-	Runs without _ANY_ interrupts enabled.
-	Reads port 0x90 irregulary and port 0xB5 (joypad) 27/54 times per frame.
-	The stack i located in SRAM.
