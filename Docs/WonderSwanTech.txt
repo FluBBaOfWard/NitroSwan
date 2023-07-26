@@ -96,7 +96,9 @@
                      byte 0,1 - bits
                                 0 - 8   - Tile number (0-511)
                                 9 - 11  - Palette number (0-7) + 8 -> (8-15)
-                                12      - Sprite window clipping on/off
+                                12      - Sprite window clipping
+                                          0 - sprite inside window
+                                          1 - sprite outside window
                                 13      - Priority with respect to the layers
                                           0 - appear between the 2 background and foreground layers
                                           1 - appear on top of both layers
@@ -137,7 +139,7 @@
 
    Transparency    - Wonderswan       - if bit 3 on palette number is set - color 0 of that palette is transparent
                      Wonderswan color - color 0 of each palette is transparent
-   Windows         - There are two windows - rectangular areas for disabling /enabling FG layer (FG window) or sprites(Sprite window)
+   Windows         - There are two windows - rectangular areas for disabling/enabling FG layer (FG window) or sprites(Sprite window)
 
 5. SOUND
 

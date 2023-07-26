@@ -121,20 +121,29 @@ gfxReset:					;@ Called with CPU reset
 ;@----------------------------------------------------------------------------
 gfxWinInit:
 ;@----------------------------------------------------------------------------
-	mov r1,#REG_BASE
+	stmfd sp!,{r4-r5}
+	mov r0,#REG_BASE
 	;@ Horizontal start-end
-	ldr r0,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+(SCREEN_WIDTH+GAME_WIDTH)/2
-	strh r0,[r1,#REG_WIN0H]
-	strh r0,[r1,#REG_WIN1H]
+	ldr r1,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+(SCREEN_WIDTH+GAME_WIDTH)/2
+	orr r1,r1,r1,lsl#16			;@ Also WIN1H
+	str r1,[r0,#REG_WIN0H]
 	;@ Vertical start-end
-	ldr r0,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+(SCREEN_HEIGHT+GAME_HEIGHT)/2
-	strh r0,[r1,#REG_WIN0V]
-	strh r0,[r1,#REG_WIN1V]
+	ldr r2,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+(SCREEN_HEIGHT+GAME_HEIGHT)/2
+	orr r2,r2,r2,lsl#16			;@ Also WIN1V
+	str r2,[r0,#REG_WIN0V]
 
-	ldr r0,=0x3333				;@ WinIN0/1, BG0, BG1, SPR & COL inside Win0
-	strh r0,[r1,#REG_WININ]
-	mov r0,#0x002C				;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
-	strh r0,[r1,#REG_WINOUT]
+	ldr r3,=0x002C3333			;@ WinIN0/1, BG0, BG1, SPR & COL inside Win0
+	str r3,[r0,#REG_WININ]		;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
+
+	ldr r4,=WININOUTBUFF1
+	ldr r5,=WININOUTBUFF2
+	mov r0,#SCREEN_HEIGHT
+gfxWinLoop:
+	stmia r4!,{r1-r3}
+	stmia r5!,{r1-r3}
+	subs r0,r0,#1
+	bne gfxWinLoop
+	ldmfd sp!,{r4-r5}
 	bx lr
 ;@----------------------------------------------------------------------------
 monoPalInit:
@@ -441,34 +450,40 @@ vblIrqHandler:
 	strh r6,[r6,#REG_DMA0CNT_H]	;@ DMA0 stop
 	strh r6,[r6,#REG_DMA3CNT_H]	;@ DMA3 stop
 
-	add r1,r6,#REG_DMA0SAD
-	ldr r2,dmaScroll			;@ Setup DMA buffer for scrolling:
-	ldmia r2!,{r4-r5}			;@ Read
-	add r3,r6,#REG_BG0HOFS		;@ DMA0 always goes here
-	stmia r3,{r4-r5}			;@ Set 1st values manually, HBL is AFTER 1st line
-	ldr r4,=0x96600002			;@ hblank 32bit repeat incsrc inc_reloaddst, 2 word
-	stmia r1,{r2-r4}			;@ DMA0 go
+	add r0,r6,#REG_DMA0SAD
+	ldr r1,dmaScroll			;@ Setup DMA buffer for scrolling:
+	ldmia r1!,{r3-r4}			;@ Read
+	add r2,r6,#REG_BG0HOFS		;@ DMA0 always goes here
+	stmia r2,{r3-r4}			;@ Set 1st values manually, HBL is AFTER 1st line
+	ldr r3,=0x96600002			;@ hblank 32bit repeat incsrc inc_reloaddst, 2 words
+	stmia r0,{r1-r3}			;@ DMA0 go
 
-	add r1,r6,#REG_DMA3SAD
-	ldr r2,dmaOamBuffer			;@ DMA3 src, OAM transfer:
-	mov r3,#OAM					;@ DMA3 dst
-	mov r4,#0x84000000			;@ 32bit incsrc incdst
-	orr r4,r4,#128*2			;@ 128 sprites * 2 longwords
-	stmia r1,{r2-r4}			;@ DMA3 go
+	add r0,r6,#REG_DMA3SAD
+	ldr r1,dmaOamBuffer			;@ DMA3 src, OAM transfer:
+	mov r2,#OAM					;@ DMA3 dst
+	mov r3,#0x84000000			;@ 32bit incsrc incdst
+	orr r3,r3,#128*2			;@ 128 sprites * 2 longwords
+	stmia r0,{r1-r3}			;@ DMA3 go
 
-	ldr r2,=EMUPALBUFF			;@ DMA3 src, Palette transfer:
-	mov r3,#BG_PALETTE			;@ DMA3 dst
-	mov r4,#0x84000000			;@ 32bit incsrc incdst
-	orr r4,r4,#0x100			;@ 256 words (1024 bytes)
-	stmia r1,{r2-r4}			;@ DMA3 go
+	ldr r1,=EMUPALBUFF			;@ DMA3 src, Palette transfer:
+	mov r2,#BG_PALETTE			;@ DMA3 dst
+	mov r3,#0x84000000			;@ 32bit incsrc incdst
+	orr r3,r3,#0x100			;@ 256 words (1024 bytes)
+	stmia r0,{r1-r3}			;@ DMA3 go
 
-	add r1,r6,#REG_DMA3SAD
-	ldr r2,dmaWinInOut			;@ Setup DMA buffer for scrolling:
-	ldrh r4,[r2],#2				;@ Read
-	add r3,r6,#REG_WININ		;@ DMA3 always goes here
-	strh r4,[r3]				;@ Set 1st value manually, HBL is AFTER 1st line
-	ldr r4,=0x92600001			;@ hblank 16bit repeat incsrc inc_reloaddst, 1 word
-	stmia r1,{r2-r4}			;@ DMA3 go
+//	ldr r1,dmaWinInOut			;@ Setup DMA buffer for window stuff:
+//	ldrh r3,[r1],#2				;@ Read
+//	add r2,r6,#REG_WININ		;@ DMA3 dst
+//	strh r3,[r2]				;@ Set 1st value manually, HBL is AFTER 1st line
+//	ldr r3,=0x92600001			;@ hblank 16bit repeat incsrc inc_reloaddst, 1 word
+//	stmia r0,{r1-r3}			;@ DMA3 go
+
+	ldr r1,dmaWinInOut			;@ Setup DMA buffer for window stuff:
+	ldmia r1!,{r3-r5}			;@ Read
+	add r2,r6,#REG_WIN0H		;@ DMA3 dst
+	stmia r2,{r3-r5}			;@ Set 1st values manually, HBL is AFTER 1st line
+	ldr r3,=0x96600003			;@ hblank 32bit repeat incsrc inc_reloaddst, 3 words
+	stmia r0,{r1-r3}			;@ DMA3 go
 
 	adr spxptr,sphinx0
 	ldr r0,GFX_BG0CNT
@@ -479,14 +494,14 @@ vblIrqHandler:
 	tst r2,#0x20
 	bicne r1,r1,#0x20
 	tst r1,#0x20				;@ Win for Fg on?
-	biceq r0,r0,#0x2000			;@ Turn off Fg-Window
+//	biceq r0,r0,#0x2000			;@ Turn off Fg-Window
 	bic r0,r0,r2,lsl#8
 	strh r0,[r6,#REG_DISPCNT]
 
-	ldr r0,[spxptr,#windowData]
-	strh r0,[r6,#REG_WIN0H]
-	mov r0,r0,lsr#16
-	strh r0,[r6,#REG_WIN0V]
+//	ldr r0,[spxptr,#windowData]
+//	strh r0,[r6,#REG_WIN0H]
+//	mov r0,r0,lsr#16
+//	strh r0,[r6,#REG_WIN0V]
 
 	ldr r0,=emuSettings
 	ldr r0,[r0]
@@ -526,23 +541,75 @@ nothingNew:
 ;@----------------------------------------------------------------------------
 copyWindowValues:		;@ r0 = destination
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4}
-	mov r1,#(SCREEN_HEIGHT-GAME_HEIGHT)/2
-	add r0,r0,r1,lsl#1			;@ 2 bytes per row
+	stmfd sp!,{lr}
+	add r0,r0,#((SCREEN_HEIGHT-GAME_HEIGHT)/2)*2			;@ 2 bytes per row
 	ldr r1,[spxptr,#dispBuff]
 	ldr r2,=DISP_CTRL_LUT
 
 	mov r3,#GAME_HEIGHT
 setDispLoop:
-	ldrb r4,[r1],#1
-	mov r4,r4,lsl#1
-	ldrh r4,[r2,r4]
-	strh r4,[r0],#2
+	ldrb lr,[r1],#1
+	mov lr,lr,lsl#1
+	ldrh lr,[r2,lr]
+	strh lr,[r0],#2
 	subs r3,r3,#1
 	bne setDispLoop
 
-	ldmfd sp!,{r4}
-	bx lr
+	ldmfd sp!,{pc}
+;@----------------------------------------------------------------------------
+copyWindowValues2:		;@ r0 = destination
+;@----------------------------------------------------------------------------
+	stmfd sp!,{r4-r10,lr}
+	add r0,r0,#((SCREEN_HEIGHT-GAME_HEIGHT)/2)*12		;@ 12 bytes per row
+	ldr r9,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+(SCREEN_WIDTH+GAME_WIDTH)/2
+	ldr r10,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+(SCREEN_HEIGHT+GAME_HEIGHT)/2
+	ldr r1,[spxptr,#dispBuff]
+	ldr r4,[spxptr,#windowBuff]
+	ldr r2,=DISP_CTRL_LUT
+
+	mov r3,#GAME_HEIGHT
+setWindowLoop:
+	ldr r8,[r4],#4				;@ FG Win pos/size
+	and r6,r8,#0x000000FF		;@ H start
+	and r7,r8,#0x00FF0000		;@ H end
+	cmp r6,#GAME_WIDTH
+	movpl r6,#GAME_WIDTH
+	add r6,r6,#(SCREEN_WIDTH-GAME_WIDTH)/2
+	add r7,r7,#0x10000
+	cmp r7,#GAME_WIDTH<<16
+	movpl r7,#GAME_WIDTH<<16
+	add r7,r7,#((SCREEN_WIDTH-GAME_WIDTH)/2)<<16
+	cmp r7,r6,lsl#16
+	orr r6,r6,r7,lsl#8
+	mov r6,r6,ror#24
+	movmi r6,#0
+	orr r6,r6,r9,lsl#16
+
+//	and r7,r8,#0x0000FF00		;@ V start
+	and r7,r8,#0x00000000		;@ V start
+	mov r8,r8,lsr#24			;@ V end
+	cmp r7,#GAME_HEIGHT<<8
+	movpl r7,#GAME_HEIGHT<<8
+	add r7,r7,#((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8
+//	sub r7,r7,#1
+	add r8,r8,#1
+	cmp r8,#GAME_HEIGHT
+	movpl r8,#GAME_HEIGHT
+	add r8,r8,#(SCREEN_HEIGHT-GAME_HEIGHT)/2
+	cmp r8,r7,lsr#8
+	orr r7,r7,r8
+	movmi r7,#0
+	orr r7,r7,r10,lsl#16
+
+	ldrb r8,[r1],#1
+	mov r8,r8,lsl#1
+	ldrh r8,[r2,r8]
+	orr r8,r8,#0x002C0000		;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
+	stmia r0!,{r6-r8}
+	subs r3,r3,#1
+	bne setWindowLoop
+
+	ldmfd sp!,{r4-r10,pc}
 
 ;@----------------------------------------------------------------------------
 gfxRefresh:					;@ Called from C when changing scaling.
@@ -557,7 +624,7 @@ gfxEndFrame:				;@ Called just after screen end (line 144)	(r0-r3 safe to use)
 	ldr r0,tmpScroll			;@ Destination
 	bl copyScrollValues
 	ldr r0,tmpWinInOut			;@ Destination
-	bl copyWindowValues
+	bl copyWindowValues2
 	ldr r0,tmpOamBuffer			;@ Destination
 	bl wsvConvertSprites
 	bl paletteTxAll
@@ -690,9 +757,9 @@ SCROLLBUFF1:
 SCROLLBUFF2:
 	.space SCREEN_HEIGHT*8		;@ Scrollbuffer.
 WININOUTBUFF1:
-	.space SCREEN_HEIGHT*2		;@ Scrollbuffer.
+	.space SCREEN_HEIGHT*12		;@ Scrollbuffer.
 WININOUTBUFF2:
-	.space SCREEN_HEIGHT*2		;@ Scrollbuffer.
+	.space SCREEN_HEIGHT*12		;@ Scrollbuffer.
 DISP_CTRL_LUT:
 	.space 64*2					;@ Convert from WS DispCtrl to NDS/GBA WinCtrl
 MAPPED_RGB:
