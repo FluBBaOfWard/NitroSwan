@@ -1,4 +1,4 @@
-# NitroSwan V0.5.3
+# NitroSwan V0.6.0
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -99,10 +99,23 @@ Y is mapped to Pass.
 
 ## Games
 
-There are 2 games that I know of that has serious problems.
+There are 3 games that I know of that has serious problems.
 
 * Beatmania: Game is too large even for the DSi.
 * Chou Denki Card Game: You need to initialize NVRAM, this is the last item on the first page (初期化).
+* Mahjong Touryuumon, speed too fast.
+
+There are a couple of games that has visual glitches.
+
+* Battle Spirits, missing status bar.
+* From TV Animation One Piece - Grand Battle Swan Colosseum, missing status bar.
+* Front Mission, missing some text boxes.
+* Makaimura, first boss sprites are glitchy.
+* Makai Toushi Sa-Ga, textboxes overlap sprites and background.
+* Romancing Sa-Ga, sprites overlap text boxes.
+* SD Gundam Operation U.C, missing status bar.
+* Sorobang, needs all 1024 tiles in 4color mode.
+* WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
 
 ## Credits
 
@@ -122,6 +135,6 @@ Dwedit for help and inspiration with a lot of things. https://www.dwedit.org
 
 Fredrik Ahlström
 
-Twitter @TheRealFluBBa
+Twitter/X @TheRealFluBBa
 
 http://www.github.com/FluBBaOfWard

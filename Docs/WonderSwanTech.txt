@@ -137,7 +137,7 @@
 
    Scrolling       - Each of layers can be scrolled horizontal or vertical using ports $10 - $13
 
-   Transparency    - Wonderswan       - if bit 3 on palette number is set - color 0 of that palette is transparent
+   Transparency    - Wonderswan       - if bit 2 on palette number is set - color 0 of that palette is transparent
                      Wonderswan color - color 0 of each palette is transparent
    Windows         - There are two windows - rectangular areas for disabling/enabling FG layer (FG window) or sprites(Sprite window)
 

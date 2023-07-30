@@ -1,5 +1,6 @@
 NitroSwan Todo
 
+	Add support for WS on/off.
 	Use R to map WS Y keys to d-pad?
 	Check save states, sprite problems in FFI?
 	Graphics on menu screen?
@@ -54,12 +55,25 @@ Games Not Working Fixed:
 		* Waiting on sample playing.
 
 Games With Glitches:
+	Battle Spirits, missing status bar.
+		* Changes tilemap address.
+	From TV Animation One Piece - Grand Battle Swan Colosseum, missing status bar.
+		* Changes tilemap address.
+	Front Mission, missing some text boxes.
+		* Changes tilemap address.
 	Mahjong Touryuumon, speed too fast.
 		* Apparently it sets the ROM waitstate to 3(?).
 	Makaimura, first boss sprites are glitchy.
-	Makai Toushi Sa-Ga, textboxes overlap Characters and background.
-	Sorobang, needs all 1024 tiles in 4color mode.
-	WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
+	Makai Toushi Sa-Ga, textboxes overlap sprites and background.
+		* Changes tilemap address.
+	Romancing Sa-Ga, sprites overlap text boxes.
+		* Sprite windows and sprite priority.
+	SD Gundam Operation U.C, missing status bar.
+		* Changes tilemap address.
+	Sorobang, incorrect tiles.
+		* Needs all 1024 tiles in 4color mode.
+	WonderSwanColor BIOS, incorrect tiles.
+		* Needs all 1024 tiles in 4color mode.
 Games With Glitches Fixed:
 	Cardcaptor Sakura, book dissolve in intro glitches the second time.
 		* Requires "correct" noise calculation.

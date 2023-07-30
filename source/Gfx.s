@@ -489,12 +489,7 @@ vblIrqHandler:
 	ldr r0,GFX_BG0CNT
 	str r0,[r6,#REG_BG0CNT]
 	ldr r0,GFX_DISPCNT
-	ldrb r1,[spxptr,#wsvLatchedDispCtrl]
 	ldrb r2,gGfxMask
-	tst r2,#0x20
-	bicne r1,r1,#0x20
-	tst r1,#0x20				;@ Win for Fg on?
-//	biceq r0,r0,#0x2000			;@ Turn off Fg-Window
 	bic r0,r0,r2,lsl#8
 	strh r0,[r6,#REG_DISPCNT]
 
@@ -561,8 +556,8 @@ copyWindowValues2:		;@ r0 = destination
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r10,lr}
 	add r0,r0,#((SCREEN_HEIGHT-GAME_HEIGHT)/2)*12		;@ 12 bytes per row
-	ldr r9,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+(SCREEN_WIDTH+GAME_WIDTH)/2
-	ldr r10,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+(SCREEN_HEIGHT+GAME_HEIGHT)/2
+	ldr r9,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<24)+(((SCREEN_WIDTH+GAME_WIDTH)/2)<<16)+(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+((SCREEN_WIDTH-GAME_WIDTH)/2)
+	ldr r10,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<24)+(((SCREEN_HEIGHT+GAME_HEIGHT)/2)<<16)+(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+((SCREEN_HEIGHT-GAME_HEIGHT)/2)
 	ldr r1,[spxptr,#dispBuff]
 	ldr r4,[spxptr,#windowBuff]
 	ldr r2,=DISP_CTRL_LUT
@@ -574,32 +569,31 @@ setWindowLoop:
 	and r7,r8,#0x00FF0000		;@ H end
 	cmp r6,#GAME_WIDTH
 	movpl r6,#GAME_WIDTH
-	add r6,r6,#(SCREEN_WIDTH-GAME_WIDTH)/2
 	add r7,r7,#0x10000
 	cmp r7,#GAME_WIDTH<<16
 	movpl r7,#GAME_WIDTH<<16
-	add r7,r7,#((SCREEN_WIDTH-GAME_WIDTH)/2)<<16
 	cmp r7,r6,lsl#16
 	orr r6,r6,r7,lsl#8
 	mov r6,r6,ror#24
 	movmi r6,#0
-	orr r6,r6,r9,lsl#16
+	add r6,r6,r9
 
-//	and r7,r8,#0x0000FF00		;@ V start
-	and r7,r8,#0x00000000		;@ V start
+	rsb r5,r3,#GAME_HEIGHT
+	and r7,r8,#0x0000FF00		;@ V start
 	mov r8,r8,lsr#24			;@ V end
+	cmp r7,r5,lsl#8
+	movcc r7,r5,lsl#8
 	cmp r7,#GAME_HEIGHT<<8
 	movpl r7,#GAME_HEIGHT<<8
-	add r7,r7,#((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8
-//	sub r7,r7,#1
 	add r8,r8,#1
+	cmp r8,r5
+	movcc r8,r5
 	cmp r8,#GAME_HEIGHT
 	movpl r8,#GAME_HEIGHT
-	add r8,r8,#(SCREEN_HEIGHT-GAME_HEIGHT)/2
 	cmp r8,r7,lsr#8
-	orr r7,r7,r8
 	movmi r7,#0
-	orr r7,r7,r10,lsl#16
+	orr r7,r7,r8
+	add r7,r7,r10
 
 	ldrb r8,[r1],#1
 	mov r8,r8,lsl#1
