@@ -573,20 +573,17 @@ setWindowLoop:
 	add r6,r9,r6,ror#24
 
 	rsb r5,r3,#GAME_HEIGHT
-	and r7,r8,#0x0000FF00		;@ V start
-	mov r8,r8,lsr#24			;@ V end
+	and r7,r8,#0x0000FF00		;@ V start, V end top byte
 	cmp r7,r5,lsl#8
 	movcc r7,r5,lsl#8
 	cmp r7,#GAME_HEIGHT<<8
 	movcs r7,#GAME_HEIGHT<<8
-	add r8,r8,#1
-	cmp r8,r5
-	movcc r8,r5
-	cmp r8,#GAME_HEIGHT
-	movcs r8,#GAME_HEIGHT
-	cmp r8,r7,lsr#8
-	orr r7,r7,r8
-	movcc r7,#0
+	cmp r8,#(GAME_HEIGHT-1)<<24
+	movcs r8,#(GAME_HEIGHT-1)<<24
+	add r8,r8,#1<<24
+	cmp r8,r5,lsl#24
+	movcc r8,r5,lsl#24
+	orr r7,r7,r8,lsr#24
 	add r7,r7,r10
 
 	ldrb r8,[r1],#1
