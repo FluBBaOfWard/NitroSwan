@@ -68,7 +68,8 @@ dispLutLoop:
 	biceq r2,r2,#0x0200
 	cmp r3,#0x30				;@ FG only outside Win0
 	biceq r2,r2,#0x0002
-	strh r2,[r0],#2
+	orr r2,r2,#0x002C0000		;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
+	str r2,[r0],#4
 	add r1,r1,#1
 	cmp r1,#64
 	bne dispLutLoop
@@ -121,7 +122,7 @@ gfxReset:					;@ Called with CPU reset
 ;@----------------------------------------------------------------------------
 gfxWinInit:
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r5}
+	stmfd sp!,{lr}
 	mov r0,#REG_BASE
 	;@ Horizontal start-end
 	ldr r1,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+(SCREEN_WIDTH+GAME_WIDTH)/2
@@ -135,16 +136,14 @@ gfxWinInit:
 	ldr r3,=0x002C3333			;@ WinIN0/1, BG0, BG1, SPR & COL inside Win0
 	str r3,[r0,#REG_WININ]		;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
 
-	ldr r4,=WININOUTBUFF1
-	ldr r5,=WININOUTBUFF2
+	ldr lr,=WININOUTBUFF1
 	mov r0,#SCREEN_HEIGHT
 gfxWinLoop:
-	stmia r4!,{r1-r3}
-	stmia r5!,{r1-r3}
+	stmia lr!,{r1-r3}
+	stmia lr!,{r1-r3}
 	subs r0,r0,#1
 	bne gfxWinLoop
-	ldmfd sp!,{r4-r5}
-	bx lr
+	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
 monoPalInit:
 	.type monoPalInit STT_FUNC
@@ -486,8 +485,6 @@ vblIrqHandler:
 	stmia r0,{r1-r3}			;@ DMA3 go
 
 	adr spxptr,sphinx0
-	ldr r0,GFX_BG0CNT
-	str r0,[r6,#REG_BG0CNT]
 	ldr r0,GFX_DISPCNT
 	ldrb r2,gGfxMask
 	bic r0,r0,r2,lsl#8
@@ -544,8 +541,7 @@ copyWindowValues:		;@ r0 = destination
 	mov r3,#GAME_HEIGHT
 setDispLoop:
 	ldrb lr,[r1],#1
-	mov lr,lr,lsl#1
-	ldrh lr,[r2,lr]
+	ldr lr,[r2,lr,lsl#2]
 	strh lr,[r0],#2
 	subs r3,r3,#1
 	bne setDispLoop
@@ -556,7 +552,7 @@ copyWindowValues2:		;@ r0 = destination
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r10,lr}
 	add r0,r0,#((SCREEN_HEIGHT-GAME_HEIGHT)/2)*12		;@ 12 bytes per row
-	ldr r9,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<24)+(((SCREEN_WIDTH+GAME_WIDTH)/2)<<16)+(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+((SCREEN_WIDTH-GAME_WIDTH)/2)
+	ldr r9,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<24)+(((SCREEN_WIDTH+GAME_WIDTH)/2)<<16)+(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+((SCREEN_WIDTH-GAME_WIDTH)/2 + 1)
 	ldr r10,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<24)+(((SCREEN_HEIGHT+GAME_HEIGHT)/2)<<16)+(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+((SCREEN_HEIGHT-GAME_HEIGHT)/2)
 	ldr r1,[spxptr,#dispBuff]
 	ldr r4,[spxptr,#windowBuff]
@@ -568,15 +564,13 @@ setWindowLoop:
 	and r6,r8,#0x000000FF		;@ H start
 	and r7,r8,#0x00FF0000		;@ H end
 	cmp r6,#GAME_WIDTH
-	movpl r6,#GAME_WIDTH
-	add r7,r7,#0x10000
-	cmp r7,#GAME_WIDTH<<16
-	movpl r7,#GAME_WIDTH<<16
+	movcs r6,#GAME_WIDTH
+	cmp r7,#(GAME_WIDTH-1)<<16
+	movcs r7,#(GAME_WIDTH-1)<<16
 	cmp r7,r6,lsl#16
 	orr r6,r6,r7,lsl#8
-	mov r6,r6,ror#24
-	movmi r6,#0
-	add r6,r6,r9
+	movcc r6,#0
+	add r6,r9,r6,ror#24
 
 	rsb r5,r3,#GAME_HEIGHT
 	and r7,r8,#0x0000FF00		;@ V start
@@ -584,21 +578,19 @@ setWindowLoop:
 	cmp r7,r5,lsl#8
 	movcc r7,r5,lsl#8
 	cmp r7,#GAME_HEIGHT<<8
-	movpl r7,#GAME_HEIGHT<<8
+	movcs r7,#GAME_HEIGHT<<8
 	add r8,r8,#1
 	cmp r8,r5
 	movcc r8,r5
 	cmp r8,#GAME_HEIGHT
-	movpl r8,#GAME_HEIGHT
+	movcs r8,#GAME_HEIGHT
 	cmp r8,r7,lsr#8
-	movmi r7,#0
 	orr r7,r7,r8
+	movcc r7,#0
 	add r7,r7,r10
 
 	ldrb r8,[r1],#1
-	mov r8,r8,lsl#1
-	ldrh r8,[r2,r8]
-	orr r8,r8,#0x002C0000		;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
+	ldr r8,[r2,r8,lsl#2]
 	stmia r0!,{r6-r8}
 	subs r3,r3,#1
 	bne setWindowLoop
@@ -755,7 +747,7 @@ WININOUTBUFF1:
 WININOUTBUFF2:
 	.space SCREEN_HEIGHT*12		;@ Scrollbuffer.
 DISP_CTRL_LUT:
-	.space 64*2					;@ Convert from WS DispCtrl to NDS/GBA WinCtrl
+	.space 64*4					;@ Convert from WS DispCtrl to NDS/GBA WinCtrl
 MAPPED_RGB:
 	.space 0x2000				;@ 4096*2
 MAPPED_BNW:
