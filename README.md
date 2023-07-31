@@ -107,13 +107,8 @@ There are 3 games that I know of that has serious problems.
 
 There are a couple of games that has visual glitches.
 
-* Battle Spirits, missing status bar.
-* From TV Animation One Piece - Grand Battle Swan Colosseum, missing status bar.
-* Front Mission, missing some text boxes.
 * Makaimura, first boss sprites are glitchy.
-* Makai Toushi Sa-Ga, textboxes overlap sprites and background.
 * Romancing Sa-Ga, sprites overlap text boxes.
-* SD Gundam Operation U.C, missing status bar.
 * Sorobang, needs all 1024 tiles in 4color mode.
 * WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
 
