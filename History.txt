@@ -1,11 +1,12 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.0 - 2023-07-31 (FluBBa)
+V0.6.0 - 2023-08-02 (FluBBa)
 	Added per line emulation of Display Control register.
 	Added per line emulation of FG Window register.
 	Added per line emulation of Map Address register.
 	Added differences for the 2 cart mappers.
+	Optimized tile map rendering.
 	Optimized cpu core.
 
 V0.5.2 - 2023-04-21 (FluBBa)

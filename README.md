@@ -105,8 +105,11 @@ There are 3 games that I know of that has serious problems.
 * Chou Denki Card Game: You need to initialize NVRAM, this is the last item on the first page (初期化).
 * Mahjong Touryuumon, speed too fast.
 
-There are a couple of games that has visual glitches.
+There are a couple of games that have visual glitches.
 
+* Final Lap 2000, incorrect road colors.
+* Final Lap Special - GT & Formula Machine, incorrect road colors.
+* From TV Animation One Piece - Grand Battle Swan Colosseum, incorrect sky color.
 * Makaimura, first boss sprites are glitchy.
 * Romancing Sa-Ga, sprites overlap text boxes.
 * Sorobang, needs all 1024 tiles in 4color mode.
