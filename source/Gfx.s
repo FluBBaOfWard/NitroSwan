@@ -569,7 +569,7 @@ setWindowLoop:
 	movcs r7,#(GAME_WIDTH-1)<<16
 	cmp r7,r6,lsl#16
 	orr r6,r6,r7,lsl#8
-	movcc r6,#0
+	movcc r6,#-1
 	add r6,r9,r6,ror#24
 
 	rsb r5,r3,#GAME_HEIGHT<<24
