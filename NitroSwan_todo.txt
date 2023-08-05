@@ -1,6 +1,7 @@
 NitroSwan Todo
 
-	Check that save states are working.
+	Optimize cart mapping, more RomPtrs.
+	Handle Sprite Window some how.
 	Add support for WS on/off.
 	Use R to map WS Y keys to d-pad?
 	Check save states, sprite problems in FFI?
@@ -56,6 +57,10 @@ Games Not Working Fixed:
 		* Waiting on sample playing.
 
 Games With Glitches:
+	Digimon - Anode Tamer & Cathode Tamer, missing background gradient in battles.
+		* Changes palette per line.
+	Final Fantasy, Sprites show in dialog windows.
+		* Sprite windows.
 	Final Lap 2000, road colors incorrect.
 		* Changes palette per line.
 	Final Lap Special - GT & Formula Machine, road colors incorrect.
@@ -64,7 +69,10 @@ Games With Glitches:
 		* Changes palette per line.
 	Mahjong Touryuumon, speed too fast.
 		* Apparently it sets the ROM waitstate to 3(?).
-	Makaimura, first boss sprites are glitchy.
+	Makaimura, first boss sprites are glitchy, gargoyles in intro should not show up on the right.
+		* Sprite Window and...?
+	Rockman & Forte - Mirai Kara no Chousensha, no background fade in intro.
+		* Changes palette per line?
 	Romancing Sa-Ga, sprites overlap text boxes.
 		* Sprite windows and sprite priority.
 	Sorobang, incorrect tiles.

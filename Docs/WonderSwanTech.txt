@@ -2,7 +2,7 @@
   /   |   \ ___ __/ \__ ___  ___  /\__
   \  / \  // __>\_   _// __|/ __\/    \
    \_____/_\__ \  \_/  \___|\___/\_/\_/
-          \____/      2022-11-13
+          \____/      2023-08-05
 
 1. ABOUT
    WStech original doc made by Judge and Dox
@@ -430,20 +430,20 @@
                 ---
                 111   16 col/tile 'packed' mode   -  tiles like in Genesis, 16 col/tile
                 110   16 col/tile 'layered' mode  -  tiles like in GameGear, 16 col/tile
-                010    4 col/tile                 -  the same as mono (below) but using color palettes, 4 cols/tile, one tile = 16 bytes, WSC only
+                100    4 col/tile                 -  the same as mono (below) but using color palettes, 4 cols/tile, one tile = 16 bytes, WSC only
                 000    4 col/tile mono            -  tiles like in GameBoy,
-                [bit 7 = 16/4 color/tile , bit 6 - color/mono mode, bit 5 - 'packed' mode on/off]
+                [bit 7 = color/mono mode, bit 6 - 16/4 color/tile, bit 5 - 'packed' mode on/off]
  - $61 - $00 - ???
  - $62 - $00 - WSC System
                bit 7 = System (0=WonderSwan Color, 1=SwanCrystal)
                bit 0 = Power off, write 1
  - $63 - $00 - ???
- - $64 - $00 - ???
- - $65 - $00 - ???
- - $66 - $00 - ???
- - $67 - $00 - ???
- - $68 - $00 - ???
- - $69 - $00 - ???
+ - $64 - $00 - HYPERV_L	Left channel Hyper Voice
+ - $65 - $00 - ^^^
+ - $66 - $00 - HYPERV_R	Right channel Hyper Voice
+ - $67 - $00 - ^^^
+ - $68 - $00 - HYPERV_SL	Left channel Hyper Voice input
+ - $69 - $00 - HYPERV_SR	Right channel Hyper Voice input
  - $6A - $00 - REG_HYPER_CTRL
                bit 7   = Enable
                bit 4-6 = Unknown
@@ -454,8 +454,12 @@
 							3   data <<3
                bit 0-1 = vol
  - $6B - $0F - REG_HYPER_CHAN_CTRL
-               bit 6     Right channel enable
-               bit 5     Left channel enable
+               bit 5-6 = Mode
+							0   Stereo
+							1   Mono, left only
+							2   Mono, right only
+							3   Mono, both sides
+			   bit 4   = Reset  input to the left channel.
                bit 0-3   Nothing?
  - $6C - $00 - ???
  - $6D - $00 - ???
