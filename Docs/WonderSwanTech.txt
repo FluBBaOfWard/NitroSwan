@@ -208,7 +208,7 @@
  14,15 - Checksum = sum of all ROM bytes except two last ones ( where checksum is stored)
 
 7. INTERRUPTS
-   The Wonderswan CPU recognizes 7 interrupts from the hardware, these are:
+   The Wonderswan CPU recognizes 8 interrupts from the hardware, these are:
     7 - HBlank Timer
     6 - VBlank
     5 - VBlank Timer

@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.0 2023-08-05"
+#define EMUVERSION "V0.6.1 2023-08-08"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -31,7 +31,7 @@ static void languageSet(void);
 
 static void uiMachine(void);
 static void uiDebug(void);
-static void updateGameInfo(void);
+static void updateGameInfo(char *buffer);
 
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
@@ -53,7 +53,8 @@ const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, 
 u8 gGammaValue = 0;
 u8 gContrastValue = 3;
 u8 gBorderEnable = 1;
-char gameInfoString[32];
+u8 serialPos = 0;
+char serialOut[32];
 
 const char *const autoTxt[]  = {"Off", "On", "With R"};
 const char *const speedTxt[] = {"Normal", "200%", "Max", "50%"};
@@ -123,15 +124,17 @@ void uiOptions() {
 }
 
 void uiAbout() {
+	char gameInfoString[32];
 	cls(1);
-	updateGameInfo();
+	updateGameInfo(gameInfoString);
 	drawTabs();
 	drawMenuText("B:        WS B button", 4, 0);
 	drawMenuText("A:        WS A button", 5, 0);
 	drawMenuText("Start:    WS Start button", 6, 0);
-	drawMenuText("Select:   Sound button", 7, 0);
+	drawMenuText("Select:   WS Sound button", 7, 0);
+	drawMenuText("DPad:     WS X1-X4", 8, 0);
 
-	drawMenuText(gameInfoString, 9, 0);
+	drawMenuText(gameInfoString, 10, 0);
 
 	drawMenuText("NitroSwan    " EMUVERSION, 21, 0);
 	drawMenuText("Sphinx       " SPHINXVERSION, 22, 0);
@@ -211,10 +214,10 @@ void resetGame() {
 	loadCart();
 }
 
-void updateGameInfo() {
+void updateGameInfo(char *buffer) {
 	char catalog[8];
 	char2HexStr(catalog, gGameID);
-	strlMerge(gameInfoString, "Game #: 0x", catalog, sizeof(gameInfoString));
+	strlMerge(buffer, "Game #: 0x", catalog, 32);
 }
 //---------------------------------------------------------------------------------
 void debugIO(u16 port, u8 val, const char *message) {
@@ -239,6 +242,15 @@ void debugIOUnmappedR(u16 port, u8 val) {
 }
 void debugIOUnmappedW(u16 port, u8 val) {
 	debugIO(port, val, "Unmapped W port:");
+}
+void debugSerialOutW(u8 val) {
+	if (val < 0x80) {
+		serialOut[serialPos++] = val;
+		if (serialPos >= 32 || val == 0) {
+			serialPos = 0;
+			debugOutput(serialOut);
+		}
+	}
 }
 void debugDivideError() {
 	debugOutput("Divide Error.");

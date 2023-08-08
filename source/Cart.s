@@ -236,6 +236,12 @@ fixRomSizeAndPtr:
 	add r2,r2,r0
 	sub r2,r2,r1
 	str r2,romPtr
+	sub r2,r2,#0x20000
+	str r2,romPtr2
+	sub r2,r2,#0x10000
+	str r2,romPtr3
+	sub r2,r2,#0x10000
+	str r2,romPtr4
 
 	bx lr
 ;@----------------------------------------------------------------------------
@@ -276,8 +282,7 @@ BankSwitch4_F_W:			;@ 0x40000-0xFFFFF
 	orr r1,r1,#0x40000000
 
 	ldr r0,romMask
-	ldr r2,romPtr
-	sub r2,r2,#0x40000
+	ldr r2,romPtr4
 	add lr,v30ptr,#v30MemTblInv-5*4
 tbLoop2:
 	and r3,r0,r1,ror#28
@@ -328,8 +333,7 @@ BankSwitch2_L_W:			;@ 0x20000-0x2FFFF
 	strb r1,[spxptr,#wsvBnk2SlctX]
 
 	ldr r0,romMask
-	ldr r2,romPtr
-	sub r2,r2,#0x20000
+	ldr r2,romPtr2
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16			;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTblInv-3*4]
@@ -351,8 +355,7 @@ BankSwitch3_L_W:			;@ 0x30000-0x3FFFF
 	strb r1,[spxptr,#wsvBnk3SlctX]
 
 	ldr r0,romMask
-	ldr r2,romPtr
-	sub r2,r2,#0x30000
+	ldr r2,romPtr3
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16			;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTblInv-4*4]
@@ -581,6 +584,12 @@ wsHeader:
 romSpacePtr:
 	.long 0
 romPtr:
+	.long 0
+romPtr2:
+	.long 0
+romPtr3:
+	.long 0
+romPtr4:
 	.long 0
 g_BIOSBASE_BNW:
 	.long 0

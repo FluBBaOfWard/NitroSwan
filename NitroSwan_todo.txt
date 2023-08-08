@@ -1,14 +1,13 @@
 NitroSwan Todo
 
-	Optimize cart mapping, more RomPtrs.
-	Handle Sprite Window some how.
+	Map serial port to debug out.
 	Add support for WS on/off.
+	Add support for LCD on/off.
+	Handle Sprite Window some how.
 	Use R to map WS Y keys to d-pad?
-	Check save states, sprite problems in FFI?
 	Graphics on menu screen?
 	Find speed hacks.
-	Fix better sound?
-	Add serial port emulation.
+	Fix better sound? Update twice per raster row.
 	Sprite priority can't be fixed.
 
 GFX:
