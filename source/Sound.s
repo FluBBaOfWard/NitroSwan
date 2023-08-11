@@ -6,6 +6,7 @@
 	.global soundReset
 	.global VblSound2
 	.global setMuteSoundGUI
+	.global setMuteSoundChip
 	.global soundUpdate
 
 	.extern pauseEmulation
@@ -37,6 +38,7 @@ soundReset:
 	str r0,pcmWritePtr
 	mov r0,#0
 	str r0,pcmReadPtr
+	strb r0,muteSoundChip
 	ldr spxptr,=sphinx0
 	bl wsAudioReset				;@ sound
 	mov r0,#WRITE_BUFFER_SIZE
@@ -52,6 +54,13 @@ setMuteSoundGUI:
 	ldr r1,=pauseEmulation		;@ Output silence when emulation paused.
 	ldrb r0,[r1]
 	strb r0,muteSoundGUI
+	bx lr
+;@----------------------------------------------------------------------------
+setMuteSoundChip:
+	.type setMuteSoundChip STT_FUNC
+;@----------------------------------------------------------------------------
+	mov r0,#1
+	strb r0,muteSoundChip
 	bx lr
 ;@----------------------------------------------------------------------------
 VblSound2:					;@ r0=length, r1=pointer

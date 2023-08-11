@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.1 2023-08-08"
+#define EMUVERSION "V0.6.1 2023-08-11"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -211,6 +211,7 @@ void ejectGame() {
 
 void resetGame() {
 	checkMachine();
+	powerIsOn = true;
 	loadCart();
 }
 

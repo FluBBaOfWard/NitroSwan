@@ -12,6 +12,7 @@ extern "C" {
 
 void soundInit(void);
 void setMuteSoundGUI(void);
+void setMuteSoundChip(void);
 mm_word VblSound2(mm_word length, mm_addr dest, mm_stream_formats format);
 
 #ifdef __cplusplus

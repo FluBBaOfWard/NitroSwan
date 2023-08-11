@@ -1,9 +1,10 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.1 - 2023-08-08 (FluBBa)
-	Optimized mapper writing.
+V0.6.1 - 2023-08-11 (FluBBa)
+	Added power on/off ability.
 	Fixed sound mixing.
+	Optimized mapper writing.
 
 V0.6.0 - 2023-08-05 (FluBBa)
 	Added per line emulation of Display Control register.

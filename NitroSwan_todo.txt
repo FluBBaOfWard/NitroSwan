@@ -1,7 +1,6 @@
 NitroSwan Todo
 
 	Map serial port to debug out.
-	Add support for WS on/off.
 	Add support for LCD on/off.
 	Handle Sprite Window some how.
 	Use R to map WS Y keys to d-pad?
@@ -78,6 +77,7 @@ Games With Glitches:
 		* Needs all 1024 tiles in 4color mode.
 	WonderSwanColor BIOS, incorrect tiles.
 		* Needs all 1024 tiles in 4color mode.
+
 Games With Glitches Fixed:
 	Battle Spirits, missing status bar.
 		* Changes tilemap address.

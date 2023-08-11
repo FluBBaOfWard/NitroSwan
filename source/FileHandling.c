@@ -338,6 +338,7 @@ bool loadGame(const char *gameName) {
 			if ( emuSettings & AUTOLOAD_STATE ) {
 				loadState();
 			}
+			powerIsOn = true;
 			closeMenu();
 			return false;
 		}
