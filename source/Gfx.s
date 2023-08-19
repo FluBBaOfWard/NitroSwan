@@ -60,7 +60,7 @@ gfxInit:					;@ Called from machineInit
 	mov r1,#0
 dispLutLoop:
 	and r2,r1,#0x03				;@ BG & FG
-	tst r1,#0x04
+	tst r1,#0x04				;@ WS Sprites on?
 	orrne r2,r2,#0x10			;@ Sprites
 	orr r2,r2,r2,lsl#8			;@ Set both Win0 & Win1
 	and r3,r1,#0x30				;@ FG Win Ctrl
@@ -68,7 +68,7 @@ dispLutLoop:
 	biceq r2,r2,#0x0200
 	cmp r3,#0x30				;@ FG only outside Win0
 	biceq r2,r2,#0x0002
-	orr r2,r2,#0x002C0000		;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
+	orr r2,r2,#0x002C0000		;@ WinOUT, Only BG2, BG3 & BLEND enabled outside Windows.
 	str r2,[r0],#4
 	add r1,r1,#1
 	cmp r1,#64
@@ -133,8 +133,8 @@ gfxWinInit:
 	orr r2,r2,r2,lsl#16			;@ Also WIN1V
 	str r2,[r0,#REG_WIN0V]
 
-	ldr r3,=0x002C3333			;@ WinIN0/1, BG0, BG1, SPR & COL inside Win0
-	str r3,[r0,#REG_WININ]		;@ WinOUT, Only BG2, BG3 & COL enabled outside Windows.
+	ldr r3,=0x002C3333			;@ WinIN0/1, BG0, BG1, SPR & BLEND inside Win0
+	str r3,[r0,#REG_WININ]		;@ WinOUT, Only BG2, BG3 & BLEND enabled outside Windows.
 
 	ldr lr,=WININOUTBUFF1
 	mov r0,#SCREEN_HEIGHT
@@ -550,10 +550,10 @@ setDispLoop:
 ;@----------------------------------------------------------------------------
 copyWindowValues2:		;@ r0 = destination
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r10,lr}
+	stmfd sp!,{r4-r9,lr}
 	add r0,r0,#((SCREEN_HEIGHT-GAME_HEIGHT)/2)*12		;@ 12 bytes per row
 	ldr r9,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<24)+(((SCREEN_WIDTH+GAME_WIDTH)/2)<<16)+(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+((SCREEN_WIDTH-GAME_WIDTH)/2 + 1)
-	ldr r10,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<24)+(((SCREEN_HEIGHT+GAME_HEIGHT)/2)<<16)+(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+((SCREEN_HEIGHT-GAME_HEIGHT)/2 + 1)
+	ldr lr,=(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<24)+(((SCREEN_HEIGHT+GAME_HEIGHT)/2)<<16)+(((SCREEN_HEIGHT-GAME_HEIGHT)/2)<<8)+((SCREEN_HEIGHT-GAME_HEIGHT)/2 + 1)
 	ldr r1,[spxptr,#dispBuff]
 	ldr r4,[spxptr,#windowBuff]
 	ldr r2,=DISP_CTRL_LUT
@@ -583,7 +583,7 @@ setWindowLoop:
 	cmp r8,r5
 	subcc r8,r5,#1<<24
 	orr r7,r7,r8,lsr#24
-	add r7,r7,r10
+	add r7,r7,lr
 
 	ldrb r8,[r1],#1
 	ldr r8,[r2,r8,lsl#2]
@@ -591,7 +591,7 @@ setWindowLoop:
 	subs r3,r3,#1<<24
 	bne setWindowLoop
 
-	ldmfd sp!,{r4-r10,pc}
+	ldmfd sp!,{r4-r9,pc}
 
 ;@----------------------------------------------------------------------------
 gfxRefresh:					;@ Called from C when changing scaling.

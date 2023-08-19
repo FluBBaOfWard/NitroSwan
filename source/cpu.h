@@ -9,7 +9,8 @@ extern u8 waitMaskIn;
 extern u8 waitMaskOut;
 
 void run(void);
-void stepFrame(void);
+void runScanLine(void);
+void runFrame(void);
 void cpuReset(void);
 
 #ifdef __cplusplus

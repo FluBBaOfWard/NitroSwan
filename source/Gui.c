@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.1 2023-08-11"
+#define EMUVERSION "V0.6.1 2023-08-19"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -28,6 +28,7 @@ static void speedHackSet(void);
 static void refreshChgSet(void);
 static void borderSet(void);
 static void languageSet(void);
+static void stepFrame(void);
 
 static void uiMachine(void);
 static void uiDebug(void);
@@ -261,6 +262,10 @@ void debugUndefinedInstruction() {
 }
 void debugCrashInstruction() {
 	debugOutput("CPU Crash! (0xF1)");
+}
+
+void stepFrame() {
+	runFrame();
 }
 //---------------------------------------------------------------------------------
 /// Switch between Player 1 & Player 2 controls

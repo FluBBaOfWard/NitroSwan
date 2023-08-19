@@ -58,7 +58,7 @@ rom_W:						;@ Write ROM address (error)
 	mov r0,#0xB0
 	bx lr
 ;@----------------------------------------------------------------------------
-setBootRomOverlay:			;@ r0=arg0, 0=remove overlay, 1=WS, 2=WSC
+setBootRomOverlay:			;@ r0=arg0, 0=remove overlay, 1=WS, 2=WSC/SC
 ;@----------------------------------------------------------------------------
 	cmp r0,#3
 	ldrmi r1,=bootRomSwitch

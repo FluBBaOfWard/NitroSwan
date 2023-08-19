@@ -1,7 +1,7 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.1 - 2023-08-11 (FluBBa)
+V0.6.1 - 2023-08-19 (FluBBa)
 	Added power on/off ability.
 	Fixed sound mixing.
 	Optimized mapper writing.

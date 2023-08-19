@@ -311,6 +311,7 @@ BankSwitch1_L_W:			;@ 0x10000-0x1FFFF
 	ldr r0,sramSize
 	movs r0,r0,lsr#16			;@ 64kB blocks.
 	subne r0,r0,#1
+	and r0,r0,#3				;@ Mask for actual SRAM banks we emulate
 	ldr r2,=wsSRAM-0x10000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16			;@ 64kB blocks.

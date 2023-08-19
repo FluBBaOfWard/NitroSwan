@@ -1,6 +1,5 @@
 #ifdef __arm__
 
-#include "Shared/nds_asm.h"
 #include "ARMV30MZ/ARMV30MZ.i"
 #include "ARMV30MZ/ARMV30MZmac.h"
 #include "Sphinx/Sphinx.i"
@@ -8,7 +7,8 @@
 #define CYCLE_PSL (256)
 
 	.global run
-	.global stepFrame
+	.global runScanLine
+	.global runFrame
 	.global cpuInit
 	.global cpuReset
 	.global frameTotal
@@ -93,30 +93,39 @@ waitCountOut:		.byte 0
 waitMaskOut:		.byte 0
 
 ;@----------------------------------------------------------------------------
-stepFrame:					;@ Return after 1 frame
-	.type stepFrame STT_FUNC
+runScanLine:				;@ Return after 1 scanline
+	.type runScanLine STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
 	ldr v30ptr,=V30OpTable
-	add r1,v30ptr,#v30PrefixBase
-	ldmia r1,{v30csr-v30cyc}		;@ Restore V30MZ state
+	bl wsScanLine
+	ldmfd sp!,{r4-r11,lr}
+	bx lr
+;@----------------------------------------------------------------------------
+wsScanLine:
+;@----------------------------------------------------------------------------
+	stmfd sp!,{lr}
+	mov r0,#CYCLE_PSL
+	bl V30RestoreAndRunXCycles
+	add r0,v30ptr,#v30PrefixBase
+	stmia r0,{v30csr-v30cyc}	;@ Save V30MZ state
+	ldmfd sp!,{lr}
+	ldr spxptr,=sphinx0
+	b wsvDoScanline
+;@----------------------------------------------------------------------------
+runFrame:					;@ Return after 1 frame
+	.type runFrame STT_FUNC
+;@----------------------------------------------------------------------------
+	stmfd sp!,{r4-r11,lr}
+	ldr v30ptr,=V30OpTable
 ;@----------------------------------------------------------------------------
 wsStepLoop:
 ;@----------------------------------------------------------------------------
-	mov r0,#CYCLE_PSL
-	bl V30RunXCycles
-	ldr spxptr,=sphinx0
-	bl wsvDoScanline
+	bl wsScanLine
 	cmp r0,#0
 	bne wsStepLoop
-
-	mov r0,#CYCLE_PSL
-	bl V30RunXCycles
-	ldr spxptr,=sphinx0
-	bl wsvDoScanline
+	bl wsScanLine
 ;@----------------------------------------------------------------------------
-	add r0,v30ptr,#v30PrefixBase
-	stmia r0,{v30csr-v30cyc}		;@ Save V30MZ state
 
 	ldr r1,frameTotal
 	add r1,r1,#1
