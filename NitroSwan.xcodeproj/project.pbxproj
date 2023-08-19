@@ -15,6 +15,8 @@
 		9C19569F276F4E340044B938 /* ARMV30MZ.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = ARMV30MZ.s; sourceTree = "<group>"; };
 		9C1956A0276F5B9C0044B938 /* ARMV30MZmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMV30MZmac.h; sourceTree = "<group>"; };
 		9C1FFFA72684A277005851ED /* EmuSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuSettings.h; sourceTree = "<group>"; };
+		9C2E09E82A90C42B00103566 /* IPSPatch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = IPSPatch.c; sourceTree = "<group>"; };
+		9C2E09E92A90C42B00103566 /* IPSPatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IPSPatch.h; sourceTree = "<group>"; };
 		9C42404027E2264A0042454B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9C443D79278AE4110029EE11 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9C45D64927C61E0E00B4E74D /* WSLogo.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = WSLogo.bmp; sourceTree = "<group>"; };
@@ -214,6 +216,8 @@
 				A47F092C20863AF5004E1DA6 /* EmuMenu.c */,
 				A4D0E10B208930D100401463 /* FileHelper.h */,
 				A4D0E112208930D100401463 /* FileHelper.c */,
+				9C2E09E92A90C42B00103566 /* IPSPatch.h */,
+				9C2E09E82A90C42B00103566 /* IPSPatch.c */,
 				A4D0E10A208930D100401463 /* crc32.h */,
 				A4D0E111208930D100401463 /* crc32.c */,
 				A4D0E11D2089E28D00401463 /* AsmExtra.h */,

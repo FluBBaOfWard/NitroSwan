@@ -34,6 +34,7 @@ int loadIntEeproms(void);
 int saveIntEeproms(void);
 void selectEEPROM(void);
 void clearIntEeproms(void);
+void selectIPS(void);
 
 #ifdef __cplusplus
 } // extern "C"

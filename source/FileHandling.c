@@ -6,6 +6,7 @@
 #include "Shared/EmuMenu.h"
 #include "Shared/EmuSettings.h"
 #include "Shared/FileHelper.h"
+#include "Shared/IPSPatch.h"
 #include "Shared/AsmExtra.h"
 #include "Main.h"
 #include "Gui.h"
@@ -457,4 +458,15 @@ void selectCrystalBios() {
 		loadCrystalBIOS();
 	}
 	cls(0);
+}
+
+void selectIPS() {
+	pauseEmulation = true;
+	ui10();
+	const char *fileName = browseForFileType(".ips");
+	if ( patchRom(romSpacePtr, fileName, gRomSize) ) {
+		checkMachine();
+		loadCart();
+		backOutOfMenu();
+	}
 }

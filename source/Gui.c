@@ -37,7 +37,7 @@ static void updateGameInfo(char *buffer);
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
 const fptr fnList0[] = {uiDummy};
-const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, saveSettings, ejectGame, resetGame, ui9};
+const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, selectIPS, saveSettings, ejectGame, resetGame, ui9};
 const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
@@ -107,6 +107,7 @@ void uiFile() {
 	drawMenuItem("Save State");
 	drawMenuItem("Load NVRAM");
 	drawMenuItem("Save NVRAM");
+	drawMenuItem("Load Patch");
 	drawMenuItem("Save Settings");
 	drawMenuItem("Eject Game");
 	drawMenuItem("Reset Console");
