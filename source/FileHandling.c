@@ -15,12 +15,16 @@
 #include "Gfx.h"
 #include "io.h"
 #include "Memory.h"
+#include "InternalEEPROM.h"
 
 static const char *const folderName = "nitroswan";
 static const char *const settingName = "settings.cfg";
 static const char *const wsEepromName = "wsinternal.eeprom";
 static const char *const wscEepromName = "wscinternal.eeprom";
 static const char *const scEepromName = "scinternal.eeprom";
+static const char *const nitroSwanName = "@ NitroSwan @";
+
+char translateDSChar(u16 char16);
 
 ConfigData cfg;
 
@@ -36,51 +40,91 @@ int initSettings() {
 	cfg.birthYear[1] = 0x99;
 	cfg.birthMonth = bin2BCD(PersonalData->birthMonth);
 	cfg.birthDay = bin2BCD(PersonalData->birthDay);
+	cfg.sex = 0;
+	cfg.bloodType = 0;
 	cfg.language = (PersonalData->language == 0) ? 0 : 1;
 
 	int i;
-	for (i = 0; i < PersonalData->nameLen; i++) {
-		s16 char16 = PersonalData->name[i];
-		if (char16 < 0xFF) {
-			cfg.name[i] = char16;
-		}
-		else {
-			break;
-		}
+	for (i = 0; i < 13; i++) {
+		s16 char16 = nitroSwanName[i];
+		cfg.name[i] = translateDSChar(char16);
 	}
+//	for (i = 0; i < PersonalData->nameLen; i++) {
+//		s16 char16 = PersonalData->name[i];
+//		debugIO(char16, 0, "C");
+//		cfg.name[i] = translateDSChar(char16);
+//	}
 	cfg.name[i] = 0;
 	return 0;
 }
 
+char translateDSChar(u16 char16) {
+	// Translate numbers.
+	if (char16 > 0x2F && char16 < 0x3A) {
+		return char16 - 0x2F;
+	}
+	// Translate normal chars.
+	if ((char16 > 0x40 && char16 < 0x5B) || (char16 > 0x60 && char16 < 0x7B)) {
+		return (char16 & 0x1F) + 10;
+	}
+	// Check for heart (♥︎).
+	if (char16 == 0xE017 || char16 == 0x0040) {
+		return 0x25;
+	}
+	// Check for note (♪).
+	if (char16 == 0x266A) {
+		return 0x26;
+	}
+	// Check for plus (+).
+	if (char16 == 0x002B) {
+		return 0x27;
+	}
+	// Check for minus/dash (-).
+	if (char16 == 0x002D || char16 == 0x30FC) {
+		return 0x28;
+	}
+	// Check for different question marks (?).
+	if (char16 == 0x003F || char16 == 0xFF1F || char16 == 0xE011) {
+		return 0x29;
+	}
+	// Check for different dots/full stop (.).
+	if (char16 == 0x002E || char16 == 0x3002) {
+		return 0x2A;
+	}
+	return 0; // Space
+}
+
 bool updateSettingsFromWS() {
-	int val = 0;
 	bool changed = false;
+	IntEEPROM *intProm = (IntEEPROM *)intEeprom.eepMemory;
 
-	//val = t9LoadB(0x6F8B);
-	if (cfg.birthYear[0] != (val & 0xFF) || cfg.birthYear[1] != ((val >> 8) & 0xFF)) {
-		cfg.birthYear[0] = val;
-		cfg.birthYear[1] = (val >> 8);
+	WSUserData userData = intProm->userData;
+	if (cfg.birthYear[0] != userData.birthYear[0]
+		|| cfg.birthYear[1] != userData.birthYear[1]) {
+		cfg.birthYear[0] = userData.birthYear[0];
+		cfg.birthYear[1] = userData.birthYear[1];
 		changed = true;
 	}
-	//val = t9LoadB(0x6F8C);
-	if (cfg.birthMonth != val) {
-		cfg.birthMonth = val;
+	if (cfg.birthMonth != userData.birthMonth) {
+		cfg.birthMonth = userData.birthMonth;
 		changed = true;
 	}
-	//val = t9LoadB(0x6F8D);
-	if (cfg.birthDay != val) {
-		cfg.birthDay = val;
+	if (cfg.birthDay != userData.birthDay) {
+		cfg.birthDay = userData.birthDay;
 		changed = true;
 	}
-
-	//val = t9LoadB(0x6F87) & 1;
-	if (cfg.language != val) {
-		cfg.language = val;
-		gLang = val;
+	if (cfg.sex != userData.sex) {
+		cfg.sex = userData.sex;
 		changed = true;
+	}
+	if (cfg.bloodType != userData.bloodType) {
+		cfg.bloodType = userData.bloodType;
+		changed = true;
+	}
+	if (memcmp(cfg.name, intProm->userData.name, 16) != 0) {
+		memcpy(cfg.name, intProm->userData.name, 16);
 	}
 	settingsChanged |= changed;
-
 	return changed;
 }
 
@@ -232,7 +276,6 @@ int loadIntEeprom(const char *name, u8 *dest, int size) {
 		fclose(file);
 	}
 	else {
-		initIntEeprom(dest);
 		infoOutput("Couldn't open file:");
 		infoOutput(name);
 		return 1;
@@ -256,21 +299,36 @@ int saveIntEeprom(const char *name, u8 *source, int size) {
 	return 0;
 }
 
+static void initIntEepromWS(IntEEPROM *intProm) {
+	memcpy(intProm->userData.name, cfg.name, 16);
+	intProm->userData.birthYear[0] = cfg.birthYear[0];
+	intProm->userData.birthYear[1] = cfg.birthYear[1];
+	intProm->userData.birthMonth = cfg.birthMonth;
+	intProm->userData.birthDay = cfg.birthDay;
+	intProm->userData.sex = cfg.sex;
+	intProm->userData.bloodType = cfg.bloodType;
+}
+static void initIntEepromWSC(IntEEPROM *intProm) {
+	intProm->splashData.consoleFlags = 3;
+	initIntEepromWS(intProm);
+}
+
+
 static void clearIntEepromWS() {
 	memset(wsEepromMem, 0, sizeof(wsEepromMem));
-	initIntEeprom(wsEepromMem);
+	initIntEepromWS((IntEEPROM *)wsEepromMem);
 }
 static void clearIntEepromWSC() {
 	memset(wscEepromMem, 0, sizeof(wscEepromMem));
-	initIntEepromColor(wscEepromMem);
+	initIntEepromWSC((IntEEPROM *)wscEepromMem);
 }
 static void clearIntEepromSC() {
 	memset(scEepromMem, 0, sizeof(scEepromMem));
-	initIntEepromColor(scEepromMem);
+	initIntEepromWSC((IntEEPROM *)scEepromMem);
 }
 
 int loadIntEeproms() {
-	int status = 1;
+	int status = 0;
 	clearIntEepromWS();
 	clearIntEepromWSC();
 	clearIntEepromSC();

@@ -170,9 +170,10 @@ loadCart: 					;@ Called from C:
 	ldreq r1,g_BIOSBASE_CRYSTAL
 	ldreq r2,=SC_BIOS_INTERNAL
 	moveq r4,#SOC_SPHINX2
-	strb r4,gSOC
 	cmp r5,#HW_POCKETCHALLENGEV2
 	moveq r0,#0					;@ Set boot rom overlay (none)
+	moveq r4,#SOC_ASWAN
+	strb r4,gSOC
 	cmp r1,#0
 	moveq r1,r2					;@ Use internal bios
 	str r1,biosBase
@@ -195,6 +196,9 @@ loadCart: 					;@ Called from C:
 	ldreq r1,=Luxsor2003W
 	ldrne r0,=Luxsor2001R		;@ Yes, use old Mapper Chip.
 	ldrne r1,=Luxsor2001W
+	cmp r5,#HW_POCKETCHALLENGEV2
+	ldreq r0,=KarnakR			;@ All PCV2 games uses Karnak mapper.
+	ldreq r1,=KarnakW
 	bl wsvSetCartMap
 
 //	bl hacksInit
@@ -722,6 +726,81 @@ Luxsor2003W:
 	;@ 0xD6-0xDF
 	.long cartUnmW,cartUnmW
 	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	;@ 0xE0-0xEF
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	;@ 0xF0-0xFF
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
+
+;@----------------------------------------------------------------------------
+KarnakR:
+	.long BankSwitch4_F_R		;@ 0xC0 Bank ROM 0x40000-0xF0000
+	.long BankSwitch1_R			;@ 0xC1 Bank SRAM 0x10000
+	.long BankSwitch2_R			;@ 0xC2 Bank ROM 0x20000
+	.long BankSwitch3_R			;@ 0xC3 Bank ROM 0x30000
+	.long cartUnmR				;@ 0xC4
+	.long cartUnmR				;@ 0xC5
+	.long cartUnmR				;@ 0xC6
+	.long cartUnmR				;@ 0xC7
+	.long cartUnmR				;@ 0xC8
+	.long cartUnmR				;@ 0xC9
+	.long cartUnmR				;@ 0xCA
+	.long cartUnmR				;@ 0xCB
+	.long cartGPIODirR			;@ 0xCC General purpose input/output enable, bit 3-0.
+	.long cartGPIODataR			;@ 0xCD General purpose input/output data, bit 3-0.
+	.long cartWWFlashR			;@ 0xCE WonderWitch flash
+	.long BankSwitch4_F_R		;@ 0xCF Alias to 0xC0
+
+	.long BankSwitch1_R			;@ 0xD0 Alias to 0xC1
+	.long BankSwitch1_H_R		;@ 0xD1 2 more bits for 0xC1
+	.long BankSwitch2_R			;@ 0xD2 Alias to 0xC2
+	.long BankSwitch2_H_R		;@ 0xD3 2 more bits for 0xC2
+	.long BankSwitch3_R			;@ 0xD4 Alias to 0xC3
+	.long BankSwitch3_H_R		;@ 0xD5 2 more bits for 0xC3
+	.long cartUnmR				;@ 0xD6 Programmable Interval Timer
+	.long cartUnmR				;@ 0xD7
+	.long cartUnmR				;@ 0xD8 ADPCM input
+	.long cartUnmR				;@ 0xD9 ADPCM output
+	;@ 0xDA-0xDF
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	;@ 0xE0-0xEF
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	;@ 0xF0-0xFF
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
+
+KarnakW:
+	.long BankSwitch4_F_W		;@ 0xC0 Bank switch 0x40000-0xF0000
+	.long BankSwitch1_W			;@ 0xC1 Bank switch 0x10000 (SRAM)
+	.long BankSwitch2_W			;@ 0xC2 Bank switch 0x20000
+	.long BankSwitch3_W			;@ 0xC3 Bank switch 0x30000
+	.long cartUnmW				;@ 0xC4
+	.long cartUnmW				;@ 0xC5
+	.long cartUnmW				;@ 0xC6
+	.long cartUnmW				;@ 0xC7
+	.long cartUnmW				;@ 0xC8
+	.long cartUnmW				;@ 0xC9
+	.long cartUnmW				;@ 0xCA
+	.long cartUnmW				;@ 0xCB
+	.long cartGPIODirW			;@ 0xCC General purpose input/output enable, bit 3-0.
+	.long cartGPIODataW			;@ 0xCD General purpose input/output data, bit 3-0.
+	.long cartWWFlashW			;@ 0xCE WonderWitch flash
+	.long BankSwitch4_F_W		;@ 0xCF Alias to 0xC0
+
+	.long BankSwitch1_L_W		;@ 0xD0 Alias to 0xC1
+	.long BankSwitch1_H_W		;@ 0xD1 2 more bits for 0xC1
+	.long BankSwitch2_L_W		;@ 0xD2 Alias to 0xC2
+	.long BankSwitch2_H_W		;@ 0xD3 2 more bits for 0xC2
+	.long BankSwitch3_L_W		;@ 0xD4 Alias to 0xC3
+	.long BankSwitch3_H_W		;@ 0xD5 2 more bits for 0xC3
+	.long cartUnmW				;@ 0xD6 Programmable Interval Timer
+	.long cartUnmW				;@ 0xD7
+	.long cartUnmW				;@ 0xD8 ADPCM input
+	.long cartUnmW				;@ 0xD9 ADPCM output
+	;@ 0xDA-0xDF
+	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
 	;@ 0xE0-0xEF
 	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
 	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW

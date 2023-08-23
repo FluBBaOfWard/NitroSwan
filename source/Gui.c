@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.1 2023-08-19"
+#define EMUVERSION "V0.6.1 2023-08-23"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -62,8 +62,6 @@ const char *const speedTxt[] = {"Normal", "200%", "Max", "50%"};
 const char *const brighTxt[] = {"I", "II", "III", "IIII", "IIIII"};
 const char *const sleepTxt[] = {"5min", "10min", "30min", "Off"};
 const char *const ctrlTxt[]  = {"1P", "2P"};
-const char *const dispTxt[]  = {"Unscaled", "Scaled"};
-const char *const flickTxt[] = {"No Flicker", "Flicker"};
 
 const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "SwanCrystal", "Pocket Challenge V2"};
 const char *const bordTxt[]  = {"Black", "Border Color", "None"};
@@ -80,7 +78,7 @@ void setupGUI() {
 
 /// This is called when going from emu to ui.
 void enterGUI() {
-	if (updateSettingsFromWS() && (emuSettings & AUTOSAVE_SETTINGS)) {
+	if ((emuSettings & AUTOSAVE_SETTINGS) && updateSettingsFromWS()) {
 		saveSettings();
 		settingsChanged = false;
 	}
