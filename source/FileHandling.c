@@ -8,6 +8,7 @@
 #include "Shared/FileHelper.h"
 #include "Shared/IPSPatch.h"
 #include "Shared/AsmExtra.h"
+#include "Shared/CartridgeRAM.h"
 #include "Main.h"
 #include "Gui.h"
 #include "Cart.h"
@@ -385,8 +386,24 @@ bool loadGame(const char *gameName) {
 	if ( gameName ) {
 		cls(0);
 		drawText("     Please wait, loading.", 11, 0);
-		gRomSize = loadROM(romSpacePtr, gameName, maxRomSize);
+		u32 maxSize = allocatedRomMemSize;
+		u8 *romPtr = allocatedRomMem;
+		gRomSize = loadROM(romPtr, gameName, maxSize);
+		if (!gRomSize) {
+			// Enabled DS Expansion RAM in GBA port
+			RAM_TYPE ramType = cartRamInit(DETECT_RAM);
+			if (ramType != DETECT_RAM) {
+				infoOutput("Trying Exp-RAM.");
+				romPtr = (u8 *)cartRamUnlock();
+				maxSize = cartRamSize();
+				gRomSize = loadROM(romPtr, gameName, maxSize);
+			}
+		}
+
 		if ( gRomSize ) {
+			maxRomSize = maxSize;
+			romSpacePtr = romPtr;
+
 			checkMachine();
 			setEmuSpeed(0);
 			loadCart();

@@ -57,16 +57,14 @@ int main(int argc, char **argv) {
 	if (argc > 1) {
 		enableExit = true;
 	}
-	// Enabled DS Expansion RAM in GBA port
-//	maxRomSize = 0x800000;
-//	romSpacePtr = (u8 *)0x9000000;
-//	*((u16 *)0x8240000) = 1;
-	maxRomSize = 0x800000 + 0x1000;
-	romSpacePtr = malloc(maxRomSize);
-	if (romSpacePtr == NULL) {
-		maxRomSize = 0x200000 + 0x1000;
-		romSpacePtr = malloc(maxRomSize);
+	allocatedRomMemSize = 0x800000 + 0x1000;
+	allocatedRomMem = malloc(allocatedRomMemSize);
+	if (allocatedRomMem == NULL) {
+		allocatedRomMemSize = 0x200000 + 0x1000;
+		allocatedRomMem = malloc(allocatedRomMemSize);
 	}
+	maxRomSize = allocatedRomMemSize;
+	romSpacePtr = allocatedRomMem;
 	setupGraphics();
 
 	setupStream();

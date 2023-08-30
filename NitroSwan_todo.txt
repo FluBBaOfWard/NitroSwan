@@ -1,12 +1,13 @@
 NitroSwan Todo
 
-	Map serial port to debug out.
+	Add frameskip for 3DS.
+	Map serial port to debug out. Test!
 	Add support for LCD on/off.
-	Handle Sprite Window some how.
 	Use R to map WS Y keys to d-pad?
 	Graphics on menu screen?
 	Find speed hacks.
 	Fix better sound? Update twice per raster row.
+	Handle Sprite Window some how.
 	Sprite priority can't be fixed.
 
 GFX:

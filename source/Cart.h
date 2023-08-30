@@ -9,6 +9,7 @@ extern "C" {
 
 extern u32 gRomSize;
 extern u32 maxRomSize;
+extern u32 allocatedRomMemSize;
 extern u8 gConfig;
 extern u8 gMachine;
 extern u8 gMachineSet;
@@ -27,6 +28,7 @@ extern u8 biosSpace[0x1000];
 extern u8 biosSpaceColor[0x2000];
 extern u8 biosSpaceCrystal[0x2000];
 extern u8 *romSpacePtr;
+extern u8 *allocatedRomMem;
 extern const void *g_BIOSBASE_BNW;
 extern const void *g_BIOSBASE_COLOR;
 extern const void *g_BIOSBASE_CRYSTAL;

@@ -17,9 +17,8 @@
 	.global reBankSwitch3
 	.global clearDirtyTiles
 
-	.global wsHeader
 	.global romSpacePtr
-	.global MEMMAPTBL_
+	.global allocatedRomMem
 
 	.global biosBase
 	.global biosSpace
@@ -37,6 +36,7 @@
 	.global eepromSize
 	.global gRomSize
 	.global maxRomSize
+	.global allocatedRomMemSize
 	.global romMask
 	.global gGameID
 	.global cartOrientation
@@ -585,7 +585,10 @@ cartOrientation:
 	.byte 0						;@ 1=Vertical, 0=Horizontal
 	.space 2					;@ alignment.
 
-wsHeader:
+allocatedRomMem:
+	.long 0
+allocatedRomMemSize:
+	.long 0
 romSpacePtr:
 	.long 0
 romPtr:

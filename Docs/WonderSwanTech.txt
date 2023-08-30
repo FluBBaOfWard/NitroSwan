@@ -543,11 +543,11 @@
  - $9E - $03 - Volume set from Bios 0-3. Changes the volume as well as the corresponding LCD segments.
  - $9F - $00 - ???
  - $A0 - $87 - Hardware type
-                bit 7 - 1 = finnished booting?
+                bit 7 - 1 = Cart handshake ok. Read only.
                 bit 3     = Cart ROM speed (0=3 cycle, 1=1 cycle)
                 bit 2 - 1 = 16bit cart access, 0 = 8 bit access
-                bit 1 - 1 = color, 0 = mono
-                bit 0 - 1 = lock the boot rom
+                bit 1 - 1 = color, 0 = mono. Read only
+                bit 0 - 1 = lock the boot rom. Write once.
  - $A1 - $00 - ???
  - $A2 - $0C - Timer Control
                 bit 0 - Hblank Timer on/off
