@@ -57,9 +57,11 @@ int main(int argc, char **argv) {
 	if (argc > 1) {
 		enableExit = true;
 	}
+	// Try to allocate 8MB on DSi
 	allocatedRomMemSize = 0x800000 + 0x1000;
 	allocatedRomMem = malloc(allocatedRomMemSize);
 	if (allocatedRomMem == NULL) {
+		// Try to allocate 2MB on DS
 		allocatedRomMemSize = 0x200000 + 0x1000;
 		allocatedRomMem = malloc(allocatedRomMemSize);
 	}

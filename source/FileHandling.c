@@ -399,6 +399,9 @@ bool loadGame(const char *gameName) {
 				gRomSize = loadROM(romPtr, gameName, maxSize);
 			}
 		}
+		else {
+			cartRamLock();
+		}
 
 		if ( gRomSize ) {
 			maxRomSize = maxSize;

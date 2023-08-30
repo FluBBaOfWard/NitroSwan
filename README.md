@@ -2,7 +2,8 @@
 
 <img align="right" width="220" src="./logo.png" />
 
-This is a Bandai WonderSwan (Color/Crystal) & PocketChallenge V2 emulator for the Nintendo DS(i).
+This is a Bandai WonderSwan (Color/Crystal) & PocketChallenge V2 emulator for
+the Nintendo DS(i)/3DS.
 
 ## How to use
 
@@ -17,17 +18,14 @@ This is a Bandai WonderSwan (Color/Crystal) & PocketChallenge V2 emulator for th
 The save files should be compatible with most other WonderSwan emulators.
 
 When the emulator starts, you can either press L+R or tap on the screen to open
-up the menu.
-Now you can use the cross or touchscreen to navigate the menus, A or double tap
-to select an option, B or the top of the screen to go back a step.
+ up the menu. Now you can use the cross or touchscreen to navigate the menus, A
+ or double tap to select an option, B or the top of the screen to go back a
+ step.
 
 To select between the tabs use R & L or the touchscreen.
 
 Hold Start while starting a game to enter the boot rom settings, the internal
  EEPROM is saved when saving settings.
-
-Using SLOT-2 RAM for large files is really slow allmost like running on the GBA
- (duh!), and it can not be used with zip-files.
 
 ## Menu
 
@@ -114,8 +112,9 @@ There are 3 games that I know of that has serious problems.
 
 There are a couple of games that have visual glitches.
 
+* Dicing Knight. shadows are in front of player.
 * Digimon - Anode Tamer & Cathode Tamer, missing background gradient in battles.
-* Final Fantasy, Sprites show in dialog windows.
+* Final Fantasy, sprites show in dialog windows.
 * Final Lap 2000, incorrect road colors.
 * Final Lap Special - GT & Formula Machine, incorrect road colors.
 * From TV Animation One Piece - Grand Battle Swan Colosseum, incorrect sky color.
