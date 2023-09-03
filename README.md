@@ -1,4 +1,4 @@
-# NitroSwan V0.6.1
+# NitroSwan V0.6.2
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -107,7 +107,7 @@ Y is mapped to Pass.
 
 There are 3 games that I know of that has serious problems.
 
-* Beatmania: Game is too large even for the DSi.
+* Beatmania: Game is too large even for the DSi. Can be used with a 16MB SLOT-2 card.
 * Chou Denki Card Game: You need to initialize NVRAM, this is the last item on the first page (初期化).
 * Mahjong Touryuumon, speed too fast.
 
