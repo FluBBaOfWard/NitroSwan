@@ -1,7 +1,7 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.1 - 2023-08-30 (FluBBa)
+V0.6.1 - 2023-09-03 (FluBBa)
 	Added SLOT-2 RAM support.
 	Added IPS patch functionality.
 	Added power on/off ability.

@@ -36,6 +36,7 @@ Hold Start while starting a game to enter the boot rom settings, the internal
 * Save State: Save a state of the currently running game.
 * Load NVRAM: Load non volatile ram (EEPROM/SRAM) for the currently running game.
 * Save NVRAM: Save non volatile ram (EEPROM/SRAM) for the currently running game.
+* Load Patch: Apply an IPS patch to the currectly loaded rom.
 * Save Settings: Save the current settings (and internal EEPROM).
 * Reset Game: Reset the currently running game.
 

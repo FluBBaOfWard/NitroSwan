@@ -1,6 +1,8 @@
 NitroSwan Todo
 
 	Add frameskip for 3DS.
+	Change v30WritePort(16) to use r0 for value and r1 for address?
+	Change cpuWriteMem20(W) to use r0 for value and r1 for address?
 	Map serial port to debug out. Test!
 	Add support for LCD on/off.
 	Use R to map WS Y keys to d-pad?

@@ -26,7 +26,9 @@ void paletteTxAll(void);
 void updateLCDRefresh(void);
 void gfxRefresh(void);
 u8 v30ReadPort(u16 port);
+u16 v30ReadPort16(u16 port);
 void v30WritePort(u16 port, u8 value);
+void v30WritePort16(u16 port, u16 value);
 
 void setHeadphones(bool enable);
 

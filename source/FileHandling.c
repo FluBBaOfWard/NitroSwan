@@ -383,7 +383,7 @@ void clearIntEeproms() {
 
 //---------------------------------------------------------------------------------
 bool loadGame(const char *gameName) {
-	if ( gameName ) {
+	if (gameName) {
 		cls(0);
 		drawText("     Please wait, loading.", 11, 0);
 		u32 maxSize = allocatedRomMemSize;
@@ -403,7 +403,7 @@ bool loadGame(const char *gameName) {
 			cartRamLock();
 		}
 
-		if ( gRomSize ) {
+		if (gRomSize) {
 			maxRomSize = maxSize;
 			romSpacePtr = romPtr;
 
@@ -411,10 +411,10 @@ bool loadGame(const char *gameName) {
 			setEmuSpeed(0);
 			loadCart();
 			gameInserted = true;
-			if ( emuSettings & AUTOLOAD_NVRAM ) {
+			if (emuSettings & AUTOLOAD_NVRAM) {
 				loadNVRAM();
 			}
-			if ( emuSettings & AUTOLOAD_STATE ) {
+			if (emuSettings & AUTOLOAD_STATE) {
 				loadState();
 			}
 			powerIsOn = true;
@@ -429,19 +429,19 @@ void selectGame() {
 	pauseEmulation = true;
 	ui10();
 	const char *gameName = browseForFileType(FILEEXTENSIONS".zip");
-	if ( loadGame(gameName) ) {
+	if (loadGame(gameName)) {
 		backOutOfMenu();
 	}
 }
 
 void checkMachine() {
 	char fileExt[8];
-	if ( gMachineSet == HW_AUTO ) {
+	if (gMachineSet == HW_AUTO) {
 		getFileExtension(fileExt, currentFilename);
-		if ( romSpacePtr[gRomSize - 9] != 0 || strstr(fileExt, ".wsc") ) {
+		if (romSpacePtr[gRomSize - 9] != 0 || strstr(fileExt, ".wsc")) {
 			gMachine = HW_WONDERSWANCOLOR;
 		}
-		else if ( strstr(fileExt, ".pc2") ) {
+		else if (strstr(fileExt, ".pc2")) {
 			gMachine = HW_POCKETCHALLENGEV2;
 		}
 		else {
@@ -479,7 +479,7 @@ static int loadBIOS(void *dest, const char *fPath, const int maxSize) {
 }
 
 int loadBnWBIOS(void) {
-	if ( loadBIOS(biosSpace, cfg.monoBiosPath, sizeof(biosSpace)) ) {
+	if (loadBIOS(biosSpace, cfg.monoBiosPath, sizeof(biosSpace))) {
 		g_BIOSBASE_BNW = biosSpace;
 		return 1;
 	}
@@ -488,7 +488,7 @@ int loadBnWBIOS(void) {
 }
 
 int loadColorBIOS(void) {
-	if ( loadBIOS(biosSpaceColor, cfg.colorBiosPath, sizeof(biosSpaceColor)) ) {
+	if (loadBIOS(biosSpaceColor, cfg.colorBiosPath, sizeof(biosSpaceColor))) {
 		g_BIOSBASE_COLOR = biosSpaceColor;
 		return 1;
 	}
@@ -497,7 +497,7 @@ int loadColorBIOS(void) {
 }
 
 int loadCrystalBIOS(void) {
-	if ( loadBIOS(biosSpaceCrystal, cfg.crystalBiosPath, sizeof(biosSpaceCrystal)) ) {
+	if (loadBIOS(biosSpaceCrystal, cfg.crystalBiosPath, sizeof(biosSpaceCrystal))) {
 		g_BIOSBASE_CRYSTAL = biosSpaceCrystal;
 		return 1;
 	}
@@ -508,7 +508,7 @@ int loadCrystalBIOS(void) {
 static bool selectBios(char *dest, const char *fileTypes) {
 	const char *biosName = browseForFileType(fileTypes);
 
-	if ( biosName ) {
+	if (biosName) {
 		strlcpy(dest, currentDir, FILEPATHMAXLENGTH);
 		strlcat(dest, "/", FILEPATHMAXLENGTH);
 		strlcat(dest, biosName, FILEPATHMAXLENGTH);
@@ -518,21 +518,21 @@ static bool selectBios(char *dest, const char *fileTypes) {
 }
 
 void selectBnWBios() {
-	if ( selectBios(cfg.monoBiosPath, ".ws.rom.zip") ) {
+	if (selectBios(cfg.monoBiosPath, ".ws.rom.zip")) {
 		loadBnWBIOS();
 	}
 	cls(0);
 }
 
 void selectColorBios() {
-	if ( selectBios(cfg.colorBiosPath, ".ws.wsc.rom.zip") ) {
+	if (selectBios(cfg.colorBiosPath, ".ws.wsc.rom.zip")) {
 		loadColorBIOS();
 	}
 	cls(0);
 }
 
 void selectCrystalBios() {
-	if ( selectBios(cfg.crystalBiosPath, ".ws.wsc.rom.zip") ) {
+	if (selectBios(cfg.crystalBiosPath, ".ws.wsc.rom.zip")) {
 		loadCrystalBIOS();
 	}
 	cls(0);
@@ -542,7 +542,7 @@ void selectIPS() {
 	pauseEmulation = true;
 	ui10();
 	const char *fileName = browseForFileType(".ips");
-	if ( patchRom(romSpacePtr, fileName, gRomSize) ) {
+	if (patchRom(romSpacePtr, fileName, gRomSize)) {
 		checkMachine();
 		loadCart();
 		backOutOfMenu();
