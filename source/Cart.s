@@ -253,13 +253,13 @@ resetCartridgeBanks:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 	ldr spxptr,=sphinx0
-	mov r1,#0xFF
+	mov r0,#0xFF
 	bl BankSwitch4_F_W
-	mov r1,#0
+	mov r0,#0xFF
 	bl BankSwitch1_W
-	mov r1,#0xFF
+	mov r0,#0xFF
 	bl BankSwitch2_W
-	mov r1,#0xFF
+	mov r0,#0xFF
 	bl BankSwitch3_W
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
@@ -276,46 +276,46 @@ reBankSwitchAll:
 ;@----------------------------------------------------------------------------
 reBankSwitch4_F:			;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
-	ldrb r1,[spxptr,#wsvBnk0SlctX]
+	ldrb r0,[spxptr,#wsvBnk0SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch4_F_W:			;@ 0x40000-0xFFFFF
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
-	and r1,r1,#0x3F
-	strb r1,[spxptr,#wsvBnk0SlctX]
-	orr r1,r1,#0x40000000
+	and r0,r0,#0x3F
+	strb r0,[spxptr,#wsvBnk0SlctX]
+	orr r0,r0,#0x40000000
 
-	ldr r0,romMask
+	ldr r1,romMask
 	ldr r2,romPtr4
 	add lr,v30ptr,#v30MemTblInv-5*4
 tbLoop2:
-	and r3,r0,r1,ror#28
+	and r3,r1,r0,ror#28
 	add r3,r2,r3,lsl#16		;@ 64kB blocks.
 	sub r2,r2,#0x10000
 	str r3,[lr],#-4
-	adds r1,r1,#0x10000000
+	adds r0,r0,#0x10000000
 	bcc tbLoop2
 
 	ldmfd sp!,{pc}
 ;@----------------------------------------------------------------------------
 BankSwitch1_H_W:			;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
-	and r1,r1,#0x3
-	strb r1,[spxptr,#wsvBnk1SlctX+1]
+	and r0,r0,#0x3
+	strb r0,[spxptr,#wsvBnk1SlctX+1]
 ;@----------------------------------------------------------------------------
 reBankSwitch1:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
-	ldrh r1,[spxptr,#wsvBnk1SlctX]
+	ldrh r0,[spxptr,#wsvBnk1SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch1_W:				;@ 0x10000-0x1FFFF
 BankSwitch1_L_W:			;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
-	strb r1,[spxptr,#wsvBnk1SlctX]
+	strb r0,[spxptr,#wsvBnk1SlctX]
 
-	ldr r0,sramSize
-	movs r0,r0,lsr#16			;@ 64kB blocks.
-	subne r0,r0,#1
-	and r0,r0,#3				;@ Mask for actual SRAM banks we emulate
+	ldr r1,sramSize
+	movs r1,r1,lsr#16			;@ 64kB blocks.
+	subne r1,r1,#1
+	and r1,r1,#3				;@ Mask for actual SRAM banks we emulate
 	ldr r2,=wsSRAM-0x10000
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16			;@ 64kB blocks.
@@ -325,19 +325,19 @@ BankSwitch1_L_W:			;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 BankSwitch2_H_W:			;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	and r1,r1,#0x3
-	strb r1,[spxptr,#wsvBnk2SlctX+1]
+	and r0,r0,#0x3
+	strb r0,[spxptr,#wsvBnk2SlctX+1]
 ;@----------------------------------------------------------------------------
 reBankSwitch2:				;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	ldrh r1,[spxptr,#wsvBnk2SlctX]
+	ldrh r0,[spxptr,#wsvBnk2SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch2_W:				;@ 0x20000-0x2FFFF
 BankSwitch2_L_W:			;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
-	strb r1,[spxptr,#wsvBnk2SlctX]
+	strb r0,[spxptr,#wsvBnk2SlctX]
 
-	ldr r0,romMask
+	ldr r1,romMask
 	ldr r2,romPtr2
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16			;@ 64kB blocks.
@@ -347,19 +347,19 @@ BankSwitch2_L_W:			;@ 0x20000-0x2FFFF
 ;@----------------------------------------------------------------------------
 BankSwitch3_H_W:			;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	and r1,r1,#0x3
-	strb r1,[spxptr,#wsvBnk3SlctX+1]
+	and r0,r0,#0x3
+	strb r0,[spxptr,#wsvBnk3SlctX+1]
 ;@----------------------------------------------------------------------------
 reBankSwitch3:				;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	ldrh r1,[spxptr,#wsvBnk3SlctX]
+	ldrh r0,[spxptr,#wsvBnk3SlctX]
 ;@----------------------------------------------------------------------------
 BankSwitch3_W:				;@ 0x30000-0x3FFFF
 BankSwitch3_L_W:			;@ 0x30000-0x3FFFF
 ;@----------------------------------------------------------------------------
-	strb r1,[spxptr,#wsvBnk3SlctX]
+	strb r0,[spxptr,#wsvBnk3SlctX]
 
-	ldr r0,romMask
+	ldr r1,romMask
 	ldr r2,romPtr3
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16			;@ 64kB blocks.
@@ -427,18 +427,18 @@ cartUnmR:
 ;@----------------------------------------------------------------------------
 cartGPIODirW:				;@ 0xCC General Purpose I/O enable, bit 3-0.
 ;@----------------------------------------------------------------------------
-	strb r1,[spxptr,wsvGPIOEnable]
+	strb r0,[spxptr,wsvGPIOEnable]
 	bx lr
 ;@----------------------------------------------------------------------------
 cartGPIODataW:				;@ 0xCD General Purpose I/O data, bit 3-0.
 ;@----------------------------------------------------------------------------
-	strb r1,[spxptr,wsvGPIOData]
+	strb r0,[spxptr,wsvGPIOData]
 	bx lr
 ;@----------------------------------------------------------------------------
 cartWWFlashW:				;@ 0xCE WonderWitch flash
 ;@----------------------------------------------------------------------------
-	and r1,r1,#1
-	strb r1,[spxptr,wsvWWitch]
+	and r0,r0,#1
+	strb r0,[spxptr,wsvWWitch]
 	bx lr
 ;@----------------------------------------------------------------------------
 cartUnmW:
@@ -472,26 +472,31 @@ extEepromStatusR:			;@ 0xC8
 ;@----------------------------------------------------------------------------
 extEepromDataLowW:			;@ 0xC4
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,extEeprom
 	b wsEepromDataLowW
 ;@----------------------------------------------------------------------------
 extEepromDataHighW:			;@ 0xC5
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,extEeprom
 	b wsEepromDataHighW
 ;@----------------------------------------------------------------------------
 extEepromAdrLowW:			;@ 0xC6
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,extEeprom
 	b wsEepromAddressLowW
 ;@----------------------------------------------------------------------------
 extEepromAdrHighW:			;@ 0xC7
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,extEeprom
 	b wsEepromAddressHighW
 ;@----------------------------------------------------------------------------
 extEepromCommandW:			;@ 0xC8
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,extEeprom
 	b wsEepromCommandW
 ;@----------------------------------------------------------------------------
@@ -520,11 +525,13 @@ cartRtcDataR:				;@ 0xCB
 ;@----------------------------------------------------------------------------
 cartRtcCommandW:			;@ 0xCA
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr rtcptr,cartRtc
 	b wsRtcCommandW
 ;@----------------------------------------------------------------------------
 cartRtcDataW:				;@ 0xCB
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr rtcptr,cartRtc
 	b wsRtcDataW
 ;@----------------------------------------------------------------------------

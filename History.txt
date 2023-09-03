@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.6.3 - 2023-09-03 (FluBBa)
+	Optimized IO port writing.
+
 V0.6.2 - 2023-09-03 (FluBBa)
 	Added SLOT-2 RAM support.
 	Added IPS patch functionality.

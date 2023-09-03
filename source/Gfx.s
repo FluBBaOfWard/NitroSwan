@@ -404,7 +404,7 @@ updateLCDRefresh:
 	.type updateLCDRefresh STT_FUNC
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
-	ldrb r1,[spxptr,#wsvTotalLines]
+	ldrb r0,[spxptr,#wsvTotalLines]
 	b wsvRefW
 ;@----------------------------------------------------------------------------
 setScreenRefresh:			;@ r0 in = WS scan line count.

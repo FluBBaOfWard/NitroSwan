@@ -27,9 +27,9 @@ void uiController(void);
 void uiDisplay(void);
 
 void debugIOUnmappedR(u16 port, u8 val);
-void debugIOUnmappedW(u16 port, u8 val);
+void debugIOUnmappedW(u8 val, u16 port);
 void debugIOUnimplR(u16 port, u8 val);
-void debugIOUnimplW(u16 port, u8 val);
+void debugIOUnimplW(u8 val, u16 port);
 void debugSerialOutW(u8 val);
 void debugDivideError(void);
 void debugUndefinedInstruction(void);

@@ -249,53 +249,58 @@ lastBattery:
 ;@----------------------------------------------------------------------------
 
 ;@----------------------------------------------------------------------------
-intEepromDataLowR:
+intEepromDataLowR:			;@ 0xBA
 ;@----------------------------------------------------------------------------
 	adr eeptr,intEeprom
 	b wsEepromDataLowR
 ;@----------------------------------------------------------------------------
-intEepromDataHighR:
+intEepromDataHighR:			;@ 0xBB
 ;@----------------------------------------------------------------------------
 	adr eeptr,intEeprom
 	b wsEepromDataHighR
 ;@----------------------------------------------------------------------------
-intEepromAdrLowR:
+intEepromAdrLowR:			;@ 0xBC
 ;@----------------------------------------------------------------------------
 	adr eeptr,intEeprom
 	b wsEepromAddressLowR
 ;@----------------------------------------------------------------------------
-intEepromAdrHighR:
+intEepromAdrHighR:			;@ 0xBD
 ;@----------------------------------------------------------------------------
 	adr eeptr,intEeprom
 	b wsEepromAddressHighR
 ;@----------------------------------------------------------------------------
-intEepromStatusR:
+intEepromStatusR:			;@ 0xBE
 ;@----------------------------------------------------------------------------
 	adr eeptr,intEeprom
 	b wsEepromStatusR
 ;@----------------------------------------------------------------------------
-intEepromDataLowW:			;@ r1 = value
+intEepromDataLowW:			;@ 0xBA, r1 = value
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,intEeprom
 	b wsEepromDataLowW
 ;@----------------------------------------------------------------------------
-intEepromDataHighW:			;@ r1 = value
+intEepromDataHighW:			;@ 0xBB, r1 = value
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,intEeprom
 	b wsEepromDataHighW
 ;@----------------------------------------------------------------------------
-intEepromAdrLowW:			;@ r1 = value
+intEepromAdrLowW:			;@ 0xBC, r1 = value
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,intEeprom
 	b wsEepromAddressLowW
 ;@----------------------------------------------------------------------------
-intEepromAdrHighW:			;@ r1 = value
+intEepromAdrHighW:			;@ 0xBD, r1 = value
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,intEeprom
 	b wsEepromAddressHighW
 ;@----------------------------------------------------------------------------
-intEepromCommandW:			;@ r1 = value
+intEepromCommandW:			;@ 0xBE, r1 = value
 ;@----------------------------------------------------------------------------
+	mov r1,r0
 	adr eeptr,intEeprom
 	b wsEepromCommandW
 ;@----------------------------------------------------------------------------

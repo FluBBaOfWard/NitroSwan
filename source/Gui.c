@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.2 2023-09-03"
+#define EMUVERSION "V0.6.3 2023-09-03"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -235,13 +235,13 @@ void debugIO(u16 port, u8 val, const char *message) {
 void debugIOUnimplR(u16 port, u8 val) {
 	debugIO(port, val, "Unimpl R port:");
 }
-void debugIOUnimplW(u16 port, u8 val) {
+void debugIOUnimplW(u8 val, u16 port) {
 	debugIO(port, val, "Unimpl W port:");
 }
 void debugIOUnmappedR(u16 port, u8 val) {
 	debugIO(port, val, "Unmapped R port:");
 }
-void debugIOUnmappedW(u16 port, u8 val) {
+void debugIOUnmappedW(u8 val, u16 port) {
 	debugIO(port, val, "Unmapped W port:");
 }
 void debugSerialOutW(u8 val) {
