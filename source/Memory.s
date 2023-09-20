@@ -109,7 +109,7 @@ v30ReadDsIx:		;@
 	ldrsb r4,[v30ptr,#v30DF]
 	ldr v30ofs,[v30ptr,#v30RegIX]
 	TestSegmentPrefix
-	ldreq v30csr,[v30ptr,#v30SRegDS]
+	ldreq v30csr,[v30ptr,#v30SRegDS0]
 	add r0,v30ofs,r4,lsl#16
 	str r0,[v30ptr,#v30RegIX]
 ;@----------------------------------------------------------------------------
@@ -233,12 +233,12 @@ v30WriteEAW:		;@ In v30ofs=v30ptr+second byte of opcode.
 	adr r12,v30WriteSegOfsW		;@ Return reg for EA
 	ldr pc,[v30ofs,#v30EATable]
 ;@----------------------------------------------------------------------------
-v30PushW:		;@ In r1=value.
+v30PushW:			;@ In r1=value.
 ;@----------------------------------------------------------------------------
 	ldr v30ofs,[v30ptr,#v30RegSP]
 	ldr v30csr,[v30ptr,#v30SRegSS]
 ;@----------------------------------------------------------------------------
-v30PushLastW:	;@ In r1=value.
+v30PushLastW:		;@ In r1=value.
 ;@----------------------------------------------------------------------------
 	sub v30ofs,v30ofs,#0x20000
 	str v30ofs,[v30ptr,#v30RegSP]

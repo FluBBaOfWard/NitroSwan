@@ -1,5 +1,6 @@
 NitroSwan Todo
 
+	Make better boot roms. Check all registers.
 	Change cpuWriteMem20(W) to use r0 for value and r1 for address?
 	Map serial port to debug out. Test!
 	Add support for LCD on/off.

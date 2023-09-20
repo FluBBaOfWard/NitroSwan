@@ -176,7 +176,7 @@ pcv2Joypad:
 	orrne r0,r0,#PCV2_KEY_CLEAR	;@ PCV2 Clear
 	tst r4,#0x02				;@ NDS B
 	orrne r0,r0,#PCV2_KEY_CIRCLE	;@ PCV2 Circle
-	ldr r1,=0x222
+	ldr r1,=0x2222
 	orr r0,r0,r1
 
 	str r0,joy0State
@@ -209,7 +209,7 @@ IOPortA_R:					;@ Player1...
 	biceq r0,r0,#0x0F0
 	tst r1,#0x40				;@ Buttons enabled?
 	biceq r0,r0,#0x00F
-	orr r0,r0,r0,lsr#4
+	orr r0,r0,r0,lsr#8
 	orr r0,r0,r0,lsr#4
 	and r0,r0,#0x0F
 	orr r0,r0,r1

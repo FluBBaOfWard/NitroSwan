@@ -390,13 +390,13 @@ bool loadGame(const char *gameName) {
 		u8 *romPtr = allocatedRomMem;
 		gRomSize = loadROM(romPtr, gameName, maxSize);
 		if (!gRomSize) {
-			// Enabled DS Expansion RAM in GBA port
-			RAM_TYPE ramType = cartRamInit(DETECT_RAM);
-			if (ramType != DETECT_RAM) {
+			// Enable Expansion RAM in GBA port
+			if (cartRamInit(DETECT_RAM) != DETECT_RAM) {
 				infoOutput("Trying Exp-RAM.");
 				romPtr = (u8 *)cartRamUnlock();
 				maxSize = cartRamSize();
 				gRomSize = loadROM(romPtr, gameName, maxSize);
+				enableSlot2Cache();
 			}
 		}
 		else {

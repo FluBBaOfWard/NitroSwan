@@ -158,6 +158,7 @@ loadCart: 					;@ Called from C:
 
 	ldrb r5,gMachine
 	cmp r5,#HW_WONDERSWAN
+	cmpne r5,#HW_POCKETCHALLENGEV2
 	moveq r0,#1					;@ Set boot rom overlay (size small)
 	ldreq r1,g_BIOSBASE_BNW
 	ldreq r2,=WS_BIOS_INTERNAL
@@ -170,9 +171,6 @@ loadCart: 					;@ Called from C:
 	ldreq r1,g_BIOSBASE_CRYSTAL
 	ldreq r2,=SC_BIOS_INTERNAL
 	moveq r4,#SOC_SPHINX2
-	cmp r5,#HW_POCKETCHALLENGEV2
-	moveq r0,#0					;@ Set boot rom overlay (none)
-	moveq r4,#SOC_ASWAN
 	strb r4,gSOC
 	cmp r1,#0
 	moveq r1,r2					;@ Use internal bios
