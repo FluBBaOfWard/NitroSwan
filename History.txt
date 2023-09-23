@@ -1,12 +1,13 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.3 - 2023-09-20 (FluBBa)
+V0.6.3 - 2023-09-23 (FluBBa)
 	Fixed value of SP when running without boot rom.
 	Fixed boot rom behavior for PCV2.
 	Fixed SLOT-2 RAM support for EZ-Flash 3-In-1.
 	Optimized IO port writing.
 	Optimized some opcodes.
+	Tweaked EEPROM handling.
 
 V0.6.2 - 2023-09-03 (FluBBa)
 	Added SLOT-2 RAM support.

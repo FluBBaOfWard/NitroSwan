@@ -158,9 +158,9 @@ monoPalInit:
 	mul r8,r1,r8
 	mov r1,r0					;@ Gamma value = 0 -> 4
 	ldr spxptr,=sphinx0
-	ldr r0,=gMachine
+	ldr r0,=gSOC
 	ldrb r0,[r0]
-	cmp r0,#HW_WONDERSWAN
+	cmp r0,#SOC_ASWAN
 	movne r0,#1
 	ldreq r0,=gPaletteBank
 	ldrbeq r0,[r0]

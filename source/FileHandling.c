@@ -97,33 +97,33 @@ char translateDSChar(u16 char16) {
 
 bool updateSettingsFromWS() {
 	bool changed = false;
-	IntEEPROM *intProm = (IntEEPROM *)intEeprom.eepMemory;
+	IntEEPROM *intProm = (IntEEPROM *)intEeprom.memory;
 
-	WSUserData userData = intProm->userData;
-	if (cfg.birthYear[0] != userData.birthYear[0]
-		|| cfg.birthYear[1] != userData.birthYear[1]) {
-		cfg.birthYear[0] = userData.birthYear[0];
-		cfg.birthYear[1] = userData.birthYear[1];
+	WSUserData *userData = &intProm->userData;
+	if (cfg.birthYear[0] != userData->birthYear[0]
+		|| cfg.birthYear[1] != userData->birthYear[1]) {
+		cfg.birthYear[0] = userData->birthYear[0];
+		cfg.birthYear[1] = userData->birthYear[1];
 		changed = true;
 	}
-	if (cfg.birthMonth != userData.birthMonth) {
-		cfg.birthMonth = userData.birthMonth;
+	if (cfg.birthMonth != userData->birthMonth) {
+		cfg.birthMonth = userData->birthMonth;
 		changed = true;
 	}
-	if (cfg.birthDay != userData.birthDay) {
-		cfg.birthDay = userData.birthDay;
+	if (cfg.birthDay != userData->birthDay) {
+		cfg.birthDay = userData->birthDay;
 		changed = true;
 	}
-	if (cfg.sex != userData.sex) {
-		cfg.sex = userData.sex;
+	if (cfg.sex != userData->sex) {
+		cfg.sex = userData->sex;
 		changed = true;
 	}
-	if (cfg.bloodType != userData.bloodType) {
-		cfg.bloodType = userData.bloodType;
+	if (cfg.bloodType != userData->bloodType) {
+		cfg.bloodType = userData->bloodType;
 		changed = true;
 	}
-	if (memcmp(cfg.name, intProm->userData.name, 16) != 0) {
-		memcpy(cfg.name, intProm->userData.name, 16);
+	if (memcmp(cfg.name, userData->name, 16) != 0) {
+		memcpy(cfg.name, userData->name, 16);
 	}
 	settingsChanged |= changed;
 	return changed;
@@ -301,17 +301,18 @@ int saveIntEeprom(const char *name, u8 *source, int size) {
 }
 
 static void initIntEepromWS(IntEEPROM *intProm) {
-	memcpy(intProm->userData.name, cfg.name, 16);
-	intProm->userData.birthYear[0] = cfg.birthYear[0];
-	intProm->userData.birthYear[1] = cfg.birthYear[1];
-	intProm->userData.birthMonth = cfg.birthMonth;
-	intProm->userData.birthDay = cfg.birthDay;
-	intProm->userData.sex = cfg.sex;
-	intProm->userData.bloodType = cfg.bloodType;
+	WSUserData *userData = &intProm->userData;
+	memcpy(userData->name, cfg.name, 16);
+	userData->birthYear[0] = cfg.birthYear[0];
+	userData->birthYear[1] = cfg.birthYear[1];
+	userData->birthMonth = cfg.birthMonth;
+	userData->birthDay = cfg.birthDay;
+	userData->sex = cfg.sex;
+	userData->bloodType = cfg.bloodType;
 }
 static void initIntEepromWSC(IntEEPROM *intProm) {
-	intProm->splashData.consoleFlags = 3;
 	initIntEepromWS(intProm);
+	intProm->splashData.consoleFlags = 3;
 }
 
 
@@ -363,8 +364,17 @@ void selectEEPROM() {
 	pauseEmulation = true;
 //	setSelectedMenu(9);
 	const char *eepromName = browseForFileType(".eeprom");
-	cls(0);
-	loadIntEeprom(eepromName, wscEepromMem, sizeof(wscEepromMem));
+	if (eepromName) {
+		cls(0);
+		switch (gSOC) {
+			case SOC_SPHINX:
+				loadIntEeprom(eepromName, wscEepromMem, sizeof(wscEepromMem));
+				break;
+			case SOC_SPHINX2:
+				loadIntEeprom(eepromName, scEepromMem, sizeof(scEepromMem));
+				break;
+		}
+	}
 }
 
 void clearIntEeproms() {

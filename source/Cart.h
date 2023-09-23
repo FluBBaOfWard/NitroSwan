@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include "WSEEPROM/WSEEPROM.h"
+#include "WSHeader.h"
 
 extern u32 gRomSize;
 extern u32 maxRomSize;
@@ -16,7 +17,7 @@ extern u8 gMachineSet;
 extern u8 gSOC;
 extern u8 gLang;
 extern u8 gPaletteBank;
-extern u8 gGameID;
+extern WsHeader *gGameHeader;
 extern const int sramSize;
 extern const int eepromSize;
 extern WSEEPROM extEeprom;

@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.X 2023-09-20"
+#define EMUVERSION "V0.6.3 2023-09-23"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -32,7 +32,9 @@ static void stepFrame(void);
 
 static void uiMachine(void);
 static void uiDebug(void);
-static void updateGameInfo(char *buffer);
+static void updateGameId(char *buffer);
+static void updateCartInfo(char *buffer);
+static void updateMapperInfo(char *buffer);
 
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
@@ -126,7 +128,6 @@ void uiOptions() {
 void uiAbout() {
 	char gameInfoString[32];
 	cls(1);
-	updateGameInfo(gameInfoString);
 	drawTabs();
 	drawMenuText("B:        WS B button", 4, 0);
 	drawMenuText("A:        WS A button", 5, 0);
@@ -134,7 +135,14 @@ void uiAbout() {
 	drawMenuText("Select:   WS Sound button", 7, 0);
 	drawMenuText("DPad:     WS X1-X4", 8, 0);
 
+	updateGameId(gameInfoString);
 	drawMenuText(gameInfoString, 10, 0);
+
+	updateCartInfo(gameInfoString);
+	drawMenuText(gameInfoString, 11, 0);
+
+	updateMapperInfo(gameInfoString);
+	drawMenuText(gameInfoString, 12, 0);
 
 	drawMenuText("NitroSwan    " EMUVERSION, 21, 0);
 	drawMenuText("Sphinx       " SPHINXVERSION, 22, 0);
@@ -215,11 +223,33 @@ void resetGame() {
 	loadCart();
 }
 
-void updateGameInfo(char *buffer) {
+void updateGameId(char *buffer) {
 	char catalog[8];
-	char2HexStr(catalog, gGameID);
-	strlMerge(buffer, "Game #: 0x", catalog, 32);
+	char2HexStr(catalog, gGameHeader->gameId);
+	strlMerge(buffer, "Game Id, Revision #: 0x", catalog, 32);
+	strlMerge(buffer, buffer, " 0x", 32);
+	char2HexStr(catalog, gGameHeader->gameRev);
+	strlMerge(buffer, buffer, catalog, 32);
 }
+
+void updateCartInfo(char *buffer) {
+	char catalog[8];
+	char2HexStr(catalog, gGameHeader->romSize);
+	strlMerge(buffer, "ROM Size, Save    #: 0x", catalog, 32);
+	strlMerge(buffer, buffer, " 0x", 32);
+	char2HexStr(catalog, gGameHeader->nvramSize);
+	strlMerge(buffer, buffer, catalog, 32);
+}
+
+void updateMapperInfo(char *buffer) {
+	char catalog[8];
+	char2HexStr(catalog, gGameHeader->flags);
+	strlMerge(buffer, "Flags, Mapper     #: 0x", catalog, 32);
+	strlMerge(buffer, buffer, " 0x", 32);
+	char2HexStr(catalog, gGameHeader->mapper);
+	strlMerge(buffer, buffer, catalog, 32);
+}
+
 //---------------------------------------------------------------------------------
 void debugIO(u16 port, u8 val, const char *message) {
 	char debugString[32];

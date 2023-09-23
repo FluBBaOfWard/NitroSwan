@@ -1,9 +1,9 @@
 #include <nds.h>
 
 #include "WonderSwan.h"
-#include "PCV2Border.h"
 #include "WSBorder.h"
 #include "WSCBorder.h"
+#include "PCV2Border.h"
 #include "Gui.h"
 #include "Cart.h"
 #include "Gfx.h"
@@ -55,15 +55,6 @@ static void setupBorderPalette(const void *palette, int len) {
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 }
 
-void setupPCV2Background() {
-	decompress(PCV2BorderTiles, BG_TILE_RAM(1), LZ77Vram);
-	decompress(PCV2BorderMap, BG_MAP_RAM(15), LZ77Vram);
-}
-
-void setupPCV2BorderPalette() {
-	setupBorderPalette(PCV2BorderPal, PCV2BorderPalLen);
-}
-
 void setupWSBackground() {
 	decompress(WSBorderTiles, BG_TILE_RAM(1), LZ77Vram);
 	decompress(WSBorderMap, BG_MAP_RAM(15), LZ77Vram);
@@ -80,6 +71,15 @@ void setupWSCBackground() {
 
 void setupWSCBorderPalette() {
 	setupBorderPalette(WSCBorderPal, WSCBorderPalLen);
+}
+
+void setupPCV2Background() {
+	decompress(PCV2BorderTiles, BG_TILE_RAM(1), LZ77Vram);
+	decompress(PCV2BorderMap, BG_MAP_RAM(15), LZ77Vram);
+}
+
+void setupPCV2BorderPalette() {
+	setupBorderPalette(PCV2BorderPal, PCV2BorderPalLen);
 }
 
 void setupEmuBackground() {
