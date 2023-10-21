@@ -8,13 +8,14 @@
 
 #define CYCLE_PSL (256)
 
+	.global waitMaskIn
+	.global waitMaskOut
+
 	.global run
 	.global runScanLine
 	.global runFrame
 	.global cpuInit
 	.global cpuReset
-	.global waitMaskIn
-	.global waitMaskOut
 
 	.syntax unified
 	.arm
@@ -41,12 +42,12 @@ runStart:
 ;@----------------------------------------------------------------------------
 	ldr r0,=joy0State
 	ldr r0,[r0]
-	ldr r3,joyClick
-	eor r3,r3,r0
-	and r3,r3,r0
+	ldr r1,joyClick
+	eor r1,r1,r0
+	and r1,r1,r0
 	str r0,joyClick
 
-	tst r3,#0x10000				;@ WS Sound?
+	tst r1,#0x10000				;@ WS Sound?
 	blne pushVolumeButton
 
 	bl refreshEMUjoypads
@@ -92,7 +93,7 @@ wsFrameLoop3DS:
 	cmp r0,#0
 	cmpeq r1,#2
 	subnes r1,r1,#1
-	moveq r1,#199				;@ (159 * 5) / 4 = 198,75
+	moveq r1,#199				;@ (159 * 75) / 60 = 198,75
 	str r1,scanLineCount3DS
 	bne wsFrameLoop3DS
 	b wsFrameLoopEnd
@@ -156,9 +157,10 @@ cpuInit:					;@ Called by machineInit
 	ldmfd sp!,{v30ptr,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
-cpuReset:					;@ Called by loadCart/resetGame
+cpuReset:					;@ Called by loadCart/resetGame, r0 = type
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{v30ptr,lr}
+	mov r1,r0
 	ldr v30ptr,=V30OpTable
 
 	mov r0,v30ptr

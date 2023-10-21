@@ -45,6 +45,7 @@
 		9C50820F25D45A9B00A8E1BA /* Cart.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = Cart.s; sourceTree = "<group>"; };
 		9C50821025D45A9B00A8E1BA /* Gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gui.h; sourceTree = "<group>"; };
 		9C50821125D45A9B00A8E1BA /* Gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gfx.h; sourceTree = "<group>"; };
+		9C6CC0EB2AE3D95F00E5EEC3 /* EmuMenu.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = EmuMenu.i; sourceTree = "<group>"; };
 		9C715145265645DD0084BE99 /* WSHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSHeader.h; sourceTree = "<group>"; };
 		9C715146265661CE0084BE99 /* Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Memory.h; sourceTree = "<group>"; };
 		9C7BB94A25FCD73C00EA9C9C /* EmuFont.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = EmuFont.grit; sourceTree = "<group>"; };
@@ -214,6 +215,7 @@
 				9C42404027E2264A0042454B /* README.md */,
 				9C8F33EE248ACA2E00996E5A /* nds_asm.h */,
 				9C1FFFA72684A277005851ED /* EmuSettings.h */,
+				9C6CC0EB2AE3D95F00E5EEC3 /* EmuMenu.i */,
 				A47F092B20863AF5004E1DA6 /* EmuMenu.h */,
 				A47F092C20863AF5004E1DA6 /* EmuMenu.c */,
 				A4D0E10B208930D100401463 /* FileHelper.h */,

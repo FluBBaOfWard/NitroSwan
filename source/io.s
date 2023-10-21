@@ -3,6 +3,7 @@
 #include "ARMV30MZ/ARMV30MZ.i"
 #include "Sphinx/Sphinx.i"
 #include "WSEEPROM/WSEEPROM.i"
+#include "Shared/EmuMenu.i"
 
 #define WS_KEY_START	(1<<1)
 #define WS_KEY_A		(1<<2)
@@ -28,6 +29,7 @@
 #define PCV2_KEY_PASS	(1<<11)
 
 	.global ioReset
+	.global convertInput
 	.global refreshEMUjoypads
 	.global ioSaveState
 	.global ioLoadState
@@ -101,6 +103,14 @@ ioGetStateSize:				;@ Out r0=state size.
 	mov r0,#0x100
 	bx lr
 ;@----------------------------------------------------------------------------
+convertInput:			;@ Convert from device keys to target r0=input/output
+	.type convertInput STT_FUNC
+;@----------------------------------------------------------------------------
+	mvn r1,r0
+	tst r1,#KEY_L|KEY_R				;@ Keys to open menu
+	orreq r0,r0,#KEY_OPEN_MENU
+	bx lr
+;@----------------------------------------------------------------------------
 refreshEMUjoypads:			;@ Call every frame
 ;@----------------------------------------------------------------------------
 
@@ -126,19 +136,19 @@ refreshEMUjoypads:			;@ Call every frame
 	cmp r1,#0
 	bne verticalJoypad
 
-	tst r4,#0x200				;@ NDS L?
+	tst r4,#KEY_L				;@ NDS L?
 	movne r0,r0,lsl#4			;@ Map dpad to X or Y keys.
 
-	tst r4,#0x08				;@ NDS Start
+	tst r4,#KEY_START			;@ NDS Start
 	orrne r0,r0,#WS_KEY_START	;@ WS Start
-	tst r4,#0x04				;@ NDS Select
+	tst r4,#KEY_SELECT			;@ NDS Select
 	orrne r0,r0,#WS_KEY_SOUND	;@ WS Sound
 
-	ands r1,r3,#3				;@ A/B buttons
-	cmpne r1,#3
-	eorne r1,r1,#3
+	ands r1,r3,#KEY_A|KEY_B		;@ A/B buttons
+	cmpne r1,#KEY_A|KEY_B
+	eorne r1,r1,#KEY_A|KEY_B
 	tst r2,#0x400				;@ Swap A/B?
-	andeq r1,r3,#3
+	andeq r1,r3,#KEY_A|KEY_B
 	orr r0,r0,r1,lsl#2
 
 	str r0,joy0State
@@ -148,13 +158,13 @@ verticalJoypad:
 ;@----------------------------------------------------------------------------
 	mov r0,r0,lsl#4				;@ Map dpad to Y keys.
 
-	tst r4,#0x08				;@ NDS Start
+	tst r4,#KEY_START			;@ NDS Start
 	orrne r0,r0,#WS_KEY_START	;@ WS Start
-	tst r4,#0x04				;@ NDS Select
+	tst r4,#KEY_SELECT			;@ NDS Select
 	orrne r0,r0,#WS_KEY_SOUND	;@ WS Sound
 
-	and r1,r4,#0x3				;@ A/B buttons
-	and r2,r4,#0xC00			;@ X/Y buttons
+	and r1,r4,#KEY_A|KEY_B		;@ A/B buttons
+	and r2,r4,#KEY_X|KEY_Y		;@ X/Y buttons
 	orr r1,r1,r2,lsr#8
 	adr r2,abxy2xpad
 	ldrb r1,[r2,r1]
@@ -172,9 +182,9 @@ pcv2Joypad:
 	ldrb r1,[r1,r3]
 	orr r0,r0,r1,lsl#4
 
-	tst r4,#0x01				;@ NDS A
+	tst r4,#KEY_A				;@ NDS A
 	orrne r0,r0,#PCV2_KEY_CLEAR	;@ PCV2 Clear
-	tst r4,#0x02				;@ NDS B
+	tst r4,#KEY_B				;@ NDS B
 	orrne r0,r0,#PCV2_KEY_CIRCLE	;@ PCV2 Circle
 	ldr r1,=0x2222
 	orr r0,r0,r1

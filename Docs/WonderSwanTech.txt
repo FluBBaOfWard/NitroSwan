@@ -425,14 +425,14 @@
  - $5E - $00 - ???
  - $5F - $00 - ???
  - $60 - $0A - Video mode
-               Meaning of bits 7-5:
-                765
+               bit 7 = Color/Mono mode (0=mono, 1=color)
+               bit 6 = 16/4 color/tile
+               bit 5 = 'packed' mode on/off
                 ---
                 111   16 col/tile 'packed' mode   -  tiles like in Genesis, 16 col/tile
                 110   16 col/tile 'layered' mode  -  tiles like in GameGear, 16 col/tile
                 100    4 col/tile                 -  the same as mono (below) but using color palettes, 4 cols/tile, one tile = 16 bytes, WSC only
                 000    4 col/tile mono            -  tiles like in GameBoy,
-                [bit 7 = color/mono mode, bit 6 - 16/4 color/tile, bit 5 - 'packed' mode on/off]
  - $61 - $00 - ???
  - $62 - $00 - WSC System
                bit 7 = System (0=WonderSwan Color, 1=SwanCrystal)

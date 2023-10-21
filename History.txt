@@ -1,6 +1,12 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.6.4 - 2023-10-21 (FluBBa)
+	Fixed unsigned mul on ASWAN.
+	Fixed immediate mul.
+	Fixed 32/16 division.
+	Optimized 16-bit signed mul.
+
 V0.6.3 - 2023-09-24 (FluBBa)
 	Fixed value of SP when running without boot rom.
 	Fixed boot rom behavior for PCV2.
