@@ -1,8 +1,8 @@
-# NitroSwan V0.6.3
+# NitroSwan V0.6.4
 
 <img align="right" width="220" src="./logo.png" />
 
-This is a Bandai WonderSwan (Color/Crystal) & PocketChallenge V2 emulator for
+This is a Bandai WonderSwan (Color/Crystal) & Benesse PocketChallenge V2 emulator for
 the Nintendo DS(i)/3DS.
 
 ## How to use
@@ -26,6 +26,9 @@ To select between the tabs use R & L or the touchscreen.
 
 Hold Start while starting a game to enter the boot rom settings, the internal
  EEPROM is saved when saving settings.
+
+Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
+ RAM to play games larger than 2MB.
 
 ## Menu
 
