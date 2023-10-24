@@ -92,7 +92,7 @@ wsFrameLoop3DS:
 	ldr r1,scanLineCount3DS
 	cmp r0,#0
 	cmpeq r1,#2
-	subnes r1,r1,#1
+	subsne r1,r1,#1
 	moveq r1,#199				;@ (159 * 75) / 60 = 198,75
 	str r1,scanLineCount3DS
 	bne wsFrameLoop3DS

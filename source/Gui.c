@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.4 2023-10-21"
+#define EMUVERSION "V0.6.4 2023-10-24"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -28,6 +28,7 @@ static void speedHackSet(void);
 static void refreshChgSet(void);
 static void borderSet(void);
 static void languageSet(void);
+static void joyMappingSet(void);
 static void stepFrame(void);
 
 static void uiMachine(void);
@@ -42,7 +43,7 @@ const fptr fnList0[] = {uiDummy};
 const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, selectIPS, saveSettings, ejectGame, resetGame, ui9};
 const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
 const fptr fnList3[] = {uiDummy};
-const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet};
+const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet, joyMappingSet};
 const fptr fnList5[] = {gammaSet, contrastSet, paletteChange, borderSet};
 const fptr fnList6[] = {machineSet, selectBnWBios, selectColorBios, selectCrystalBios, selectEEPROM, clearIntEeproms, headphonesSet, speedHackSet /*languageSet*/};
 const fptr fnList7[] = {speedSet, refreshChgSet, autoStateSet, autoNVRAMSet, autoSettingsSet, autoPauseGameSet, powerSaveSet, screenSwapSet, sleepSet};
@@ -155,6 +156,7 @@ void uiController() {
 	drawSubItem("A Autofire:", autoTxt[autoA]);
 	drawSubItem("Controller:", ctrlTxt[(joyCfg>>29)&1]);
 	drawSubItem("Swap A-B:  ", autoTxt[(joyCfg>>10)&1]);
+	drawSubItem("Alternate map: ", autoTxt[(joyMapping)&1]);
 }
 
 void uiDisplay() {
@@ -377,6 +379,11 @@ void machineSet() {
 void speedHackSet() {
 	emuSettings ^= ALLOW_SPEED_HACKS;
 	hacksInit();
+}
+
+void joyMappingSet() {
+	joyMapping ^= 0x01;
+	setJoyMapping(joyMapping);
 }
 
 void headphonesSet() {

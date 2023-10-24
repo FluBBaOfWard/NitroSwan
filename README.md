@@ -2,15 +2,15 @@
 
 <img align="right" width="220" src="./logo.png" />
 
-This is a Bandai WonderSwan (Color/Crystal) & Benesse PocketChallenge V2 emulator for
-the Nintendo DS(i)/3DS.
+This is a Bandai WonderSwan (Color/Crystal) & Benesse PocketChallenge V2
+ emulator for the Nintendo DS(i)/3DS.
 
 ## How to use
 
 1. Create a folder named "nitroswan" in either the root of your flash card or
  in the data folder. This is where settings and save files end up.
 2. Now put game/bios files into a folder where you have (WonderSwan) roms, max
- 768 games per folder, filenames must not be longer than 127 chars. You can use
+ 768 files per folder, filenames must not be longer than 127 chars. You can use
  zip-files (as long as they use the deflate compression). CAUTION! SLOT-2
  RAM can not be used with zip-files!
 3. Depending on your flashcart you might have to DLDI patch the emulator.
@@ -49,6 +49,7 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
   * Autofire: Select if you want autofire.
   * Controller: 2P start a 2 player game.
   * Swap A/B: Swap which NDS button is mapped to which WS button.
+  * Alternate layout: See Controls.
 
 * Display:
   * Gamma: Lets you change the gamma ("brightness").
@@ -64,7 +65,7 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
   * Cpu speed hacks: Allow speed hacks.
 * Settings:
   * Speed: Switch between speed modes.
-    * Normal: Game runs at it's normal speed.
+    * Normal: Game runs at its normal speed.
     * 200%: Game runs at double speed.
     * Max: Games can run up to 4 times normal speed (might change).
     * 50%: Game runs at half speed.
@@ -81,6 +82,7 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
   * Disable Foreground: Turn on/off foreground rendering.
   * Disable Background: Turn on/off background rendering.
   * Disable Sprites: Turn on/off sprite rendering.
+  * Disable Windows: Turn on/off window effects.
   * Step Frame: Emulate one frame.
 
 ### About
@@ -93,9 +95,12 @@ Some info about the emulator and game...
 Start is mapped to WS Start.
 Select is mapped to WS Sound.
 In horizontal games the d-pad is mapped to WS X1-X4. A & B buttons are mapped to WS A & B.
-Holding L maps the dpad to WS Y1-Y4.
+Holding L or R maps the dpad to WS Y1-Y4.
 
 In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS X1-X4.
+
+In alternate layout it is the same as normal horizontal, except L, R, X & Y are
+mapped to WS Y1-Y4. To open the menu use L+Select.
 
 For Pocket Challenge V2:
 Dpad is mapped to up, down, left & right.

@@ -9,6 +9,7 @@ extern "C" {
 
 extern u32 joyCfg;
 extern u32 EMUinput;
+extern u8 joyMapping;
 extern u8 wsEepromMem[0x80];
 extern u8 wscEepromMem[0x800];
 extern u8 scEepromMem[0x800];
@@ -40,6 +41,12 @@ int ioGetStateSize(void);
  * @return The converted input.
  */
 int convertInput(int input);
+
+/**
+ * Set joy mapping.
+ * @param type default or alternate
+ */
+void setJoyMapping(int type);
 
 #ifdef __cplusplus
 } // extern "C"

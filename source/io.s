@@ -34,6 +34,7 @@
 	.global ioSaveState
 	.global ioLoadState
 	.global ioGetStateSize
+	.global setJoyMapping
 
 	.global updateSlowIO
 	.global IOPortA_R
@@ -52,6 +53,7 @@
 
 	.global joyCfg
 	.global EMUinput
+	.global joyMapping
 	.global joy0State
 	.global wsEepromMem
 	.global wscEepromMem
@@ -71,9 +73,27 @@ ioReset:
 	mov r0,#0xF
 	strb r0,lastBattery
 	bl intEepromReset
+	ldrb r0,joyMapping
+	bl setJoyMapping
 
 	ldmfd sp!,{pc}
 
+;@----------------------------------------------------------------------------
+setJoyMapping:				;@ r0 = type
+	.type setJoyMapping STT_FUNC
+;@----------------------------------------------------------------------------
+	mov r1,#KEY_L|KEY_R
+	adr r2,joyDefaultMap
+	cmp r0,#1
+	adreq r2,joyAlternateMap
+	moveq r1,#KEY_L|KEY_SELECT
+	str r1,menuOpener
+	ldr r0,=gMachine
+	ldrb r0,[r0]
+	cmp r0,#HW_POCKETCHALLENGEV2
+	adreq r2,pcv2Joypad
+	str r2,joyHandler
+	bx lr
 ;@----------------------------------------------------------------------------
 ioSaveState:				;@ In r0=destination. Out r0=size.
 	.type ioSaveState STT_FUNC
@@ -107,23 +127,23 @@ convertInput:			;@ Convert from device keys to target r0=input/output
 	.type convertInput STT_FUNC
 ;@----------------------------------------------------------------------------
 	mvn r1,r0
-	tst r1,#KEY_L|KEY_R				;@ Keys to open menu
+	ldr r2,menuOpener
+	tst r1,r2					;@ Keys to open menu
 	orreq r0,r0,#KEY_OPEN_MENU
 	bx lr
 ;@----------------------------------------------------------------------------
 refreshEMUjoypads:			;@ Call every frame
 ;@----------------------------------------------------------------------------
-
 	ldr r4,EMUinput
 	and r0,r4,#0xf0
-	ldr r1,=gMachine
-	ldrb r1,[r1]
-	cmp r1,#HW_POCKETCHALLENGEV2
-	beq pcv2Joypad
+	ldr pc,joyHandler
+;@----------------------------------------------------------------------------
+joyDefaultMap:
+;@----------------------------------------------------------------------------
+	mov r3,r4					;@ For A/B auto fire.
 		ldr r1,=frameTotal
 		ldr r1,[r1]
 		movs r1,r1,lsr#2		;@ C=frame&2 (autofire alternates every 4:th frame)
-	mov r3,r4
 		ldr r2,joyCfg
 		andcs r3,r3,r2
 		tstcs r3,r3,lsr#10		;@ NDS L?
@@ -137,6 +157,7 @@ refreshEMUjoypads:			;@ Call every frame
 	bne verticalJoypad
 
 	tst r4,#KEY_L				;@ NDS L?
+	tsteq r4,#KEY_R				;@ NDS R?
 	movne r0,r0,lsl#4			;@ Map dpad to X or Y keys.
 
 	tst r4,#KEY_START			;@ NDS Start
@@ -150,6 +171,29 @@ refreshEMUjoypads:			;@ Call every frame
 	tst r2,#0x400				;@ Swap A/B?
 	andeq r1,r3,#KEY_A|KEY_B
 	orr r0,r0,r1,lsl#2
+
+	str r0,joy0State
+	bx lr
+;@----------------------------------------------------------------------------
+joyAlternateMap:
+;@----------------------------------------------------------------------------
+	adr r1,rlud2urdl
+	ldrb r0,[r1,r0,lsr#4]
+
+	and r3,r4,#0xf00
+	adr r1,rlxy2y1y4
+	ldrb r1,[r1,r3,lsr#8]
+	orr r0,r0,r1,lsl#8
+
+	tst r4,#KEY_START			;@ NDS Start
+	orrne r0,r0,#WS_KEY_START	;@ WS Start
+	tst r4,#KEY_SELECT			;@ NDS Select
+	orrne r0,r0,#WS_KEY_SOUND	;@ WS Sound
+
+	tst r4,#KEY_A				;@ NDS A
+	orrne r0,r0,#WS_KEY_A		;@ WS A
+	tst r4,#KEY_B				;@ NDS B
+	orrne r0,r0,#WS_KEY_B		;@ WS B
 
 	str r0,joy0State
 	bx lr
@@ -179,7 +223,7 @@ pcv2Joypad:
 	ldrb r0,[r1,r0,lsr#4]
 	and r3,r4,#0xf00
 	adr r1,rlxy2pcv2
-	ldrb r1,[r1,r3]
+	ldrb r1,[r1,r3,lsr#8]
 	orr r0,r0,r1,lsl#4
 
 	tst r4,#KEY_A				;@ NDS A
@@ -192,9 +236,10 @@ pcv2Joypad:
 	str r0,joy0State
 	bx lr
 ;@----------------------------------------------------------------------------
+joyHandler:	.long joyDefaultMap
+menuOpener:	.long KEY_L|KEY_R
 joyCfg: .long 0x00ff01ff	;@ byte0=auto mask, byte1=(saves R), byte2=R auto mask
-							;@ bit 31=single/multi, 30,29=1P/2P, 27=(multi) link active, 24=reset signal received
-playerCount:.long 0			;@ Number of players in multilink.
+
 			;@  Bit: 11   10     9  8     7     6      5  4    3  2    1     0
 			;@   WS: Y4   Y3     Y2 Y1    X4    X3     X2 X1   B  A    Start 0
 			;@ PCV2: Pass Circle 1  Clear Right Escape 1  View Up Down 1     Left
@@ -203,9 +248,12 @@ rlud2urdl:	.byte 0x00,0x20,0x80,0xA0, 0x10,0x30,0x90,0xB0, 0x40,0x60,0xC0,0xE0, 
 rlud2ldur:	.byte 0x00,0x80,0x01,0x81, 0x08,0x88,0x09,0x89, 0x04,0x84,0x05,0x85, 0x0C,0x8C,0x0D,0x8D
 abxy2xpad:	.byte 0x00,0x02,0x04,0x06, 0x01,0x03,0x05,0x07, 0x08,0x0A,0x0C,0x0E, 0x09,0x0B,0x0D,0x0F
 rlxy2pcv2:	.byte 0x00,0x01,0x04,0x05, 0x01,0x01,0x05,0x05, 0x80,0x81,0x84,0x85, 0x81,0x81,0x85,0x85
+rlxy2y1y4:	.byte 0x00,0x01,0x08,0x09, 0x02,0x03,0x0A,0x0B, 0x04,0x05,0x0C,0x0D, 0x06,0x07,0x0E,0x0F
 
 EMUinput:	.long 0				;@ This label here for Main.c to use
 
+joyMapping:	.byte 0
+	.byte 0,0,0
 ;@----------------------------------------------------------------------------
 IOPortA_R:					;@ Player1...
 ;@----------------------------------------------------------------------------
