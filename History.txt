@@ -1,11 +1,12 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.4 - 2023-10-24 (FluBBa)
+V0.6.4 - 2023-10-25 (FluBBa)
 	Added alternate joypad layout.
 	Fixed unsigned mul on ASWAN.
 	Fixed immediate mul.
 	Fixed 32/16 division.
+	Fixed IO register differences between mono/color mode.
 	Optimized 16-bit signed mul.
 
 V0.6.3 - 2023-09-24 (FluBBa)
