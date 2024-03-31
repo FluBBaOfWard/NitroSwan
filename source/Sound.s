@@ -2,14 +2,14 @@
 
 #include "Sphinx/Sphinx.i"
 
+	.extern pauseEmulation
+
 	.global soundInit
 	.global soundReset
 	.global VblSound2
 	.global setMuteSoundGUI
 	.global setMuteSoundChip
 	.global soundUpdate
-
-	.extern pauseEmulation
 
 #define WRITE_BUFFER_SIZE (0x800)
 #define SHIFTVAL (21)
@@ -94,12 +94,12 @@ VblSound2:					;@ r0=length, r1=pointer
 soundCopyBuff:
 ;@----------------------------------------------------------------------------
 	ldr r3,=WAVBUFFER
-	mov r4,r4,lsl#21
+	mov r4,r4,lsl#SHIFTVAL
 sndCopyLoop:
 	subs r0,r0,#1
 	ldrpl r2,[r3,r4,lsr#SHIFTVAL-2]
 	strpl r2,[r1],#4
-	add r4,r4,#0x00200000
+	add r4,r4,#1<<SHIFTVAL
 	bhi sndCopyLoop
 	bx lr
 ;@----------------------------------------------------------------------------

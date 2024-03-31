@@ -5,6 +5,18 @@
 
 #define ALLOW_REFRESH_CHG	(1<<19)
 
+	.global gFlicker
+	.global gTwitch
+	.global gGfxMask
+	.global vblIrqHandler
+	.global GFX_DISPCNT
+	.global GFX_BG0CNT
+	.global GFX_BG1CNT
+	.global EMUPALBUFF
+	.global MAPPED_BNW
+	.global frameTotal
+	.global sphinx0
+
 	.global gfxInit
 	.global gfxReset
 	.global monoPalInit
@@ -23,21 +35,6 @@
 	.global setScreenRefresh
 	.global getInterruptVector
 	.global setInterruptExternal
-
-	.global gfxState
-	.global gGammaValue
-	.global gFlicker
-	.global gTwitch
-	.global gGfxMask
-	.global vblIrqHandler
-	.global GFX_DISPCNT
-	.global GFX_BG0CNT
-	.global GFX_BG1CNT
-	.global EMUPALBUFF
-	.global MAPPED_BNW
-	.global frameTotal
-
-	.global sphinx0
 
 
 	.syntax unified

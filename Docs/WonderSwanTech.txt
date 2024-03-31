@@ -2,7 +2,7 @@
   /   |   \ ___ __/ \__ ___  ___  /\__
   \  / \  // __>\_   _// __|/ __\/    \
    \_____/_\__ \  \_/  \___|\___/\_/\_/
-          \____/      2023-08-05
+          \____/      2024-03-31
 
 1. ABOUT
    WStech original doc made by Judge and Dox
@@ -144,9 +144,8 @@
 5. SOUND
 
    4 Audio channels.
-   Each channel can play short samples ( 4 bit , 16 bytes ( 32 samples = 2 samples in  byte (bits 0-3 and 4-7))
+   Each channel can play short samples ( 4 bit , 16 bytes ( 32 samples = 2 samples per byte (bits 0-3 and 4-7))
    with selectable frequency = 3,072 *10e6  / ((2048 - N) x 32 ) Hz , where N = 11 bit value.
-   Location of those samples is unknown.
 
    Volume of each audio channel is controlled by writing two 4 bit values ( for left/right output
    channel) into ports $88 - $8B. Master volume is controlled by port $91
@@ -325,8 +324,8 @@
  - $12 - $00 - Foreground layer X scroll register
  - $13 - $00 - Foreground layer Y scroll register
  - $14 - $01 - LCD Control (???)
-                bit 0 - LCD on/off
                 bit 1 - Contrast (only WS Color), 0 low, 1 high.
+                bit 0 - LCD on/off
  - $15 - $00 - LCD Icons
                 bit 7 - 0
                 bit 6 - 0
@@ -342,7 +341,7 @@
  - $19 - $00 - ???
  - $1A - $00 - LCD Volume
                 bit 4 - Set when the LCD volume icon is being displayed.
-                bit 2-3 - Volume level
+                bit 3-2 - Volume level
                 bit 1 - 0
                 bit 0 - LCD Sleep
  - $1B - $00 - ???
@@ -409,8 +408,8 @@
                bit 6 = inc/dec
                bit 4 = destination, 0=SND_VOL_2, 1=HYPER_VOICE
                bit 3 = 1 -> DMA loop
-               bit 2 = ???, if set DMA doesn't appear to work.
-               bit 0-1 = rate, 0=4kHz, 1=6kHz, 2=12kHz, 3=24kHz.
+               bit 2 = 1 -> DMA hold.
+               bit 1-0 = rate, 0=4kHz, 1=6kHz, 2=12kHz, 3=24kHz.
  - $53 - $00 - 0
  - $54 - $00 - ???
  - $55 - $00 - ???
@@ -446,21 +445,21 @@
  - $69 - $00 - HYPERV_SR	Right channel Hyper Voice input
  - $6A - $00 - REG_HYPER_CTRL
                bit 7   = Enable
-               bit 4-6 = Unknown
-               bit 2-3 = Scaling mode
+               bit 6-4 = Unknown
+               bit 3-2 = Scaling mode
 							0   data <<3-vol
 							1   data <<3-vol | (-0x100 << 3-vol)
 							2   data <<3-vol
 							3   data <<3
-               bit 0-1 = vol
+               bit 1-0 = vol
  - $6B - $0F - REG_HYPER_CHAN_CTRL
-               bit 5-6 = Mode
+               bit 6-5 = Mode
 							0   Stereo
 							1   Mono, left only
 							2   Mono, right only
 							3   Mono, both sides
 			   bit 4   = Reset  input to the left channel.
-               bit 0-3   Nothing?
+               bit 3-0   Nothing?
  - $6C - $00 - ???
  - $6D - $00 - ???
  - $6E - $00 - ???
@@ -502,9 +501,7 @@
                 5 - ???
                 4 - Enable
                 3 - Reset
-                2 - ^^^
-                1 - ^^^
-                0 - Noise generator type
+                2-0 - Noise generator type
  - $8F - $00 - Sample  location
                 To get the address of samples, shift this value left 6 times.
                 0 00xxxxxx xx000000
@@ -525,13 +522,12 @@
                 5 - 0
                 4 - 0
                 3 - Enable headphones
-                2 - Output Volume
-                1 - ^^^
+                2-1 - Internal speaker shift right value
                 0 - Main speaker enable
  - $92 - $00 - Noise Counter Shift Register (15 bits)
  - $93 - $00 - ^^^
- - $94 - $00 - Voice Volume (4 bit)
- - $95 - $00 - REG_SND_HYPERVOICE
+ - $94 - $00 - Ch2 Voice Volume (4 bit)
+ - $95 - $00 - REG_SND_TEST
  - $96 - $00 - SND_OUT_R (channels 1-4) right channel output, 10-bit, read-only
  - $97 - $00 - ^^^
  - $98 - $00 - SND_OUT_L (channels 1-4) left channel output, 10-bit, read-only
@@ -550,14 +546,14 @@
                 bit 0 - 1 = lock the boot rom. Write once.
  - $A1 - $00 - ???
  - $A2 - $0C - Timer Control
-                bit 0 - Hblank Timer on/off
-                bit 1 - Hblank Timer Mode
-                        0 - One Shot
-                        1 - Auto Preset
-                bit 2 - Vblank Timer(1/75s) on/off
                 bit 3 - Vblank Timer Mode
                         0 - One Shot
                         1 - Auto Preset
+                bit 2 - Vblank Timer(1/75s) on/off
+                bit 1 - Hblank Timer Mode
+                        0 - One Shot
+                        1 - Auto Preset
+                bit 0 - Hblank Timer on/off
  - $A3 - $00 - ^^^
  - $A4 - $00 - Hblank Timer 'frequency'
                 0 = no HBLANK Interrupt
@@ -610,11 +606,11 @@
                 bit 1 - Key press
                 bit 0 - Serial transmit
  - $B5 - $40 - Controls
-                bits 4-7 : read/write - Select line of inputs to read
+                bits 7-4 : read/write - Select line of inputs to read
                         0001 - read vertical cursors
                         0010 - read horizontal cursors
                         0100 - read buttons
-                bits 0-3 : read only - Read the current state of the input lines (positive logic) after having written 10h,20h, or 40h.
+                bits 3-0 : read only - Read the current state of the input lines (positive logic) after having written 10h,20h, or 40h.
                         Meaning of the bits when reading cursors:
                                 bit 0 - cursor up
                                 bit 1 - cursor right
@@ -635,9 +631,9 @@
                 bit 1 - Key press
                 bit 0 - Serial transmit
  - $B7 - $00 - INT_NMI_CTRL
-                bit 5-7 - ???
+                bit 7-5 - ???
                 bit 4 - Enable/disable NMI when battery low
-                bit 0-3 - ???
+                bit 3-0 - ???
  - $B8 - $00 - ???
  - $B9 - $00 - ???
  - $BA - $01 - Internal EEPROM Data
@@ -667,8 +663,8 @@ Mapped to cartridge. 2001/Luxsor1 & 2003/Luxsor2
  - $C6 - $00 - EEPROM address:
  - $C7 - $00 - ^^^
                1kbit EEPROM (16bit*64) :
-                - bits 0-5 - address
-                - bits 6-7 - command :
+                - bit 8 - Start
+                - bits 7-6 - command :
                            0 - Extended Comand Address bits 4-5
                                0 - Write Disable
                                1 - Write All
@@ -677,10 +673,10 @@ Mapped to cartridge. 2001/Luxsor1 & 2003/Luxsor2
                            1 - Write
                            2 - Read
                            3 - Erase
-                - bit 8 - Start
+                - bits 5-0 - address
              - 16 kbit EEPROM (16bit*1024) :
-                - bits 0-9 - address
-                - bits 10-11 - command :
+                - bit 12 - Start
+                - bits 11-10 - command :
                            0 - Extended Comand Address bits 8-9
                                0 - Write Disable
                                1 - Write All
@@ -689,7 +685,7 @@ Mapped to cartridge. 2001/Luxsor1 & 2003/Luxsor2
                            1 - Write
                            2 - Read
                            3 - Erase
-                - bit 12 - Start
+                - bits 9-0 - address
  - $C8 - $83 - EEPROM Command/Status :
                 bit 7 - Reset
                 bit 6 - Erase/Protect

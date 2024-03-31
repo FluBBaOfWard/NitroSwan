@@ -1,4 +1,4 @@
-# NitroSwan V0.6.4
+# NitroSwan V0.6.5
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -11,8 +11,8 @@ This is a Bandai WonderSwan (Color/Crystal) & Benesse PocketChallenge V2
  in the data folder. This is where settings and save files end up.
 2. Now put game/bios files into a folder where you have (WonderSwan) roms, max
  768 files per folder, filenames must not be longer than 127 chars. You can use
- zip-files (as long as they use the deflate compression). CAUTION! SLOT-2
- RAM can not be used with zip-files!
+ zip-files (as long as they use the deflate compression). CAUTION! Games that
+ require SLOT-2 RAM can not be used with zip-files!
 3. Depending on your flashcart you might have to DLDI patch the emulator.
 
 The save files should be compatible with most other WonderSwan emulators.
@@ -55,13 +55,14 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
   * Gamma: Lets you change the gamma ("brightness").
   * Contrast: Lets you change the contrast.
   * B&W Palette: Here you can select the palette for B & W games.
-* Machine Settings:
+* Machine:
   * Machine: Select the emulated machine.
   * Select WS Bios: Load a real WS Bios.
   * Select WS Color Bios: Load a real WS Color Bios.
   * Select WS Crystal Bios: Load a real WS Crystal Bios.
   * Import Internal EEPROM: Load a special internal EEPROM.
   * Clear Internal EEPROM: Reset internal EEPROM.
+  * Headphones: Select whether heaphones are connected or not.
   * Cpu speed hacks: Allow speed hacks.
 * Settings:
   * Speed: Switch between speed modes.
@@ -91,6 +92,8 @@ Some info about the emulator and game...
 
 ## Controls
 
+### WonderSwan
+
 ```text
 Start is mapped to WS Start.
 Select is mapped to WS Sound.
@@ -101,8 +104,10 @@ In vertical games the d-pad is mapped to WS Y1-Y4. A, B, X & Y are mapped to WS 
 
 In alternate layout it is the same as normal horizontal, except L, R, X & Y are
 mapped to WS Y1-Y4. To open the menu use L+Select.
+```
 
-For Pocket Challenge V2:
+### Pocket Challenge V2
+```text
 Dpad is mapped to up, down, left & right.
 L is mapped to Escape.
 R & X is mapped to View.
@@ -131,7 +136,7 @@ There are a couple of games that have visual glitches.
 * Rockman & Forte - Mirai Kara no Chousensha, no background fade in intro.
 * Romancing Sa-Ga, sprites overlap text boxes.
 * Sorobang, needs all 1024 tiles in 4color mode.
-* WonderSwanColor BIOS, needs all 1024 tiles in 4color mode.
+* WonderSwan Color BIOS, needs all 1024 tiles in 4color mode.
 
 ## Credits
 
@@ -151,6 +156,6 @@ Dwedit for help and inspiration with a lot of things. https://www.dwedit.org
 
 Fredrik Ahlström
 
-Twitter/X @TheRealFluBBa
+X/Twitter @TheRealFluBBa
 
-http://www.github.com/FluBBaOfWard
+<https://www.github.com/FluBBaOfWard>

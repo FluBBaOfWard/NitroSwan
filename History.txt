@@ -1,6 +1,11 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.6.5 - 2024-03-31 (FluBBa)
+	Fixed repeating sound DMA.
+	Fixed HyperVoice scaling/mode.
+	Fixed Quit Emulator when started from TWiLight.
+
 V0.6.4 - 2023-10-25 (FluBBa)
 	Added alternate joypad layout.
 	Fixed unsigned mul on ASWAN.

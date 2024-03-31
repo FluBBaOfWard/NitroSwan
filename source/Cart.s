@@ -5,21 +5,10 @@
 #include "Sphinx/Sphinx.i"
 #include "ARMV30MZ/ARMV30MZ.i"
 
-	.global machineInit
-	.global loadCart
-	.global romNum
 	.global cartFlags
 	.global romStart
-	.global reBankSwitchAll
-	.global reBankSwitch4_F
-	.global reBankSwitch1
-	.global reBankSwitch2
-	.global reBankSwitch3
-	.global clearDirtyTiles
-
 	.global romSpacePtr
 	.global allocatedRomMem
-
 	.global biosBase
 	.global biosSpace
 	.global biosSpaceColor
@@ -48,6 +37,14 @@
 	.global gLang
 	.global gPaletteBank
 
+	.global machineInit
+	.global loadCart
+	.global reBankSwitchAll
+	.global reBankSwitch4_F
+	.global reBankSwitch1
+	.global reBankSwitch2
+	.global reBankSwitch3
+	.global clearDirtyTiles
 	.global cartRtcUpdate
 
 	.syntax unified
@@ -562,8 +559,6 @@ cartRtcUpdate:				;@ r0=rtcptr. Call every second.
 cartRtc:
 	.space wsRtcSize
 
-romNum:
-	.long 0						;@ romnumber
 romInfo:						;@
 emuFlags:
 	.byte 0						;@ emuflags      (label this so GUI.c can take a peek) see EmuSettings.h for bitfields

@@ -1,12 +1,13 @@
 NitroSwan Todo
 
-	Change cpuWriteMem20(W) to use r0 for value and r1 for address?
+	Save joypad mapping.
 	Map serial port to debug out. Test!
+	Add support for 16MB roms on 3DS.
 	Add support for LCD on/off.
-	Use R to map WS Y keys to d-pad?
 	Graphics on menu screen?
 	Find speed hacks.
 	Fix better sound? Update twice per raster row.
+	Change cpuWriteMem20(W) to use r0 for value and r1 for address?
 	Handle Sprite Window some how.
 	Sprite priority can't be fixed.
 

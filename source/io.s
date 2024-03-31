@@ -28,16 +28,24 @@
 #define PCV2_KEY_CIRCLE	(1<<10)
 #define PCV2_KEY_PASS	(1<<11)
 
+	.global joyCfg
+	.global EMUinput
+	.global joyMapping
+	.global joy0State
+	.global wsEepromMem
+	.global wscEepromMem
+	.global scEepromMem
+	.global intEeprom
+
 	.global ioReset
 	.global convertInput
 	.global refreshEMUjoypads
 	.global ioSaveState
 	.global ioLoadState
 	.global ioGetStateSize
-	.global setJoyMapping
-
 	.global updateSlowIO
 	.global IOPortA_R
+	.global setJoyMapping
 
 	.global intEepromSetSize
 	.global intEepromDataLowR
@@ -50,15 +58,6 @@
 	.global intEepromAdrLowW
 	.global intEepromAdrHighW
 	.global intEepromCommandW
-
-	.global joyCfg
-	.global EMUinput
-	.global joyMapping
-	.global joy0State
-	.global wsEepromMem
-	.global wscEepromMem
-	.global scEepromMem
-	.global intEeprom
 
 	.syntax unified
 	.arm

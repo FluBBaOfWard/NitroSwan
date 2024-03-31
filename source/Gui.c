@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.4 2023-10-24"
+#define EMUVERSION "V0.6.5 2024-03-31"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -52,7 +52,7 @@ const fptr fnList9[] = {exitEmulator, backOutOfMenu};
 const fptr fnList10[] = {uiDummy};
 const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9, fnList10};
 u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9), ARRSIZE(fnList10)};
-const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDebug, uiDummy, uiDummy};
+const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDebug, uiYesNo, uiDummy};
 
 u8 gGammaValue = 0;
 u8 gContrastValue = 3;
@@ -114,6 +114,7 @@ void uiFile() {
 	drawMenuItem("Reset Console");
 	if (enableExit) {
 		drawMenuItem("Quit Emulator");
+		drawMenuItem("");			// Cheating to remove last row.
 	}
 }
 
@@ -170,10 +171,10 @@ void uiDisplay() {
 static void uiMachine() {
 	setupSubMenu("Machine Settings");
 	drawSubItem("Machine:", machTxt[gMachineSet]);
-	drawSubItem("Select WS Bios ->", NULL);
-	drawSubItem("Select WS Color Bios ->", NULL);
-	drawSubItem("Select WS Crystal Bios ->", NULL);
-	drawSubItem("Import Internal EEPROM ->", NULL);
+	drawSubItem("Select WS Bios", NULL);
+	drawSubItem("Select WS Color Bios", NULL);
+	drawSubItem("Select WS Crystal Bios", NULL);
+	drawSubItem("Import Internal EEPROM", NULL);
 	drawSubItem("Clear Internal EEPROM", NULL);
 	drawSubItem("Headphones:", autoTxt[(emuSettings&ENABLE_HEADPHONES)>>18]);
 	drawSubItem("Cpu Speed Hacks:", autoTxt[(emuSettings&ALLOW_SPEED_HACKS)>>17]);
