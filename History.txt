@@ -1,7 +1,7 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.5 - 2024-03-31 (FluBBa)
+V0.6.5 - 2024-04-01 (FluBBa)
 	Fixed repeating sound DMA.
 	Fixed HyperVoice scaling/mode.
 	Fixed Quit Emulator when started from TWiLight.

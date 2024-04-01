@@ -10,6 +10,7 @@
 	.global setMuteSoundGUI
 	.global setMuteSoundChip
 	.global soundUpdate
+	.global mix8Vol
 
 #define WRITE_BUFFER_SIZE (0x800)
 #define SHIFTVAL (21)
@@ -95,12 +96,31 @@ soundCopyBuff:
 ;@----------------------------------------------------------------------------
 	ldr r3,=WAVBUFFER
 	mov r4,r4,lsl#SHIFTVAL
+	ldrb r2,[spxptr,#wsvSoundOutput]
+	tst r2,#0x80				;@ Headphones?
+	beq soundCopyBuffInt
 sndCopyLoop:
 	subs r0,r0,#1
 	ldrpl r2,[r3,r4,lsr#SHIFTVAL-2]
 	strpl r2,[r1],#4
 	add r4,r4,#1<<SHIFTVAL
 	bhi sndCopyLoop
+	bx lr
+;@----------------------------------------------------------------------------
+soundCopyBuffInt:			;@ Internal speaker, 8bit mono
+;@----------------------------------------------------------------------------
+sndCpyIntLoop:
+	subs r0,r0,#1
+	ldrpl r2,[r3,r4,lsr#SHIFTVAL-2]
+	add r2,r2,r2,lsr#16
+	and r2,r2,#0xFF00
+mix8Vol:
+	mov r2,r2,lsr#0
+	eor r2,r2,#0x8000
+	orr r2,r2,r2,lsl#16
+	strpl r2,[r1],#4
+	add r4,r4,#1<<SHIFTVAL
+	bhi sndCpyIntLoop
 	bx lr
 ;@----------------------------------------------------------------------------
 silenceMix:

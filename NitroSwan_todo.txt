@@ -71,7 +71,7 @@ Games With Glitches:
 		* Changes palette per line.
 	Mahjong Touryuumon, speed too fast.
 		* Apparently it sets the ROM waitstate to 3(?).
-	Makaimura, first boss sprites are glitchy, gargoyles in intro should not show up on the right.
+	Makaimura, gargoyles in intro should not show up on the right, first boss sprites are glitchy.
 		* Sprite Window and...?
 	Rockman & Forte - Mirai Kara no Chousensha, no background fade in intro.
 		* Changes palette per line?
