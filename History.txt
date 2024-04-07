@@ -1,7 +1,8 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.5 - 2024-04-01 (FluBBa)
+V0.6.5 - 2024-04-07 (FluBBa)
+	Added saving of joypad layout.
 	Fixed repeating sound DMA.
 	Fixed HyperVoice scaling/mode.
 	Fixed Quit Emulator when started from TWiLight.

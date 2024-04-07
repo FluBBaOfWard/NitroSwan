@@ -190,15 +190,15 @@
        08 - 64Mbit
        09 - 128Mbit
  11  - SRAM/EEPROM Size
-       00 - 0k
-       01 - 64k SRAM
-       02 - 256k SRAM
-       03 - 1M SRAM (Taikyoku Igo Heisei Kiin)
-       04 - 2M SRAM (WonderWitch, Dicing Knight)
-       05 - 4M SRAM
-       10 - 1k EEPROM
-       20 - 16k EEPROM
-       50 - 8k EEPROM
+       00 - None
+       01 - 256kb SRAM
+       02 - 512kb SRAM ?
+       03 - 1Mb SRAM (Taikyoku Igo Heisei Kiin)
+       04 - 2Mb SRAM (WonderWitch, Dicing Knight)
+       05 - 4Mb SRAM
+       10 - 1kb EEPROM
+       20 - 16kb EEPROM
+       50 - 8kb EEPROM
  12  - Additional capabilities(?)
        - bit 0 - 1 - vertical position , 1 - horizontal position
        - bit 2 - always 1
@@ -523,7 +523,7 @@
                 4 - 0
                 3 - Enable headphones
                 2-1 - Internal speaker shift right value
-                0 - Main speaker enable
+                0 - Internal speaker enable
  - $92 - $00 - Noise Counter Shift Register (15 bits)
  - $93 - $00 - ^^^
  - $94 - $00 - Ch2 Voice Volume (4 bit)

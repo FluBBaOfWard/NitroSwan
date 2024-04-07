@@ -156,6 +156,7 @@ int loadSettings() {
 	emuSettings   = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
 	sleepTime     = cfg.sleepTime;
 	joyCfg        = (joyCfg & ~0x400)|((cfg.controller & 1)<<10);
+	joyMapping    = (joyMapping & ~1)|((cfg.controller & 2)>>1);
 	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
 
 	infoOutput("Settings loaded.");
@@ -171,7 +172,7 @@ void saveSettings() {
 	cfg.gammaValue  = (gGammaValue & 0xF) | (gContrastValue<<4);
 	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;		// Clear speed setting.
 	cfg.sleepTime   = sleepTime;
-	cfg.controller  = (joyCfg>>10)&1;
+	cfg.controller  = ((joyCfg>>10)&1) | (joyMapping&1)<<1;
 	strlcpy(cfg.currentPath, currentDir, sizeof(cfg.currentPath));
 
 	if (findFolder(folderName)) {

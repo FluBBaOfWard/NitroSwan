@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.5 2024-04-01"
+#define EMUVERSION "V0.6.5 2024-04-07"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -157,7 +157,7 @@ void uiController() {
 	drawSubItem("A Autofire:", autoTxt[autoA]);
 	drawSubItem("Controller:", ctrlTxt[(joyCfg>>29)&1]);
 	drawSubItem("Swap A-B:  ", autoTxt[(joyCfg>>10)&1]);
-	drawSubItem("Alternate map: ", autoTxt[(joyMapping)&1]);
+	drawSubItem("Alternate map: ", autoTxt[joyMapping&1]);
 }
 
 void uiDisplay() {
