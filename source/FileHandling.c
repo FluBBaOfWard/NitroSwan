@@ -402,8 +402,10 @@ bool loadGame(const char *gameName) {
 		gRomSize = loadROM(romPtr, gameName, maxSize);
 		if (!gRomSize) {
 			// Enable Expansion RAM in GBA port
+			drawText("        Trying Exp-RAM.", 10, 0);
 			if (cartRamInit(DETECT_RAM) != DETECT_RAM) {
-				infoOutput("Trying Exp-RAM.");
+				drawText("         Using Exp-RAM.", 10, 0);
+				infoOutput("Using Exp-RAM.");
 				romPtr = (u8 *)cartRamUnlock();
 				maxSize = cartRamSize();
 				gRomSize = loadROM(romPtr, gameName, maxSize);

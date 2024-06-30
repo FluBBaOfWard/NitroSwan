@@ -331,31 +331,31 @@ intEepromStatusR:			;@ 0xBE
 	adr eeptr,intEeprom
 	b wsEepromStatusR
 ;@----------------------------------------------------------------------------
-intEepromDataLowW:			;@ 0xBA, r1 = value
+intEepromDataLowW:			;@ 0xBA, r0 = value
 ;@----------------------------------------------------------------------------
 	mov r1,r0
 	adr eeptr,intEeprom
 	b wsEepromDataLowW
 ;@----------------------------------------------------------------------------
-intEepromDataHighW:			;@ 0xBB, r1 = value
+intEepromDataHighW:			;@ 0xBB, r0 = value
 ;@----------------------------------------------------------------------------
 	mov r1,r0
 	adr eeptr,intEeprom
 	b wsEepromDataHighW
 ;@----------------------------------------------------------------------------
-intEepromAdrLowW:			;@ 0xBC, r1 = value
+intEepromAdrLowW:			;@ 0xBC, r0 = value
 ;@----------------------------------------------------------------------------
 	mov r1,r0
 	adr eeptr,intEeprom
 	b wsEepromAddressLowW
 ;@----------------------------------------------------------------------------
-intEepromAdrHighW:			;@ 0xBD, r1 = value
+intEepromAdrHighW:			;@ 0xBD, r0 = value
 ;@----------------------------------------------------------------------------
 	mov r1,r0
 	adr eeptr,intEeprom
 	b wsEepromAddressHighW
 ;@----------------------------------------------------------------------------
-intEepromCommandW:			;@ 0xBE, r1 = value
+intEepromCommandW:			;@ 0xBE, r0 = value
 ;@----------------------------------------------------------------------------
 	mov r1,r0
 	adr eeptr,intEeprom

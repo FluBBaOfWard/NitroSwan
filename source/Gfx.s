@@ -470,13 +470,6 @@ vblIrqHandler:
 	orr r3,r3,#0x100			;@ 256 words (1024 bytes)
 	stmia r0,{r1-r3}			;@ DMA3 go
 
-//	ldr r1,dmaWinInOut			;@ Setup DMA buffer for window stuff:
-//	ldrh r3,[r1],#2				;@ Read
-//	add r2,r6,#REG_WININ		;@ DMA3 dst
-//	strh r3,[r2]				;@ Set 1st value manually, HBL is AFTER 1st line
-//	ldr r3,=0x92600001			;@ hblank 16bit repeat incsrc inc_reloaddst, 1 word
-//	stmia r0,{r1-r3}			;@ DMA3 go
-
 	ldr r1,dmaWinInOut			;@ Setup DMA buffer for window stuff:
 	ldmia r1!,{r3-r5}			;@ Read
 	add r2,r6,#REG_WIN0H		;@ DMA3 dst
@@ -489,11 +482,6 @@ vblIrqHandler:
 	ldrb r2,gGfxMask
 	bic r0,r0,r2,lsl#8
 	strh r0,[r6,#REG_DISPCNT]
-
-//	ldr r0,[spxptr,#windowData]
-//	strh r0,[r6,#REG_WIN0H]
-//	mov r0,r0,lsr#16
-//	strh r0,[r6,#REG_WIN0V]
 
 	ldr r0,=emuSettings
 	ldr r0,[r0]

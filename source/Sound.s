@@ -86,8 +86,11 @@ VblSound2:					;@ r0=length, r1=pointer
 	add r0,r2,r0
 	mov r0,r0,asr#3
 	str r0,neededExtra
-	bic r0,r0,#1
+	bic r0,r0,#1		// 7
+//	mov r0,r0,asr#1
+//	bics r0,r0,#0xFF
 	str r0,[spxptr,#missingSamplesCnt]
+//	blne debugIOUnmappedR
 
 	ldmfd sp!,{r0,r4,r5,lr}
 	bx lr

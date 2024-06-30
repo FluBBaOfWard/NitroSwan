@@ -2,7 +2,7 @@
   /   |   \ ___ __/ \__ ___  ___  /\__
   \  / \  // __>\_   _// __|/ __\/    \
    \_____/_\__ \  \_/  \___|\___/\_/\_/
-          \____/      2024-03-31
+          \____/      2024-06-30
 
 1. ABOUT
    WStech original doc made by Judge and Dox
@@ -191,8 +191,8 @@
        09 - 128Mbit
  11  - SRAM/EEPROM Size
        00 - None
-       01 - 256kb SRAM
-       02 - 512kb SRAM ?
+       01 - 256kb SRAM?
+       02 - 256kb SRAM
        03 - 1Mb SRAM (Taikyoku Igo Heisei Kiin)
        04 - 2Mb SRAM (WonderWitch, Dicing Knight)
        05 - 4Mb SRAM
@@ -641,23 +641,24 @@
  - $BC - $42 - Internal EEPROM Address
  - $BD - $00 - ^^^
  - $BE - $83 - Internal EEPROM Command/Status
-                bit 7 - Reset
-                bit 6 - Erase/Protect
-                bit 5 - Write
-                bit 4 - Read
-                bit 3 - Reset complete (Read only)
-                bit 2 - Erase complete (Read only)
-                bit 1 - Write complete (Read only)
+                bit 7 - Protect (R/W))
+                bit 6 - Short op (Write only)
+                bit 5 - Write (Write only)
+                bit 4 - Read (Write only)
+                bit 3 - -
+                bit 2 - -
+                bit 1 - 0 = busy, 1=idle (Read only)
                 bit 0 - Read complete (Read only)
  - $BF - $00 - ^^^
 
 ---------------------------------------------------------------------
-Mapped to cartridge. 2001/Luxsor1 & 2003/Luxsor2
+Mapped to cartridge. 2001/Luxsor & 2003/Luxsor2
 ---------------------------------------------------------------------
  - $C0 - $2F - ROM Bank Base Selector for segments 4-$F
  - $C1 - $3F - SRAM Bank selector (0x10000))
  - $C2 - $FF - BNK2SLCT - ROM Bank selector for segment 2
  - $C3 - $FF - BNK3SLCT - ROM Bank selector for segment 3
+ // EEPROM only 2001/Luxsor
  - $C4 - $00 - EEPROM Data
  - $C5 - $00 - ^^^
  - $C6 - $00 - EEPROM address:
@@ -687,16 +688,16 @@ Mapped to cartridge. 2001/Luxsor1 & 2003/Luxsor2
                            3 - Erase
                 - bits 9-0 - address
  - $C8 - $83 - EEPROM Command/Status :
-                bit 7 - Reset
-                bit 6 - Erase/Protect
-                bit 5 - Write
-                bit 4 - Read
-                bit 3 - Reset complete (Read only)
-                bit 2 - Erase complete (Read only)
-                bit 1 - Write complete (Read only)
+                bit 7 - Abort
+                bit 6 - Short op (Write only)
+                bit 5 - Write (Write only)
+                bit 4 - Read (Write only)
+                bit 3 - -
+                bit 2 - -
+                bit 1 - 0 = busy, 1=idle (Read only)
                 bit 0 - Read complete (Read only)
  - $C9 - $D1 - ^^^
- // The rest only 2003/Luxor 2
+ // The rest only 2003/Luxsor2
  - $CA - $D1 - RTC Command / Status
                 Write :
                         - $10 - Reset

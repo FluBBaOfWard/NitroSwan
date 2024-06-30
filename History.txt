@@ -1,10 +1,12 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.5 - 2024-04-07 (FluBBa)
+V0.6.5 - 2024-06-30 (FluBBa)
 	Added saving of joypad layout.
+	Added extra RAM on 3DS.
 	Fixed repeating sound DMA.
 	Fixed HyperVoice scaling/mode.
+	Fixed EEPROM handling a bit.
 	Fixed Quit Emulator when started from TWiLight.
 
 V0.6.4 - 2023-10-25 (FluBBa)

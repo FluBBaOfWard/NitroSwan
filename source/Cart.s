@@ -127,9 +127,8 @@ loadCart: 					;@ Called from C:
 	ldrb r3,[r4,#0xB]			;@ NVRAM size
 	mov r0,#0					;@ r0 = sram size
 	mov r1,#0					;@ r1 = eeprom size
-	cmp r3,#0x01				;@ 64kbit sram
-	moveq r0,#0x2000
-	cmp r3,#0x02				;@ 256kbit sram
+	cmp r3,#0x01				;@ 256kbit sram
+	cmpne r3,#0x02				;@ 256kbit sram
 	moveq r0,#0x8000
 	cmp r3,#0x03				;@ 1Mbit sram
 	moveq r0,#0x20000

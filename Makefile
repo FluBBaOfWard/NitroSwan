@@ -8,7 +8,7 @@ endif
 
 GAME_TITLE		:=	NitroSwan
 GAME_SUBTITLE1	:=	WonderSwan Emulator
-GAME_SUBTITLE2	:=	www.ndsretro.com
+GAME_SUBTITLE2	:=	github.com/FluBBaOfWard
 GAME_ICON		:=	$(CURDIR)/../WSLogo.bmp
 
 include $(DEVKITARM)/ds_rules

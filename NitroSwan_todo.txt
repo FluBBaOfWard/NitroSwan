@@ -1,8 +1,8 @@
 NitroSwan Todo
 
+	Add support for 16MB roms on 3DS, also cache area.
 	Fix better sound? Update twice per raster row.
 	Map serial port to debug out. Test!
-	Add support for 16MB roms on 3DS.
 	Add support for LCD on/off.
 	Graphics on menu screen?
 	Find speed hacks.
