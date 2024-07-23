@@ -555,6 +555,35 @@ cartRtcUpdate:				;@ r0=rtcptr. Call every second.
 	adr rtcptr,cartRtc
 	b wsRtcUpdate
 ;@----------------------------------------------------------------------------
+cartTimerR:					;@ 0xD6
+;@----------------------------------------------------------------------------
+	ldrb r0,[spxptr,#wsvCartTimer]
+	bx lr
+;@----------------------------------------------------------------------------
+cartADPCMR:					;@ 0xD9
+;@----------------------------------------------------------------------------
+	strb r0,[spxptr,#wsvADPCMR]
+	bx lr
+;@----------------------------------------------------------------------------
+cartTimerW:					;@ 0xD6
+;@ ((period + 1) * 2) cartridge clocks, where "one cartridge clock" = 384KHz = 1/8th CPU clock.
+;@----------------------------------------------------------------------------
+	strb r0,[spxptr,#wsvCartTimer]
+	bx lr
+;@----------------------------------------------------------------------------
+cartADPCMW:					;@ 0xD8
+;@----------------------------------------------------------------------------
+	strb r0,[spxptr,#wsvADPCMW]
+	bx lr
+;@----------------------------------------------------------------------------
+cartTimerReset:
+;@----------------------------------------------------------------------------
+//	ldrb r0,cartTimerPresent
+	cmp r0,#0
+	bxeq lr
+	ldr r1,=setInterruptExternal
+	bx lr
+;@----------------------------------------------------------------------------
 cartRtc:
 	.space wsRtcSize
 
@@ -764,10 +793,10 @@ KarnakR:
 	.long BankSwitch2_H_R		;@ 0xD3 2 more bits for 0xC2
 	.long BankSwitch3_R			;@ 0xD4 Alias to 0xC3
 	.long BankSwitch3_H_R		;@ 0xD5 2 more bits for 0xC3
-	.long cartUnmR				;@ 0xD6 Programmable Interval Timer
+	.long cartTimerR			;@ 0xD6 Programmable Interval Timer
 	.long cartUnmR				;@ 0xD7
 	.long cartUnmR				;@ 0xD8 ADPCM input
-	.long cartUnmR				;@ 0xD9 ADPCM output
+	.long cartADPCMR			;@ 0xD9 ADPCM output
 	;@ 0xDA-0xDF
 	.long cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR,cartUnmR
 	;@ 0xE0-0xEF
@@ -801,9 +830,9 @@ KarnakW:
 	.long BankSwitch2_H_W		;@ 0xD3 2 more bits for 0xC2
 	.long BankSwitch3_L_W		;@ 0xD4 Alias to 0xC3
 	.long BankSwitch3_H_W		;@ 0xD5 2 more bits for 0xC3
-	.long cartUnmW				;@ 0xD6 Programmable Interval Timer
+	.long cartTimerW			;@ 0xD6 Programmable Interval Timer
 	.long cartUnmW				;@ 0xD7
-	.long cartUnmW				;@ 0xD8 ADPCM input
+	.long cartADPCMW			;@ 0xD8 ADPCM input
 	.long cartUnmW				;@ 0xD9 ADPCM output
 	;@ 0xDA-0xDF
 	.long cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW,cartUnmW
