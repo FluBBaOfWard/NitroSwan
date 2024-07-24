@@ -1,9 +1,10 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.5 - 2024-06-30 (FluBBa)
+V0.6.5 - 2024-07-24 (FluBBa)
 	Added saving of joypad layout.
 	Added extra RAM on 3DS.
+	Fixed cache bug in tile map rendering.
 	Fixed repeating sound DMA.
 	Fixed HyperVoice scaling/mode.
 	Fixed EEPROM handling a bit.

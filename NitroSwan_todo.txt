@@ -1,8 +1,5 @@
 NitroSwan Todo
 
-	Hataru Chocobo & Blue Wing Blitz has problems with BG prio?
-		Since BG prio fix?
-		Rev: 
 	Add support for timer and ADPCM on Karnak carts.
 	Add support for 16MB roms on 3DS, also cache area.
 	Fix better sound? Update twice per raster row.

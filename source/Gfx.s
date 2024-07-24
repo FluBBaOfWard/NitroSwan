@@ -521,23 +521,6 @@ nothingNew:
 ;@----------------------------------------------------------------------------
 copyWindowValues:		;@ r0 = destination
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
-	add r0,r0,#((SCREEN_HEIGHT-GAME_HEIGHT)/2)*2			;@ 2 bytes per row
-	ldr r1,[spxptr,#dispBuff]
-	ldr r2,=DISP_CTRL_LUT
-
-	mov r3,#GAME_HEIGHT
-setDispLoop:
-	ldrb lr,[r1],#1
-	ldr lr,[r2,lr,lsl#2]
-	strh lr,[r0],#2
-	subs r3,r3,#1
-	bne setDispLoop
-
-	ldmfd sp!,{pc}
-;@----------------------------------------------------------------------------
-copyWindowValues2:		;@ r0 = destination
-;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r9,lr}
 	add r0,r0,#((SCREEN_HEIGHT-GAME_HEIGHT)/2)*12		;@ 12 bytes per row
 	ldr r9,=(((SCREEN_WIDTH-GAME_WIDTH)/2)<<24)+(((SCREEN_WIDTH+GAME_WIDTH)/2)<<16)+(((SCREEN_WIDTH-GAME_WIDTH)/2)<<8)+((SCREEN_WIDTH-GAME_WIDTH)/2 + 1)
@@ -594,7 +577,7 @@ gfxEndFrame:				;@ Called just after screen end (line 144)	(r0-r3 safe to use)
 	ldr r0,tmpScroll			;@ Destination
 	bl copyScrollValues
 	ldr r0,tmpWinInOut			;@ Destination
-	bl copyWindowValues2
+	bl copyWindowValues
 	ldr r0,tmpOamBuffer			;@ Destination
 	bl wsvConvertSprites
 	bl paletteTxAll
