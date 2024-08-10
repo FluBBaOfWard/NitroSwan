@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.5 2024-07-24"
+#define EMUVERSION "V0.6.5 2024-08-10"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -222,8 +222,9 @@ void ejectGame() {
 
 void resetGame() {
 	checkMachine();
-	powerIsOn = true;
 	loadCart();
+	setupEmuBackground();
+	powerIsOn = true;
 }
 
 void updateGameId(char *buffer) {
@@ -315,8 +316,6 @@ void gammaSet() {
 	gGammaValue++;
 	if (gGammaValue > 4) gGammaValue = 0;
 	paletteInit(gGammaValue, gContrastValue);
-	monoPalInit(gGammaValue, gContrastValue);
-	paletteTxAll();					// Make new palette visible
 	setupEmuBorderPalette();
 	setupMenuPalette();
 	settingsChanged = true;
@@ -327,8 +326,6 @@ void contrastSet() {
 	gContrastValue++;
 	if (gContrastValue > 4) gContrastValue = 0;
 	paletteInit(gGammaValue, gContrastValue);
-	monoPalInit(gGammaValue, gContrastValue);
-	paletteTxAll();					// Make new palette visible
 	setupEmuBorderPalette();
 	settingsChanged = true;
 }
@@ -355,8 +352,6 @@ void paletteChange() {
 	if (gPaletteBank > 7) {
 		gPaletteBank = 0;
 	}
-	monoPalInit(gGammaValue, gContrastValue);
-	paletteTxAll();
 	setupEmuBorderPalette();
 	settingsChanged = true;
 }
@@ -375,6 +370,7 @@ void machineSet() {
 	if (gMachineSet >= HW_SELECT_END) {
 		gMachineSet = 0;
 	}
+	setupEmuBorderPalette();
 }
 
 void speedHackSet() {

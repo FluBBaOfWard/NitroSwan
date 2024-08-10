@@ -1,6 +1,12 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.6.6 - 2024-08-10 (FluBBa)
+	Fixed LCD icons palette when switching machine.
+	Fixed some small bugs in the DMA.
+	Fixed prefix handling.
+	Optimized some opcodes.
+
 V0.6.5 - 2024-07-24 (FluBBa)
 	Added saving of joypad layout.
 	Added extra RAM on 3DS.

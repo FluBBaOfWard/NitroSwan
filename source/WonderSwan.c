@@ -44,6 +44,7 @@ int getStateSize() {
 }
 
 static void setupBorderPalette(const void *palette, int len) {
+	monoPalInit(gGammaValue, gContrastValue);
 	vramSetBankF(VRAM_F_LCD);
 	if (gBorderEnable == 0) {
 		memset(VRAM_F, 0, len);
@@ -53,6 +54,7 @@ static void setupBorderPalette(const void *palette, int len) {
 	}
 	memcpy(VRAM_F + 0xF0, MAPPED_BNW, sizeof(MAPPED_BNW));
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
+	paletteTxAll();					// Make new palette visible
 }
 
 void setupWSBackground() {
@@ -83,7 +85,6 @@ void setupPCV2BorderPalette() {
 }
 
 void setupEmuBackground() {
-	monoPalInit(gGammaValue, gContrastValue);
 	if (gMachine == HW_WONDERSWANCOLOR || gMachine == HW_SWANCRYSTAL) {
 		setupWSCBackground();
 		setupWSCBorderPalette();

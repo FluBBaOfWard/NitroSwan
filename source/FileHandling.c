@@ -420,9 +420,10 @@ bool loadGame(const char *gameName) {
 			maxRomSize = maxSize;
 			romSpacePtr = romPtr;
 
-			checkMachine();
 			setEmuSpeed(0);
+			checkMachine();
 			loadCart();
+			setupEmuBackground();
 			gameInserted = true;
 			if (emuSettings & AUTOLOAD_NVRAM) {
 				loadNVRAM();
@@ -464,7 +465,6 @@ void checkMachine() {
 	else {
 		gMachine = gMachineSet;
 	}
-	setupEmuBackground();
 }
 
 //---------------------------------------------------------------------------------
@@ -555,9 +555,10 @@ void selectIPS() {
 	pauseEmulation = true;
 	ui10();
 	const char *fileName = browseForFileType(".ips");
-	if (patchRom(romSpacePtr, fileName, gRomSize)) {
+	if (fileName && patchRom(romSpacePtr, fileName, gRomSize)) {
 		checkMachine();
 		loadCart();
+		setupEmuBackground();
 		backOutOfMenu();
 	}
 }
