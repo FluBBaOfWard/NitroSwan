@@ -40,10 +40,6 @@
 	.global machineInit
 	.global loadCart
 	.global reBankSwitchAll
-	.global reBankSwitch4_F
-	.global reBankSwitch1
-	.global reBankSwitch2
-	.global reBankSwitch3
 	.global clearDirtyTiles
 	.global cartRtcUpdate
 
@@ -235,7 +231,9 @@ fixRomSizeAndPtr:
 	add r2,r2,r0
 	sub r2,r2,r1
 	str r2,romPtr
-	sub r2,r2,#0x20000
+	sub r2,r2,#0x10000
+	str r2,romPtr1
+	sub r2,r2,#0x10000
 	str r2,romPtr2
 	sub r2,r2,#0x10000
 	str r2,romPtr3
@@ -301,6 +299,9 @@ BankSwitch1_H_W:			;@ 0x10000-0x1FFFF
 reBankSwitch1:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 	ldrh r0,[spxptr,#wsvBnk1SlctX]
+//	ldrb r1,[spxptr,wsvBank1Map]
+//	tst r0,#1
+//	bne BankSwitch1F_W
 ;@----------------------------------------------------------------------------
 BankSwitch1_W:				;@ 0x10000-0x1FFFF
 BankSwitch1_L_W:			;@ 0x10000-0x1FFFF
@@ -312,6 +313,18 @@ BankSwitch1_L_W:			;@ 0x10000-0x1FFFF
 	subne r1,r1,#1
 	and r1,r1,#3				;@ Mask for actual SRAM banks we emulate
 	ldr r2,=wsSRAM-0x10000
+	and r3,r1,r0
+	add r3,r2,r3,lsl#16			;@ 64kB blocks.
+	str r3,[v30ptr,#v30MemTblInv-2*4]
+
+	bx lr
+;@----------------------------------------------------------------------------
+BankSwitch1F_W:				;@ 0x10000-0x1FFFF
+;@----------------------------------------------------------------------------
+	strb r0,[spxptr,#wsvBnk1SlctX]
+
+	ldr r1,romMask
+	ldr r2,romPtr1
 	and r3,r1,r0
 	add r3,r2,r3,lsl#16			;@ 64kB blocks.
 	str r3,[v30ptr,#v30MemTblInv-2*4]
@@ -411,7 +424,7 @@ cartGPIODataR:				;@ 0xCD General Purpose I/O data, bit 3-0.
 ;@----------------------------------------------------------------------------
 cartWWFlashR:				;@ 0xCE WonderWitch Flash/SRAM select
 ;@----------------------------------------------------------------------------
-	ldrb r0,[spxptr,wsvWWitch]
+	ldrb r0,[spxptr,wsvBank1Map]
 	bx lr
 ;@----------------------------------------------------------------------------
 cartUnmR:
@@ -430,11 +443,23 @@ cartGPIODataW:				;@ 0xCD General Purpose I/O data, bit 3-0.
 	strb r0,[spxptr,wsvGPIOData]
 	bx lr
 ;@----------------------------------------------------------------------------
-cartWWFlashW:				;@ 0xCE WonderWitch flash
+cartWWFlashW:				;@ 0xCE WonderWitch Flash/SRAM select
 ;@----------------------------------------------------------------------------
+	ldrb r1,[spxptr,wsvBank1Map]
 	and r0,r0,#1
-	strb r0,[spxptr,wsvWWitch]
-	bx lr
+	eors r1,r1,r0
+	bxeq lr
+	strb r0,[spxptr,wsvBank1Map]
+	tst r0,#1
+	ldrne r1,=BankSwitch1F_W
+	ldr r1,=BankSwitch1_W		;@ This should be conditional when flash is supported
+	stmfd sp!,{lr}
+	mov r0,#0xC1
+	bl wsvSetIOPortOut
+	mov r0,#0xD0
+	bl wsvSetIOPortOut
+	ldmfd sp!,{lr}
+	b reBankSwitch1
 ;@----------------------------------------------------------------------------
 cartUnmW:
 ;@----------------------------------------------------------------------------
@@ -624,6 +649,8 @@ allocatedRomMemSize:
 romSpacePtr:
 	.long 0
 romPtr:
+	.long 0
+romPtr1:
 	.long 0
 romPtr2:
 	.long 0

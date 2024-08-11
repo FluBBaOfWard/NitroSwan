@@ -1,7 +1,7 @@
 NitroSwan Todo
 
 	Add support for timer and ADPCM on Karnak carts.
-	Add support for 16MB roms on 3DS, also cache area.
+	Add cache for 16MB extra area on 3DS.
 	Fix better sound? Update twice per raster row.
 	Map serial port to debug out. Test!
 	Add support for LCD on/off.

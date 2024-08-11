@@ -65,6 +65,7 @@
 		9C8347EA27B800C2004106B0 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 		9C8F33EE248ACA2E00996E5A /* nds_asm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nds_asm.h; sourceTree = "<group>"; };
 		9CA52588273D7F3C0022BAD7 /* InternalEEPROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InternalEEPROM.h; sourceTree = "<group>"; };
+		9CAAF3592C68D5C500978F74 /* jesd68-01.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "jesd68-01.pdf"; sourceTree = "<group>"; };
 		9CAB1A0D274D4C0C00182F62 /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
 		9CAB1A0E274D4C0C00182F62 /* WSAudio.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = WSAudio.s; sourceTree = "<group>"; };
 		9CAB1A0F274D4C0C00182F62 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -202,6 +203,7 @@
 		A42D0269205FEC6E00515C72 /* Docs */ = {
 			isa = PBXGroup;
 			children = (
+				9CAAF3592C68D5C500978F74 /* jesd68-01.pdf */,
 				9C4EB1D8271CBC060072D38E /* WonderSwanTech.txt */,
 			);
 			path = Docs;
