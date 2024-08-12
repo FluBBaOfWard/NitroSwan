@@ -14,7 +14,9 @@ extern ConfigData cfg;
 
 int initSettings(void);
 bool updateSettingsFromWS(void);
+/// Load user settings and internal eeprom.
 int loadSettings(void);
+/// Save user settings and internal eeprom.
 void saveSettings(void);
 bool loadGame(const char *gameName);
 void checkMachine(void);

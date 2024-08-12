@@ -13,7 +13,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.5 2024-08-11"
+#define EMUVERSION "V0.6.5 2024-08-12"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -277,6 +277,9 @@ void debugIOUnmappedR(u16 port, u8 val) {
 }
 void debugIOUnmappedW(u8 val, u16 port) {
 	debugIO(port, val, "Unmapped W port:");
+}
+void debugROMW(u8 val, u16 adr) {
+	debugIO(adr, val, "Rom W:");
 }
 void debugSerialOutW(u8 val) {
 	if (val < 0x80) {

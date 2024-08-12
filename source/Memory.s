@@ -33,6 +33,7 @@
 	.global v30PushLastW
 	.global v30WriteSegOfsW
 	.global setBootRomOverlay
+	.global setSRamArea
 
 
 	.syntax unified
@@ -56,14 +57,17 @@ empty_IO_W:					;@ Write bad IO address (error)
 rom_W:						;@ Write ROM address (error)
 ;@----------------------------------------------------------------------------
 	mov r11,r11					;@ No$GBA breakpoint
+	stmfd sp!,{r12,lr}
+	bl debugROMW
+	ldmfd sp!,{r12,pc}
 	mov r0,#0xB0
 	bx lr
 ;@----------------------------------------------------------------------------
 setBootRomOverlay:			;@ r0=arg0, 0=remove overlay, 1=WS, 2=WSC/SC
 ;@----------------------------------------------------------------------------
 	cmp r0,#3
-	ldrmi r1,=bootRomSwitch
-	ldrmi r2,=bootRomSwitch2
+	ldrmi r1,=bootRomSwitchB
+	ldrmi r2,=bootRomSwitchW
 	adr r3,commandList
 	ldrmi r0,[r3,r0,lsl#2]
 	strmi r0,[r1]
@@ -72,6 +76,20 @@ commandList:
 	bx lr
 	subs r2,r2,#0xFF000
 	subs r2,r2,#0xFE000
+;@----------------------------------------------------------------------------
+setSRamArea:			;@ r0=arg0, 0=SRAM, 1=ROM/Flash
+;@----------------------------------------------------------------------------
+	cmp r0,#2
+	ldrmi r1,=sram_WB
+	ldrmi r2,=sram_WW
+	adr r3,sramCmdList
+	ldrmi r0,[r3,r0,lsl#2]
+	strmi r0,[r1]
+	strmi r0,[r2]
+	bx lr
+sramCmdList:
+	ldreq r2,[v30ptr,#v30MemTblInv-2*4]
+	cmp r2,#0
 
 ;@----------------------------------------------------------------------------
 
@@ -125,7 +143,7 @@ cpuReadMem20:		;@ In r0=address set in top 20 bits. Out r0=val, r1=phyAdr
 	ldr r1,[v30ptr,r2,lsl#2]
 	mov r2,r0,lsr#12
 	ldrb r0,[r1,r0,lsr#12]!
-bootRomSwitch:
+bootRomSwitchB:
 	subs r2,r2,#0xFE000
 	bxcc lr
 	ldr r1,=biosBase
@@ -169,7 +187,7 @@ dmaReadMem20W:
 	ldr r1,[v30ptr,r2,lsl#2]
 	mov r2,r0,lsr#12
 	ldrh r0,[r1,r2]!
-bootRomSwitch2:
+bootRomSwitchW:
 	subs r2,r2,#0xFE000
 	bxcc lr
 	ldr r1,=biosBase
@@ -279,10 +297,10 @@ tstSRAM_WW:
 ;@----------------------------------------------------------------------------
 sram_WW:			;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
-	subeq v30cyc,v30cyc,#1*CYCLE
 	ldreq r2,[v30ptr,#v30MemTblInv-2*4]
 	moveq r0,r0,lsr#12
 	strheq r1,[r2,r0]
+	subeq v30cyc,v30cyc,#1*CYCLE
 	bxeq lr
 	b rom_W
 ;@----------------------------------------------------------------------------

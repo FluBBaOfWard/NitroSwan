@@ -246,6 +246,8 @@ resetCartridgeBanks:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 	ldr spxptr,=sphinx0
+	mov r0,#0
+	bl cartWWFlashW
 	mov r0,#0xFF
 	bl BankSwitch4_F_W
 	mov r0,#0xFF
@@ -299,9 +301,9 @@ BankSwitch1_H_W:			;@ 0x10000-0x1FFFF
 reBankSwitch1:				;@ 0x10000-0x1FFFF
 ;@----------------------------------------------------------------------------
 	ldrh r0,[spxptr,#wsvBnk1SlctX]
-//	ldrb r1,[spxptr,wsvBank1Map]
-//	tst r0,#1
-//	bne BankSwitch1F_W
+	ldrb r1,[spxptr,wsvBank1Map]
+	tst r1,#1
+	bne BankSwitch1F_W
 ;@----------------------------------------------------------------------------
 BankSwitch1_W:				;@ 0x10000-0x1FFFF
 BankSwitch1_L_W:			;@ 0x10000-0x1FFFF
@@ -433,7 +435,7 @@ cartUnmR:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-cartGPIODirW:				;@ 0xCC General Purpose I/O enable, bit 3-0.
+cartGPIODirW:				;@ 0xCC General Purpose I/O direction, bit 3-0.
 ;@----------------------------------------------------------------------------
 	strb r0,[spxptr,wsvGPIOEnable]
 	bx lr
@@ -452,12 +454,14 @@ cartWWFlashW:				;@ 0xCE WonderWitch Flash/SRAM select
 	strb r0,[spxptr,wsvBank1Map]
 	tst r0,#1
 	ldrne r1,=BankSwitch1F_W
-	ldr r1,=BankSwitch1_W		;@ This should be conditional when flash is supported
+	ldreq r1,=BankSwitch1_W
 	stmfd sp!,{lr}
 	mov r0,#0xC1
 	bl wsvSetIOPortOut
 	mov r0,#0xD0
 	bl wsvSetIOPortOut
+	ldrb r0,[spxptr,wsvBank1Map]
+	bl setSRamArea
 	ldmfd sp!,{lr}
 	b reBankSwitch1
 ;@----------------------------------------------------------------------------
