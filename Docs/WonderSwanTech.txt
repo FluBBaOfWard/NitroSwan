@@ -146,6 +146,7 @@
    4 Audio channels.
    Each channel can play short samples ( 4 bit , 16 bytes ( 32 samples = 2 samples per byte (bits 0-3 and 4-7))
    with selectable frequency = 3,072 *10e6  / ((2048 - N) x 32 ) Hz , where N = 11 bit value.
+   Location of those samples is controlled by register $8F.
 
    Volume of each audio channel is controlled by writing two 4 bit values ( for left/right output
    channel) into ports $88 - $8B. Master volume is controlled by port $91
@@ -432,6 +433,9 @@
                 110   16 col/tile 'layered' mode  -  tiles like in GameGear, 16 col/tile
                 100    4 col/tile                 -  the same as mono (below) but using color palettes, 4 cols/tile, one tile = 16 bytes, WSC only
                 000    4 col/tile mono            -  tiles like in GameBoy,
+               bit 3 = Cart I/O wait state: 0 = +0 cycles, 1 = +1
+               bit 1 = Cart SRAM wait state: 0 = +0 cycles, 1 = +1
+               bit 0 = Cart clock speed?
  - $61 - $00 - ???
  - $62 - $00 - WSC System
                bit 7 = System (0=WonderSwan Color, 1=SwanCrystal)
@@ -540,7 +544,7 @@
  - $9F - $00 - ???
  - $A0 - $87 - Hardware type
                 bit 7 - 1 = Cart handshake ok. Read only.
-                bit 3     = Cart ROM speed (0=3 cycle, 1=1 cycle)
+                bit 3     = Cart ROM speed (0= +0 cycles, 1= +1 cycle)
                 bit 2 - 1 = 16bit cart access, 0 = 8 bit access
                 bit 1 - 1 = color, 0 = mono. Read only
                 bit 0 - 1 = lock the boot rom. Write once.

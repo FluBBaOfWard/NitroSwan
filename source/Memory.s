@@ -3,6 +3,7 @@
 #include "ARMV30MZ/ARMV30MZmac.h"
 #include "Sphinx/Sphinx.i"
 
+	.global memoryInit
 	.global empty_IO_R
 	.global empty_IO_W
 	.global rom_W
@@ -34,13 +35,26 @@
 	.global v30WriteSegOfsW
 	.global setBootRomOverlay
 	.global setSRamArea
-
+	.global setFlashRead
+	.global bootRomSwitchB
+	.global bootRomSwitchW
 
 	.syntax unified
 	.arm
 
 	.section .text
 	.align 2
+;@----------------------------------------------------------------------------
+memoryInit:
+;@----------------------------------------------------------------------------
+	ldr r0,=flashReadMem20
+	ldr r1,=cpuReadMem20+8
+	sub r0,r0,r1
+	mov r0,r0,lsl#6
+	mov r0,r0,lsr#8
+	orr r0,r0,#0xEA000000		;@ Branch always
+	str r0,flashCmdList+4
+	bx lr
 ;@----------------------------------------------------------------------------
 empty_IO_R:					;@ Read bad IO address (error)
 ;@----------------------------------------------------------------------------
@@ -90,6 +104,22 @@ setSRamArea:			;@ r0=arg0, 0=SRAM, 1=ROM/Flash
 sramCmdList:
 	ldreq r2,[v30ptr,#v30MemTblInv-2*4]
 	cmp r2,#0
+;@----------------------------------------------------------------------------
+setFlashRead:			;@ r0=arg0, 0=Normal, 1=Flash info
+;@----------------------------------------------------------------------------
+	cmp r0,#2
+	ldrcc r1,=cpuReadMem20
+//	ldrcc r2,=cpuReadMem20W
+	adr r3,flashCmdList
+	ldrcc r0,[r3,r0,lsl#2]
+	strcc r0,[r1]
+//	strcc r0,[r2]
+	bx lr
+flashCmdList:
+	mvn r2,r0,lsr#28
+	//This is "b always flashReadMem20"
+	.long 0xEA000000 // + ((flashReadMem20 - cpuReadMem20)>>2) & 0xFFFFFF
+//	.long 0xEA000000 + ((flashCmdList - setFlashRead)>>2) & 0xFFFFFF
 
 ;@----------------------------------------------------------------------------
 
@@ -248,7 +278,7 @@ sram_WB:			;@ Write sram ($10000-$1FFFF)
 	ldreq r2,[v30ptr,#v30MemTblInv-2*4]
 	strbeq r1,[r2,r0,lsr#12]
 	bxeq lr
-	b rom_W
+	b flashWriteMem20
 
 ;@----------------------------------------------------------------------------
 v30WriteEAW2:		;@ In v30ofs=v30ptr+second byte of opcode.
@@ -302,7 +332,8 @@ sram_WW:			;@ Write sram ($10000-$1FFFF)
 	strheq r1,[r2,r0]
 	subeq v30cyc,v30cyc,#1*CYCLE
 	bxeq lr
-	b rom_W
+	b flashWriteMem20W
+
 ;@----------------------------------------------------------------------------
 	.end
 #endif // #ifdef __arm__

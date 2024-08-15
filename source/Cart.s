@@ -64,6 +64,7 @@ ROM_Space:
 //	.incbin "wsroms/Tetris (Japan).wsc"
 //	.incbin "wsroms/Tonpuusou (Japan).wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
+//	.incbin "wsroms/WonderWitch [FreyaOS 1.2.0].ws"
 //	.incbin "wsroms/WSCpuTest.wsc"
 //	.incbin "wsroms/XI Little (Japan).wsc"
 ROM_SpaceEnd:
@@ -73,6 +74,7 @@ WS_BIOS_INTERNAL:
 WSC_BIOS_INTERNAL:
 SC_BIOS_INTERNAL:
 //	.incbin "wsroms/boot1.rom"
+//	.incbin "wsroms/boot2.rom"
 	.incbin "wsroms/wc_irom.bin"
 //	.incbin "wsroms/wsc_irom.bin"
 
@@ -90,6 +92,7 @@ machineInit: 				;@ Called from C
 //	ldr r7,=ROM_Space
 //	str r7,[r0]
 
+	bl memoryInit
 	bl gfxInit
 //	bl ioInit
 	bl soundInit
@@ -248,6 +251,7 @@ resetCartridgeBanks:
 	ldr spxptr,=sphinx0
 	mov r0,#0
 	bl cartWWFlashW
+	bl flashMemReset
 	mov r0,#0xFF
 	bl BankSwitch4_F_W
 	mov r0,#0xFF
@@ -435,7 +439,7 @@ cartUnmR:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-cartGPIODirW:				;@ 0xCC General Purpose I/O direction, bit 3-0.
+cartGPIODirW:				;@ 0xCC General Purpose I/O enable/dir, bit 3-0.
 ;@----------------------------------------------------------------------------
 	strb r0,[spxptr,wsvGPIOEnable]
 	bx lr

@@ -133,6 +133,7 @@ There are a couple of games that have visual glitches.
 * Final Lap Special - GT & Formula Machine, incorrect road colors.
 * From TV Animation One Piece - Grand Battle Swan Colosseum, incorrect sky color.
 * Makaimura, first boss sprites are glitchy, gargoyles in intro should not show up on the right.
+* Neon Genesis Evangelion - Shito Ikusei, sprites overlap avatar images.
 * Rockman & Forte - Mirai Kara no Chousensha, no background fade in intro.
 * Romancing Sa-Ga, sprites overlap text boxes.
 * Sorobang, needs all 1024 tiles in 4color mode.

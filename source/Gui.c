@@ -6,6 +6,7 @@
 #include "Main.h"
 #include "FileHandling.h"
 #include "WonderSwan.h"
+#include "WonderWitch.h"
 #include "Cart.h"
 #include "Gfx.h"
 #include "io.h"
@@ -13,7 +14,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.5 2024-08-12"
+#define EMUVERSION "V0.6.5 2024-08-25"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -41,7 +42,7 @@ const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, 
 
 const fptr fnList0[] = {uiDummy};
 const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, selectIPS, saveSettings, ejectGame, resetGame, ui9};
-const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8};
+const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8, startXModemReceive, startXModemTransmit};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet, joyMappingSet};
 const fptr fnList5[] = {gammaSet, contrastSet, paletteChange, borderSet};
@@ -125,6 +126,8 @@ void uiOptions() {
 	drawMenuItem("Machine");
 	drawMenuItem("Settings");
 	drawMenuItem("Debug");
+	drawMenuItem("XMODEM Receive");
+	drawMenuItem("XMODEM Transmit");
 }
 
 void uiAbout() {

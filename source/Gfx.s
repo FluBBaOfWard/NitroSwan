@@ -31,6 +31,7 @@
 	.global pushVolumeButton
 	.global setHeadphones
 	.global setLowBattery
+	.global setSerialByteIn
 	.global updateLCDRefresh
 	.global setScreenRefresh
 	.global getInterruptVector
@@ -86,13 +87,16 @@ gfxReset:					;@ Called with CPU reset
 
 	bl gfxWinInit
 
-	ldr r0,=V30SetIRQPin
+	ldr r0,=wsRAM
 	ldr r1,=gMachine
 	ldrb r1,[r1]
-	ldr r2,=wsRAM
-	ldr r3,=gSOC
-	ldrb r3,[r3]
+	ldr r2,=V30SetIRQPin
 	bl wsVideoReset0
+	ldr r3,=handleSerialInEmpty
+	str r3,[spxptr,#rxFunction]
+	ldr r3,=handleSerialReceive
+	str r3,[spxptr,#txFunction]
+
 
 	ldr r4,=gGammaValue
 	ldr r5,=gContrastValue
@@ -299,7 +303,7 @@ paletteTx:					;@ r0=destination, spxptr=Sphinx
 	ldr r2,=0x1FFE
 	stmfd sp!,{r4-r8,lr}
 	mov r5,#0
-	ldrb r3,[spxptr,#wsvBGColor]	;@ Background palette
+	ldrb r3,[spxptr,#wsvBgColor]	;@ Background palette
 	ldrb r7,[spxptr,#wsvVideoMode]
 	ands r7,r7,#0xC0			;@ Color mode?
 	beq bnwTx
@@ -407,7 +411,7 @@ updateLCDRefresh:
 setScreenRefresh:			;@ r0 in = WS scan line count.
 	.type setScreenRefresh STT_FUNC
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r6,lr}
+	stmfd sp!,{r4-r6,spxptr,lr}
 	mov r4,r0
 	ldr r6,=12000				;@ WS scanline frequency = 12kHz
 	mov r0,r6,lsl#1
@@ -435,7 +439,7 @@ setScreenRefresh:			;@ r0 in = WS scan line count.
 	movmi r0,#0
 	str r0,lcdSkip
 
-	ldmfd sp!,{r4-r6,lr}
+	ldmfd sp!,{r4-r6,spxptr,lr}
 	bx lr
 
 ;@----------------------------------------------------------------------------
@@ -626,7 +630,7 @@ gGfxMask:		.byte 0
 frameDone:		.byte 0
 				.byte 0,0
 ;@----------------------------------------------------------------------------
-wsVideoReset0:		;@ r0=periodicIrqFunc, r1=model, r2=frame2IrqFunc, r3=SOC
+wsVideoReset0:				;@ r0=ram+LUTs, r1=machine, r2=IrqFunc
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsVideoReset
@@ -671,6 +675,12 @@ setLowBattery:				;@ r0 = on/off
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvSetLowBattery
+;@----------------------------------------------------------------------------
+setSerialByteIn:
+	.type setSerialByteIn STT_FUNC
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvSetSerialByteIn
 ;@----------------------------------------------------------------------------
 getInterruptVector:
 ;@----------------------------------------------------------------------------
