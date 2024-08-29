@@ -18,11 +18,34 @@ bool serialInEmpty = false;
 u8 checksum = 0;
 u8 buffer[PAGE_SIZE];
 
-static void sendByte(u8 value) {
+static bool sendByte(u8 value) {
 	if (serialInEmpty) {
 		serialInEmpty = false;
 		setSerialByteIn(value);
+		return true;
 	}
+	return false;
+}
+
+static void sendBuffer() {
+	u8 val = buffer[counter];
+	if (val == 0) {
+		mode = wwReceiveCommand;
+		counter = 0;
+		return;
+	}
+	if (sendByte(val)) {
+		counter += 1;
+	}
+}
+
+static void receiveBuffer(u8 val) {
+	if (val == 0) {
+		mode = standby;
+		return;
+	}
+	buffer[counter] = val;
+	counter += 1;
 }
 
 void sendNack() {
@@ -37,6 +60,37 @@ static void endRxTx(void) {
 	mode = standby;
 	fclose(file);
 	file = NULL;
+}
+
+void startWWCommand(const char *str) {
+	mode = wwSendCommand;
+	counter = 0;
+	char lineFeed[2] = {CR, 0x0};
+	strlcpy((char *)buffer, " ", PAGE_SIZE);
+	strlcat((char *)buffer, str, PAGE_SIZE);
+	strlcat((char *)buffer, lineFeed, PAGE_SIZE);
+	sendBuffer();
+	debugOutput(str);
+}
+
+void startWWPut() {
+	startWWCommand("put");
+}
+
+void startWWInteract() {
+	startWWCommand("");
+}
+
+void startWWStty() {
+	startWWCommand("stty");
+}
+
+void startWWHello() {
+	startWWCommand("HELO");
+}
+
+void startWWReboot() {
+	startWWCommand("reboot");
 }
 
 void startXModemReceive() {
@@ -200,6 +254,9 @@ void handleSerialInEmpty() {
 	if (mode == xmodemTransmit) {
 		handleXModemTransmit();
 	}
+	else if (mode == wwSendCommand) {
+		sendBuffer();
+	}
 }
 
 void handleSerialReceive(u8 value) {
@@ -224,7 +281,10 @@ void handleSerialReceive(u8 value) {
 			endRxTx();
 		}
 	}
-	else if (mode == debugSerial) {
-		debugSerialOutW(value);
+	else if (mode == wwReceiveCommand) {
+		receiveBuffer(value);
 	}
+//	else if (mode == debugSerial) {
+		debugSerialOutW(value);
+//	}
 }

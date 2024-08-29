@@ -1,4 +1,4 @@
-# NitroSwan V0.6.5
+# NitroSwan V0.6.6
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -78,6 +78,9 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
   * Powersave 2nd Screen: If graphics/light should be turned off for the GUI screen when menu is not active.
   * Emulator on Bottom: Select if top or bottom screen should be used for emulator, when menu is active emulator screen is allways on top.
   * Autosleep: Doesn't work.
+* WonderWitch: Tools for interacting with a WonderWitch.
+  * XMODEM Transmit: Used for uploading files to WonderWitch.
+  * XMODEM Receive: Used for downloading files from WonderWitch.
 * Debug:
   * Debug Output: Show FPS and logged text.
   * Disable Foreground: Turn on/off foreground rendering.

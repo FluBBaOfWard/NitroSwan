@@ -8,7 +8,7 @@ typedef struct
 	const u8  resetCode[5];
 	/// 0x05, bit 7 skip custom boot.
 	const u8  maintenace;
-	/// 0x06
+	/// 0x06 Publisher ID
 	const u8  publisher;
 	/// 0x07, 0x00 = B&W, 0x01 = Color.
 	const u8  color;
@@ -20,7 +20,7 @@ typedef struct
 	const u8  romSize;
 	/// 0x0B
 	const u8  nvramSize;
-	/// 0x0C, bit 0=orientation, bit 1=8bit bus, bit 2=3 cyc Rom access.
+	/// 0x0C, bit 0=orientation, bit 1=8bit bus, bit 2= cyc Rom access.
 	const u8  flags;
 	/// 0x0D, 0x01 = Luxsor2003 (RTC).
 	const u8  mapper;

@@ -17,6 +17,8 @@ extern "C" {
 #define EOT 0x04
 /// Acknowledged
 #define ACK 0x06
+/// Caridge Return
+#define CR 0x0D
 /// Not Acknowledged
 #define NAK 0x15
 /// Cancel
@@ -26,9 +28,11 @@ extern "C" {
 
 typedef enum {
 	standby = 0,
-	xmodemReceive,
+	wwSendCommand,
+	wwReceiveCommand,
 	xmodemTransmitHold,
 	xmodemTransmit,
+	xmodemReceive,
 	debugSerial,
 } Mode;
 
@@ -63,11 +67,26 @@ void sendAck(void);
 /// Sends a NACK to the WS serial port.
 void sendNack(void);
 
-/// Start XMODEM receive.
-void startXModemReceive(void);
+/// Start Interactive command.
+void startWWInteract(void);
+
+/// Start Hello command.
+void startWWStty(void);
+
+/// Start Hello command.
+void startWWHello(void);
+
+/// Start Put command.
+void startWWPut(void);
+
+/// Start Reboot command.
+void startWWReboot(void);
 
 /// Start XMODEM transmit.
 void startXModemTransmit(void);
+
+/// Start XMODEM receive.
+void startXModemReceive(void);
 
 /// Handle serial in empty on WonderSwan.
 void handleSerialInEmpty(void);

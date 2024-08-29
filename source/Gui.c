@@ -14,7 +14,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.5 2024-08-25"
+#define EMUVERSION "V0.6.6 2024-08-29"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -33,16 +33,18 @@ static void joyMappingSet(void);
 static void stepFrame(void);
 
 static void uiMachine(void);
+static void uiWonderWitch(void);
 static void uiDebug(void);
+static void ui11(void);
 static void updateGameId(char *buffer);
 static void updateCartInfo(char *buffer);
 static void updateMapperInfo(char *buffer);
 
-const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
+const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
 const fptr fnList0[] = {uiDummy};
 const fptr fnList1[] = {selectGame, loadState, saveState, loadNVRAM, saveNVRAM, selectIPS, saveSettings, ejectGame, resetGame, ui9};
-const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui8, startXModemReceive, startXModemTransmit};
+const fptr fnList2[] = {ui4, ui5, ui6, ui7, ui11, ui8};
 const fptr fnList3[] = {uiDummy};
 const fptr fnList4[] = {autoBSet, autoASet, controllerSet, swapABSet, joyMappingSet};
 const fptr fnList5[] = {gammaSet, contrastSet, paletteChange, borderSet};
@@ -51,9 +53,10 @@ const fptr fnList7[] = {speedSet, refreshChgSet, autoStateSet, autoNVRAMSet, aut
 const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, winLayerSet, stepFrame};
 const fptr fnList9[] = {exitEmulator, backOutOfMenu};
 const fptr fnList10[] = {uiDummy};
-const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9, fnList10};
-u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9), ARRSIZE(fnList10)};
-const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDebug, uiYesNo, uiDummy};
+const fptr fnList11[] = {startWWInteract, startWWStty, startWWHello, startWWPut, startWWReboot, startXModemTransmit, startXModemReceive};
+const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9, fnList10, fnList11};
+u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9), ARRSIZE(fnList10), ARRSIZE(fnList11)};
+const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDebug, uiYesNo, uiDummy, uiWonderWitch};
 
 u8 gGammaValue = 0;
 u8 gContrastValue = 3;
@@ -125,9 +128,8 @@ void uiOptions() {
 	drawMenuItem("Display");
 	drawMenuItem("Machine");
 	drawMenuItem("Settings");
+	drawMenuItem("WonderWitch");
 	drawMenuItem("Debug");
-	drawMenuItem("XMODEM Receive");
-	drawMenuItem("XMODEM Transmit");
 }
 
 void uiAbout() {
@@ -197,6 +199,17 @@ void uiSettings() {
 	drawSubItem("Autosleep:", sleepTxt[(emuSettings>>4)&3]);
 }
 
+void uiWonderWitch() {
+	setupSubMenu("WonderWitch");
+	drawSubItem("Interact", NULL);
+	drawSubItem("Stty", NULL);
+	drawSubItem("Hello", NULL);
+	drawSubItem("Upload file", NULL);
+	drawSubItem("Reboot WW", NULL);
+	drawSubItem("XMODEM Transmit", NULL);
+	drawSubItem("XMODEM Receive", NULL);
+}
+
 void uiDebug() {
 	setupSubMenu("Debug");
 	drawSubItem("Debug Output:", autoTxt[gDebugSet&1]);
@@ -205,6 +218,10 @@ void uiDebug() {
 	drawSubItem("Disable Sprites:", autoTxt[(gGfxMask>>4)&1]);
 	drawSubItem("Disable Windows:", autoTxt[(gGfxMask>>5)&1]);
 	drawSubItem("Step Frame", NULL);
+}
+
+void ui11() {
+	enterMenu(11);
 }
 
 void nullUINormal(int key) {
@@ -287,7 +304,8 @@ void debugROMW(u8 val, u16 adr) {
 void debugSerialOutW(u8 val) {
 	if (val < 0x80) {
 		serialOut[serialPos++] = val;
-		if (serialPos >= 32 || val == 0) {
+		if (serialPos >= 31 || val == 0 || val == 0xA || val == 0xD) {
+			serialOut[serialPos] = 0;
 			serialPos = 0;
 			debugOutput(serialOut);
 		}
