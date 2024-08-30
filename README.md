@@ -79,6 +79,7 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
   * Emulator on Bottom: Select if top or bottom screen should be used for emulator, when menu is active emulator screen is allways on top.
   * Autosleep: Doesn't work.
 * WonderWitch: Tools for interacting with a WonderWitch.
+  * Upload File: Used for uploading files to WonderWitch.
   * XMODEM Transmit: Used for uploading files to WonderWitch.
   * XMODEM Receive: Used for downloading files from WonderWitch.
 * Debug:

@@ -17,6 +17,8 @@ extern "C" {
 #define EOT 0x04
 /// Acknowledged
 #define ACK 0x06
+/// New Line
+#define NL 0x0A
 /// Caridge Return
 #define CR 0x0D
 /// Not Acknowledged
@@ -27,14 +29,47 @@ extern "C" {
 #define C_CHR 0x43
 
 typedef enum {
+	rom0 = 0,
+	ram0,
+	kern,
+} Storage;
+
+typedef enum {
 	standby = 0,
 	wwSendCommand,
 	wwReceiveCommand,
+	wwReceiveText,
 	xmodemTransmitHold,
 	xmodemTransmit,
 	xmodemReceive,
 	debugSerial,
 } Mode;
+
+typedef enum {
+	wwCmdNone = 0,
+	wwCmdStty,
+	wwCmdInt,
+	wwCmdHello,
+	wwCmdPut,
+	wwCmdSend,
+	wwCmdGet,
+	wwCmdDelete,
+	wwCmdExec,
+	wwCmdReboot,
+	wwCmdDir,
+	wwCmdDf,
+	wwCmdNewFS,
+	wwCmdDefrag,
+	wwCmdRename,
+	wwCmdSpeed,
+	wwCmdDate,
+	wwCmdCopy,
+	wwCmdMove,
+	wwCmdSetInfo,
+	wwCmdChMod,
+	wwCmdCD,
+	wwCmdPwd,
+} WWCmd;
 
 typedef struct {
 	u8 startOfHeading;
@@ -61,26 +96,77 @@ typedef struct {
 	u32 resource;
 } FxFile;
 
-/// Sends an ACK to the WS serial port.
-void sendAck(void);
+/// Change between rom0 & ram0 storage on the WW.
+void wwChangeStorage(void);
 
-/// Sends a NACK to the WS serial port.
-void sendNack(void);
+/// Get the currant storage as a string.
+const char *wwGetStorageText(void);
+
+/// Start Hello command.
+void wwStartStty(void);
 
 /// Start Interactive command.
-void startWWInteract(void);
+void wwStartInteract(void);
 
 /// Start Hello command.
-void startWWStty(void);
-
-/// Start Hello command.
-void startWWHello(void);
+void wwStartHello(void);
 
 /// Start Put command.
-void startWWPut(void);
+void wwStartPut(void);
+
+/// Start Get command.
+void wwStartGet(void);
+
+/// Start Delete command.
+void wwStartDelete(void);
+
+/// Start Exec command.
+void wwStartExec(void);
 
 /// Start Reboot command.
-void startWWReboot(void);
+void wwStartReboot(void);
+
+/// Start Ls command.
+void wwStartLs(void);
+
+/// Start Dir command.
+void wwStartDir(void);
+
+/// Start DF command.
+void wwStartDF(void);
+
+/// Start New File System command.
+void wwStartNewFS(void);
+
+/// Start Defrag command.
+void wwStartDefrag(void);
+
+/// Start Rename command.
+void wwStartRename(void);
+
+/// Start Speed command.
+void wwStartSpeed(void);
+
+/// Start Date command.
+void wwStartDate(void);
+
+/// Start Copy command.
+void wwStartCopy(void);
+
+/// Start Move command.
+void wwStartMove(void);
+
+/// Start SetInfo command.
+void wwStartSetInfo(void);
+
+/// Start ChMod command.
+void wwStartChMod(void);
+
+/// Start CD command.
+void wwStartCD(void);
+
+/// Start Pwd command.
+void wwStartPwd(void);
 
 /// Start XMODEM transmit.
 void startXModemTransmit(void);

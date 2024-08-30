@@ -14,7 +14,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.6 2024-08-29"
+#define EMUVERSION "V0.6.6 2024-09-04"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -53,7 +53,7 @@ const fptr fnList7[] = {speedSet, refreshChgSet, autoStateSet, autoNVRAMSet, aut
 const fptr fnList8[] = {debugTextSet, fgrLayerSet, bgrLayerSet, sprLayerSet, winLayerSet, stepFrame};
 const fptr fnList9[] = {exitEmulator, backOutOfMenu};
 const fptr fnList10[] = {uiDummy};
-const fptr fnList11[] = {startWWInteract, startWWStty, startWWHello, startWWPut, startWWReboot, startXModemTransmit, startXModemReceive};
+const fptr fnList11[] = {wwChangeStorage, wwStartPut, wwStartDir, wwStartExec, wwStartDelete, wwStartGet, wwStartNewFS, startXModemTransmit, startXModemReceive, wwStartReboot, wwStartCD, wwStartInteract, wwStartStty, wwStartHello, wwStartSpeed};
 const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9, fnList10, fnList11};
 u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9), ARRSIZE(fnList10), ARRSIZE(fnList11)};
 const fptr drawUIX[] = {uiNullNormal, uiFile, uiOptions, uiAbout, uiController, uiDisplay, uiMachine, uiSettings, uiDebug, uiYesNo, uiDummy, uiWonderWitch};
@@ -201,13 +201,21 @@ void uiSettings() {
 
 void uiWonderWitch() {
 	setupSubMenu("WonderWitch");
+	drawSubItem("Storage:", wwGetStorageText());
+	drawSubItem("Upload file", NULL);
+	drawSubItem("Dir", NULL);
+	drawSubItem("Execute", NULL);
+	drawSubItem("Delete", NULL);
+	drawSubItem("Download file", NULL);
+	drawSubItem("NewFS (Formatt)", NULL);
+	drawSubItem("XMODEM Transmit", NULL);
+	drawSubItem("XMODEM Receive", NULL);
+	drawSubItem("Reboot WW", NULL);
+	drawSubItem("CD", NULL);
 	drawSubItem("Interact", NULL);
 	drawSubItem("Stty", NULL);
 	drawSubItem("Hello", NULL);
-	drawSubItem("Upload file", NULL);
-	drawSubItem("Reboot WW", NULL);
-	drawSubItem("XMODEM Transmit", NULL);
-	drawSubItem("XMODEM Receive", NULL);
+	drawSubItem("Speed", NULL);
 }
 
 void uiDebug() {
@@ -278,8 +286,7 @@ void updateMapperInfo(char *buffer) {
 void debugIO(u16 port, u8 val, const char *message) {
 	char debugString[32];
 
-	debugString[0] = 0;
-	strlcat(debugString, message, sizeof(debugString));
+	strlcpy(debugString, message, sizeof(debugString));
 	short2HexStr(&debugString[strlen(debugString)], port);
 	strlcat(debugString, " val:", sizeof(debugString));
 	char2HexStr(&debugString[strlen(debugString)], val);

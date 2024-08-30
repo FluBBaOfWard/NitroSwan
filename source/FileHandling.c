@@ -194,7 +194,7 @@ void saveSettings() {
 
 static void loadFlashMem() {
 	FILE *flashFile;
-	char flashName[FILENAMEMAXLENGTH];
+	char flashName[FILENAME_MAX_LENGTH];
 	int saveSize = gRomSize;
 	void *nvMem = romSpacePtr;
 
@@ -220,7 +220,7 @@ static void loadFlashMem() {
 void loadNVRAM() {
 	loadFlashMem();
 	FILE *wssFile;
-	char nvRamName[FILENAMEMAXLENGTH];
+	char nvRamName[FILENAME_MAX_LENGTH];
 	int saveSize = 0;
 	void *nvMem = NULL;
 
@@ -260,7 +260,7 @@ static void saveFlashMem() {
 		return;
 	}
 	FILE *flashFile;
-	char flashName[FILENAMEMAXLENGTH];
+	char flashName[FILENAME_MAX_LENGTH];
 	int saveSize = gRomSize;
 	void *nvMem = romSpacePtr;
 
@@ -289,7 +289,7 @@ static void saveFlashMem() {
 void saveNVRAM() {
 	saveFlashMem();
 	FILE *wssFile;
-	char nvRamName[FILENAMEMAXLENGTH];
+	char nvRamName[FILENAME_MAX_LENGTH];
 	int saveSize = 0;
 	void *nvMem = NULL;
 
@@ -535,7 +535,7 @@ void ejectCart() {
 
 //---------------------------------------------------------------------------------
 static int loadBIOS(void *dest, const char *fPath, const int maxSize) {
-	char tempString[FILEPATHMAXLENGTH];
+	char tempString[FILEPATH_MAX_LENGTH];
 	char *sPtr;
 
 	cls(0);
@@ -583,9 +583,9 @@ static bool selectBios(char *dest, const char *fileTypes) {
 	backOutOfMenu();
 
 	if (biosName) {
-		strlcpy(dest, currentDir, FILEPATHMAXLENGTH);
-		strlcat(dest, "/", FILEPATHMAXLENGTH);
-		strlcat(dest, biosName, FILEPATHMAXLENGTH);
+		strlcpy(dest, currentDir, FILEPATH_MAX_LENGTH);
+		strlcat(dest, "/", FILEPATH_MAX_LENGTH);
+		strlcat(dest, biosName, FILEPATH_MAX_LENGTH);
 		return true;
 	}
 	return false;

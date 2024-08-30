@@ -14,9 +14,30 @@ int prevPage = 0;
 int fileSize = 0;
 int pageCount = 0;
 Mode mode = standby;
+WWCmd wwCmd = wwCmdNone;
+Storage storage = rom0;
 bool serialInEmpty = false;
 u8 checksum = 0;
+u8 outIdx = 0;
+u8 inIdx = 0;
+//static const char lineFeed[3] = {CR, NL, 0x0};
+static const char lineFeed[2] = {CR, 0x0};
+static const char *const storText[]  = {"/rom0", "/ram0", "/kern"};
+const char *selectedFile;
+char outBuf[PAGE_SIZE];
 u8 buffer[PAGE_SIZE];
+char txtBuf[0x400];
+
+void wwChangeStorage() {
+	storage += 1;
+	if (storage > kern) {
+		storage = rom0;
+	}
+}
+
+const char *wwGetStorageText() {
+	return storText[storage];
+}
 
 static bool sendByte(u8 value) {
 	if (serialInEmpty) {
@@ -27,33 +48,105 @@ static bool sendByte(u8 value) {
 	return false;
 }
 
-static void sendBuffer() {
-	u8 val = buffer[counter];
-	if (val == 0) {
-		mode = wwReceiveCommand;
-		counter = 0;
-		return;
-	}
-	if (sendByte(val)) {
-		counter += 1;
-	}
-}
-
-static void receiveBuffer(u8 val) {
-	if (val == 0) {
-		mode = standby;
-		return;
-	}
-	buffer[counter] = val;
-	counter += 1;
-}
-
-void sendNack() {
+/// Sends a NACK to the WS serial port.
+static void sendNack(void) {
 	sendByte(NAK);
 }
 
-void sendAck() {
+/// Sends an ACK to the WS serial port.
+static void sendAck(void) {
 	sendByte(ACK);
+}
+
+static void sendCommand() {
+	u8 val = outBuf[outIdx];
+	if (val == 0) {
+		mode = wwReceiveCommand;
+		outIdx = 0;
+		outBuf[outIdx] = 0;
+		return;
+	}
+	if (sendByte(val)) {
+		outIdx += 1;
+	}
+}
+
+static void doXModemTransmit(void) {
+	mode = xmodemTransmitHold;
+	counter = 0;
+	prevPage = 0;
+}
+
+static void receiveBuffer(u8 val) {
+	buffer[inIdx] = val;
+	inIdx += 1;
+	if (val == NL) {
+		buffer[inIdx] = 0;
+		if (strstr((char *)buffer, "125 STARTING")) {
+			if (wwCmd == wwCmdGet) {
+				startXModemReceive();
+			}
+			else {
+				// Receive data
+				mode = wwReceiveText;
+				inIdx = 0;
+			}
+		}
+		else if (strstr((char *)buffer, "350 FURTHER INFO")) {
+			if (wwCmd == wwCmdPut) {
+				doXModemTransmit();
+			}
+		}
+		else if (strstr((char *)buffer, "200 OK")) {
+			if (wwCmd == wwCmdDir) {
+				selectedFile = browseDirectory();
+				cls(0);
+			}
+			inIdx = 0;
+			buffer[inIdx] = 0;
+			wwCmd = wwCmdNone;
+		}
+		else if (strstr((char *)buffer, "426 TRANSFER ABORTED")
+				 || strstr((char *)buffer, "450 NOT AVAILABLE")
+				 || strstr((char *)buffer, "451 LOCAL ERR")
+				 || strstr((char *)buffer, "452 FS FULL")
+				 || strstr((char *)buffer, "501 SYNTAX ERR")
+				 || strstr((char *)buffer, "502 NOT IMPLEMENTED")
+				 || strstr((char *)buffer, "504 NOT IMPLEMENTED")
+				 || strstr((char *)buffer, "550 NOT AVAILABLE")
+				 || strstr((char *)buffer, "553 NOT AVAILABLE")) {
+			inIdx = 0;
+			buffer[inIdx] = 0;
+			wwCmd = wwCmdNone;
+		}
+	}
+}
+
+static void receiveText(u8 val) {
+	txtBuf[inIdx] = val;
+	inIdx += 1;
+	if (val == NL) {
+		txtBuf[inIdx-1] = 0;
+		if (txtBuf[inIdx-2] == CR) {
+			txtBuf[inIdx-2] = 0;
+		}
+		if (!strcmp(txtBuf, ".")) {
+			mode = wwReceiveCommand;
+		}
+		else {
+			if (wwCmd == wwCmdDir) {
+				if (!strnstr(txtBuf, "total ", 6)){
+					inIdx = 16;
+					while (txtBuf[inIdx] == 0x20) {
+						inIdx -= 1;
+					}
+					txtBuf[inIdx+1] = 0;
+					browseAddFilename(txtBuf);
+				}
+			}
+		}
+		inIdx = 0;
+	}
 }
 
 static void endRxTx(void) {
@@ -62,48 +155,8 @@ static void endRxTx(void) {
 	file = NULL;
 }
 
-void startWWCommand(const char *str) {
-	mode = wwSendCommand;
-	counter = 0;
-	char lineFeed[2] = {CR, 0x0};
-	strlcpy((char *)buffer, " ", PAGE_SIZE);
-	strlcat((char *)buffer, str, PAGE_SIZE);
-	strlcat((char *)buffer, lineFeed, PAGE_SIZE);
-	sendBuffer();
-	debugOutput(str);
-}
-
-void startWWPut() {
-	startWWCommand("put");
-}
-
-void startWWInteract() {
-	startWWCommand("");
-}
-
-void startWWStty() {
-	startWWCommand("stty");
-}
-
-void startWWHello() {
-	startWWCommand("HELO");
-}
-
-void startWWReboot() {
-	startWWCommand("reboot");
-}
-
-void startXModemReceive() {
-	if (file != NULL) {
-		fclose(file);
-	}
-	mode = xmodemReceive;
-	counter = 0;
-	prevPage = 0;
-	sendNack();
-}
-
-void startXModemTransmit() {
+static bool selectFileToTransmit(void) {
+	bool result = false;
 	const char *fileName = browseForFileType(".fx.fr.il.bin");
 	if (fileName != NULL) {
 		if (file != NULL) {
@@ -115,9 +168,7 @@ void startXModemTransmit() {
 			if (fileSize <= 0x60000) {
 				pageCount = (fileSize + 0x7F) / PAGE_SIZE;
 				fseek(file, 0, SEEK_SET);
-				mode = xmodemTransmitHold;
-				counter = 0;
-				prevPage = 0;
+				result = true;
 			}
 			else {
 				endRxTx();
@@ -130,6 +181,38 @@ void startXModemTransmit() {
 		}
 	}
 	cls(0);
+	return result;
+}
+
+static void startCommand(const char *str, WWCmd cmd) {
+	mode = wwSendCommand;
+	wwCmd = cmd;
+	outIdx = 0;
+	strlMerge(outBuf, " ", str, PAGE_SIZE);
+	strlcat(outBuf, lineFeed, PAGE_SIZE);
+	sendCommand();
+	debugOutput(outBuf);
+}
+
+static void startCmdStor(const char *str, WWCmd cmd) {
+	char comStr[32];
+	strlMerge(comStr, str, " ", 32);
+	strlcat(comStr, &wwGetStorageText()[1], 32);
+	startCommand(comStr, cmd);
+}
+
+static void startCmdPath(const char *str, WWCmd cmd) {
+	char comStr[32];
+	strlMerge(comStr, str, " ", 32);
+	strlcat(comStr, wwGetStorageText(), 32);
+	startCommand(comStr, cmd);
+}
+
+static void startCmdFile(const char *str, const char *filename, WWCmd cmd) {
+	char comStr[32];
+	strlMerge(comStr, str, " ", 32);
+	strlcat(comStr, filename, 32);
+	startCommand(comStr, cmd);
 }
 
 static void handleXModemTransmit() {
@@ -152,7 +235,7 @@ static void handleXModemTransmit() {
 		value = prevPage;
 	}
 	else if (counter == 2) {
-		value = 0xFF-prevPage;
+		value = ~prevPage;
 	}
 	else if (counter < 131) {
 		fread(&value, 1, 1, file);
@@ -181,22 +264,19 @@ static void handleXModemReceive(u8 value) {
 			sendAck();
 			endRxTx();
 		}
-		// Start of Heading?
+		// Not Start of Heading?
 		else if (value != SOH) {
 			return;
 		}
 	}
 	else if (counter == 1) {
-		if (value != ((prevPage+1) & 0xFF)) {
-			infoOutput("Receive resend.");
+		prevPage += 1;
+		if (value != (prevPage & 0xFF)) {
 			ok = false;
-		}
-		else {
-			prevPage += 1;
 		}
 	}
 	else if (counter == 2) {
-		if (value != ((0xFF-prevPage) & 0xFF)) {
+		if (value != ((~prevPage) & 0xFF)) {
 			ok = false;
 		}
 	}
@@ -243,6 +323,7 @@ static void handleXModemReceive(u8 value) {
 	}
 	counter += 1;
 	if (!ok) {
+		infoOutput("Receive resend.");
 		counter = 0;
 		prevPage -= 1;
 		sendNack();
@@ -255,7 +336,7 @@ void handleSerialInEmpty() {
 		handleXModemTransmit();
 	}
 	else if (mode == wwSendCommand) {
-		sendBuffer();
+		sendCommand();
 	}
 }
 
@@ -281,10 +362,122 @@ void handleSerialReceive(u8 value) {
 			endRxTx();
 		}
 	}
-	else if (mode == wwReceiveCommand) {
+	else if (mode == wwReceiveCommand || mode == wwSendCommand) {
 		receiveBuffer(value);
+	}
+	else if (mode == wwReceiveText) {
+		receiveText(value);
 	}
 //	else if (mode == debugSerial) {
 		debugSerialOutW(value);
 //	}
+}
+
+void wwStartStty() {
+	startCommand("stty", wwCmdStty);
+}
+
+void wwStartInteract() {
+	startCommand("", wwCmdInt);
+}
+
+void wwStartHello() {
+	startCommand("HELO", wwCmdHello);
+}
+
+void wwStartPut() {
+	if (selectFileToTransmit()) {
+//		startCmdPath("put", wwCmdPut);
+		startCommand("put", wwCmdPut);
+	}
+}
+
+void wwStartGet() {
+	startCmdFile("get", selectedFile, wwCmdGet);
+}
+
+void wwStartDelete() {
+	startCmdFile("delete", selectedFile, wwCmdDelete);
+}
+
+void wwStartExec() {
+	startCmdFile("exec", selectedFile, wwCmdExec);
+}
+
+void wwStartReboot() {
+	startCommand("reboot", wwCmdReboot);
+}
+
+void wwStartLs() {
+	initBrowse(wwGetStorageText());
+	startCmdPath("ls", wwCmdDir);
+}
+
+void wwStartDir() {
+	initBrowse(wwGetStorageText());
+	startCmdPath("dir", wwCmdDir);
+}
+
+void wwStartDF() {
+	startCmdStor("df", wwCmdDf);
+}
+
+void wwStartNewFS() {
+	startCmdStor("newfs", wwCmdNewFS);
+}
+
+void wwStartDefrag() {
+	startCmdStor("defrag", wwCmdDefrag);
+}
+
+void wwStartRename() {
+	startCommand("rename", wwCmdRename);
+}
+
+void wwStartSpeed() {
+	startCommand("speed", wwCmdSpeed);
+}
+
+void wwStartDate() {
+	startCommand("date", wwCmdDate);
+}
+
+void wwStartCopy() {
+	startCommand("copy", wwCmdCopy);
+}
+
+void wwStartMove() {
+	startCommand("move", wwCmdMove);
+}
+
+void wwStartSetInfo() {
+	startCmdFile("setinfo", selectedFile, wwCmdSetInfo);
+}
+
+void wwStartChMod() {
+	startCmdFile("chmod", selectedFile, wwCmdChMod);
+}
+
+void wwStartCD() {
+	startCmdPath("cd", wwCmdCD);
+}
+
+void wwStartPwd() {
+	startCommand("pwd", wwCmdPwd);
+}
+
+void startXModemReceive() {
+	if (file != NULL) {
+		fclose(file);
+	}
+	mode = xmodemReceive;
+	counter = 0;
+	prevPage = 0;
+	sendNack();
+}
+
+void startXModemTransmit() {
+	if (selectFileToTransmit()) {
+		doXModemTransmit();
+	}
 }
