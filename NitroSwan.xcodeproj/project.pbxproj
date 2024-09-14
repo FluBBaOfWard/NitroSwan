@@ -19,6 +19,7 @@
 		9C22442C2C70C17C000B05C3 /* wsrtc01.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wsrtc01.txt; sourceTree = "<group>"; };
 		9C2244312C7214EF000B05C3 /* WonderWitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WonderWitch.h; sourceTree = "<group>"; };
 		9C2244322C7214EF000B05C3 /* WonderWitch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = WonderWitch.c; sourceTree = "<group>"; };
+		9C2DB3B22C95E59F00467503 /* WonderWitch.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = WonderWitch.md; sourceTree = "<group>"; };
 		9C2E09E82A90C42B00103566 /* IPSPatch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = IPSPatch.c; sourceTree = "<group>"; };
 		9C2E09E92A90C42B00103566 /* IPSPatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IPSPatch.h; sourceTree = "<group>"; };
 		9C2E09EA2A9A382200103566 /* CartridgeRAM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CartridgeRAM.h; sourceTree = "<group>"; };
@@ -120,6 +121,7 @@
 				9C4EB1CA271CB3860072D38E /* NitroSwan_todo.txt */,
 				A4AA02141B04077F0043E4D4 /* History.txt */,
 				9CBC0C8E26DD7C2A0039D17E /* README.md */,
+				9C2DB3B22C95E59F00467503 /* WonderWitch.md */,
 				9C45D64927C61E0E00B4E74D /* WSLogo.bmp */,
 				A42D0269205FEC6E00515C72 /* Docs */,
 				746D78E014ED9A6D00CC738F /* makefile */,

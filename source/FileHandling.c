@@ -45,7 +45,7 @@ int initSettings() {
 	cfg.birthDay = bin2BCD(PersonalData->birthDay);
 	cfg.sex = 0;
 	cfg.bloodType = 0;
-	cfg.language = (PersonalData->language == 0) ? 0 : 1;
+	cfg.machine = ((PersonalData->language == 0) ? 0 : 1) | (HW_AUTO<<1);
 
 	int i;
 	for (i = 0; i < 13; i++) {
@@ -159,6 +159,7 @@ int loadSettings() {
 	sleepTime     = cfg.sleepTime;
 	joyCfg        = (joyCfg & ~0x400)|((cfg.controller & 1)<<10);
 	joyMapping    = (joyMapping & ~1)|((cfg.controller & 2)>>1);
+	gMachineSet   = (cfg.machine>>1) & 0x7;
 	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
 
 	infoOutput("Settings loaded.");
@@ -175,6 +176,7 @@ void saveSettings() {
 	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;		// Clear speed setting.
 	cfg.sleepTime   = sleepTime;
 	cfg.controller  = ((joyCfg>>10)&1) | (joyMapping&1)<<1;
+	cfg.machine     = (gMachineSet&7)<<1;
 	strlcpy(cfg.currentPath, currentDir, sizeof(cfg.currentPath));
 
 	if (findFolder(folderName)) {
