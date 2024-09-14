@@ -15,8 +15,6 @@
 #define WRITE_BUFFER_SIZE (0x800)
 #define SHIFTVAL (21)
 
-;@----------------------------------------------------------------------------
-
 	.syntax unified
 	.arm
 
@@ -158,7 +156,7 @@ muteSound:
 muteSoundGUI:
 	.byte 0
 muteSoundChip:
-	.byte 0
+	.byte 1
 	.space 2
 
 	.section .bss

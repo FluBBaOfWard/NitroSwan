@@ -1,3 +1,15 @@
+//
+//  WonderWitch.c
+//  WonderWitch utility functions.
+//
+//  Created by Fredrik Ahlström on 2024-09-01.
+//  This is public domain, no copyright no warranty.
+//  Write it, cut it, paste it, save it
+//  Load it, check it, quick – rewrite it
+//  Name it, read it, tune it, print it
+//  Scan it, send it, fax – rename it
+//
+
 #include <nds.h>
 #include <stdio.h>
 

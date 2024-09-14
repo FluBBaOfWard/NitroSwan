@@ -9,8 +9,8 @@ extern u8 waitMaskIn;
 extern u8 waitMaskOut;
 
 void run(void);
-void runScanLine(void);
-void runFrame(void);
+void stepFrame(void);
+void stepScanLine(void);
 void cpuInit(void);
 void cpuReset(int type);
 

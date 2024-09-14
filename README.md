@@ -47,10 +47,8 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
 
 * Controller:
   * Autofire: Select if you want autofire.
-  * Controller: 2P start a 2 player game.
   * Swap A/B: Swap which NDS button is mapped to which WS button.
   * Alternate layout: See Controls.
-
 * Display:
   * Gamma: Lets you change the gamma ("brightness").
   * Contrast: Lets you change the contrast.
@@ -67,8 +65,8 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
 * Settings:
   * Speed: Switch between speed modes.
     * Normal: Game runs at its normal speed.
-    * 200%: Game runs at double speed.
-    * Max: Games can run up to 4 times normal speed (might change).
+    * 200%: Game can run up to double speed.
+    * Max: Games can run up to 4 times normal speed.
     * 50%: Game runs at half speed.
   * Allow Refresh Change: Allow the Wonderswan to change NDS refresh rate.
   * Autoload State: Toggle Savestate autoloading. Automagically load the savestate associated with the selected game.

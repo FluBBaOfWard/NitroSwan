@@ -1,5 +1,6 @@
 NitroSwan Todo
 
+	Make sure machine is saved in settings.
 	Add support for timer and ADPCM on Karnak carts.
 	Add cache for 16MB extra area on 3DS.
 	Fix better sound? Update twice per raster row.

@@ -1,6 +1,7 @@
 #include <nds.h>
 
 #include "WonderSwan.h"
+#include "Shared/EmuMenu.h"
 #include "WSBorder.h"
 #include "WSCBorder.h"
 #include "PCV2Border.h"
@@ -52,6 +53,7 @@ static void setupBorderPalette(const void *palette, int len) {
 	else {
 		memcpy(VRAM_F, palette, len);
 	}
+	// Copy Icon colors.
 	memcpy(VRAM_F + 0xF0, MAPPED_BNW, sizeof(MAPPED_BNW));
 	vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT23);
 	paletteTxAll();					// Make new palette visible

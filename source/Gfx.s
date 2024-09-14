@@ -8,7 +8,6 @@
 	.global gFlicker
 	.global gTwitch
 	.global gGfxMask
-	.global vblIrqHandler
 	.global GFX_DISPCNT
 	.global GFX_BG0CNT
 	.global GFX_BG1CNT
@@ -24,6 +23,7 @@
 	.global paletteTxAll
 	.global gfxRefresh
 	.global gfxEndFrame
+	.global vblIrqHandler
 	.global v30ReadPort
 	.global v30ReadPort16
 	.global v30WritePort
@@ -41,7 +41,11 @@
 	.syntax unified
 	.arm
 
-	.section .text
+#ifdef GBA
+	.section .ewram, "ax", %progbits	;@ For the GBA
+#else
+	.section .text						;@ For anything else
+#endif
 	.align 2
 ;@----------------------------------------------------------------------------
 gfxInit:					;@ Called from machineInit
@@ -96,7 +100,6 @@ gfxReset:					;@ Called with CPU reset
 	str r3,[spxptr,#rxFunction]
 	ldr r3,=handleSerialReceive
 	str r3,[spxptr,#txFunction]
-
 
 	ldr r4,=gGammaValue
 	ldr r5,=gContrastValue
@@ -443,6 +446,10 @@ setScreenRefresh:			;@ r0 in = WS scan line count.
 	bx lr
 
 ;@----------------------------------------------------------------------------
+#ifdef GBA
+	.section .iwram, "ax", %progbits	;@ For the GBA
+#endif
+;@----------------------------------------------------------------------------
 vblIrqHandler:
 	.type vblIrqHandler STT_FUNC
 ;@----------------------------------------------------------------------------
@@ -594,7 +601,7 @@ gfxEndFrame:				;@ Called just after screen end (line 144)	(r0-r3 safe to use)
 
 	mov r0,#1
 	strb r0,frameDone
-	bl updateSlowIO				;@ RTC/Alarm and more
+	bl updateSlowIO				;@ Battery level/RTC/Alarm
 
 	ldr r1,=fpsValue
 	ldr r0,[r1]
