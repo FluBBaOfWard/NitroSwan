@@ -1,12 +1,13 @@
 #ifdef __arm__
 
+//#define EMBEDDED_ROM
+
 #include "WSEEPROM/WSEEPROM.i"
 #include "WSRTC/WSRTC.i"
 #include "Sphinx/Sphinx.i"
 #include "ARMV30MZ/ARMV30MZ.i"
 
 	.global cartFlags
-	.global romStart
 	.global romSpacePtr
 	.global allocatedRomMem
 	.global biosBase
@@ -31,8 +32,8 @@
 	.global gGameID
 	.global cartOrientation
 	.global gConfig
-	.global gMachine
 	.global gMachineSet
+	.global gMachine
 	.global gSOC
 	.global gLang
 	.global gPaletteBank
@@ -49,6 +50,7 @@
 	.section .rodata
 	.align 2
 
+#ifdef EMBEDDED_ROM
 ROM_Space:
 //	.incbin "wsroms/Anchorz Field (Japan).ws"
 //	.incbin "wsroms/Crazy Climber (J) [M][!].ws"
@@ -64,16 +66,19 @@ ROM_Space:
 //	.incbin "wsroms/Tetris (Japan).wsc"
 //	.incbin "wsroms/Tonpuusou (Japan).wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
+	.incbin "wsroms/WonderWitch [FreyaOS 1.2.0].ws"
 //	.incbin "wsroms/WSCpuTest.wsc"
 //	.incbin "wsroms/XI Little (Japan).wsc"
 ROM_SpaceEnd:
+#endif
 WS_BIOS_INTERNAL:
-//	.incbin "wsroms/boot.rom"
-	.incbin "wsroms/ws_irom.bin"
+	.incbin "wsroms/boot.rom"
+//	.incbin "wsroms/ws_irom.bin"
 WSC_BIOS_INTERNAL:
 SC_BIOS_INTERNAL:
-//	.incbin "wsroms/boot1.rom"
-	.incbin "wsroms/wc_irom.bin"
+	.incbin "wsroms/boot1.rom"
+//	.incbin "wsroms/boot2.rom"
+//	.incbin "wsroms/wc_irom.bin"
 //	.incbin "wsroms/wsc_irom.bin"
 
 	.align 2
@@ -83,13 +88,16 @@ machineInit: 				;@ Called from C
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r4-r11,lr}
 
-//	ldr r0,=romSize
-//	mov r1,#ROM_SpaceEnd-ROM_Space
-//	str r1,[r0]
-//	ldr r0,=romSpacePtr
-//	ldr r7,=ROM_Space
-//	str r7,[r0]
+#ifdef EMBEDDED_ROM
+	ldr r0,=romSize
+	mov r1,#ROM_SpaceEnd-ROM_Space
+	str r1,[r0]
+	ldr r0,=romSpacePtr
+	ldr r7,=ROM_Space
+	str r7,[r0]
+#endif
 
+	bl memoryInit
 	bl gfxInit
 //	bl ioInit
 	bl soundInit
@@ -248,6 +256,7 @@ resetCartridgeBanks:
 	ldr spxptr,=sphinx0
 	mov r0,#0
 	bl cartWWFlashW
+	bl flashMemReset
 	mov r0,#0xFF
 	bl BankSwitch4_F_W
 	mov r0,#0xFF
@@ -435,7 +444,7 @@ cartUnmR:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-cartGPIODirW:				;@ 0xCC General Purpose I/O direction, bit 3-0.
+cartGPIODirW:				;@ 0xCC General Purpose I/O enable/dir, bit 3-0.
 ;@----------------------------------------------------------------------------
 	strb r0,[spxptr,wsvGPIOEnable]
 	bx lr

@@ -76,13 +76,14 @@ int main(int argc, char **argv) {
 	initSettings();
 	machineInit();
 	loadCart();
-	if (initFileHelper()) {
-		loadSettings();
-		setupEmuBorderPalette();
+	bool fsOk = initFileHelper();
+	loadSettings();
+	setupEmuBorderPalette();
+	loadIntEeproms();
+	if (fsOk) {
 		loadBnWBIOS();
 		loadColorBIOS();
 		loadCrystalBIOS();
-		loadIntEeproms();
 		if (argc > 1) {
 			loadGame(argv[1]);
 			setMuteSoundGUI();

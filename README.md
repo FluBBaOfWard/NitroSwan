@@ -1,4 +1,4 @@
-# NitroSwan V0.6.5
+# NitroSwan V0.6.6
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -47,10 +47,8 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
 
 * Controller:
   * Autofire: Select if you want autofire.
-  * Controller: 2P start a 2 player game.
   * Swap A/B: Swap which NDS button is mapped to which WS button.
   * Alternate layout: See Controls.
-
 * Display:
   * Gamma: Lets you change the gamma ("brightness").
   * Contrast: Lets you change the contrast.
@@ -67,8 +65,8 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
 * Settings:
   * Speed: Switch between speed modes.
     * Normal: Game runs at its normal speed.
-    * 200%: Game runs at double speed.
-    * Max: Games can run up to 4 times normal speed (might change).
+    * 200%: Game can run up to double speed.
+    * Max: Games can run up to 4 times normal speed.
     * 50%: Game runs at half speed.
   * Allow Refresh Change: Allow the Wonderswan to change NDS refresh rate.
   * Autoload State: Toggle Savestate autoloading. Automagically load the savestate associated with the selected game.
@@ -78,6 +76,8 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
   * Powersave 2nd Screen: If graphics/light should be turned off for the GUI screen when menu is not active.
   * Emulator on Bottom: Select if top or bottom screen should be used for emulator, when menu is active emulator screen is allways on top.
   * Autosleep: Doesn't work.
+* WonderWitch: Tools for interacting with a WonderWitch.
+  * See WonderWitch.md for more information.
 * Debug:
   * Debug Output: Show FPS and logged text.
   * Disable Foreground: Turn on/off foreground rendering.
@@ -133,6 +133,7 @@ There are a couple of games that have visual glitches.
 * Final Lap Special - GT & Formula Machine, incorrect road colors.
 * From TV Animation One Piece - Grand Battle Swan Colosseum, incorrect sky color.
 * Makaimura, first boss sprites are glitchy, gargoyles in intro should not show up on the right.
+* Neon Genesis Evangelion - Shito Ikusei, sprites overlap avatar images.
 * Rockman & Forte - Mirai Kara no Chousensha, no background fade in intro.
 * Romancing Sa-Ga, sprites overlap text boxes.
 * Sorobang, needs all 1024 tiles in 4color mode.

@@ -18,7 +18,7 @@ typedef struct {				//(config struct)
 	u8 birthDay;				// BCD encoded
 	u8 sex;						// 0 = ?, 1 = male, 2 = female
 	u8 bloodType;				// 0 = ?, 1 = A, 2 = B, 3 = O, 4 = AB
-	u8 language;
+	u8 machine;
 	u8 palette;
 	char currentPath[256];
 	char monoBiosPath[256];

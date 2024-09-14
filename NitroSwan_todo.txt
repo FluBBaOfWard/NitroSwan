@@ -1,5 +1,6 @@
 NitroSwan Todo
 
+	Make sure machine is saved in settings.
 	Add support for timer and ADPCM on Karnak carts.
 	Add cache for 16MB extra area on 3DS.
 	Fix better sound? Update twice per raster row.
@@ -7,7 +8,7 @@ NitroSwan Todo
 	Add support for LCD on/off.
 	Graphics on menu screen?
 	Find speed hacks.
-	Change cpuWriteMem20(W) to use r0 for value and r1 for address?
+	Change cpuReadMem20(W) to return value in r1 instead of r0?
 	Handle Sprite Window some how.
 	Sprite priority can't be fixed.
 
@@ -65,14 +66,16 @@ Games With Glitches:
 		* Sprite windows.
 	Final Lap 2000, road colors incorrect.
 		* Changes palette per line.
-	Final Lap Special - GT & Formula Machine, road colors incorrect.
+	Final Lap Special, road colors incorrect.
 		* Changes palette per line.
 	From TV Animation One Piece - Grand Battle Swan Colosseum, incorrect sky color.
 		* Changes palette per line.
 	Mahjong Touryuumon, speed too fast.
-		* Apparently it sets the ROM waitstate to 3(?).
+		* Apparently it sets the ROM waitstate to 1(?).
 	Makaimura, gargoyles in intro should not show up on the right, first boss sprites are glitchy.
 		* Sprite Window and...?
+	Neon Genesis Evangelion, sprites overlap avatar images.
+		* Sprite windows and sprite priority.
 	Rockman & Forte - Mirai Kara no Chousensha, no background fade in intro.
 		* Changes palette per line?
 	Romancing Sa-Ga, sprites overlap text boxes.

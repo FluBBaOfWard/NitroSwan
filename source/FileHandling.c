@@ -18,6 +18,8 @@
 #include "Memory.h"
 #include "InternalEEPROM.h"
 
+extern u8 flashMemChanged;		// From FlashMemory.s
+
 static const char *const folderName = "nitroswan";
 static const char *const settingName = "settings.cfg";
 static const char *const wsEepromName = "wsinternal.eeprom";
@@ -43,7 +45,7 @@ int initSettings() {
 	cfg.birthDay = bin2BCD(PersonalData->birthDay);
 	cfg.sex = 0;
 	cfg.bloodType = 0;
-	cfg.language = (PersonalData->language == 0) ? 0 : 1;
+	cfg.machine = ((PersonalData->language == 0) ? 0 : 1) | (HW_AUTO<<1);
 
 	int i;
 	for (i = 0; i < 13; i++) {
@@ -157,6 +159,7 @@ int loadSettings() {
 	sleepTime     = cfg.sleepTime;
 	joyCfg        = (joyCfg & ~0x400)|((cfg.controller & 1)<<10);
 	joyMapping    = (joyMapping & ~1)|((cfg.controller & 2)>>1);
+	gMachineSet   = (cfg.machine>>1) & 0x7;
 	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
 
 	infoOutput("Settings loaded.");
@@ -173,6 +176,7 @@ void saveSettings() {
 	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;		// Clear speed setting.
 	cfg.sleepTime   = sleepTime;
 	cfg.controller  = ((joyCfg>>10)&1) | (joyMapping&1)<<1;
+	cfg.machine     = (gMachineSet&7)<<1;
 	strlcpy(cfg.currentPath, currentDir, sizeof(cfg.currentPath));
 
 	if (findFolder(folderName)) {
@@ -190,9 +194,35 @@ void saveSettings() {
 	saveIntEeproms();
 }
 
+static void loadFlashMem() {
+	FILE *flashFile;
+	char flashName[FILENAME_MAX_LENGTH];
+	int saveSize = gRomSize;
+	void *nvMem = romSpacePtr;
+
+	setFileExtension(flashName, currentFilename, ".flash", sizeof(flashName));
+
+	if (findFolder(folderName)) {
+		return;
+	}
+	if ( (flashFile = fopen(flashName, "r")) ) {
+		if (fread(nvMem, 1, saveSize, flashFile) != saveSize) {
+			infoOutput("Bad Flash file:");
+			infoOutput(flashName);
+		}
+		fclose(flashFile);
+		infoOutput("Loaded Flash.");
+	}
+	else {
+		infoOutput("Couldn't open Flash file:");
+		infoOutput(flashName);
+	}
+}
+
 void loadNVRAM() {
+	loadFlashMem();
 	FILE *wssFile;
-	char nvRamName[FILENAMEMAXLENGTH];
+	char nvRamName[FILENAME_MAX_LENGTH];
 	int saveSize = 0;
 	void *nvMem = NULL;
 
@@ -227,9 +257,41 @@ void loadNVRAM() {
 	}
 }
 
+static void saveFlashMem() {
+	if (!flashMemChanged) {
+		return;
+	}
+	FILE *flashFile;
+	char flashName[FILENAME_MAX_LENGTH];
+	int saveSize = gRomSize;
+	void *nvMem = romSpacePtr;
+
+	setFileExtension(flashName, currentFilename, ".flash", sizeof(flashName));
+
+	if (findFolder(folderName)) {
+		return;
+	}
+	if ( (flashFile = fopen(flashName, "w")) ) {
+		if (fwrite(nvMem, 1, saveSize, flashFile) != saveSize) {
+			infoOutput("Couldn't write Flash file:");
+			infoOutput(flashName);
+		}
+		else {
+			flashMemChanged = 0;
+			infoOutput("Saved Flash.");
+		}
+		fclose(flashFile);
+	}
+	else {
+		infoOutput("Couldn't open Flash file:");
+		infoOutput(flashName);
+	}
+}
+
 void saveNVRAM() {
+	saveFlashMem();
 	FILE *wssFile;
-	char nvRamName[FILENAMEMAXLENGTH];
+	char nvRamName[FILENAME_MAX_LENGTH];
 	int saveSize = 0;
 	void *nvMem = NULL;
 
@@ -363,10 +425,9 @@ int saveIntEeproms() {
 
 void selectEEPROM() {
 	pauseEmulation = true;
-//	setSelectedMenu(9);
+	ui10();
 	const char *eepromName = browseForFileType(".eeprom");
 	if (eepromName) {
-		cls(0);
 		switch (gSOC) {
 			case SOC_SPHINX:
 				loadIntEeprom(eepromName, wscEepromMem, sizeof(wscEepromMem));
@@ -376,6 +437,7 @@ void selectEEPROM() {
 				break;
 		}
 	}
+	backOutOfMenu();
 }
 
 void clearIntEeproms() {
@@ -443,9 +505,8 @@ void selectGame() {
 	pauseEmulation = true;
 	ui10();
 	const char *gameName = browseForFileType(FILEEXTENSIONS".zip");
-	if (loadGame(gameName)) {
-		backOutOfMenu();
-	}
+	loadGame(gameName);
+	backOutOfMenu();
 }
 
 void checkMachine() {
@@ -476,7 +537,7 @@ void ejectCart() {
 
 //---------------------------------------------------------------------------------
 static int loadBIOS(void *dest, const char *fPath, const int maxSize) {
-	char tempString[FILEPATHMAXLENGTH];
+	char tempString[FILEPATH_MAX_LENGTH];
 	char *sPtr;
 
 	cls(0);
@@ -519,12 +580,14 @@ int loadCrystalBIOS(void) {
 }
 
 static bool selectBios(char *dest, const char *fileTypes) {
+	ui10();
 	const char *biosName = browseForFileType(fileTypes);
+	backOutOfMenu();
 
 	if (biosName) {
-		strlcpy(dest, currentDir, FILEPATHMAXLENGTH);
-		strlcat(dest, "/", FILEPATHMAXLENGTH);
-		strlcat(dest, biosName, FILEPATHMAXLENGTH);
+		strlcpy(dest, currentDir, FILEPATH_MAX_LENGTH);
+		strlcat(dest, "/", FILEPATH_MAX_LENGTH);
+		strlcat(dest, biosName, FILEPATH_MAX_LENGTH);
 		return true;
 	}
 	return false;
@@ -534,31 +597,28 @@ void selectBnWBios() {
 	if (selectBios(cfg.monoBiosPath, ".ws.rom.zip")) {
 		loadBnWBIOS();
 	}
-	cls(0);
 }
 
 void selectColorBios() {
 	if (selectBios(cfg.colorBiosPath, ".ws.wsc.rom.zip")) {
 		loadColorBIOS();
 	}
-	cls(0);
 }
 
 void selectCrystalBios() {
 	if (selectBios(cfg.crystalBiosPath, ".ws.wsc.rom.zip")) {
 		loadCrystalBIOS();
 	}
-	cls(0);
 }
 
 void selectIPS() {
 	pauseEmulation = true;
 	ui10();
-	const char *fileName = browseForFileType(".ips");
-	if (fileName && patchRom(romSpacePtr, fileName, gRomSize)) {
+	const char *ipsName = browseForFileType(".ips");
+	if (ipsName && patchRom(romSpacePtr, ipsName, gRomSize)) {
 		checkMachine();
 		loadCart();
 		setupEmuBackground();
-		backOutOfMenu();
 	}
+	backOutOfMenu();
 }

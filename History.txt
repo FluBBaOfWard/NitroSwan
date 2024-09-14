@@ -1,10 +1,12 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.6 - 2024-08-10 (FluBBa)
+V0.6.6 - 2024-09-14 (FluBBa)
+	Added some support for WonderWitch.
+	Added saving of machine setting.
 	Fixed LCD icons palette when switching machine.
 	Fixed some small bugs in the DMA.
-	Fixed prefix handling.
+	Fixed cpu prefix handling.
 	Optimized some opcodes.
 
 V0.6.5 - 2024-07-24 (FluBBa)
