@@ -1,7 +1,8 @@
 NitroSwan Todo
 
-	Make sure machine is saved in settings.
 	Add support for timer and ADPCM on Karnak carts.
+		Add an "update cart" function with x cycles in
+		and let cart handle what to do. Remove rtc from slowIOUpdate.
 	Add cache for 16MB extra area on 3DS.
 	Fix better sound? Update twice per raster row.
 	Map serial port to debug out. Test!

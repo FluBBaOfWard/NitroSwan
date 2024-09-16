@@ -20,6 +20,8 @@
 		9C2244312C7214EF000B05C3 /* WonderWitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WonderWitch.h; sourceTree = "<group>"; };
 		9C2244322C7214EF000B05C3 /* WonderWitch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = WonderWitch.c; sourceTree = "<group>"; };
 		9C2DB3B22C95E59F00467503 /* WonderWitch.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = WonderWitch.md; sourceTree = "<group>"; };
+		9C2DB3B32C96D5A700467503 /* SCBorder.grit */ = {isa = PBXFileReference; lastKnownFileType = text; path = SCBorder.grit; sourceTree = "<group>"; };
+		9C2DB3B42C96D5A700467503 /* SCBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SCBorder.png; sourceTree = "<group>"; };
 		9C2E09E82A90C42B00103566 /* IPSPatch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = IPSPatch.c; sourceTree = "<group>"; };
 		9C2E09E92A90C42B00103566 /* IPSPatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IPSPatch.h; sourceTree = "<group>"; };
 		9C2E09EA2A9A382200103566 /* CartridgeRAM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CartridgeRAM.h; sourceTree = "<group>"; };
@@ -111,6 +113,8 @@
 				9C19569E276D2D8F0044B938 /* WSBorder.png */,
 				9CED081827BD8E4200EA127A /* WSCBorder.grit */,
 				9CED081727BD8E4200EA127A /* WSCBorder.png */,
+				9C2DB3B32C96D5A700467503 /* SCBorder.grit */,
+				9C2DB3B42C96D5A700467503 /* SCBorder.png */,
 			);
 			path = graphics;
 			sourceTree = "<group>";

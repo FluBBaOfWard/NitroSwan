@@ -4,6 +4,7 @@
 #include "Shared/EmuMenu.h"
 #include "WSBorder.h"
 #include "WSCBorder.h"
+#include "SCBorder.h"
 #include "PCV2Border.h"
 #include "Gui.h"
 #include "Cart.h"
@@ -77,6 +78,15 @@ void setupWSCBorderPalette() {
 	setupBorderPalette(WSCBorderPal, WSCBorderPalLen);
 }
 
+void setupSCBackground() {
+	decompress(SCBorderTiles, BG_TILE_RAM(1), LZ77Vram);
+	decompress(SCBorderMap, BG_MAP_RAM(15), LZ77Vram);
+}
+
+void setupSCBorderPalette() {
+	setupBorderPalette(SCBorderPal, SCBorderPalLen);
+}
+
 void setupPCV2Background() {
 	decompress(PCV2BorderTiles, BG_TILE_RAM(1), LZ77Vram);
 	decompress(PCV2BorderMap, BG_MAP_RAM(15), LZ77Vram);
@@ -87,9 +97,13 @@ void setupPCV2BorderPalette() {
 }
 
 void setupEmuBackground() {
-	if (gMachine == HW_WONDERSWANCOLOR || gMachine == HW_SWANCRYSTAL) {
+	if (gMachine == HW_WONDERSWANCOLOR) {
 		setupWSCBackground();
 		setupWSCBorderPalette();
+	}
+	else if (gMachine == HW_SWANCRYSTAL) {
+		setupSCBackground();
+		setupSCBorderPalette();
 	}
 	else if (gMachine == HW_WONDERSWAN) {
 		setupWSBackground();
@@ -102,8 +116,11 @@ void setupEmuBackground() {
 }
 
 void setupEmuBorderPalette() {
-	if (gMachine == HW_WONDERSWANCOLOR || gMachine == HW_SWANCRYSTAL) {
+	if (gMachine == HW_WONDERSWANCOLOR) {
 		setupWSCBorderPalette();
+	}
+	else if (gMachine == HW_SWANCRYSTAL) {
+		setupSCBorderPalette();
 	}
 	else if (gMachine == HW_WONDERSWAN) {
 		setupWSBorderPalette();

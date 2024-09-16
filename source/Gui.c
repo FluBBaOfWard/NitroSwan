@@ -14,7 +14,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.6 2024-09-14"
+#define EMUVERSION "V0.6.6 2024-09-16"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -34,7 +34,7 @@ static const char *getSpeedHackText(void);
 static void refreshChgSet(void);
 static const char *getRefreshChgText(void);
 static void borderSet(void);
-static const char *getBorderText();
+static const char *getBorderText(void);
 static void joyMappingSet(void);
 static const char *getJoyMappingText(void);
 static void swapABSet(void);
