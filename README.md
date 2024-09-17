@@ -1,6 +1,6 @@
 # NitroSwan V0.6.6
 
-<img align="right" width="220" src="./logo.png" />
+<img align="right" width="220" src="./logo.png" alt="The WonderSwan logo" />
 
 This is a Bandai WonderSwan (Color/Crystal) & Benesse PocketChallenge V2
  emulator for the Nintendo DS(i)/3DS.
@@ -107,6 +107,7 @@ mapped to WS Y1-Y4. To open the menu use L+Select.
 ```
 
 ### Pocket Challenge V2
+
 ```text
 Dpad is mapped to up, down, left & right.
 L is mapped to Escape.

@@ -20,7 +20,9 @@ int loadSettings(void);
 void saveSettings(void);
 bool loadGame(const char *gameName);
 void checkMachine(void);
+/// Load SRAM, EEPROM and/or Flash if they exist.
 void loadNVRAM(void);
+/// Save SRAM, EEPROM and/or Flash if they exist.
 void saveNVRAM(void);
 void loadState(void);
 void saveState(void);
