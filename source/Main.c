@@ -74,11 +74,11 @@ int main(int argc, char **argv) {
 	setupGUI();
 	getInput();
 	initSettings();
-	machineInit();
-	loadCart();
 	bool fsOk = initFileHelper();
 	loadSettings();
-	setupEmuBorderPalette();
+	machineInit();
+	loadCart();
+	setupEmuBackground();
 	loadIntEeproms();
 	if (fsOk) {
 		loadBnWBIOS();
@@ -204,8 +204,6 @@ static void setupGraphics() {
 	REG_BG1VOFS_SUB = 0;
 	map0sub = BG_MAP_RAM_SUB(0);
 	map1sub = BG_MAP_RAM_SUB(1);
-
-	setupEmuBackground();
 
 	decompress(EmuFontTiles, BG_GFX_SUB+0x1200, LZ77Vram);
 	setupMenuPalette();

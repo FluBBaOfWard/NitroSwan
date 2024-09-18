@@ -161,6 +161,9 @@ int loadSettings() {
 	joyMapping    = (joyMapping & ~1)|((cfg.controller & 2)>>1);
 	gMachineSet   = (cfg.machine>>1) & 0x7;
 	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
+	if (gMachineSet != HW_AUTO) {
+		gMachine = gMachineSet;
+	}
 
 	infoOutput("Settings loaded.");
 	return 0;
