@@ -36,7 +36,7 @@ int initSettings() {
 	cfg.config = 0;
 	cfg.palette = 0;
 	cfg.gammaValue = 0x30;
-	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM;
+	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | AUTOSLEEP_OFF | ENABLE_HEADPHONES;
 	cfg.sleepTime = 60*60*5;
 	cfg.controller = 0;					// Don't swap A/B
 	cfg.birthYear[0] = 0x19;
@@ -133,22 +133,23 @@ bool updateSettingsFromWS() {
 
 int loadSettings() {
 	FILE *file;
+	int result = 0;
 
 	if (findFolder(folderName)) {
-		return 1;
+		result = 1;
 	}
-	if ( (file = fopen(settingName, "r")) ) {
+	else if ( (file = fopen(settingName, "r")) ) {
 		fread(&cfg, 1, sizeof(ConfigData), file);
 		fclose(file);
 		if (!strstr(cfg.magic,"cfg")) {
 			infoOutput("Error in settings file.");
-			return 1;
+			result = 1;
 		}
 	}
 	else {
 		infoOutput("Couldn't open file:");
 		infoOutput(settingName);
-		return 1;
+		result = 1;
 	}
 
 	gBorderEnable = (cfg.config & 1) ^ 1;
@@ -166,7 +167,7 @@ int loadSettings() {
 	}
 
 	infoOutput("Settings loaded.");
-	return 0;
+	return result;
 }
 
 void saveSettings() {

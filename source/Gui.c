@@ -16,10 +16,6 @@
 
 #define EMUVERSION "V0.6.6 2024-09-18"
 
-#define ALLOW_SPEED_HACKS	(1<<17)
-#define ENABLE_HEADPHONES	(1<<18)
-#define ALLOW_REFRESH_CHG	(1<<19)
-
 void hacksInit(void);
 
 static void gammaChange(void);
@@ -177,7 +173,6 @@ static const char *const langTxt[]  = {"Japanese", "English"};
 
 
 void setupGUI() {
-	emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | AUTOSLEEP_OFF | ENABLE_HEADPHONES;
 	keysSetRepeat(25, 4);	// Delay, repeat.
 	menu1.itemCount = ARRSIZE(fileItems) - (enableExit?0:1);
 	openMenu();

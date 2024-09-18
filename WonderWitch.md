@@ -32,9 +32,22 @@ If you want to keep what you have uploaded to the WonderWitch make sure you use 
 Save NVRAM in the emulator.
 
 * WonderWitch: Tools for interacting with a WonderWitch.
+  * Storage: Select storage, apps need to be located in ROM.
   * Upload File: Used for uploading files to WonderWitch.
+  * Dir: Show contents of a directory, to select a file.
+  * Execute: Execute an app. (use the WW start screen instead).
+  * Delete: Delete a file.
+  * Defrag: Reclaim storage from deleted files.
+  * Download File: Download a file from WW to the DS.
+  * NewFS (Formatt): Wipe everything in the selected storage.
   * XMODEM Transmit: Used for uploading files to WonderWitch.
   * XMODEM Receive: Used for downloading files from WonderWitch.
+  * Reboot WW: Reboot the WonderWitch software.
+  * CD: Change directory.
+  * Interact: Set terminal to interactive mode.
+  * Stty: Set/Show interactive mode.
+  * Hello: Show info about WW software.
+  * Speed: Show communication speed.
 
 ## Credits
 
