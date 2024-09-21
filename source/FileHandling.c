@@ -17,6 +17,7 @@
 #include "io.h"
 #include "Memory.h"
 #include "InternalEEPROM.h"
+#include "WonderWitch.h"
 
 extern u8 flashMemChanged;		// From FlashMemory.s
 
@@ -162,6 +163,10 @@ int loadSettings() {
 	joyMapping    = (joyMapping & ~1)|((cfg.controller & 2)>>1);
 	gMachineSet   = (cfg.machine>>1) & 0x7;
 	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
+	if (strlen(cfg.wonderWitchPath) == 0) {
+		strlcpy(cfg.wonderWitchPath, cfg.currentPath, sizeof(cfg.wonderWitchPath));
+	}
+	strlcpy(wwDir, cfg.wonderWitchPath, sizeof(currentDir));
 	if (gMachineSet != HW_AUTO) {
 		gMachine = gMachineSet;
 	}
@@ -182,6 +187,7 @@ void saveSettings() {
 	cfg.controller  = ((joyCfg>>10)&1) | (joyMapping&1)<<1;
 	cfg.machine     = (gMachineSet&7)<<1;
 	strlcpy(cfg.currentPath, currentDir, sizeof(cfg.currentPath));
+	strlcpy(cfg.wonderWitchPath, wwDir, sizeof(cfg.currentPath));
 
 	if (findFolder(folderName)) {
 		return;

@@ -28,6 +28,7 @@ Sound:
 	See Sphinx todo.
 
 Misc:
+	Armored Unit, menu background shakes. Just as on HW!
 	Cardcaptor Sakura, timing sensitive.
 	Dekadence - Vesilintu, very slow.
 	Mingle Magnet, slow.
@@ -116,6 +117,7 @@ Needs Large (256kB) SRAM:
 	Dicing Knight.
 	Judgement Silversword Rebirth Edition
 	Tenori-On
+	WonderWitch
 
 Needs RTC:
 	Dicing Knight.
@@ -123,6 +125,7 @@ Needs RTC:
 	Inu yasha
 	Judgement Silversword Rebirth Edition
 	Tenori-On
+	WonderWitch
 
 Games which enable NMI:
 	Cardcaptor Sakura, shows message.

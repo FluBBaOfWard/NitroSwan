@@ -14,7 +14,6 @@
 #include <stdio.h>
 
 #include "Shared/EmuMenu.h"
-#include "Shared/FileHelper.h"
 #include "WonderWitch.h"
 #include "Gui.h"
 #include "Gfx.h"
@@ -39,6 +38,7 @@ const char *selectedFile;
 char outBuf[PAGE_SIZE];
 u8 buffer[PAGE_SIZE];
 char txtBuf[0x400];
+char wwDir[FILEPATH_MAX_LENGTH];
 
 void wwChangeStorage() {
 	storage += 1;
@@ -169,8 +169,12 @@ static void endRxTx(void) {
 
 static bool selectFileToTransmit(void) {
 	bool result = false;
+	char oldDir[FILEPATH_MAX_LENGTH];
+	strlcpy(oldDir, currentDir, sizeof(oldDir));
+	strlcpy(currentDir, wwDir, sizeof(currentDir));
 	const char *fileName = browseForFileType(".fx.fr.il.bin");
 	if (fileName != NULL) {
+		strlcpy(wwDir, currentDir, sizeof(wwDir));
 		if (file != NULL) {
 			fclose(file);
 		}
@@ -192,6 +196,7 @@ static bool selectFileToTransmit(void) {
 			infoOutput(fileName);
 		}
 	}
+	strlcpy(currentDir, oldDir, sizeof(oldDir));
 	cls(0);
 	return result;
 }

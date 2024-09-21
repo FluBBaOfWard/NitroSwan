@@ -10,6 +10,8 @@
 //  Scan it, send it, fax – rename it
 //
 
+#include "Shared/FileHelper.h"
+
 #ifndef WONDERWITCH_HEADER
 #define WONDERWITCH_HEADER
 
@@ -107,6 +109,8 @@ typedef struct {
 	u32 handler;
 	u32 resource;
 } FxFile;
+
+extern char wwDir[FILEPATH_MAX_LENGTH];
 
 /// Change between rom0 & ram0 storage on the WW.
 void wwChangeStorage(void);

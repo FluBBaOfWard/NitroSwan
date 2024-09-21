@@ -24,6 +24,7 @@ typedef struct {				//(config struct)
 	char monoBiosPath[256];
 	char colorBiosPath[256];
 	char crystalBiosPath[256];
+	char wonderWitchPath[256];
 } ConfigData;
 
 #ifdef __cplusplus

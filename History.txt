@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.6.7 - 2024-09-21 (FluBBa)
+	Added separate file path for WonderWitch.
+
 V0.6.6 - 2024-09-18 (FluBBa)
 	Added some support for WonderWitch.
 	Added saving of machine setting.
