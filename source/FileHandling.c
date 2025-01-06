@@ -170,6 +170,7 @@ int loadSettings() {
 	if (gMachineSet != HW_AUTO) {
 		gMachine = gMachineSet;
 	}
+	pauseEmulation = emuSettings & AUTOPAUSE_EMULATION;
 
 	infoOutput("Settings loaded.");
 	return result;

@@ -1,4 +1,4 @@
-# NitroSwan V0.6.6
+# NitroSwan V0.6.7
 
 <img align="right" width="220" src="./logo.png" alt="The WonderSwan logo" />
 
@@ -53,6 +53,7 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
   * Gamma: Lets you change the gamma ("brightness").
   * Contrast: Lets you change the contrast.
   * B&W Palette: Here you can select the palette for B & W games.
+  * Border: Choose what to show outside the WS screen.
 * Machine:
   * Machine: Select the emulated machine.
   * Select WS Bios: Load a real WS Bios.
@@ -158,6 +159,8 @@ Dwedit for help and inspiration with a lot of things. https://www.dwedit.org
 
 Fredrik Ahlström
 
-X/Twitter @TheRealFluBBa
+<https://bsky.app/profile/therealflubba.bsky.social>
 
 <https://www.github.com/FluBBaOfWard>
+
+X/Twitter @TheRealFluBBa

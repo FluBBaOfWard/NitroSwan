@@ -14,7 +14,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.6 2024-09-21"
+#define EMUVERSION "V0.6.7 2025-01-06"
 
 void hacksInit(void);
 
@@ -169,7 +169,7 @@ char serialOut[32];
 static const char *const machTxt[]  = {"Auto", "WonderSwan", "WonderSwan Color", "SwanCrystal", "Pocket Challenge V2"};
 static const char *const palTxt[]   = {"Classic", "Black & White", "Red", "Green", "Blue", "Green-Blue", "Blue-Green", "Puyo Puyo Tsu"};
 static const char *const bordTxt[]  = {"Black", "Frame", "BG Color", "None"};
-static const char *const langTxt[]  = {"Japanese", "English"};
+//static const char *const langTxt[]  = {"Japanese", "English"};
 
 
 void setupGUI() {
@@ -389,6 +389,7 @@ void paletteChange() {
 	if (gPaletteBank > 7) {
 		gPaletteBank = 0;
 	}
+	monoPalInit(gGammaValue, gContrastValue);
 	setupEmuBorderPalette();
 	settingsChanged = true;
 }

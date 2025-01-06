@@ -45,8 +45,7 @@ int getStateSize() {
 	return size;
 }
 
-static void setupBorderPalette(const void *palette, int len) {
-	monoPalInit(gGammaValue, gContrastValue);
+static void setupBorderPalette(const unsigned short *palette, int len) {
 	vramSetBankF(VRAM_F_LCD);
 	if (gBorderEnable == 0) {
 		memset(VRAM_F, 0, len);
