@@ -1,9 +1,11 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.7 - 2025-01-06 (FluBBa)
+V0.6.7 - 2025-02-18 (FluBBa)
 	Added separate file path for WonderWitch.
 	Fixed ch2 sample playing.
+	Fixed ch3 sweep frequency.
+	Fixed some edge cases for EEPROM.
 
 V0.6.6 - 2024-09-18 (FluBBa)
 	Added some support for WonderWitch.
