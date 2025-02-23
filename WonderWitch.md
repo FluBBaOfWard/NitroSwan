@@ -16,15 +16,16 @@ Now open the menu on the DS, go to Options->WonderWitch.
 Here you can send files/commands to the WonderWitch.
 The first thing you want to do is upload a file.
 
-Press the "Upload File" button and exit the emulator menu to let the WonderWitch work,
-then choose the file to upload.
+Press the "Upload File" button, choose the file to upload and then exit the emulator
+menu.
+
 Exiting the menu after every command is still needed, I will try to fix this later.
 
 Many games require several files to run, "sound.il" is one such file used by some.
 Many games also require a WSColor, so make sure you run the emulator in color mode.
 If you want to do any actions on a specific file you have to do "Dir" first to
 select the file and then run the command (delete, execute).
-After you have deleted a file you have to run defreg to get back the space.
+After you have deleted a file you have to run defrag to get back the space.
 Sometimes things start to get really slow (almost allways if you run execute),
  then try a reboot command or reset the console.
 

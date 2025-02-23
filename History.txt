@@ -1,6 +1,10 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.6.8 - 2025-02-23 (FluBBa)
+	Optimized sound rendering.
+	Fixed sound output control register.
+
 V0.6.7 - 2025-02-18 (FluBBa)
 	Added separate file path for WonderWitch.
 	Fixed ch2 sample playing.

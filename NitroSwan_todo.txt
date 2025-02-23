@@ -1,5 +1,7 @@
 NitroSwan Todo
 
+	Add support for uploading all files to WonderWitch.
+		Start by using a buffer for output instead of file.
 	Add support for timer and ADPCM on Karnak carts.
 		Add an "update cart" function with x cycles in
 		and let cart handle what to do. Remove rtc from slowIOUpdate.

@@ -1,4 +1,4 @@
-# NitroSwan V0.6.7
+# NitroSwan V0.6.8
 
 <img align="right" width="220" src="./logo.png" alt="The WonderSwan logo" />
 

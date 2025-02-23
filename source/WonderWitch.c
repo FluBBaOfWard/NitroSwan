@@ -331,9 +331,9 @@ static void handleXModemReceive(u8 value) {
 				}
 				file = fopen(fileName, "w");
 			}
-			int chunk = (fileSize < PAGE_SIZE) ? fileSize : PAGE_SIZE;
-			fileSize -= chunk;
-			fwrite(buffer, 1, chunk, file);
+			int chunkSize = (fileSize < PAGE_SIZE) ? fileSize : PAGE_SIZE;
+			fileSize -= chunkSize;
+			fwrite(buffer, 1, chunkSize, file);
 			sendAck();
 		}
 		counter = -1;

@@ -889,7 +889,7 @@ KarnakW:
 #else
 	.section .bss
 #endif
-	.align 2
+	.align 4
 wsRAM:
 	.space 0x10000
 DIRTYTILES:
