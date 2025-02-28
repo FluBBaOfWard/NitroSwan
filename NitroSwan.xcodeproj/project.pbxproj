@@ -19,6 +19,7 @@
 		9C22442C2C70C17C000B05C3 /* wsrtc01.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wsrtc01.txt; sourceTree = "<group>"; };
 		9C2244312C7214EF000B05C3 /* WonderWitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WonderWitch.h; sourceTree = "<group>"; };
 		9C2244322C7214EF000B05C3 /* WonderWitch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = WonderWitch.c; sourceTree = "<group>"; };
+		9C2C98D72D6B433200369768 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		9C2DB3B22C95E59F00467503 /* WonderWitch.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = WonderWitch.md; sourceTree = "<group>"; };
 		9C2DB3B32C96D5A700467503 /* SCBorder.grit */ = {isa = PBXFileReference; lastKnownFileType = text; path = SCBorder.grit; sourceTree = "<group>"; };
 		9C2DB3B42C96D5A700467503 /* SCBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SCBorder.png; sourceTree = "<group>"; };
@@ -224,6 +225,7 @@
 				9C7BB94925FCD73C00EA9C9C /* graphics */,
 				A4D0E10C208930D100401463 /* Unzip */,
 				9C42404027E2264A0042454B /* README.md */,
+				9C2C98D72D6B433200369768 /* LICENSE.txt */,
 				9C8F33EE248ACA2E00996E5A /* nds_asm.h */,
 				9C1FFFA72684A277005851ED /* EmuSettings.h */,
 				9C6CC0EB2AE3D95F00E5EEC3 /* EmuMenu.i */,

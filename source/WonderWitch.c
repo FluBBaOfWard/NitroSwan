@@ -12,6 +12,8 @@
 
 #include <nds.h>
 #include <stdio.h>
+#include <time.h>
+#include <sys/stat.h>
 
 #include "Shared/EmuMenu.h"
 #include "WonderWitch.h"
@@ -34,6 +36,7 @@ u8 inIdx = 0;
 //static const char lineFeed[3] = {CR, NL, 0x0};
 static const char lineFeed[2] = {CR, 0x0};
 static const char *const storText[]  = {"/rom0", "/ram0", "/kern"};
+const char *currentFileName;
 const char *selectedFile;
 char outBuf[PAGE_SIZE];
 u8 buffer[PAGE_SIZE];
@@ -172,17 +175,19 @@ static bool selectFileToTransmit(void) {
 	char oldDir[FILEPATH_MAX_LENGTH];
 	strlcpy(oldDir, currentDir, sizeof(oldDir));
 	strlcpy(currentDir, wwDir, sizeof(currentDir));
-	const char *fileName = browseForFileType(".fx.fr.il.bin");
+	// Was ".fx.fr.il.bin"
+	const char *fileName = browseForFileType("*");
 	if (fileName != NULL) {
 		strlcpy(wwDir, currentDir, sizeof(wwDir));
 		if (file != NULL) {
 			fclose(file);
 		}
 		if ( (file = fopen(fileName, "r")) ) {
+			currentFileName = fileName;
 			fseek(file, 0, SEEK_END);
 			fileSize = ftell(file);
 			if (fileSize <= 0x60000) {
-				pageCount = (fileSize + 0x7F) / PAGE_SIZE;
+				pageCount = (fileSize + (PAGE_SIZE-1)) / PAGE_SIZE;
 				fseek(file, 0, SEEK_SET);
 				result = true;
 			}
@@ -213,22 +218,22 @@ static void startCommand(const char *str, WWCmd cmd) {
 
 static void startCmdStor(const char *str, WWCmd cmd) {
 	char comStr[32];
-	strlMerge(comStr, str, " ", 32);
-	strlcat(comStr, &wwGetStorageText()[1], 32);
+	strlMerge(comStr, str, " ", sizeof(comStr));
+	strlcat(comStr, &wwGetStorageText()[1], sizeof(comStr));
 	startCommand(comStr, cmd);
 }
 
 static void startCmdPath(const char *str, WWCmd cmd) {
 	char comStr[32];
-	strlMerge(comStr, str, " ", 32);
-	strlcat(comStr, wwGetStorageText(), 32);
+	strlMerge(comStr, str, " ", sizeof(comStr));
+	strlcat(comStr, wwGetStorageText(), sizeof(comStr));
 	startCommand(comStr, cmd);
 }
 
 static void startCmdFile(const char *str, const char *filename, WWCmd cmd) {
 	char comStr[32];
-	strlMerge(comStr, str, " ", 32);
-	strlcat(comStr, filename, 32);
+	strlMerge(comStr, str, " ", sizeof(comStr));
+	strlcat(comStr, filename, sizeof(comStr));
 	startCommand(comStr, cmd);
 }
 
@@ -244,7 +249,27 @@ static void handleXModemTransmit() {
 		else {
 			// Start of Heading
 			value = SOH;
-			fseek(file, prevPage*PAGE_SIZE, SEEK_SET);
+			fread(outBuf, 1, PAGE_SIZE, file);
+			if (prevPage == 0) {
+				FxFile *fxFile = (FxFile *)outBuf;
+				// "#!ws"
+				if (fxFile->magic != 0x73772123) {
+					memset(fxFile, 0x00, sizeof(FxFile));
+					fxFile->magic = 0x73772123;
+					memset(fxFile->ffFill, 0xFF, sizeof(fxFile->ffFill));
+					fxFile->binarySize = fileSize;
+					fxFile->blockCount = pageCount+1;
+					fxFile->flags = 4; //Read flag.
+					struct stat attrib;
+					struct tm ts;
+					stat(currentFileName, &attrib);
+					gmtime_r( &attrib.st_mtime, &ts);
+					fxFile->modificationTime = ((ts.tm_year - 100)<<25) + ((ts.tm_mon + 1)<<21) + (ts.tm_mday<<16) + (ts.tm_hour<<11) + (ts.tm_min<<5) + (ts.tm_sec>>1);
+					truncateFileName(fxFile->fileName, currentFileName, sizeof(fxFile->fileName));
+					strlcpy(fxFile->description, currentFileName, sizeof(fxFile->description));
+					fseek(file, 0, SEEK_SET);
+				}
+			}
 		}
 	}
 	else if (counter == 1) {
@@ -255,7 +280,7 @@ static void handleXModemTransmit() {
 		value = ~prevPage;
 	}
 	else if (counter < 131) {
-		fread(&value, 1, 1, file);
+		value = outBuf[counter-3];
 		checksum += value;
 	}
 	else if (counter == 131) {
@@ -312,22 +337,22 @@ static void handleXModemReceive(u8 value) {
 				// "#!ws"
 				if (fxFile->magic == 0x73772123) {
 					fileSize = fxFile->binarySize + PAGE_SIZE;
-					strlcpy(fileName, fxFile->fileName, 0x20);
+					strlcpy(fileName, fxFile->fileName, sizeof(fileName));
 					// Executeable?
 					if (fxFile->flags & 0x01) {
-						strlcat(fileName, ".fx", 0x20);
+						strlcat(fileName, ".fx", sizeof(fileName));
 					}
 					// Library?
 					else if (fxFile->flags & 0x20) {
-						strlcat(fileName, ".il", 0x20);
+						strlcat(fileName, ".il", sizeof(fileName));
 					}
 					else if (strrchr(fileName, '.') == NULL) {
-						strlcat(fileName, ".fr", 0x20);
+						strlcat(fileName, ".fr", sizeof(fileName));
 					}
 				}
 				else {
 					fileSize = 0x60000;
-					strlcpy(fileName, "ReceiveData.bin", 0x20);
+					strlcpy(fileName, "ReceiveData.bin", sizeof(fileName));
 				}
 				file = fopen(fileName, "w");
 			}
@@ -372,6 +397,7 @@ void handleSerialReceive(u8 value) {
 			infoOutput("Transmit resend.");
 			counter = 0;
 			prevPage -= 1;
+			fseek(file, prevPage*PAGE_SIZE, SEEK_SET);
 		}
 		else if (value == CAN) {
 			infoOutput("Transmit canceled.");

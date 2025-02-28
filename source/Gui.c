@@ -14,9 +14,11 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.8 2025-02-23"
+#define EMUVERSION "V0.6.8 2025-02-28"
 
 void hacksInit(void);
+
+static void nullUIWSC(int key);
 
 static void gammaChange(void);
 static void paletteChange(void);
@@ -232,8 +234,24 @@ void ui12() {
 }
 
 void nullUINormal(int key) {
-	if (key & KEY_TOUCH) {
-		openMenu();
+	switch (gMachine) {
+		case HW_WONDERSWAN:
+			nullUIWSC(key);
+			break;
+		case HW_WONDERSWANCOLOR:
+			nullUIWSC(key);
+			break;
+		case HW_SWANCRYSTAL:
+			nullUIWSC(key);
+			break;
+		case HW_POCKETCHALLENGEV2:
+			nullUIWSC(key);
+			break;
+		default:
+			if (key & KEY_TOUCH) {
+				openMenu();
+			}
+			break;
 	}
 }
 
@@ -325,6 +343,30 @@ void debugUndefinedInstruction() {
 }
 void debugCrashInstruction() {
 	debugOutput("CPU Crash! (0xF1)");
+}
+
+//---------------------------------------------------------------------------------
+void nullUIWSC(int keyHit) {
+	if (EMUinput & KEY_TOUCH) {
+		touchPosition myTouch;
+		touchRead(&myTouch);
+		int xpos = (myTouch.px>>2);
+		int ypos = (myTouch.py>>2);
+		if ( ypos > 8 ) {
+			openMenu();
+		}
+		else if (ypos < 8 && xpos > 30 && xpos < 36) { // Power button
+			if (keyHit & KEY_TOUCH) {
+				if (powerIsOn) {
+					setPowerOff();
+					gfxRefresh();
+				}
+				else {
+					resetGame();
+				}
+			}
+		}
+	}
 }
 
 //---------------------------------------------------------------------------------

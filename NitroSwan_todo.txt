@@ -1,14 +1,15 @@
 NitroSwan Todo
 
-	Add support for uploading all files to WonderWitch.
-		Start by using a buffer for output instead of file.
+	Add support for LCD on/off.
+	Fix RTC:
+		Corrected values when setting out of range values.
 	Add support for timer and ADPCM on Karnak carts.
 		Add an "update cart" function with x cycles in
 		and let cart handle what to do. Remove rtc from slowIOUpdate.
+	Handle Contrast High/Low for WSC, change Y every other frame.
 	Add cache for 16MB extra area on 3DS.
 	Fix better sound? Update twice per raster row.
 	Map serial port to debug out. Test!
-	Add support for LCD on/off.
 	Graphics on menu screen?
 	Find speed hacks.
 	Change cpuReadMem20(W) to return value in r1 instead of r0?

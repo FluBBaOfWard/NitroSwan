@@ -4,7 +4,7 @@
 
 There are three screens in the WonderWitch UI.
 The first one is where you start the games/applications.
-The second is where you can copy files to/from program-area(ROM)/work-area(RAM)
+The second is where you can copy files between program-area(ROM) & work-area(SRAM)
 The third is where you can transfer files & execute commands via serial.
 
 ## How to use
@@ -16,8 +16,9 @@ Now open the menu on the DS, go to Options->WonderWitch.
 Here you can send files/commands to the WonderWitch.
 The first thing you want to do is upload a file.
 
-Press the "Upload File" button, choose the file to upload and then exit the emulator
-menu.
+Press the "Upload File" button, choose the file to upload and then exit the DS menu.
+File names/description will be truncated (but still contain the file extension),
+file name 16 bytes, description 24 bytes.
 
 Exiting the menu after every command is still needed, I will try to fix this later.
 

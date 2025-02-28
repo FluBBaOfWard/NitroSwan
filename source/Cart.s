@@ -42,7 +42,7 @@
 	.global loadCart
 	.global reBankSwitchAll
 	.global clearDirtyTiles
-	.global cartRtcUpdate
+	.global cartUpdate
 
 	.syntax unified
 	.arm
@@ -66,7 +66,7 @@ ROM_Space:
 //	.incbin "wsroms/Tetris (Japan).wsc"
 //	.incbin "wsroms/Tonpuusou (Japan).wsc"
 //	.incbin "wsroms/WONDERPR.WSC"
-	.incbin "wsroms/WonderWitch [FreyaOS 1.2.0].ws"
+//	.incbin "wsroms/WonderWitch [FreyaOS 1.2.0].ws"
 //	.incbin "wsroms/WSCpuTest.wsc"
 //	.incbin "wsroms/XI Little (Japan).wsc"
 ROM_SpaceEnd:
@@ -585,7 +585,7 @@ cartRtcReset:
 	adr rtcptr,cartRtc
 	b wsRtcSetDateTime
 ;@----------------------------------------------------------------------------
-cartRtcUpdate:				;@ r0=rtcptr. Call every second.
+cartUpdate:				;@ r0=rtcptr, number of 384KHz clocks.
 ;@----------------------------------------------------------------------------
 	ldrb r0,rtcPresent
 	cmp r0,#0

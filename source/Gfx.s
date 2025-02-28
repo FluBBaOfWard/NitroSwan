@@ -28,14 +28,15 @@
 	.global v30ReadPort16
 	.global v30WritePort
 	.global v30WritePort16
+	.global updateLCDRefresh
+	.global setScreenRefresh
 	.global pushVolumeButton
 	.global setHeadphones
 	.global setLowBattery
 	.global setSerialByteIn
-	.global updateLCDRefresh
-	.global setScreenRefresh
 	.global getInterruptVector
 	.global setInterruptExternal
+	.global setPowerOff
 
 
 	.syntax unified
@@ -139,7 +140,7 @@ gfxWinInit:
 	orr r2,r2,r2,lsl#16			;@ Also WIN1V
 	str r2,[r0,#REG_WIN0V]
 
-	ldr r3,=0x002C3333			;@ WinIN0/1, BG0, BG1, SPR & BLEND inside Win0
+	ldr r3,=0x002C0000			;@ WinIN0/1, BG0, BG1, SPR & BLEND inside Win0
 	str r3,[r0,#REG_WININ]		;@ WinOUT, Only BG2, BG3 & BLEND enabled outside Windows.
 
 	ldr lr,=WININOUTBUFF1
@@ -698,6 +699,12 @@ setInterruptExternal:		;@ r0=irq state
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvSetInterruptExternal
+;@----------------------------------------------------------------------------
+setPowerOff:
+	.type setPowerOff STT_FUNC
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvSetPowerOff
 sphinx0:
 	.space sphinxSize
 ;@----------------------------------------------------------------------------

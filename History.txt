@@ -1,9 +1,12 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.8 - 2025-02-23 (FluBBa)
+V0.6.8 - 2025-02-28 (FluBBa)
+	Added support for uploading any file to WonderWitch.
+	Fixed sound output control (0x91) register.
+	Fixed latched icons (0x1A) register.
+	Fixed AM/PM behaviour of RTC.
 	Optimized sound rendering.
-	Fixed sound output control register.
 
 V0.6.7 - 2025-02-18 (FluBBa)
 	Added separate file path for WonderWitch.
