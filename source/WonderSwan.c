@@ -59,58 +59,88 @@ static void setupBorderPalette(const unsigned short *palette, int len) {
 	paletteTxAll();					// Make new palette visible
 }
 
-void setupWSBackground() {
-	decompress(WSBorderTiles, BG_TILE_RAM(1), LZ77Vram);
-	decompress(WSBorderMap, BG_MAP_RAM(15), LZ77Vram);
+static void setupBorderTiles(const void *tiles) {
+	decompress(tiles, BG_TILE_RAM(1), LZ77Vram);
+}
+
+static void setupBorderMap(const void *map) {
+	decompress(map, BG_MAP_RAM(15), LZ77Vram);
 }
 
 void setupWSBorderPalette() {
 	setupBorderPalette(WSBorderPal, WSBorderPalLen);
 }
 
-void setupWSCBackground() {
-	decompress(WSCBorderTiles, BG_TILE_RAM(1), LZ77Vram);
-	decompress(WSCBorderMap, BG_MAP_RAM(15), LZ77Vram);
-}
-
 void setupWSCBorderPalette() {
 	setupBorderPalette(WSCBorderPal, WSCBorderPalLen);
-}
-
-void setupSCBackground() {
-	decompress(SCBorderTiles, BG_TILE_RAM(1), LZ77Vram);
-	decompress(SCBorderMap, BG_MAP_RAM(15), LZ77Vram);
 }
 
 void setupSCBorderPalette() {
 	setupBorderPalette(SCBorderPal, SCBorderPalLen);
 }
 
-void setupPCV2Background() {
-	decompress(PCV2BorderTiles, BG_TILE_RAM(1), LZ77Vram);
-	decompress(PCV2BorderMap, BG_MAP_RAM(15), LZ77Vram);
-}
-
 void setupPCV2BorderPalette() {
 	setupBorderPalette(PCV2BorderPal, PCV2BorderPalLen);
 }
 
+static void fillScreenMap(u16 val) {
+	u16 *dest = BG_MAP_RAM(15) + (3 * 32) + 2;
+	u16 fill = BG_MAP_RAM(15)[val];
+	for (int i=0;i<18;i++) {
+		for (int j=0;j<28;j++) {
+			dest[i*32+j] = fill;
+		}
+	}
+}
+
+static void fillScreenRow(u16 val, int row) {
+	u16 *dest = BG_MAP_RAM(15) + (3 * 32) + 2;
+	u16 fill = BG_MAP_RAM(15)[val];
+	for (int j=0;j<28;j++) {
+		dest[row*32+j] = fill;
+	}
+}
+
 void setupEmuBackground() {
 	if (gMachine == HW_WONDERSWANCOLOR) {
-		setupWSCBackground();
+		setupBorderTiles(WSCBorderTiles);
+		setupBorderMap(WSCBorderMap);
 		setupWSCBorderPalette();
 	}
 	else if (gMachine == HW_SWANCRYSTAL) {
-		setupSCBackground();
+		setupBorderTiles(SCBorderTiles);
+		setupBorderMap(SCBorderMap);
 		setupSCBorderPalette();
 	}
 	else if (gMachine == HW_WONDERSWAN) {
-		setupWSBackground();
+		setupBorderTiles(WSBorderTiles);
+		setupBorderMap(WSBorderMap);
 		setupWSBorderPalette();
 	}
 	else {
-		setupPCV2Background();
+		setupBorderTiles(PCV2BorderTiles);
+		setupBorderMap(PCV2BorderMap);
 		setupPCV2BorderPalette();
+	}
+}
+
+void setupEmuBgrShutDown() {
+	if (gMachine == HW_WONDERSWANCOLOR) {
+		setupBorderMap(WSCBorderMap);
+		fillScreenMap(0x31E);
+		fillScreenRow(0x31F, 5);
+	}
+	else if (gMachine == HW_SWANCRYSTAL) {
+		setupBorderMap(SCBorderMap);
+		fillScreenMap(0x31F);
+	}
+	else if (gMachine == HW_WONDERSWAN) {
+		setupBorderMap(WSBorderMap);
+		fillScreenMap(0x31F);
+	}
+	else {
+		setupBorderMap(PCV2BorderMap);
+		fillScreenMap(0x31F);
 	}
 }
 

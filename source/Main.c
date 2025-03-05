@@ -98,8 +98,13 @@ int main(int argc, char **argv) {
 		waitVBlank();
 		checkTimeOut();
 		guiRunLoop();
-		if (powerIsOn && !pauseEmulation) {
-			run();
+		if (!pauseEmulation) {
+			if (powerIsOn) {
+				run();
+			}
+			else {
+				shutDownLCD();
+			}
 		}
 	}
 	return 0;
@@ -185,12 +190,12 @@ static void setupGraphics() {
 				 | DISPLAY_BG_EXT_PALETTE
 				 ;
 	videoSetMode(GFX_DISPCNT);
-	GFX_BG0CNT = BG_32x64 | BG_MAP_BASE(0) | BG_COLOR_16 | BG_TILE_BASE(2) | BG_PRIORITY(1);
-	GFX_BG1CNT = BG_32x64 | BG_MAP_BASE(2) | BG_COLOR_16 | BG_TILE_BASE(2) | BG_PRIORITY(0);
+	GFX_BG0CNT = BG_32x64 | BG_MAP_BASE(0) | BG_COLOR_16 | BG_TILE_BASE(2) | BG_PRIORITY(2);
+	GFX_BG1CNT = BG_32x64 | BG_MAP_BASE(2) | BG_COLOR_16 | BG_TILE_BASE(2) | BG_PRIORITY(1);
 	REG_BG0CNT = GFX_BG0CNT;
 	REG_BG1CNT = GFX_BG1CNT;
 	// Background 2 for border
-	REG_BG2CNT = BG_32x32 | BG_MAP_BASE(15) | BG_COLOR_256 | BG_TILE_BASE(1) | BG_PRIORITY(2);
+	REG_BG2CNT = BG_32x32 | BG_MAP_BASE(15) | BG_COLOR_256 | BG_TILE_BASE(1) | BG_PRIORITY(0);
 
 	// Set up the sub display
 	videoSetModeSub(MODE_0_2D

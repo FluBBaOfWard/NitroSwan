@@ -14,7 +14,7 @@
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
 
-#define EMUVERSION "V0.6.8 2025-02-28"
+#define EMUVERSION "V0.6.8 2025-03-05"
 
 void hacksInit(void);
 
@@ -380,7 +380,8 @@ const char *getSwapABText() {
 
 void gammaChange() {
 	gammaSet();
-	paletteInit(gGammaValue, gContrastValue);
+	paletteInit(gGammaValue, gContrastValue, 0);
+	monoPalInit(gGammaValue, gContrastValue, 0);
 	setupEmuBorderPalette();
 	setupMenuPalette();
 }
@@ -389,7 +390,8 @@ void gammaChange() {
 void contrastSet() {
 	gContrastValue++;
 	if (gContrastValue > 4) gContrastValue = 0;
-	paletteInit(gGammaValue, gContrastValue);
+	paletteInit(gGammaValue, gContrastValue, 0);
+	monoPalInit(gGammaValue, gContrastValue, 0);
 	setupEmuBorderPalette();
 	settingsChanged = true;
 }
@@ -431,7 +433,7 @@ void paletteChange() {
 	if (gPaletteBank > 7) {
 		gPaletteBank = 0;
 	}
-	monoPalInit(gGammaValue, gContrastValue);
+	monoPalInit(gGammaValue, gContrastValue, 0);
 	setupEmuBorderPalette();
 	settingsChanged = true;
 }

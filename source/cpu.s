@@ -153,6 +153,10 @@ cpuInit:					;@ Called by machineInit
 	str r0,v30MZCyclesPerScanline
 	mov r0,v30ptr
 	bl V30Init
+	ldr r0,=getInterruptVector
+	str r0,[v30ptr,#v30IrqVectorFunc]
+	ldr r0,=setBusStatus
+	str r0,[v30ptr,#v30BusStatusFunc]
 
 	ldmfd sp!,{v30ptr,lr}
 	bx lr
@@ -165,8 +169,6 @@ cpuReset:					;@ Called by loadCart/resetGame, r0 = type
 
 	mov r0,v30ptr
 	bl V30Reset
-	ldr r0,=getInterruptVector
-	str r0,[v30ptr,#v30IrqVectorFunc]
 
 	ldmfd sp!,{v30ptr,lr}
 	bx lr

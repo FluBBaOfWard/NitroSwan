@@ -17,6 +17,9 @@ int getStateSize(void);
 /// Setup WonderSwan background for emulator screen.
 void setupEmuBackground(void);
 
+/// Setup WonderSwan background for shut down.
+void setupEmuBgrShutdown(void);
+
 void setupEmuBorderPalette(void);
 
 #ifdef __cplusplus

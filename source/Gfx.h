@@ -20,9 +20,25 @@ extern u16 GFX_BG1CNT;
 
 void gfxInit(void);
 void vblIrqHandler(void);
-void paletteInit(u8 gammaVal, u8 contrast);
-void monoPalInit(u8 gammaVal, u8 contrast);
+
+/**
+ * Calculate new (color) palette look up table.
+ * @param gammaVal: 0-4.
+ * @param contrast: 0-4.
+ * @param bright: -255 -> 255.
+ */
+void paletteInit(u8 gammaVal, u8 contrast, int bright);
+
+/**
+ * Calculate new (mono) palette look up table.
+ * @param gammaVal: 0-4.
+ * @param contrast: 0-4.
+ * @param bright: -255 -> 255.
+ */
+void monoPalInit(u8 gammaVal, u8 contrast, int bright);
+
 void paletteTxAll(void);
+void shutDownLCD(void);
 void updateLCDRefresh(void);
 void gfxRefresh(void);
 u8 v30ReadPort(u16 port);

@@ -28,14 +28,16 @@
 	.global v30ReadPort16
 	.global v30WritePort
 	.global v30WritePort16
+	.global shutDownLCD
 	.global updateLCDRefresh
 	.global setScreenRefresh
 	.global pushVolumeButton
 	.global setHeadphones
 	.global setLowBattery
 	.global setSerialByteIn
-	.global getInterruptVector
 	.global setInterruptExternal
+	.global getInterruptVector
+	.global setBusStatus
 	.global setPowerOff
 
 
@@ -65,6 +67,7 @@ gfxInit:					;@ Called from machineInit
 	mov r1,#0
 dispLutLoop:
 	and r2,r1,#0x03				;@ BG & FG
+	orr r2,r2,#0x04				;@ Allways enable Border.
 	tst r1,#0x04				;@ WS Sprites on?
 	orrne r2,r2,#0x10			;@ Sprites
 	orr r2,r2,r2,lsl#8			;@ Set both Win0 & Win1
@@ -108,9 +111,11 @@ gfxReset:					;@ Called with CPU reset
 	ldrb r5,[r5]
 	mov r0,r4
 	mov r1,r5
+	mov r2,#0
 	bl paletteInit				;@ Do palette mapping
 	mov r0,r4
 	mov r1,r5
+	mov r2,#0
 	bl monoPalInit				;@ Do mono palette mapping
 	bl paletteTxAll				;@ Transfer it
 
@@ -140,7 +145,7 @@ gfxWinInit:
 	orr r2,r2,r2,lsl#16			;@ Also WIN1V
 	str r2,[r0,#REG_WIN0V]
 
-	ldr r3,=0x002C0000			;@ WinIN0/1, BG0, BG1, SPR & BLEND inside Win0
+	ldr r3,=0x002C0004			;@ WinIN0/1, BG0, BG1, SPR & BLEND inside Win0
 	str r3,[r0,#REG_WININ]		;@ WinOUT, Only BG2, BG3 & BLEND enabled outside Windows.
 
 	ldr lr,=WININOUTBUFF1
@@ -155,13 +160,14 @@ gfxWinLoop:						;@ 3 buffers
 ;@----------------------------------------------------------------------------
 monoPalInit:
 	.type monoPalInit STT_FUNC
-;@ Called by ui.c:  void monoPalInit(gammaVal, contrast);
+;@ Called by ui.c:  void monoPalInit(gammaVal, contrast, brightness);
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r8,lr}
+	stmfd sp!,{r4-r9,lr}
 	mov r8,#30
 	rsb r1,r1,#4
 	mul r8,r1,r8
 	mov r1,r0					;@ Gamma value = 0 -> 4
+	mov r9,r2
 	ldr spxptr,=sphinx0
 	ldr r0,=gSOC
 	ldrb r0,[r0]
@@ -190,7 +196,7 @@ monoPalLoop:
 	subs r4,r4,#1
 	bne monoPalLoop
 
-	ldmfd sp!,{r4-r8,lr}
+	ldmfd sp!,{r4-r9,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 monoPalettes:
@@ -238,12 +244,13 @@ monoPalettes:
 ;@----------------------------------------------------------------------------
 paletteInit:		;@ r0-r3 modified.
 	.type paletteInit STT_FUNC
-;@ Called by ui.c:  void paletteInit(gammaVal, contrast);
+;@ Called by ui.c:  void paletteInit(gammaVal, contrast, brightness);
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r8,lr}
+	stmfd sp!,{r4-r9,lr}
 	mov r8,#30
 	rsb r1,r1,#4
 	mul r8,r1,r8
+	mov r9,r2
 	mov r1,r0					;@ Gamma value = 0 -> 4
 	mov r7,#0xF					;@ mask
 	ldr r6,=MAPPED_RGB
@@ -266,7 +273,7 @@ noMap:							;@ Map 0000rrrrggggbbbb  ->  0bbbbbgggggrrrrr
 	subs r4,r4,#2
 	bpl noMap
 
-	ldmfd sp!,{r4-r8,lr}
+	ldmfd sp!,{r4-r9,lr}
 	bx lr
 
 ;@----------------------------------------------------------------------------
@@ -275,7 +282,14 @@ gPrefix:
 cPrefix:
 	mov r2,r8
 ;@----------------------------------------------------------------------------
-contrastConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4), contrast in r2(0-255) returns new value in r0=0x1F
+brightConvert:	;@ Takes value in r0(0-0xFF), brightness in r9(-255 -> 255),returns new value in r0=0xFF
+;@----------------------------------------------------------------------------
+	adds r0,r0,r9
+	movmi r0,#0
+	cmp r0,#0xFF
+	movpl r0,#0xFF
+;@----------------------------------------------------------------------------
+contrastConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4), contrast in r2(0-255) returns new value in r0=0xFF
 ;@----------------------------------------------------------------------------
 	rsb r3,r2,#256
 	mul r0,r3,r0
@@ -306,8 +320,9 @@ paletteTx:					;@ r0=destination, spxptr=Sphinx
 	ldr r1,=MAPPED_RGB
 	ldr r2,=0x1FFE
 	stmfd sp!,{r4-r8,lr}
+	ldr r8,[spxptr,#wsvDefaultBgCol]	;@ Used when LCD off
 	mov r5,#0
-	ldrb r3,[spxptr,#wsvBgColor]	;@ Background palette
+	ldrb r3,[spxptr,#wsvBgColor];@ Background color
 	ldrb r7,[spxptr,#wsvVideoMode]
 	tst r7,#0x80				;@ Color mode?
 	beq bnwTx
@@ -315,9 +330,10 @@ paletteTx:					;@ r0=destination, spxptr=Sphinx
 	ldr r4,[spxptr,#paletteRAM]
 	mov r3,r3,lsl#1
 	ldrh r3,[r4,r3]
-	and r3,r2,r3,lsl#1
-	ldrh r3,[r1,r3]
-	strh r3,[r0]				;@ Background palette
+	movs r8,r8,lsl#1			;@ LCD on?
+	andcs r8,r2,r3,lsl#1
+	ldrh r3,[r1,r8]
+	strh r3,[r0]				;@ Background color
 	tst r7,#0x40				;@ 4bitplane mode?
 	beq col4Tx
 	add r6,r0,#0x100			;@ Sprite pal ofs - r5
@@ -342,7 +358,7 @@ col4TxLoop:
 	ldrh r3,[r4,r5]
 	and r3,r2,r3,lsl#1
 	ldrh r3,[r1,r3]
-	cmp r5,#0x00
+	tst r5,#0x1E
 	strhne r3,[r0]				;@ Background palette
 	strh r3,[r0,#0x8]			;@ Opaque tiles palette
 	cmp r5,#0x100
@@ -372,8 +388,10 @@ bnwTx:
 	ldrb r3,[r7,r3,lsr#1]
 	andeq r3,r2,r3,lsl#1
 	andne r3,r2,r3,lsr#3
+	mvns r8,r8,lsl#1			;@ LCD on?
+	andcc r3,r2,r8
 	ldrh r3,[r1,r3]
-	strh r3,[r0]				;@ Background palette
+	strh r3,[r0]				;@ Background color
 bnwTxLoop2:
 	ldrh r6,[r4],#2
 bnwTxLoop:
@@ -385,7 +403,7 @@ bnwTxLoop:
 	andne r3,r2,r3,lsr#3
 	ldrh r3,[r1,r3]
 
-	cmp r5,#0x0
+	tst r5,#0x1E
 	strhne r3,[r0]				;@ Background palette
 	strh r3,[r0,#0x8]			;@ Opaque tiles palette
 	cmp r5,#0x100
@@ -404,6 +422,53 @@ bnwTxLoop:
 
 	ldmfd sp!,{r4-r8,lr}
 	bx lr
+
+;@----------------------------------------------------------------------------
+shutDownLCD:
+	.type shutDownLCD STT_FUNC
+;@----------------------------------------------------------------------------
+	ldr r0,=gMachine
+	ldrb r0,[r0]
+	cmp r0,#HW_WONDERSWANCOLOR
+	beq doColorShutDown
+	cmp r0,#HW_SWANCRYSTAL
+	bxne lr
+	stmfd sp!,{lr}
+	ldr r0,=gGammaValue
+	ldrb r0,[r0]
+	ldr r1,=gContrastValue
+	ldrb r1,[r1]
+	ldr r2,whiteOut
+	add r3,r2,#1
+	cmp r3,#0xFF
+	movcs r3,#0xFF
+	str r3,whiteOut
+	stmfd sp!,{r0-r2}
+	bl paletteInit
+	ldmfd sp!,{r0-r2}
+	bl monoPalInit
+	bl paletteTxAll				;@ Make new palette visible
+	ldmfd sp!,{lr}
+	bx lr
+
+doColorShutDown:
+	stmfd sp!,{lr}
+	ldr r0,=gGammaValue
+	ldrb r0,[r0]
+	ldr r1,=gContrastValue
+	ldrb r1,[r1]
+	ldr r2,whiteOut
+	sub r3,r2,#2
+	cmp r3,#-0xFF
+	movmi r3,#-0xFF
+	str r3,whiteOut
+	cmp r2,#-0xD0
+	movpl r2,#0
+	bl monoPalInit
+	bl setupEmuBorderPalette	;@ Make new palette visible
+	ldmfd sp!,{lr}
+	bx lr
+
 ;@----------------------------------------------------------------------------
 updateLCDRefresh:
 	.type updateLCDRefresh STT_FUNC
@@ -690,15 +755,20 @@ setSerialByteIn:
 	adr spxptr,sphinx0
 	b wsvSetSerialByteIn
 ;@----------------------------------------------------------------------------
+setInterruptExternal:		;@ r0=irq state
+;@----------------------------------------------------------------------------
+	adr spxptr,sphinx0
+	b wsvSetInterruptExternal
+;@----------------------------------------------------------------------------
 getInterruptVector:
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvGetInterruptVector
 ;@----------------------------------------------------------------------------
-setInterruptExternal:		;@ r0=irq state
+setBusStatus:
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
-	b wsvSetInterruptExternal
+	b wsvHandleHalt
 ;@----------------------------------------------------------------------------
 setPowerOff:
 	.type setPowerOff STT_FUNC
@@ -711,6 +781,7 @@ sphinx0:
 
 gfxState:
 	.long 0
+whiteOut:
 	.long 0
 	.long 0,0
 lcdSkip:
