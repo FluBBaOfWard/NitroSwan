@@ -733,6 +733,7 @@ v30WritePort16:
 	b wsvWrite16
 ;@----------------------------------------------------------------------------
 pushVolumeButton:
+	.type pushVolumeButton STT_FUNC
 ;@----------------------------------------------------------------------------
 	adr spxptr,sphinx0
 	b wsvPushVolumeButton

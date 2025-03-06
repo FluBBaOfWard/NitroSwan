@@ -1,7 +1,7 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.6.8 - 2025-03-05 (FluBBa)
+V0.6.8 - 2025-03-06 (FluBBa)
 	Added support for uploading any file to WonderWitch.
 	Fixed sound output control (0x91) register.
 	Fixed latched icons (0x1A) register.

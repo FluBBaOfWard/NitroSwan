@@ -13,8 +13,9 @@
 #include "cpu.h"
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
+#include "SCBottom.h"
 
-#define EMUVERSION "V0.6.8 2025-03-05"
+#define EMUVERSION "V0.6.8 2025-03-06"
 
 void hacksInit(void);
 
@@ -199,6 +200,10 @@ void quickSelectGame(void) {
 }
 
 void uiNullNormal() {
+	if (gMachine == HW_SWANCRYSTAL) {
+		setupCompressedBackground(SCBottomTiles, SCBottomMap, 0);
+		memcpy(BG_PALETTE_SUB+0x80, SCBottomPal, SCBottomPalLen);
+	}
 	uiNullDefault();
 }
 
@@ -355,8 +360,14 @@ void nullUIWSC(int keyHit) {
 		if ( ypos > 8 ) {
 			openMenu();
 		}
-		else if (ypos < 8 && xpos > 30 && xpos < 36) { // Power button
-			if (keyHit & KEY_TOUCH) {
+		else if (xpos > 16 && xpos < 25) { // Start button
+			EMUinput |= KEY_START;
+		}
+		else if (keyHit & KEY_TOUCH) {
+			if (xpos > 6 && xpos < 14) { // Sound button
+				pushVolumeButton();
+			}
+			else if (xpos > 30 && xpos < 36) { // Power button
 				if (powerIsOn) {
 					setPowerOff();
 					gfxRefresh();

@@ -1,0 +1,12 @@
+
+# output 4bit tiles
+-gB 4
+
+# use lz77 compression
+-gzl
+
+# map output, lz77 compression
+-mzl
+
+# standard 4bpp tilereduction
+-mR4
