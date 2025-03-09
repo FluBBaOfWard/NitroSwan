@@ -5,33 +5,9 @@
 #include "WSEEPROM/WSEEPROM.i"
 #include "Shared/EmuMenu.i"
 
-#define WS_KEY_START	(1<<1)
-#define WS_KEY_A		(1<<2)
-#define WS_KEY_B		(1<<3)
-#define WS_KEY_X1		(1<<4)
-#define WS_KEY_X2		(1<<5)
-#define WS_KEY_X3		(1<<6)
-#define WS_KEY_X4		(1<<7)
-#define WS_KEY_Y1		(1<<8)
-#define WS_KEY_Y2		(1<<9)
-#define WS_KEY_Y3		(1<<10)
-#define WS_KEY_Y4		(1<<11)
-#define WS_KEY_SOUND	(1<<16)
-
-#define PCV2_KEY_LEFT	(1<<0)
-#define PCV2_KEY_DOWN	(1<<2)
-#define PCV2_KEY_UP		(1<<3)
-#define PCV2_KEY_VIEW	(1<<4)
-#define PCV2_KEY_ESCAPE	(1<<6)
-#define PCV2_KEY_RIGHT	(1<<7)
-#define PCV2_KEY_CLEAR	(1<<8)
-#define PCV2_KEY_CIRCLE	(1<<10)
-#define PCV2_KEY_PASS	(1<<11)
-
 	.global joyCfg
 	.global EMUinput
 	.global joyMapping
-	.global joy0State
 	.global wsEepromMem
 	.global wscEepromMem
 	.global scEepromMem
@@ -44,7 +20,6 @@
 	.global ioLoadState
 	.global ioGetStateSize
 	.global updateSlowIO
-	.global IOPortA_R
 	.global setJoyMapping
 
 	.global intEepromSetSize
@@ -122,7 +97,7 @@ ioGetStateSize:				;@ Out r0=state size.
 	mov r0,#0x100
 	bx lr
 ;@----------------------------------------------------------------------------
-convertInput:			;@ Convert from device keys to target r0=input/output
+convertInput:			;@ Convert from device keys to target, r0=input/output
 	.type convertInput STT_FUNC
 ;@----------------------------------------------------------------------------
 	mvn r1,r0
@@ -171,8 +146,8 @@ joyDefaultMap:
 	andeq r1,r3,#KEY_A|KEY_B
 	orr r0,r0,r1,lsl#2
 
-	str r0,joy0State
-	bx lr
+	ldr spxptr,=sphinx0
+	b wsvSetJoyState
 ;@----------------------------------------------------------------------------
 joyAlternateMap:
 ;@----------------------------------------------------------------------------
@@ -194,8 +169,8 @@ joyAlternateMap:
 	tst r4,#KEY_B				;@ NDS B
 	orrne r0,r0,#WS_KEY_B		;@ WS B
 
-	str r0,joy0State
-	bx lr
+	ldr spxptr,=sphinx0
+	b wsvSetJoyState
 ;@----------------------------------------------------------------------------
 verticalJoypad:
 ;@----------------------------------------------------------------------------
@@ -213,8 +188,8 @@ verticalJoypad:
 	ldrb r1,[r2,r1]
 	orr r0,r0,r1,lsl#4
 
-	str r0,joy0State
-	bx lr
+	ldr spxptr,=sphinx0
+	b wsvSetJoyState
 ;@----------------------------------------------------------------------------
 pcv2Joypad:
 ;@----------------------------------------------------------------------------
@@ -232,8 +207,8 @@ pcv2Joypad:
 	ldr r1,=0x2222
 	orr r0,r0,r1
 
-	str r0,joy0State
-	bx lr
+	ldr spxptr,=sphinx0
+	b wsvSetJoyState
 ;@----------------------------------------------------------------------------
 joyHandler:	.long joyDefaultMap
 menuOpener:	.long KEY_L|KEY_R
@@ -253,25 +228,6 @@ EMUinput:	.long 0				;@ This label here for Main.c to use
 
 joyMapping:	.byte 0
 	.byte 0,0,0
-;@----------------------------------------------------------------------------
-IOPortA_R:					;@ Player1...
-;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
-	ldrb r1,[spxptr,#wsvControls]
-	and r1,r1,#0x70
-	ldr r0,joy0State
-	tst r1,#0x10				;@ Y keys enabled?
-	biceq r0,r0,#0xF00
-	tst r1,#0x20				;@ X keys enabled?
-	biceq r0,r0,#0x0F0
-	tst r1,#0x40				;@ Buttons enabled?
-	biceq r0,r0,#0x00F
-	orr r0,r0,r0,lsr#8
-	orr r0,r0,r0,lsr#4
-	and r0,r0,#0x0F
-	orr r0,r0,r1
-
-	bx lr
 
 ;@----------------------------------------------------------------------------
 updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.

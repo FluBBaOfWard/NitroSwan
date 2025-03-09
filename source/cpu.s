@@ -40,16 +40,6 @@ run:						;@ Return after X frame(s)
 ;@----------------------------------------------------------------------------
 runStart:
 ;@----------------------------------------------------------------------------
-	ldr r0,=joy0State
-	ldr r0,[r0]
-	ldr r1,joyClick
-	eor r1,r1,r0
-	and r1,r1,r0
-	str r0,joyClick
-
-	tst r1,#0x10000				;@ WS Sound?
-	blne pushVolumeButton
-
 	bl refreshEMUjoypads
 
 	ldr v30ptr,=V30OpTable
