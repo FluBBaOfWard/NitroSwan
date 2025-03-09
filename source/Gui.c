@@ -13,12 +13,15 @@
 #include "cpu.h"
 #include "ARMV30MZ/Version.h"
 #include "Sphinx/Version.h"
+#include "WSBottom.h"
+#include "WSCBottom.h"
 #include "SCBottom.h"
 
-#define EMUVERSION "V0.6.8 2025-03-06"
+#define EMUVERSION "V0.6.8 2025-03-09"
 
 void hacksInit(void);
 
+static void nullUIWS(int key);
 static void nullUIWSC(int key);
 
 static void gammaChange(void);
@@ -200,7 +203,15 @@ void quickSelectGame(void) {
 }
 
 void uiNullNormal() {
-	if (gMachine == HW_SWANCRYSTAL) {
+	if (gMachine == HW_WONDERSWAN) {
+		setupCompressedBackground(WSBottomTiles, WSBottomMap, 0);
+		memcpy(BG_PALETTE_SUB+0x80, WSBottomPal, WSBottomPalLen);
+	}
+	else if (gMachine == HW_WONDERSWANCOLOR) {
+		setupCompressedBackground(WSCBottomTiles, WSCBottomMap, 0);
+		memcpy(BG_PALETTE_SUB+0x80, WSCBottomPal, WSCBottomPalLen);
+	}
+	else if (gMachine == HW_SWANCRYSTAL) {
 		setupCompressedBackground(SCBottomTiles, SCBottomMap, 0);
 		memcpy(BG_PALETTE_SUB+0x80, SCBottomPal, SCBottomPalLen);
 	}
@@ -241,7 +252,7 @@ void ui12() {
 void nullUINormal(int key) {
 	switch (gMachine) {
 		case HW_WONDERSWAN:
-			nullUIWSC(key);
+			nullUIWS(key);
 			break;
 		case HW_WONDERSWANCOLOR:
 			nullUIWSC(key);
@@ -351,7 +362,58 @@ void debugCrashInstruction() {
 }
 
 //---------------------------------------------------------------------------------
+void nullUIWS(int keyHit) {
+	if (EMUinput & KEY_TOUCH) {
+		touchPosition myTouch;
+		touchRead(&myTouch);
+		int xpos = (myTouch.px>>2);
+		int ypos = (myTouch.py>>2);
+		if ( ypos > 8 ) {
+			openMenu();
+		}
+		else if (xpos > 20 && xpos < 29) { // Start button
+			EMUinput |= KEY_START;
+		}
+		else if (keyHit & KEY_TOUCH) {
+			if (xpos > 9 && xpos < 19) { // Sound button
+				pushVolumeButton();
+			}
+		}
+	}
+}
+
+//---------------------------------------------------------------------------------
 void nullUIWSC(int keyHit) {
+	if (EMUinput & KEY_TOUCH) {
+		touchPosition myTouch;
+		touchRead(&myTouch);
+		int xpos = (myTouch.px>>2);
+		int ypos = (myTouch.py>>2);
+		if ( ypos > 8 ) {
+			openMenu();
+		}
+		else if (xpos > 16 && xpos < 24) { // Start button
+			EMUinput |= KEY_START;
+		}
+		else if (keyHit & KEY_TOUCH) {
+			if (xpos > 6 && xpos < 14) { // Sound button
+				pushVolumeButton();
+			}
+			else if (xpos > 27 && xpos < 35) { // Power button
+				if (powerIsOn) {
+					setPowerOff();
+					gfxRefresh();
+				}
+				else {
+					resetGame();
+				}
+			}
+		}
+	}
+}
+
+//---------------------------------------------------------------------------------
+void nullUISC(int keyHit) {
 	if (EMUinput & KEY_TOUCH) {
 		touchPosition myTouch;
 		touchRead(&myTouch);

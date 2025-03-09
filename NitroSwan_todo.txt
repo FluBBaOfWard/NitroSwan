@@ -11,7 +11,6 @@ NitroSwan Todo
 	Add cache for 16MB extra area on 3DS.
 	Fix better sound? Update twice per raster row.
 	Map serial port to debug out. Test!
-	Graphics on menu screen?
 	Find speed hacks.
 	Change cpuReadMem20(W) to return value in r1 instead of r0?
 	Handle Sprite Window some how.
