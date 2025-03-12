@@ -106,7 +106,7 @@ convertInput:			;@ Convert from device keys to target, r0=input/output
 	orreq r0,r0,#KEY_OPEN_MENU
 	bx lr
 ;@----------------------------------------------------------------------------
-refreshEMUjoypads:			;@ Call every frame
+refreshEMUjoypads:			;@ Call every frame with r10=v30ptr
 ;@----------------------------------------------------------------------------
 	ldr r4,EMUinput
 	and r0,r4,#0xf0

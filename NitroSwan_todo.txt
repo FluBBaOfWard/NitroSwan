@@ -1,6 +1,5 @@
 NitroSwan Todo
 
-	Add support for Pad IRQ, make test.
 	Move cart stuff to its own repo/folder.
 	Fix RTC:
 		Corrected values when setting out of range values.

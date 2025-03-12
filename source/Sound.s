@@ -116,7 +116,7 @@ sndCpyIntLoop:
 	add r2,r2,r2,lsr#16
 	and r2,r2,#0xFF00
 mix8Vol:
-	mov r2,r2,lsr#0				;@ Volume button shift, updated by setTotalVolume
+	mov r2,r2,lsr#0				;@ Volume button shift, updated by wsaSetTotalVolume
 	eor r2,r2,#0x8000
 	orr r2,r2,r2,lsl#16
 	strpl r2,[r1],#4

@@ -105,6 +105,16 @@ gfxReset:					;@ Called with CPU reset
 	ldr r3,=handleSerialReceive
 	str r3,[spxptr,#txFunction]
 
+	ldr r0,=cartOrientation
+	ldrb r0,[r0]
+	strb r0,[spxptr,#wsvOrientation]
+
+	ldr r0,=gRomSize
+	ldr r0,[r0]
+	cmp r0,#0
+	movne r0,#1
+	bl wsvSetCartOk
+
 	ldr r4,=gGammaValue
 	ldr r5,=gContrastValue
 	ldrb r4,[r4]
@@ -118,11 +128,6 @@ gfxReset:					;@ Called with CPU reset
 	mov r2,#0
 	bl monoPalInit				;@ Do mono palette mapping
 	bl paletteTxAll				;@ Transfer it
-
-	ldr r0,=cartOrientation
-	ldr spxptr,=sphinx0
-	ldrb r0,[r0]
-	strb r0,[spxptr,#wsvOrientation]
 
 	ldr r0,=emuSettings
 	ldr r0,[r0]
@@ -652,7 +657,7 @@ gfxEndFrame:				;@ Called just after screen end (line 144)	(r0-r3 safe to use)
 	stmfd sp!,{r4-r8,lr}
 
 	ldr r0,tmpScroll			;@ Destination
-	bl copyScrollValues
+	bl wsvCopyScrollValues
 	ldr r0,tmpWinInOut			;@ Destination
 	bl copyWindowValues
 	ldr r0,tmpOamBuffer			;@ Destination

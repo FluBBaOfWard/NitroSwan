@@ -40,9 +40,10 @@ run:						;@ Return after X frame(s)
 ;@----------------------------------------------------------------------------
 runStart:
 ;@----------------------------------------------------------------------------
+	ldr v30ptr,=V30OpTable
+
 	bl refreshEMUjoypads
 
-	ldr v30ptr,=V30OpTable
 	add r1,v30ptr,#v30PrefixBase
 	ldmia r1,{v30csr-v30cyc}	;@ Restore V30MZ state
 

@@ -70,16 +70,19 @@ ROM_Space:
 //	.incbin "wsroms/WSCpuTest.wsc"
 //	.incbin "wsroms/XI Little (Japan).wsc"
 ROM_SpaceEnd:
-#endif
 WS_BIOS_INTERNAL:
 	.incbin "wsroms/boot.rom"
-//	.incbin "wsroms/ws_irom.bin"
+WSC_BIOS_INTERNAL:
+	.incbin "wsroms/boot1.rom"
+SC_BIOS_INTERNAL:
+	.incbin "wsroms/boot2.rom"
+#else
+WS_BIOS_INTERNAL:
+	.incbin "wsroms/ws_irom.bin"
 WSC_BIOS_INTERNAL:
 SC_BIOS_INTERNAL:
-	.incbin "wsroms/boot1.rom"
-//	.incbin "wsroms/boot2.rom"
-//	.incbin "wsroms/wc_irom.bin"
-//	.incbin "wsroms/wsc_irom.bin"
+	.incbin "wsroms/wc_irom.bin"
+#endif
 
 	.align 2
 ;@----------------------------------------------------------------------------
