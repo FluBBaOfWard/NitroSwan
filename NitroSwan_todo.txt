@@ -11,6 +11,7 @@ NitroSwan Todo
 	Fix better sound? Update twice per raster row.
 	Map serial port to debug out. Test!
 	Find speed hacks.
+	Run mono games in 4 color mode?
 	Change cpuReadMem20(W) to return value in r1 instead of r0?
 	Handle Sprite Window some how.
 	Sprite priority can't be fixed.
