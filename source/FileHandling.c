@@ -18,6 +18,7 @@
 #include "Memory.h"
 #include "InternalEEPROM.h"
 #include "WonderWitch.h"
+#include "WSCart/WSCart.h"
 
 extern u8 flashMemChanged;		// From FlashMemory.s
 

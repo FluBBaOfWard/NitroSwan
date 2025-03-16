@@ -29,9 +29,9 @@ SOURCES		:=	source	\
 				source/Shared/Unzip \
 				source/ARMV30MZ \
 				source/Sphinx \
+				source/WSCart \
 				source/WSEEPROM \
-				source/WSRTC \
-				source/WSAudio
+				source/WSRTC
 DATA		:=	data
 INCLUDES	:=	include
 GRAPHICS	:=	source/Shared/graphics \

@@ -13,3 +13,6 @@ url=https://github.com/FluBBaOfWard/Sphinx.git
 [submodule "source/WSRTC"]
 	path = source/WSRTC
 	url = https://github.com/FluBBaOfWard/WSRTC.git
+[submodule "source/WSCart"]
+	path = source/WSCart
+	url = https://github.com/FluBBaOfWard/WSCart.git

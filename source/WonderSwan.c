@@ -10,6 +10,7 @@
 #include "Cart.h"
 #include "Gfx.h"
 #include "ARMV30MZ/ARMV30MZ.h"
+#include "WSCart/WSCart.h"
 
 
 int packState(void *statePtr) {

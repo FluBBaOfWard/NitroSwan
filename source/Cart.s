@@ -7,7 +7,6 @@
 #include "Sphinx/Sphinx.i"
 #include "ARMV30MZ/ARMV30MZ.i"
 
-	.global cartFlags
 	.global romSpacePtr
 	.global allocatedRomMem
 	.global biosBase
@@ -19,9 +18,7 @@
 	.global g_BIOSBASE_CRYSTAL
 	.global wsRAM
 	.global DIRTYTILES
-	.global wsSRAM
 	.global extEeprom
-	.global extEepromMem
 	.global sramSize
 	.global eepromSize
 	.global gRomSize
@@ -31,7 +28,6 @@
 	.global gGameHeader
 	.global gGameID
 	.global cartOrientation
-	.global gConfig
 	.global gMachineSet
 	.global gMachine
 	.global gSOC
@@ -589,6 +585,7 @@ cartRtcReset:
 	b wsRtcSetDateTime
 ;@----------------------------------------------------------------------------
 cartUpdate:				;@ r0=rtcptr, number of 384KHz clocks.
+cartUpdate:				;@ r0=number of 384KHz clocks.
 ;@----------------------------------------------------------------------------
 	ldrb r0,rtcPresent
 	cmp r0,#0
@@ -634,10 +631,8 @@ emuFlags:
 //scaling:
 	.byte 0						;@ (display type)
 	.byte 0,0					;@ (sprite follow val)
-cartFlags:
-	.byte 0 					;@ cartflags
-gConfig:
-	.byte 0						;@ Config, bit 7=BIOS on/off
+	.byte 0
+	.byte 0
 gMachineSet:
 	.byte HW_AUTO
 gMachine:
@@ -897,20 +892,12 @@ wsRAM:
 	.space 0x10000
 DIRTYTILES:
 	.space 0x800
-wsSRAM:
-#ifdef GBA
-	.space 0x10000				;@ For the GBA
-#else
-	.space 0x40000
-#endif
 biosSpace:
 	.space 0x1000
 biosSpaceColor:
 	.space 0x2000
 biosSpaceCrystal:
 	.space 0x2000
-extEepromMem:
-	.space 0x800
 ;@----------------------------------------------------------------------------
 	.end
 #endif // #ifdef __arm__

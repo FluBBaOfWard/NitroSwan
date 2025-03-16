@@ -15,7 +15,6 @@
 		9C19569F276F4E340044B938 /* ARMV30MZ.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = ARMV30MZ.s; sourceTree = "<group>"; };
 		9C1956A0276F5B9C0044B938 /* ARMV30MZmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMV30MZmac.h; sourceTree = "<group>"; };
 		9C1FFFA72684A277005851ED /* EmuSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuSettings.h; sourceTree = "<group>"; };
-		9C22442A2C6BDF09000B05C3 /* FlashMemory.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = FlashMemory.s; sourceTree = "<group>"; };
 		9C22442C2C70C17C000B05C3 /* wsrtc01.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wsrtc01.txt; sourceTree = "<group>"; };
 		9C2244312C7214EF000B05C3 /* WonderWitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WonderWitch.h; sourceTree = "<group>"; };
 		9C2244322C7214EF000B05C3 /* WonderWitch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = WonderWitch.c; sourceTree = "<group>"; };
@@ -54,7 +53,6 @@
 		9C50821025D45A9B00A8E1BA /* Gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gui.h; sourceTree = "<group>"; };
 		9C50821125D45A9B00A8E1BA /* Gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gfx.h; sourceTree = "<group>"; };
 		9C6CC0EB2AE3D95F00E5EEC3 /* EmuMenu.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = EmuMenu.i; sourceTree = "<group>"; };
-		9C715145265645DD0084BE99 /* WSHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSHeader.h; sourceTree = "<group>"; };
 		9C715146265661CE0084BE99 /* Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Memory.h; sourceTree = "<group>"; };
 		9C7BB94A25FCD73C00EA9C9C /* EmuFont.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = EmuFont.grit; sourceTree = "<group>"; };
 		9C7BB94B25FCD73C00EA9C9C /* EmuFont.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EmuFont.png; sourceTree = "<group>"; };
@@ -91,6 +89,13 @@
 		9CC013FC2668FDD9005714F7 /* Emubase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Emubase.h; sourceTree = "<group>"; };
 		9CC4FA7028A9131C00976B02 /* PCV2Border.grit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PCV2Border.grit; sourceTree = "<group>"; };
 		9CC4FA7128A9131C00976B02 /* PCV2Border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PCV2Border.png; sourceTree = "<group>"; };
+		9CD0814E2D8701BD0072CDB1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9CD081502D8701EE0072CDB1 /* History.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
+		9CD081512D8701EE0072CDB1 /* Version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
+		9CD081522D8704380072CDB1 /* WSCart.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = WSCart.s; sourceTree = "<group>"; };
+		9CD081532D8716650072CDB1 /* WSCart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WSCart.h; sourceTree = "<group>"; };
+		9CD081542D8716BE0072CDB1 /* WSHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WSHeader.h; sourceTree = "<group>"; };
+		9CD081552D87261E0072CDB1 /* FlashMemory.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = FlashMemory.s; sourceTree = "<group>"; };
 		9CED081727BD8E4200EA127A /* WSCBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WSCBorder.png; sourceTree = "<group>"; };
 		9CED081827BD8E4200EA127A /* WSCBorder.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WSCBorder.grit; sourceTree = "<group>"; };
 		A47F092B20863AF5004E1DA6 /* EmuMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuMenu.h; sourceTree = "<group>"; };
@@ -222,6 +227,20 @@
 			path = Sphinx;
 			sourceTree = "<group>";
 		};
+		9CD0814F2D8701BD0072CDB1 /* WSCart */ = {
+			isa = PBXGroup;
+			children = (
+				9CD0814E2D8701BD0072CDB1 /* README.md */,
+				9CD081502D8701EE0072CDB1 /* History.txt */,
+				9CD081512D8701EE0072CDB1 /* Version.h */,
+				9CD081532D8716650072CDB1 /* WSCart.h */,
+				9CD081522D8704380072CDB1 /* WSCart.s */,
+				9CD081542D8716BE0072CDB1 /* WSHeader.h */,
+				9CD081552D87261E0072CDB1 /* FlashMemory.s */,
+			);
+			path = WSCart;
+			sourceTree = "<group>";
+		};
 		A42D0269205FEC6E00515C72 /* Docs */ = {
 			isa = PBXGroup;
 			children = (
@@ -262,6 +281,7 @@
 			children = (
 				9C4EB1C6271CB2E10072D38E /* ARMV30MZ */,
 				9CAB1A0C274D4C0C00182F62 /* Sphinx */,
+				9CD0814F2D8701BD0072CDB1 /* WSCart */,
 				9C8347DC27B6D6FD004106B0 /* WSEEPROM */,
 				9C8347E427B800C2004106B0 /* WSRTC */,
 				A47F092A20863AF5004E1DA6 /* Shared */,
@@ -276,7 +296,6 @@
 				9C4EB1C4271CB16A0072D38E /* WonderSwan.c */,
 				9C2244312C7214EF000B05C3 /* WonderWitch.h */,
 				9C2244322C7214EF000B05C3 /* WonderWitch.c */,
-				9C715145265645DD0084BE99 /* WSHeader.h */,
 				9CA52588273D7F3C0022BAD7 /* InternalEEPROM.h */,
 				9C50820525D45A9A00A8E1BA /* Cart.h */,
 				9C50820F25D45A9B00A8E1BA /* Cart.s */,
@@ -290,7 +309,6 @@
 				9C50820825D45A9A00A8E1BA /* Gfx.s */,
 				9C715146265661CE0084BE99 /* Memory.h */,
 				9C50820E25D45A9B00A8E1BA /* Memory.s */,
-				9C22442A2C6BDF09000B05C3 /* FlashMemory.s */,
 				9C8347E327B7AD70004106B0 /* SpeedHacks.s */,
 			);
 			path = source;

@@ -6,12 +6,11 @@ extern "C" {
 #endif
 
 #include "WSEEPROM/WSEEPROM.h"
-#include "WSHeader.h"
+#include "WSCart/WSHeader.h"
 
 extern u32 gRomSize;
 extern u32 maxRomSize;
 extern u32 allocatedRomMemSize;
-extern u8 gConfig;
 extern u8 gMachine;
 extern u8 gMachineSet;
 extern u8 gSOC;
@@ -23,8 +22,6 @@ extern const int eepromSize;
 extern WSEEPROM extEeprom;
 
 extern u8 wsRAM[0x10000];
-extern u8 wsSRAM[0x8000];
-extern u8 extEepromMem[0x800];
 extern u8 biosSpace[0x1000];
 extern u8 biosSpaceColor[0x2000];
 extern u8 biosSpaceCrystal[0x2000];
