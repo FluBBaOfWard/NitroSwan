@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.7.1 - 2025-03-17 (FluBBa)
+	Fixed a regression in the noise.
+
 V0.7.0 - 2025-03-16 (FluBBa)
 	Added support for uploading any file to WonderWitch.
 	Added new menu graphics.
