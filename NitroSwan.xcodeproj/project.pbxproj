@@ -56,19 +56,7 @@
 		9C715146265661CE0084BE99 /* Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Memory.h; sourceTree = "<group>"; };
 		9C7BB94A25FCD73C00EA9C9C /* EmuFont.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = EmuFont.grit; sourceTree = "<group>"; };
 		9C7BB94B25FCD73C00EA9C9C /* EmuFont.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EmuFont.png; sourceTree = "<group>"; };
-		9C8347DD27B6D6FD004106B0 /* WSEEPROM.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = WSEEPROM.i; sourceTree = "<group>"; };
-		9C8347DE27B6D6FD004106B0 /* WSEEPROM.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = WSEEPROM.s; sourceTree = "<group>"; };
-		9C8347DF27B6D6FD004106B0 /* WSEEPROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSEEPROM.h; sourceTree = "<group>"; };
-		9C8347E027B6D6FD004106B0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		9C8347E127B6D97C004106B0 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
-		9C8347E227B6D97C004106B0 /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
 		9C8347E327B7AD70004106B0 /* SpeedHacks.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = SpeedHacks.s; sourceTree = "<group>"; };
-		9C8347E527B800C2004106B0 /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
-		9C8347E627B800C2004106B0 /* WSRTC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSRTC.h; sourceTree = "<group>"; };
-		9C8347E727B800C2004106B0 /* WSRTC.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = WSRTC.s; sourceTree = "<group>"; };
-		9C8347E827B800C2004106B0 /* WSRTC.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = WSRTC.i; sourceTree = "<group>"; };
-		9C8347E927B800C2004106B0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		9C8347EA27B800C2004106B0 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 		9C8F33EE248ACA2E00996E5A /* nds_asm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nds_asm.h; sourceTree = "<group>"; };
 		9CA52588273D7F3C0022BAD7 /* InternalEEPROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InternalEEPROM.h; sourceTree = "<group>"; };
 		9CA79D3F2D7A10CE00B3BE89 /* SCBottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SCBottom.png; sourceTree = "<group>"; };
@@ -96,6 +84,18 @@
 		9CD081532D8716650072CDB1 /* WSCart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WSCart.h; sourceTree = "<group>"; };
 		9CD081542D8716BE0072CDB1 /* WSHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WSHeader.h; sourceTree = "<group>"; };
 		9CD081552D87261E0072CDB1 /* FlashMemory.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = FlashMemory.s; sourceTree = "<group>"; };
+		9CD081662D89D1750072CDB1 /* History.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
+		9CD081672D89D1750072CDB1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9CD081682D89D1750072CDB1 /* Version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
+		9CD081692D89D1750072CDB1 /* WSRTC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WSRTC.h; sourceTree = "<group>"; };
+		9CD0816A2D89D1750072CDB1 /* WSRTC.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = WSRTC.i; sourceTree = "<group>"; };
+		9CD0816B2D89D1750072CDB1 /* WSRTC.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = WSRTC.s; sourceTree = "<group>"; };
+		9CD0816F2D89D70C0072CDB1 /* History.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
+		9CD081702D89D70C0072CDB1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9CD081712D89D70C0072CDB1 /* Version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
+		9CD081722D89D70C0072CDB1 /* WSEEPROM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WSEEPROM.h; sourceTree = "<group>"; };
+		9CD081732D89D70C0072CDB1 /* WSEEPROM.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = WSEEPROM.i; sourceTree = "<group>"; };
+		9CD081742D89D70C0072CDB1 /* WSEEPROM.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = WSEEPROM.s; sourceTree = "<group>"; };
 		9CED081727BD8E4200EA127A /* WSCBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WSCBorder.png; sourceTree = "<group>"; };
 		9CED081827BD8E4200EA127A /* WSCBorder.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WSCBorder.grit; sourceTree = "<group>"; };
 		A47F092B20863AF5004E1DA6 /* EmuMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuMenu.h; sourceTree = "<group>"; };
@@ -186,32 +186,6 @@
 			path = graphics;
 			sourceTree = "<group>";
 		};
-		9C8347DC27B6D6FD004106B0 /* WSEEPROM */ = {
-			isa = PBXGroup;
-			children = (
-				9C8347E027B6D6FD004106B0 /* README.md */,
-				9C8347E127B6D97C004106B0 /* History.txt */,
-				9C8347E227B6D97C004106B0 /* Version.h */,
-				9C8347DF27B6D6FD004106B0 /* WSEEPROM.h */,
-				9C8347DD27B6D6FD004106B0 /* WSEEPROM.i */,
-				9C8347DE27B6D6FD004106B0 /* WSEEPROM.s */,
-			);
-			path = WSEEPROM;
-			sourceTree = "<group>";
-		};
-		9C8347E427B800C2004106B0 /* WSRTC */ = {
-			isa = PBXGroup;
-			children = (
-				9C8347E927B800C2004106B0 /* README.md */,
-				9C8347EA27B800C2004106B0 /* History.txt */,
-				9C8347E527B800C2004106B0 /* Version.h */,
-				9C8347E627B800C2004106B0 /* WSRTC.h */,
-				9C8347E827B800C2004106B0 /* WSRTC.i */,
-				9C8347E727B800C2004106B0 /* WSRTC.s */,
-			);
-			path = WSRTC;
-			sourceTree = "<group>";
-		};
 		9CAB1A0C274D4C0C00182F62 /* Sphinx */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,6 +204,7 @@
 		9CD0814F2D8701BD0072CDB1 /* WSCart */ = {
 			isa = PBXGroup;
 			children = (
+				9CD0816C2D89D1750072CDB1 /* WSRTC */,
 				9CD0814E2D8701BD0072CDB1 /* README.md */,
 				9CD081502D8701EE0072CDB1 /* History.txt */,
 				9CD081512D8701EE0072CDB1 /* Version.h */,
@@ -239,6 +214,32 @@
 				9CD081552D87261E0072CDB1 /* FlashMemory.s */,
 			);
 			path = WSCart;
+			sourceTree = "<group>";
+		};
+		9CD0816C2D89D1750072CDB1 /* WSRTC */ = {
+			isa = PBXGroup;
+			children = (
+				9CD081672D89D1750072CDB1 /* README.md */,
+				9CD081662D89D1750072CDB1 /* History.txt */,
+				9CD081682D89D1750072CDB1 /* Version.h */,
+				9CD081692D89D1750072CDB1 /* WSRTC.h */,
+				9CD0816A2D89D1750072CDB1 /* WSRTC.i */,
+				9CD0816B2D89D1750072CDB1 /* WSRTC.s */,
+			);
+			path = WSRTC;
+			sourceTree = "<group>";
+		};
+		9CD081752D89D70C0072CDB1 /* WSEEPROM */ = {
+			isa = PBXGroup;
+			children = (
+				9CD081702D89D70C0072CDB1 /* README.md */,
+				9CD0816F2D89D70C0072CDB1 /* History.txt */,
+				9CD081712D89D70C0072CDB1 /* Version.h */,
+				9CD081722D89D70C0072CDB1 /* WSEEPROM.h */,
+				9CD081732D89D70C0072CDB1 /* WSEEPROM.i */,
+				9CD081742D89D70C0072CDB1 /* WSEEPROM.s */,
+			);
+			path = WSEEPROM;
 			sourceTree = "<group>";
 		};
 		A42D0269205FEC6E00515C72 /* Docs */ = {
@@ -282,8 +283,7 @@
 				9C4EB1C6271CB2E10072D38E /* ARMV30MZ */,
 				9CAB1A0C274D4C0C00182F62 /* Sphinx */,
 				9CD0814F2D8701BD0072CDB1 /* WSCart */,
-				9C8347DC27B6D6FD004106B0 /* WSEEPROM */,
-				9C8347E427B800C2004106B0 /* WSRTC */,
+				9CD081752D89D70C0072CDB1 /* WSEEPROM */,
 				A47F092A20863AF5004E1DA6 /* Shared */,
 				9CC013FC2668FDD9005714F7 /* Emubase.h */,
 				9C50820725D45A9A00A8E1BA /* Main.h */,

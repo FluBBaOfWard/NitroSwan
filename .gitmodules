@@ -6,13 +6,10 @@
 	url = https://github.com/FluBBaOfWard/ARMV30MZ.git
 [submodule "source/Sphinx"]
 	path = source/Sphinx
-url=https://github.com/FluBBaOfWard/Sphinx.git
-[submodule "source/WSEEPROM"]
-	path = source/WSEEPROM
-	url = https://github.com/FluBBaOfWard/WSEEPROM.git
-[submodule "source/WSRTC"]
-	path = source/WSRTC
-	url = https://github.com/FluBBaOfWard/WSRTC.git
+	url=https://github.com/FluBBaOfWard/Sphinx.git
 [submodule "source/WSCart"]
 	path = source/WSCart
 	url = https://github.com/FluBBaOfWard/WSCart.git
+[submodule "source/WSEEPROM"]
+	path = source/WSEEPROM
+	url = https://github.com/FluBBaOfWard/WSEEPROM.git

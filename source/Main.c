@@ -14,6 +14,7 @@
 #include "Gfx.h"
 #include "io.h"
 #include "Sound.h"
+#include "WSCart/WSCart.h"
 
 static void checkTimeOut(void);
 static void setupGraphics(void);
