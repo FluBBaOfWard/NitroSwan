@@ -240,12 +240,12 @@ void loadNVRAM() {
 
 	if (sramSize > 0) {
 		saveSize = sramSize;
-		nvMem = wsSRAM;
+		nvMem = cartSRAM;
 		setFileExtension(nvRamName, currentFilename, ".ram", sizeof(nvRamName));
 	}
 	else if (eepromSize > 0) {
 		saveSize = eepromSize;
-		nvMem = extEepromMem;
+		nvMem = cartEepromMem;
 		setFileExtension(nvRamName, currentFilename, ".eeprom", sizeof(nvRamName));
 	}
 	else {
@@ -309,12 +309,12 @@ void saveNVRAM() {
 
 	if (sramSize > 0) {
 		saveSize = sramSize;
-		nvMem = wsSRAM;
+		nvMem = cartSRAM;
 		setFileExtension(nvRamName, currentFilename, ".ram", sizeof(nvRamName));
 	}
 	else if (eepromSize > 0) {
 		saveSize = eepromSize;
-		nvMem = extEepromMem;
+		nvMem = cartEepromMem;
 		setFileExtension(nvRamName, currentFilename, ".eeprom", sizeof(nvRamName));
 	}
 	else {
@@ -350,14 +350,13 @@ int loadIntEeprom(const char *name, u8 *dest, int size) {
 	if ( (file = fopen(name, "r")) ) {
 		fread(dest, 1, size, file);
 		fclose(file);
+		infoOutput("Internal EEPROM loaded.");
+		return 0;
 	}
-	else {
-		infoOutput("Couldn't open file:");
-		infoOutput(name);
-		return 1;
-	}
-	infoOutput("Internal EEPROM loaded.");
-	return 0;
+
+	infoOutput("Couldn't open file:");
+	infoOutput(name);
+	return 1;
 }
 
 int saveIntEeprom(const char *name, u8 *source, int size) {
@@ -365,14 +364,13 @@ int saveIntEeprom(const char *name, u8 *source, int size) {
 	if ( (file = fopen(name, "w")) ) {
 		fwrite(source, 1, size, file);
 		fclose(file);
+		infoOutput("Internal EEPROM saved.");
+		return 0;
 	}
-	else {
-		infoOutput("Couldn't open file:");
-		infoOutput(name);
-		return 1;
-	}
-	infoOutput("Internal EEPROM saved.");
-	return 0;
+
+	infoOutput("Couldn't open file:");
+	infoOutput(name);
+	return 1;
 }
 
 static void initIntEepromWS(IntEEPROM *intProm) {

@@ -1,4 +1,4 @@
-# NitroSwan V0.7.1
+# NitroSwan V0.7.2
 
 <img align="right" width="220" src="./logo.png" alt="The WonderSwan logo" />
 
@@ -112,7 +112,7 @@ mapped to WS Y1-Y4. To open the menu use L+Select.
 ```text
 Dpad is mapped to up, down, left & right.
 L is mapped to Escape.
-R & X is mapped to View.
+R & X is mapped to Voice/View.
 A is mapped to Clear.
 B is mapped to Circle.
 Y is mapped to Pass.
@@ -150,7 +150,7 @@ Ed Mandy (Flavor) for WonderSwan info & flashcart. https://www.flashmasta.com
 Koyote for WonderSwan info.
 Alex Marshall (trap15) for WonderSwan info. http://daifukkat.su/docs/wsman/
 Guy Perfect for WonderSwan info http://perfectkiosk.net/stsws.html
-asie for info and inspiration.
+asie for info and inspiration. https://ws.nesdev.org/wiki/WSdev_Wiki
 Godzil for the boot rom stubs. https://github.com/Godzil/NewOswan
 lidnariq for RTC info.
 plasturion for some BnW palettes.

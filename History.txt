@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.7.2 - 2025-03-19 (FluBBa)
+	Fixed.
+
 V0.7.1 - 2025-03-17 (FluBBa)
 	Fixed a regression in the noise.
 

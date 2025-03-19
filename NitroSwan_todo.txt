@@ -1,6 +1,5 @@
 NitroSwan Todo
 
-	Move cart stuff to its own repo/folder.
 	Fix RTC:
 		Corrected values when setting out of range values.
 	Add support for timer and ADPCM on Karnak carts.
@@ -12,6 +11,7 @@ NitroSwan Todo
 	Map serial port to debug out. Test!
 	Find speed hacks.
 	Change cpuReadMem20(W) to return value in r1 instead of r0?
+		Use r3 as write-back register to begin with.
 	Run mono games in 4 color mode?
 	Handle Sprite Window some how.
 	Sprite priority can't be fixed.
@@ -46,6 +46,8 @@ Games Not Working Fixed:
 	Bakusou Dekotora Densetsu. Unzip craps out.
 	Chou Denki Card Game, crashes.
 		* Needs initialization, last item on first page.
+	ClockTower, doesn't start.
+		* Needs noise calculation even if ch4 noise is disabled.
 	Hanjuku Hero, crashes.
 		* Reads mapper register 0xC0 which was not reset correctly.
 	Kurupara, crashes. Crashes because of LineCompareIRQ on line 0.

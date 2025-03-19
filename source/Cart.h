@@ -5,8 +5,6 @@
 extern "C" {
 #endif
 
-#include "WSCart/WSHeader.h"
-
 extern u32 maxRomSize;
 extern u32 allocatedRomMemSize;
 extern u8 gMachine;
@@ -14,7 +12,6 @@ extern u8 gMachineSet;
 extern u8 gSOC;
 extern u8 gLang;
 extern u8 gPaletteBank;
-extern WsHeader *gGameHeader;
 
 extern u8 wsRAM[0x10000];
 extern u8 biosSpace[0x1000];
