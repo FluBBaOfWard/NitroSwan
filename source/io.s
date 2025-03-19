@@ -250,7 +250,10 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 	blne setLowBattery
 	ldmfd sp!,{r12,lr}
 
-	ldr r1,=384000				;@ 1 Second in cart clocks (cyc/8).
+	ldrb r0,[spxptr,#wsvTotalLines]
+	add r0,r0,#1
+	mov r0,r0,lsl#5				;@ 256/8=32.
+//	ldr r0,=384000				;@ 1 Second in cart clocks (3072000/8).
 	b cartUpdate
 
 ;@----------------------------------------------------------------------------

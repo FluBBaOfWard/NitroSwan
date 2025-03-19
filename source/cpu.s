@@ -84,13 +84,13 @@ wsFrameLoop3DS:
 	cmp r0,#0
 	cmpeq r1,#2
 	subsne r1,r1,#1
-	moveq r1,#199				;@ (159 * 75) / 60 = 198,75
+	moveq r1,#200				;@ (159 * 75.47) / 60 = 199.9955
 	str r1,scanLineCount3DS
 	bne wsFrameLoop3DS
 	b wsFrameLoopEnd
 ;@----------------------------------------------------------------------------
 v30MZCyclesPerScanline:	.long 0
-scanLineCount3DS:	.long 199
+scanLineCount3DS:	.long 200
 joyClick:			.long 0
 waitCountIn:		.byte 0
 waitMaskIn:			.byte 0
