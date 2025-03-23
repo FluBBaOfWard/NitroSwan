@@ -234,9 +234,11 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 ;@----------------------------------------------------------------------------
 	ldrb r0,slowTimer
 	subs r0,r0,#1
-	movmi r0,#74
+	strbhi r0,slowTimer
+	bxhi lr
+	ldr r0,=fpsTarget
+	ldrb r0,[r0]
 	strb r0,slowTimer
-	bxpl lr
 
 	stmfd sp!,{r12,lr}
 	blx getBatteryLevel
@@ -250,10 +252,7 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 	blne setLowBattery
 	ldmfd sp!,{r12,lr}
 
-	ldrb r0,[spxptr,#wsvTotalLines]
-	add r0,r0,#1
-	mov r0,r0,lsl#5				;@ 256/8=32.
-//	ldr r0,=384000				;@ 1 Second in cart clocks (3072000/8).
+	ldr r0,=(3072000/8)			;@ 1 Second in cart clocks (384000).
 	b cartUpdate
 
 ;@----------------------------------------------------------------------------

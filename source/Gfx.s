@@ -494,7 +494,7 @@ setScreenRefresh:			;@ r0 in = WS scan line count.
 	movs r0,r0,lsr#1
 	adc r0,r0,#0
 	mov r5,r0
-	bl setLCDFPS
+	bl setTargetFPS
 	ldr r0,=emuSettings
 	ldr r0,[r0]
 	tst r0,#ALLOW_REFRESH_CHG
