@@ -230,7 +230,7 @@ joyMapping:	.byte 0
 	.byte 0,0,0
 
 ;@----------------------------------------------------------------------------
-updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
+updateSlowIO:				;@ Call once every frame, updates battery levels and rtc.
 ;@----------------------------------------------------------------------------
 	ldrb r0,slowTimer
 	subs r0,r0,#1
@@ -252,8 +252,9 @@ updateSlowIO:				;@ Call once every frame, updates rtc and battery levels.
 	blne setLowBattery
 	ldmfd sp!,{r12,lr}
 
-	ldr r0,=(3072000/8)			;@ 1 Second in cart clocks (384000).
-	b cartUpdate
+	bx lr
+//	ldr r0,=(3072000/8)			;@ 1 Second in cart clocks (384000).
+//	b cartUpdate
 
 ;@----------------------------------------------------------------------------
 slowTimer:

@@ -56,6 +56,8 @@ wsFrameLoop:
 ;@----------------------------------------------------------------------------
 	mov r0,#CYCLE_PSL
 	bl V30RunXCycles
+	mov r0,#CYCLE_PSL/8
+	bl cartUpdate
 	ldr spxptr,=sphinx0
 	bl wsvDoScanline
 	cmp r0,#0
@@ -78,6 +80,8 @@ wsFrameLoop3DS:
 ;@----------------------------------------------------------------------------
 	mov r0,#CYCLE_PSL
 	bl V30RunXCycles
+	mov r0,#CYCLE_PSL/8
+	bl cartUpdate
 	ldr spxptr,=sphinx0
 	bl wsvDoScanline
 	ldr r1,scanLineCount3DS

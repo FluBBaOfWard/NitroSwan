@@ -96,6 +96,7 @@
 		9CD081722D89D70C0072CDB1 /* WSEEPROM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WSEEPROM.h; sourceTree = "<group>"; };
 		9CD081732D89D70C0072CDB1 /* WSEEPROM.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = WSEEPROM.i; sourceTree = "<group>"; };
 		9CD081742D89D70C0072CDB1 /* WSEEPROM.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = WSEEPROM.s; sourceTree = "<group>"; };
+		9CD081832D8DD3D20072CDB1 /* Karnak.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = Karnak.s; sourceTree = "<group>"; };
 		9CED081727BD8E4200EA127A /* WSCBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WSCBorder.png; sourceTree = "<group>"; };
 		9CED081827BD8E4200EA127A /* WSCBorder.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WSCBorder.grit; sourceTree = "<group>"; };
 		A47F092B20863AF5004E1DA6 /* EmuMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuMenu.h; sourceTree = "<group>"; };
@@ -208,6 +209,7 @@
 				9CD0814E2D8701BD0072CDB1 /* README.md */,
 				9CD081502D8701EE0072CDB1 /* History.txt */,
 				9CD081512D8701EE0072CDB1 /* Version.h */,
+				9CD081832D8DD3D20072CDB1 /* Karnak.s */,
 				9CD081532D8716650072CDB1 /* WSCart.h */,
 				9CD081522D8704380072CDB1 /* WSCart.s */,
 				9CD081542D8716BE0072CDB1 /* WSHeader.h */,
