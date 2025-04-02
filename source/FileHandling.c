@@ -387,6 +387,18 @@ static void initIntEepromWSC(IntEEPROM *intProm) {
 	initIntEepromWS(intProm);
 	intProm->splashData.consoleFlags = 3;
 }
+static void initIntEepromSC(IntEEPROM *intProm) {
+	initIntEepromWSC(intProm);
+	WSBootSplash *splashData = &intProm->splashData;
+	splashData->crystalLCD70 = 0xd0;
+	splashData->crystalLCD71 = 0x77;
+	splashData->crystalLCD72 = 0xf7;
+	splashData->crystalLCD73 = 0x06;
+	splashData->crystalLCD74 = 0xe2;
+	splashData->crystalLCD75 = 0x0a;
+	splashData->crystalLCD76 = 0xea;
+	splashData->crystalLCD77 = 0xee;
+}
 
 
 static void clearIntEepromWS() {
@@ -399,7 +411,7 @@ static void clearIntEepromWSC() {
 }
 static void clearIntEepromSC() {
 	memset(scEepromMem, 0, sizeof(scEepromMem));
-	initIntEepromWSC((IntEEPROM *)scEepromMem);
+	initIntEepromSC((IntEEPROM *)scEepromMem);
 }
 
 int loadIntEeproms() {

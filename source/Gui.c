@@ -18,7 +18,7 @@
 #include "WSCBottom.h"
 #include "SCBottom.h"
 
-#define EMUVERSION "V0.7.2 2025-03-26"
+#define EMUVERSION "V0.7.2 2025-04-02"
 
 void hacksInit(void);
 
@@ -259,9 +259,6 @@ void nullUINormal(int key) {
 			nullUIWSC(key);
 			break;
 		case HW_SWANCRYSTAL:
-			nullUIWSC(key);
-			break;
-		case HW_POCKETCHALLENGEV2:
 			nullUIWSC(key);
 			break;
 		default:

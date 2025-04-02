@@ -122,7 +122,7 @@ Y is mapped to Pass.
 
 There are 3 games that I know of that has serious problems.
 
-* Beatmania: Game is too large even for the DSi. Can be used with a 16MB SLOT-2 card.
+* Beatmania: Game is too large even for the DSi. Can be used with a 16MB SLOT-2 card or on 3DS.
 * Chou Denki Card Game: You need to initialize NVRAM, this is the last item on the first page (初期化).
 * Mahjong Touryuumon, speed too fast.
 

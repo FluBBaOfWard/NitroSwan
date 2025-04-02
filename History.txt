@@ -1,7 +1,7 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.7.2 - 2025-03-26 (FluBBa)
+V0.7.2 - 2025-04-02 (FluBBa)
 	Added support for Karnak mapper chip (PCV2).
 
 V0.7.1 - 2025-03-17 (FluBBa)
