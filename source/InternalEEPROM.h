@@ -31,7 +31,7 @@ typedef struct {
 	u8 padding[3];
 	u8 consoleFlags;	// Bit 0 & 1 = Volume, bit 6 = High Contrast (WSC), bit 7 = Custom Boot.
 	u8 consoleNameColor;
-	u8 padding2;
+	u8 padding2;		// Must be 0
 	u8 size;
 	u8 startFrame;
 	u8 endFrame;
