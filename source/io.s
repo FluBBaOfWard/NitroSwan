@@ -146,6 +146,9 @@ joyDefaultMap:
 	andeq r1,r3,#KEY_A|KEY_B
 	orr r0,r0,r1,lsl#2
 
+//	ldr r1,=0x2222				;@ Pin strap bit#1
+//	orr r0,r0,r1
+
 	ldr spxptr,=sphinx0
 	b wsvSetJoyState
 ;@----------------------------------------------------------------------------

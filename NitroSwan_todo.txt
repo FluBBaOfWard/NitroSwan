@@ -1,5 +1,6 @@
 NitroSwan Todo
 
+	Fix ram behaviour on mono consoles.
 	Fix RTC:
 		Corrected values when setting out of range values.
 	Handle Contrast High/Low for WSC, change Y every other frame.

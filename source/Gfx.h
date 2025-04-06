@@ -47,6 +47,7 @@ void v30WritePort(u8 value, u16 port);
 void v30WritePort16(u16 value, u16 port);
 
 void pushVolumeButton(void);
+int getHeadphones(void);
 void setHeadphones(bool enable);
 void setSerialByteIn(u8 value);
 void setPowerOff(void);
