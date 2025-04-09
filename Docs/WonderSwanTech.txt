@@ -463,7 +463,7 @@
 							2   Mono, right only
 							3   Mono, both sides
 			   bit 4   = Reset  input to the left channel.
-               bit 3-0   Nothing?
+               bit 3-0   Nothing? 0xF
  - $6C - $00 - ???
  - $6D - $00 - ???
  - $6E - $00 - ???
@@ -558,7 +558,12 @@
                         0 - One Shot
                         1 - Auto Preset
                 bit 0 - Hblank Timer on/off
- - $A3 - $00 - ^^^
+ - $A3 - $00 - System Test
+                bit 3 - Uart speed 192000
+                bit 2 - ?
+                bit 1 - Vblank override
+                bit 0 - Hblank override
+
  - $A4 - $00 - Hblank Timer 'frequency'
                 0 = no HBLANK Interrupt
                 n = HBLANK Interrupt every n lines
