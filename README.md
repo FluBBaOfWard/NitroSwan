@@ -141,16 +141,30 @@ There are a couple of games that have visual glitches.
 * Sorobang, needs all 1024 tiles in 4color mode.
 * WonderSwan Color BIOS, needs all 1024 tiles in 4color mode.
 
+## Accuracy
+
+I've made a few test programs for the WonderSwan to be able to really make sure
+ it is as accurate as possible.
+
+* [WSCPUTest](https://github.com/FluBBaOfWard/WSCpuTest) - Tests functions of the NEC V30MZ CPU instructions.
+* [WSTimingTest](https://github.com/FluBBaOfWard/WSTimingTest) - Tests timing of the NEC V30MZ CPU instruction.
+* [WSHWTest](https://github.com/FluBBaOfWard/WSHWTest) - Tests other HW of the WS SOC.
+
+Other test programs I have used to get better accuracy.
+
+* [WS-Test-Suite](https://github.com/asiekierka/ws-test-suite) - Lots of small tests.
+* [RTC Test](https://forums.nesdev.org/viewtopic.php?t=21513) Test the RTC in certain cartridges.
+
 ## Credits
 
 ```text
 Huge thanks to Loopy for the incredible PocketNES, without it this emu would probably never have been made.
 Thanks to:
+asie for info and inspiration. https://ws.nesdev.org/wiki/WSdev_Wiki
 Ed Mandy (Flavor) for WonderSwan info & flashcart. https://www.flashmasta.com
 Koyote for WonderSwan info.
 Alex Marshall (trap15) for WonderSwan info. http://daifukkat.su/docs/wsman/
 Guy Perfect for WonderSwan info http://perfectkiosk.net/stsws.html
-asie for info and inspiration. https://ws.nesdev.org/wiki/WSdev_Wiki
 Godzil for the boot rom stubs. https://github.com/Godzil/NewOswan
 lidnariq for RTC info.
 plasturion for some BnW palettes.
