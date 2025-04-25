@@ -1,8 +1,11 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.7.2 - 2025-04-02 (FluBBa)
+V0.7.2 - 2025-04-25 (FluBBa)
 	Added support for Karnak mapper chip (PCV2).
+	Fixed IO registers startup values.
+	Fixed IO registers writable bits.
+	Optimized some opcodes.
 
 V0.7.1 - 2025-03-17 (FluBBa)
 	Fixed a regression in the noise.

@@ -91,7 +91,7 @@ commandList:
 	subs r2,r2,#0xFF000
 	subs r2,r2,#0xFE000
 ;@----------------------------------------------------------------------------
-setSRamArea:			;@ r0=arg0, 0=SRAM, 1=ROM/Flash
+setSRamArea:				;@ r0=arg0, 0=SRAM, 1=ROM/Flash
 ;@----------------------------------------------------------------------------
 	cmp r0,#2
 	ldrcc r1,=sram_WB
@@ -105,7 +105,7 @@ sramCmdList:
 	ldreq r2,[v30ptr,#v30MemTblInv-2*4]
 	cmp r2,#0
 ;@----------------------------------------------------------------------------
-setFlashRead:			;@ r0=arg0, 0=Normal, 1=Flash info
+setFlashRead:				;@ r0=arg0, 0=Normal, 1=Flash info
 ;@----------------------------------------------------------------------------
 	cmp r0,#2
 	ldrcc r1,=cpuReadMem20
@@ -131,7 +131,7 @@ flashCmdList:
 	.align 2
 
 ;@----------------------------------------------------------------------------
-cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
+cpuReadWordUnaligned:		;@ Make sure cpuReadMem20 does not use r3 or r12!
 ;@----------------------------------------------------------------------------
 	eatCycles 1
 	stmfd sp!,{lr}
@@ -144,16 +144,16 @@ cpuReadWordUnaligned:	;@ Make sure cpuReadMem20 does not use r3 or r12!
 	ldmfd sp!,{pc}
 
 ;@----------------------------------------------------------------------------
-v30ReadEA1:			;@ In v30ofs=v30ptr+second byte of opcode.
+v30ReadEA1:					;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	eatCycles 1
 ;@----------------------------------------------------------------------------
-v30ReadEA:			;@ In v30ofs=v30ptr+second byte of opcode.
+v30ReadEA:					;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	adr r12,v30ReadSegOfs		;@ Return reg for EA
 	ldr pc,[v30ofs,#v30EATable]
 ;@----------------------------------------------------------------------------
-v30ReadDsIx:		;@
+v30ReadDsIx:				;@
 ;@----------------------------------------------------------------------------
 	ldrsb r4,[v30ptr,#v30DF]
 	ldr v30ofs,[v30ptr,#v30RegIX]
@@ -182,24 +182,24 @@ bootRomSwitchB:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-v30ReadEAWF7:			;@ In r0=second byte of opcode.
+v30ReadEAWF7:				;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	add v30ofs,v30ptr,r0,lsl#2
 ;@----------------------------------------------------------------------------
-v30ReadEAW1:		;@ In v30ofs=v30ptr+second byte of opcode.
+v30ReadEAW1:				;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	eatCycles 1
 	adr r12,v30ReadSegOfsW		;@ Return reg for EA
 	ldr pc,[v30ofs,#v30EATable]
 ;@----------------------------------------------------------------------------
-v30ReadEAW:			;@ In r0=second byte of opcode.
+v30ReadEAW:					;@ In r0=second byte of opcode.
 ;@----------------------------------------------------------------------------
 	add v30ofs,v30ptr,r0,lsl#2
 v30ReadEAW_noAdd:
 	adr r12,v30ReadSegOfsW		;@ Return reg for EA
 	ldr pc,[v30ofs,#v30EATable]
 ;@----------------------------------------------------------------------------
-v30ReadStack:		;@ Read a word from the stack, r0=value on stack.
+v30ReadStack:				;@ Read a word from the stack.
 ;@----------------------------------------------------------------------------
 	ldr v30ofs,[v30ptr,#v30RegSP]
 	ldr v30csr,[v30ptr,#v30SRegSS]
@@ -237,16 +237,16 @@ cpuWriteWordUnaligned:	;@ Make sure cpuWriteMem20 does not change r0 or r1!
 	b cpuWriteMem20
 
 ;@----------------------------------------------------------------------------
-v30WriteEA:				;@ In v30ofs=v30ptr+second byte of opcode.
+v30WriteEA:					;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	adr r12,v30WriteSegOfs		;@ Return reg for EA
 	ldr pc,[v30ofs,#v30EATable]
 ;@----------------------------------------------------------------------------
-;@v30WriteEsIy:		;@
+;@v30WriteEsIy:				;@
 ;@----------------------------------------------------------------------------
 ;@	ldrsb r4,[v30ptr,#v30DF]
 ;@----------------------------------------------------------------------------
-v30WriteEsIy:		;@
+v30WriteEsIy:				;@
 ;@----------------------------------------------------------------------------
 	GetIyOfsESegment
 	add r2,v30ofs,r4,lsl#16
@@ -256,12 +256,12 @@ v30WriteSegOfs:		;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
 	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
-cpuWriteMem20:		;@ r0=address set in top 20 bits, r1=value
+cpuWriteMem20:				;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------
 	movs r2,r0,lsr#28
 	bne cart_WB
 ;@----------------------------------------------------------------------------
-ram_WB:				;@ Write ram ($00000-$0FFFF)
+ram_WB:						;@ Write ram ($00000-$0FFFF)
 ;@----------------------------------------------------------------------------
 	ldr r2,[v30ptr,#v30MemTblInv-1*4]
 	strb r1,[r2,r0,lsr#12]
@@ -273,7 +273,7 @@ cart_WB:
 ;@----------------------------------------------------------------------------
 	cmp r2,#1
 ;@----------------------------------------------------------------------------
-sram_WB:			;@ Write sram ($10000-$1FFFF)
+sram_WB:					;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
 	ldreq r2,[v30ptr,#v30MemTblInv-2*4]
 	strbeq r1,[r2,r0,lsr#12]
@@ -281,21 +281,21 @@ sram_WB:			;@ Write sram ($10000-$1FFFF)
 	b flashWriteMem20
 
 ;@----------------------------------------------------------------------------
-v30WriteEAW2:		;@ In v30ofs=v30ptr+second byte of opcode.
+v30WriteEAW2:				;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	eatCycles 2
 ;@----------------------------------------------------------------------------
-v30WriteEAW:		;@ In v30ofs=v30ptr+second byte of opcode.
+v30WriteEAW:				;@ In v30ofs=v30ptr+second byte of opcode.
 ;@----------------------------------------------------------------------------
 	adr r12,v30WriteSegOfsW		;@ Return reg for EA
 	ldr pc,[v30ofs,#v30EATable]
 ;@----------------------------------------------------------------------------
-v30PushW:			;@ In r1=value.
+v30PushW:					;@ In r1=value.
 ;@----------------------------------------------------------------------------
 	ldr v30ofs,[v30ptr,#v30RegSP]
 	ldr v30csr,[v30ptr,#v30SRegSS]
 ;@----------------------------------------------------------------------------
-v30PushLastW:		;@ In r1=value.
+v30PushLastW:				;@ In r1=value.
 ;@----------------------------------------------------------------------------
 	sub v30ofs,v30ofs,#0x20000
 	str v30ofs,[v30ptr,#v30RegSP]
@@ -304,14 +304,14 @@ v30WriteSegOfsW:	;@ In r7=segment in top 16 bits, r6=offset in top 16 bits.
 ;@----------------------------------------------------------------------------
 	add r0,v30csr,v30ofs,lsr#4
 ;@----------------------------------------------------------------------------
-cpuWriteMem20W:		;@ r0=address set in top 20 bits, r1=value
+cpuWriteMem20W:				;@ r0=address set in top 20 bits, r1=value
 ;@----------------------------------------------------------------------------
 	tst r0,#0x1000
 	bne cpuWriteWordUnaligned
 	movs r2,r0,lsr#28
 	bne cart_WW
 ;@----------------------------------------------------------------------------
-ram_WW:				;@ Write ram ($00000-$0FFFF)
+ram_WW:						;@ Write ram ($00000-$0FFFF)
 dmaWriteMem20W:
 ;@----------------------------------------------------------------------------
 	ldr r2,[v30ptr,#v30MemTblInv-1*4]
@@ -325,7 +325,7 @@ cart_WW:
 ;@----------------------------------------------------------------------------
 	cmp r2,#1
 ;@----------------------------------------------------------------------------
-sram_WW:			;@ Write sram ($10000-$1FFFF)
+sram_WW:					;@ Write sram ($10000-$1FFFF)
 ;@----------------------------------------------------------------------------
 	ldreq r2,[v30ptr,#v30MemTblInv-2*4]
 	moveq r0,r0,lsr#12
