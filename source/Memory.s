@@ -80,16 +80,29 @@ rom_W:						;@ Write ROM address (error)
 setBootRomOverlay:			;@ r0=arg0, 0=remove overlay, 1=WS, 2=WSC/SC
 ;@----------------------------------------------------------------------------
 	cmp r0,#3
-	ldrcc r1,=bootRomSwitchB
-	ldrcc r2,=bootRomSwitchW
+	bxcs lr
+	stmfd sp!,{r4}
+	ldr r1,=bootRomSwitchB
+	ldr r2,=bootRomSwitchW
 	adr r3,commandList
-	ldrcc r0,[r3,r0,lsl#2]
-	strcc r0,[r1]
-	strcc r0,[r2]
+	ldr r4,[r3,r0,lsl#2]
+	str r4,[r1]
+	str r4,[r2]
+	cmp r0,#0
+	addeq r3,r3,#4
+	ldr r4,[r3,#3*4]
+	str r4,[r1,#-2*4]
+	ldr r4,[r3,#4*4]
+	str r4,[r1,#-1*4]
+	ldmfd sp!,{r4}
 commandList:
 	bx lr
 	subs r2,r2,#0xFF000
 	subs r2,r2,#0xFE000
+
+	mov r2,r0,lsr#12
+	ldrb r0,[r1,r0,lsr#12]!
+	bx lr
 ;@----------------------------------------------------------------------------
 setSRamArea:				;@ r0=arg0, 0=SRAM, 1=ROM/Flash
 ;@----------------------------------------------------------------------------

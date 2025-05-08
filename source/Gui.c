@@ -18,7 +18,7 @@
 #include "WSCBottom.h"
 #include "SCBottom.h"
 
-#define EMUVERSION "V0.7.2 2025-04-25"
+#define EMUVERSION "V0.7.2 2025-05-08"
 
 void hacksInit(void);
 
