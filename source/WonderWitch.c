@@ -30,6 +30,7 @@ Mode mode = standby;
 WWCmd wwCmd = wwCmdNone;
 Storage storage = rom0;
 bool serialInEmpty = false;
+bool isWWTransfer = true;
 u8 checksum = 0;
 u8 outIdx = 0;
 u8 inIdx = 0;
@@ -86,7 +87,8 @@ static void sendCommand() {
 	}
 }
 
-static void doXModemTransmit(void) {
+static void doXModemTransmit(bool wwTransfer) {
+	isWWTransfer = wwTransfer;
 	mode = xmodemTransmitHold;
 	counter = 0;
 	prevPage = 0;
@@ -109,7 +111,7 @@ static void receiveBuffer(u8 val) {
 		}
 		else if (strstr((char *)buffer, "350 FURTHER INFO")) {
 			if (wwCmd == wwCmdPut) {
-				doXModemTransmit();
+				doXModemTransmit(true);
 			}
 		}
 		else if (strstr((char *)buffer, "200 OK")) {
@@ -237,7 +239,7 @@ static void startCmdFile(const char *str, const char *filename, WWCmd cmd) {
 	startCommand(comStr, cmd);
 }
 
-static void handleXModemTransmit() {
+static void handleXModemTransmit(bool wwTransfer) {
 	u8 value = 0;
 	if (counter == 0) {
 		checksum = 0;
@@ -252,8 +254,8 @@ static void handleXModemTransmit() {
 			fread(outBuf, 1, PAGE_SIZE, file);
 			if (prevPage == 0) {
 				FxFile *fxFile = (FxFile *)outBuf;
-				// "#!ws"
-				if (fxFile->magic != 0x73772123) {
+				// WonderWitch file? "#!ws"
+				if (wwTransfer && fxFile->magic != 0x73772123) {
 					memset(fxFile, 0x00, sizeof(FxFile));
 					fxFile->magic = 0x73772123;
 					memset(fxFile->ffFill, 0xFF, sizeof(fxFile->ffFill));
@@ -375,7 +377,7 @@ static void handleXModemReceive(u8 value) {
 void handleSerialInEmpty() {
 	serialInEmpty = true;
 	if (mode == xmodemTransmit) {
-		handleXModemTransmit();
+		handleXModemTransmit(isWWTransfer);
 	}
 	else if (mode == wwSendCommand) {
 		sendCommand();
@@ -389,7 +391,7 @@ void handleSerialReceive(u8 value) {
 	else if (mode == xmodemTransmitHold) {
 		if (value == NAK) {
 			mode = xmodemTransmit;
-			handleXModemTransmit();
+			handleXModemTransmit(isWWTransfer);
 		}
 	}
 	else if (mode == xmodemTransmit) {
@@ -519,8 +521,14 @@ void startXModemReceive() {
 	sendNack();
 }
 
+void startWWXModemTransmit() {
+	if (selectFileToTransmit()) {
+		doXModemTransmit(true);
+	}
+}
+
 void startXModemTransmit() {
 	if (selectFileToTransmit()) {
-		doXModemTransmit();
+		doXModemTransmit(false);
 	}
 }

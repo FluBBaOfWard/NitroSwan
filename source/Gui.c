@@ -18,7 +18,7 @@
 #include "WSCBottom.h"
 #include "SCBottom.h"
 
-#define EMUVERSION "V0.7.2 2025-05-08"
+#define EMUVERSION "V0.7.2 2025-05-25"
 
 void hacksInit(void);
 
@@ -56,6 +56,7 @@ static void languageSet(void);
 
 static void ui11(void);
 static void ui12(void);
+static void ui13(void);
 static void updateGameId(char *buffer);
 static void updateCartInfo(char *buffer);
 static void updateMapperInfo(char *buffer);
@@ -81,6 +82,7 @@ const MItem optionItems[] = {
 	{"Machine", ui6},
 	{"Settings", ui7},
 	{"WonderWitch", ui11},
+	{"BootFriend", ui12},
 	{"Debug", ui8},
 };
 const MItem ctrlItems[] = {
@@ -137,8 +139,8 @@ const MItem wonderWitchItems[] = {
 	{"Delete", wwStartDelete},
 	{"Defrag", wwStartDefrag},
 	{"Download File", wwStartGet},
-	{"NewFS (Formatt)", ui12},
-	{"XMODEM Transmit", startXModemTransmit},
+	{"NewFS (Formatt)", ui13},
+	{"XMODEM Transmit", startWWXModemTransmit},
 	{"XMODEM Receive", startXModemReceive},
 	{"Reboot WW", wwStartReboot},
 	{"CD", wwStartCD},
@@ -146,6 +148,10 @@ const MItem wonderWitchItems[] = {
 	{"Stty", wwStartStty},
 	{"Hello", wwStartHello},
 	{"Speed", wwStartSpeed},
+};
+const MItem bootFriendItems[] = {
+	{"XMODEM Transmit", startXModemTransmit},
+	{"XMODEM Receive", startXModemReceive},
 };
 const MItem formattItems[] = {
 	{"Yes ", wwStartNewFS},
@@ -164,9 +170,10 @@ const Menu menu8 = MENU_M("Debug", uiAuto, debugItems);
 const Menu menu9 = MENU_M("Quit Emulator?", uiAuto, quitItems);
 const Menu menu10 = MENU_M("", uiDummy, dummyItems);
 const Menu menu11 = MENU_M("WonderWitch", uiAuto, wonderWitchItems);
-const Menu menu12 = MENU_M("Formatt Storage?", uiAuto, formattItems);
+const Menu menu12 = MENU_M("BootFriend", uiAuto, bootFriendItems);
+const Menu menu13 = MENU_M("Formatt Storage?", uiAuto, formattItems);
 
-const Menu *const menus[] = {&menu0, &menu1, &menu2, &menu3, &menu4, &menu5, &menu6, &menu7, &menu8, &menu9, &menu10, &menu11, &menu12};
+const Menu *const menus[] = {&menu0, &menu1, &menu2, &menu3, &menu4, &menu5, &menu6, &menu7, &menu8, &menu9, &menu10, &menu11, &menu12, &menu13};
 
 u8 gContrastValue = 3;
 u8 gBorderEnable = 1;
@@ -248,6 +255,9 @@ void ui11() {
 }
 void ui12() {
 	enterMenu(12);
+}
+void ui13() {
+	enterMenu(13);
 }
 
 void nullUINormal(int key) {

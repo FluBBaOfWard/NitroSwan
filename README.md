@@ -79,6 +79,7 @@ Since the DS/DS Lite only has 4MB of RAM you will need a SLOT-2/GBA cart with
   * Autosleep: Doesn't work.
 * WonderWitch: Tools for interacting with a WonderWitch.
   * See WonderWitch.md for more information.
+* BootFriend: For uploading/downloading files with BootFriend.
 * Debug:
   * Debug Output: Show FPS and logged text.
   * Disable Foreground: Turn on/off foreground rendering.
@@ -124,7 +125,7 @@ There are 3 games that I know of that has serious problems.
 
 * Beatmania: Game is too large even for the DSi. Can be used with a 16MB SLOT-2 card or on 3DS.
 * Chou Denki Card Game: You need to initialize NVRAM, this is the last item on the first page (初期化).
-* Mahjong Touryuumon, speed too fast.
+* Mahjong Touryuumon, emulated speed too fast.
 
 There are a couple of games that have visual glitches.
 

@@ -328,9 +328,9 @@ ram_WW:						;@ Write ram ($00000-$0FFFF)
 dmaWriteMem20W:
 ;@----------------------------------------------------------------------------
 	ldr r2,[v30ptr,#v30MemTblInv-1*4]
+	mov r3,r0,lsr#12
+	strh r1,[r2,r3]
 	add r3,r2,#0x10000			;@ Size of wsRAM, ptr to DIRTYTILES.
-	add r2,r2,r0,lsr#12
-	strh r1,[r2]
 	strb r0,[r3,r0,lsr#17]
 	bx lr
 ;@----------------------------------------------------------------------------

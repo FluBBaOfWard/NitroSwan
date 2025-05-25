@@ -187,6 +187,9 @@ void wwStartPwd(void);
 /// Start XMODEM transmit.
 void startXModemTransmit(void);
 
+/// Start WW XMODEM transmit.
+void startWWXModemTransmit(void);
+
 /// Start XMODEM receive.
 void startXModemReceive(void);
 
