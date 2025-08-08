@@ -1,6 +1,12 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.7.4 - 2025-08-08 (FluBBa)
+	Fixed reading of channel 3 frequency.
+	Fixed ADPCM decoding for the Karnak chip.
+	Fixed use of Karnak mapper chip on WS/WSC.
+	Fixed parsing of header on small ROMs.
+
 V0.7.2 - 2025-05-25 (FluBBa)
 	Added support for Karnak mapper chip (PCV2).
 	Added XModem support for BootFriend.

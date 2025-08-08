@@ -7,8 +7,8 @@ extern "C" {
 
 extern u32 maxRomSize;
 extern u32 allocatedRomMemSize;
-extern u8 gMachine;
 extern u8 gMachineSet;
+extern u8 gMachine;
 extern u8 gSOC;
 extern u8 gLang;
 extern u8 gPaletteBank;

@@ -533,17 +533,18 @@ void selectGame() {
 
 void checkMachine() {
 	char fileExt[8];
+	getFileExtension(fileExt, currentFilename);
+	if (romSpacePtr[gRomSize - 9] != 0 || strstr(fileExt, ".wsc")) {
+		gFileType = HW_WONDERSWANCOLOR;
+	}
+	else if (strstr(fileExt, ".pc2") || strstr(fileExt, ".pcv2")) {
+		gFileType = HW_POCKETCHALLENGEV2;
+	}
+	else {
+		gFileType = HW_WONDERSWAN;
+	}
 	if (gMachineSet == HW_AUTO) {
-		getFileExtension(fileExt, currentFilename);
-		if (romSpacePtr[gRomSize - 9] != 0 || strstr(fileExt, ".wsc")) {
-			gMachine = HW_WONDERSWANCOLOR;
-		}
-		else if (strstr(fileExt, ".pc2")) {
-			gMachine = HW_POCKETCHALLENGEV2;
-		}
-		else {
-			gMachine = HW_WONDERSWAN;
-		}
+		gMachine = gFileType;
 	}
 	else {
 		gMachine = gMachineSet;
