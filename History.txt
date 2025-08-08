@@ -1,6 +1,9 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.7.5 - 2025-08-08 (FluBBa)
+	Fixed reading of ch3 frequency for real.
+
 V0.7.4 - 2025-08-08 (FluBBa)
 	Fixed reading of channel 3 frequency.
 	Fixed ADPCM decoding for the Karnak chip.
