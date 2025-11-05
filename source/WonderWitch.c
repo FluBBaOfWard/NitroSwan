@@ -267,8 +267,8 @@ static void handleXModemTransmit(bool wwTransfer) {
 					stat(currentFileName, &attrib);
 					gmtime_r( &attrib.st_mtime, &ts);
 					fxFile->modificationTime = ((ts.tm_year - 100)<<25) + ((ts.tm_mon + 1)<<21) + (ts.tm_mday<<16) + (ts.tm_hour<<11) + (ts.tm_min<<5) + (ts.tm_sec>>1);
-					truncateFileName(fxFile->fileName, currentFileName, sizeof(fxFile->fileName));
-					strlcpy(fxFile->description, currentFileName, sizeof(fxFile->description));
+					strncpy(fxFile->fileName, currentFileName, sizeof(fxFile->fileName));
+					strncpy(fxFile->description, currentFileName, sizeof(fxFile->description));
 					fseek(file, 0, SEEK_SET);
 				}
 			}
