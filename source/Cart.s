@@ -1,9 +1,9 @@
 #ifdef __arm__
 
-//#define EMBEDDED_ROM
-
 #include "Sphinx/Sphinx.i"
 #include "ARMV30MZ/ARMV30MZ.i"
+
+//#define EMBEDDED_ROM
 
 	.global allocatedRomMem
 	.global biosBase
@@ -72,15 +72,15 @@ SC_BIOS_INTERNAL:
 machineInit: 				;@ Called from C
 	.type machineInit STT_FUNC
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r11,lr}
+	stmfd sp!,{lr}
 
 #ifdef EMBEDDED_ROM
 	ldr r0,=romSize
 	mov r1,#ROM_SpaceEnd-ROM_Space
 	str r1,[r0]
 	ldr r0,=romSpacePtr
-	ldr r7,=ROM_Space
-	str r7,[r0]
+	ldr r1,=ROM_Space
+	str r1,[r0]
 #endif
 
 	bl memoryInit
@@ -89,10 +89,10 @@ machineInit: 				;@ Called from C
 	bl soundInit
 	bl cpuInit
 
-	ldmfd sp!,{r4-r11,lr}
+	ldmfd sp!,{lr}
 	bx lr
 
-	.section .ewram,"ax"
+	.section .ewram, "ax", %progbits
 	.align 2
 ;@----------------------------------------------------------------------------
 loadCart: 					;@ Called from C:
@@ -150,9 +150,10 @@ loadCart: 					;@ Called from C:
 ;@----------------------------------------------------------------------------
 clearDirtyTiles:
 ;@----------------------------------------------------------------------------
-	ldr r0,=DIRTYTILES			;@ Clear RAM
+	ldr r0,=DIRTYTILES			;@ Clear DirtyTiles
 	mov r1,#0x800/4
 	b memclr_
+;@----------------------------------------------------------------------------
 
 romInfo:						;@
 emuFlags:
@@ -188,11 +189,11 @@ biosBase:
 
 ;@----------------------------------------------------------------------------
 #ifdef GBA
-	.section .sbss				;@ For the GBA
+	.section .sbss				;@ This is EWRAM on GBA with devkitARM
 #else
 	.section .bss
 #endif
-	.align 4
+	.align 4					;@ Align to 16 bytes, required for sound mixer.
 wsRAM:
 	.space 0x10000
 DIRTYTILES:

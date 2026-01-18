@@ -18,7 +18,7 @@
 #include "WSCBottom.h"
 #include "SCBottom.h"
 
-#define EMUVERSION "V0.7.5 2025-08-08"
+#define EMUVERSION "V0.7.6 2026-01-18"
 
 void hacksInit(void);
 
@@ -99,13 +99,13 @@ const MItem displayItems[] = {
 };
 const MItem machineItems[] = {
 	{"Machine:", machineSet, getMachineText},
+	{"Headphones:", headphonesSet, getHeadphonesText},
+	{"Cpu Speed Hacks:", speedHackSet, getSpeedHackText},
+	{"Import Internal EEPROM", selectEEPROM},
+	{"Clear Internal EEPROM", clearIntEeproms},
 	{"Select WS Bios", selectBnWBios},
 	{"Select WS Color Bios", selectColorBios},
 	{"Select WS Crystal Bios", selectCrystalBios},
-	{"Import Internal EEPROM", selectEEPROM},
-	{"Clear Internal EEPROM", clearIntEeproms},
-	{"Headphones:", headphonesSet, getHeadphonesText},
-	{"Cpu Speed Hacks:", speedHackSet, getSpeedHackText},
 	//{"Language:", languageSet},
 };
 const MItem setItems[] = {
@@ -376,7 +376,7 @@ void nullUIWS(int keyHit) {
 		touchRead(&myTouch);
 		int xpos = (myTouch.px>>2);
 		int ypos = (myTouch.py>>2);
-		if ( ypos > 8 ) {
+		if (ypos > 8) {
 			openMenu();
 		}
 		else if (xpos > 20 && xpos < 29) { // Start button
@@ -397,7 +397,7 @@ void nullUIWSC(int keyHit) {
 		touchRead(&myTouch);
 		int xpos = (myTouch.px>>2);
 		int ypos = (myTouch.py>>2);
-		if ( ypos > 8 ) {
+		if (ypos > 8) {
 			openMenu();
 		}
 		else if (xpos > 16 && xpos < 24) { // Start button
@@ -427,7 +427,7 @@ void nullUISC(int keyHit) {
 		touchRead(&myTouch);
 		int xpos = (myTouch.px>>2);
 		int ypos = (myTouch.py>>2);
-		if ( ypos > 8 ) {
+		if (ypos > 8) {
 			openMenu();
 		}
 		else if (xpos > 16 && xpos < 25) { // Start button

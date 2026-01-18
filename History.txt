@@ -1,6 +1,10 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.7.6 - 2026-01-18 (FluBBa)
+	Fixed register 0x14 initialization in built-in BIOS.
+	Optimized sound mixer a tiny bit.
+
 V0.7.5 - 2025-08-08 (FluBBa)
 	Fixed reading of ch3 frequency for real.
 

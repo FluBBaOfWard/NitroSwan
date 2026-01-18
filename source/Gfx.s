@@ -61,8 +61,15 @@ gfxInit:					;@ Called from machineInit
 	mov r2,#0x100*3				;@ 3 buffers
 	bl memset_
 
-	bl wsVideoInit
 	bl gfxWinInit
+	ldr r0,=wsRAM
+	ldr r1,=V30SetIRQPin
+	ldr spxptr,=sphinx0
+	bl wsVideoInit
+	ldr r0,=handleSerialInEmpty
+	str r0,[spxptr,#rxFunction]
+	ldr r0,=handleSerialReceive
+	str r0,[spxptr,#txFunction]
 
 	ldr r0,=DISP_CTRL_LUT		;@ Destination
 	mov r1,#0
@@ -96,15 +103,10 @@ gfxReset:					;@ Called with CPU reset
 
 	bl gfxWinInit
 
-	ldr r0,=wsRAM
-	ldr r1,=gMachine
-	ldrb r1,[r1]
-	ldr r2,=V30SetIRQPin
-	bl wsVideoReset0
-	ldr r3,=handleSerialInEmpty
-	str r3,[spxptr,#rxFunction]
-	ldr r3,=handleSerialReceive
-	str r3,[spxptr,#txFunction]
+	ldr r0,=gMachine
+	ldrb r0,[r0]
+	ldr spxptr,=sphinx0
+	bl wsVideoReset
 
 	ldr r0,=cartOrientation
 	ldrb r0,[r0]
@@ -529,7 +531,7 @@ setScreenRefresh:			;@ r0 in = WS scan line count.
 vblIrqHandler:
 	.type vblIrqHandler STT_FUNC
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r8,lr}
+	stmfd sp!,{r4-r6,lr}
 	bl calculateFPS
 
 	mov r6,#REG_BASE
@@ -564,7 +566,6 @@ vblIrqHandler:
 	ldr r3,=0x96600003			;@ hblank 32bit repeat incsrc inc_reloaddst, 3 words
 	stmia r0,{r1-r3}			;@ DMA3 go
 
-	adr spxptr,sphinx0
 	ldr r0,GFX_DISPCNT
 	ldrb r2,gGfxMask
 	bic r0,r0,r2,lsl#8
@@ -595,6 +596,7 @@ exit75Hz:
 	ldrb r0,frameDone
 	cmp r0,#0
 	beq nothingNew
+	adr spxptr,sphinx0
 //	bl wsvConvertTiles
 	mov r0,#BG_GFX
 	bl wsvConvertTileMaps
@@ -603,7 +605,7 @@ exit75Hz:
 nothingNew:
 
 	blx scanKeys
-	ldmfd sp!,{r4-r8,pc}
+	ldmfd sp!,{r4-r6,pc}
 
 ;@----------------------------------------------------------------------------
 copyWindowValues:		;@ r0 = destination
@@ -713,11 +715,6 @@ gGfxMask:		.byte 0
 frameDone:		.byte 0
 				.byte 0,0
 ;@----------------------------------------------------------------------------
-wsVideoReset0:				;@ r0=ram+LUTs, r1=machine, r2=IrqFunc
-;@----------------------------------------------------------------------------
-	adr spxptr,sphinx0
-	b wsVideoReset
-;@----------------------------------------------------------------------------
 v30ReadPort:
 	.type v30ReadPort STT_FUNC
 ;@----------------------------------------------------------------------------
@@ -812,7 +809,7 @@ GFX_BG1CNT:
 	.short 0
 
 #ifdef GBA
-	.section .sbss				;@ For the GBA
+	.section .sbss				;@ This is EWRAM on GBA with devkitARM
 #else
 	.section .bss
 #endif

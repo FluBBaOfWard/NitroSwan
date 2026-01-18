@@ -324,7 +324,7 @@
  - $11 - $00 - Background layer Y scroll register
  - $12 - $00 - Foreground layer X scroll register
  - $13 - $00 - Foreground layer Y scroll register
- - $14 - $01 - LCD Control (???)
+ - $14 - $00 - LCD Control
                 bit 1 - Contrast (only WS Color), 0 low, 1 high.
                 bit 0 - LCD on/off
  - $15 - $00 - LCD Icons
@@ -382,7 +382,7 @@
  - $3D - $77 - PALE1
  - $3E - $10 - PALF0
  - $3F - $73 - PALF1
- - $40 - $00 - DMA (?) copy source address
+ - $40 - $00 - DMA copy source address
  - $41 - $00 - ^^^
  - $42 - $00 - copy source bank
  - $43 - $00 - 0
@@ -506,7 +506,7 @@
                 4 - Enable
                 3 - Reset
                 2-0 - Noise generator type
- - $8F - $00 - Sample  location
+ - $8F - $00 - Sample location
                 To get the address of samples, shift this value left 6 times.
                 0 00xxxxxx xx000000
  - $90 - $00 - Audio control

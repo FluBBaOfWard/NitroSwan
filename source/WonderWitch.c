@@ -184,7 +184,7 @@ static bool selectFileToTransmit(void) {
 		if (file != NULL) {
 			fclose(file);
 		}
-		if ( (file = fopen(fileName, "r")) ) {
+		if ((file = fopen(fileName, "r"))) {
 			currentFileName = fileName;
 			fseek(file, 0, SEEK_END);
 			fileSize = ftell(file);
@@ -289,7 +289,7 @@ static void handleXModemTransmit(bool wwTransfer) {
 		value = checksum;
 		counter = -1;
 	}
-	sendByte( value );
+	sendByte(value);
 	counter += 1;
 }
 

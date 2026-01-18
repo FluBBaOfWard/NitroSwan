@@ -68,8 +68,8 @@ int main(int argc, char **argv) {
 	}
 	maxRomSize = allocatedRomMemSize;
 	romSpacePtr = allocatedRomMem;
-	setupGraphics();
 
+	setupGraphics();
 	setupStream();
 	irqSet(IRQ_VBLANK, myVblank);
 	setupGUI();
@@ -97,7 +97,6 @@ int main(int argc, char **argv) {
 
 	while (1) {
 		waitVBlank();
-		checkTimeOut();
 		guiRunLoop();
 		if (!pauseEmulation) {
 			if (powerIsOn) {
@@ -107,6 +106,7 @@ int main(int argc, char **argv) {
 				shutDownLCD();
 			}
 		}
+//		checkTimeOut();
 	}
 	return 0;
 }
@@ -230,7 +230,7 @@ static void setupStream(void) {
 	sys.samp_count			= 0;
 	sys.mem_bank			= 0;
 	sys.fifo_channel		= FIFO_MAXMOD;
-	mmInit( &sys );
+	mmInit(&sys);
 
 	//----------------------------------------------------------------
 	// open stream
@@ -241,7 +241,7 @@ static void setupStream(void) {
 	myStream.format			= MM_STREAM_16BIT_STEREO;	// format = stereo 16-bit
 	myStream.timer			= MM_TIMER0;				// use hardware timer 0
 	myStream.manual			= false;					// use manual filling
-	mmStreamOpen( &myStream );
+	mmStreamOpen(&myStream);
 
 	//----------------------------------------------------------------
 	// when using 'automatic' filling, your callback will be triggered

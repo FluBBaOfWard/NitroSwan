@@ -35,6 +35,8 @@ soundReset:
 	stmfd sp!,{lr}
 	mov r0,#WRITE_BUFFER_SIZE/2
 	str r0,pcmWritePtr
+	mov r0,r0,lsl#SHIFTVAL		;@ Only keep 11 bits
+	str r0,sndWritePtr
 	mov r0,#0
 	str r0,pcmReadPtr
 	strb r0,muteSoundChip
@@ -62,7 +64,7 @@ setMuteSoundChip:
 	strb r0,muteSoundChip
 	bx lr
 ;@----------------------------------------------------------------------------
-VblSound2:					;@ r0=length, r1=pointer
+VblSound2:					;@ r0=length, r1=destination
 ;@----------------------------------------------------------------------------
 	ldr r2,muteSound
 	cmp r2,#0
@@ -76,7 +78,11 @@ VblSound2:					;@ r0=length, r1=pointer
 
 	bl soundCopyBuff
 
+	ldr r2,sndWritePtr
 	ldr r0,pcmWritePtr
+	sub r2,r2,r0,lsl#SHIFTVAL
+	add r0,r0,r2,lsr#SHIFTVAL
+	str r0,pcmWritePtr
 	sub r0,r5,r0
 	add r0,r0,#WRITE_BUFFER_SIZE/2
 	ldr r2,neededExtra
@@ -95,34 +101,35 @@ VblSound2:					;@ r0=length, r1=pointer
 ;@----------------------------------------------------------------------------
 soundCopyBuff:
 ;@----------------------------------------------------------------------------
-	ldr r3,=WAVBUFFER
+	ldr r2,=WAVBUFFER			;@ Source
 	mov r4,r4,lsl#SHIFTVAL
-	ldrb r2,[spxptr,#wsvSoundOutput]
-	tst r2,#0x80				;@ Headphones?
+	ldrb r3,[spxptr,#wsvSoundOutput]
+	tst r3,#0x80				;@ Headphones?
 	beq soundCopyBuffInt
 sndCopyLoop:
 	subs r0,r0,#1
-	ldrpl r2,[r3,r4,lsr#SHIFTVAL-2]
-	strpl r2,[r1],#4
+	ldrpl r3,[r2,r4,lsr#SHIFTVAL-2]
 	add r4,r4,#1<<SHIFTVAL
+	strpl r3,[r1],#4
 	bhi sndCopyLoop
 	bx lr
 ;@----------------------------------------------------------------------------
-soundCopyBuffInt:			;@ Internal speaker, 8bit mono
+soundCopyBuffInt:			;@ Internal speaker, 8bit mono. r2=source
 ;@----------------------------------------------------------------------------
+	stmfd sp!,{r5,lr}
+	ldr lr,=0x80008000
+	ldr r5,=0xFF00FF00
 sndCpyIntLoop:
 	subs r0,r0,#1
-	ldrpl r2,[r3,r4,lsr#SHIFTVAL-2]
-	add r2,r2,r2,lsr#16
-	and r2,r2,#0xFF00
-mix8Vol:
-	mov r2,r2,lsr#0				;@ Volume button shift, updated by wsaSetTotalVolume
-	eor r2,r2,#0x8000
-	orr r2,r2,r2,lsl#16
-	strpl r2,[r1],#4
+	ldrpl r3,[r2,r4,lsr#SHIFTVAL-2]
 	add r4,r4,#1<<SHIFTVAL
+	add r3,r3,r3,ror#16
+	and r3,r3,r5
+mix8Vol:
+	eor r3,lr,r3,lsr#0			;@ Volume button shift, updated by wsaSetTotalVolume
+	strpl r3,[r1],#4
 	bhi sndCpyIntLoop
-	bx lr
+	ldmfd sp!,{r5,pc}
 ;@----------------------------------------------------------------------------
 silenceMix:
 ;@----------------------------------------------------------------------------
@@ -138,16 +145,16 @@ silenceLoop:
 ;@----------------------------------------------------------------------------
 soundUpdate:				;@ r0 = samples to render
 ;@----------------------------------------------------------------------------
-	mov r0,#2					;@ 24kHz / (75Hz * 160 scanlines) = 2 samples
-	ldr r2,pcmWritePtr
-	add r1,r2,r0
-	str r1,pcmWritePtr
 	ldr r1,=WAVBUFFER
-	mov r2,r2,lsl#SHIFTVAL		;@ Only keep 11 bits
+	ldr r2,sndWritePtr
+	mov r0,#2					;@ 24kHz / (75Hz * 160 scanlines) = 2 samples
 	add r1,r1,r2,lsr#SHIFTVAL-2
+	add r2,r2,r0,lsl#SHIFTVAL	;@ Only use top 11 bits
+	str r2,sndWritePtr
 	b wsAudioMixer
 
 ;@----------------------------------------------------------------------------
+sndWritePtr:	.long 0
 pcmWritePtr:	.long 0
 pcmReadPtr:		.long 0
 neededExtra:	.long 0
@@ -159,7 +166,11 @@ muteSoundChip:
 	.byte 1
 	.space 2
 
+#ifdef GBA
+	.section .sbss				;@ This is EWRAM on GBA with devkitARM
+#else
 	.section .bss
+#endif
 	.align 2
 WAVBUFFER:
 	.space WRITE_BUFFER_SIZE*4

@@ -37,7 +37,11 @@
 	.syntax unified
 	.arm
 
-	.section .text
+#ifdef GBA
+	.section .ewram, "ax", %progbits	;@ For the GBA
+#else
+	.section .text						;@ For anything else
+#endif
 	.align 2
 ;@----------------------------------------------------------------------------
 ioReset:
@@ -244,7 +248,7 @@ updateSlowIO:				;@ Call once every frame, updates battery levels and rtc.
 	strb r0,slowTimer
 
 	stmfd sp!,{r12,lr}
-	blx getBatteryLevel
+	blx getBatteryLevel			;@ Get NDS battery level. 0-15, bit 7 charging.
 	ldrb r1,lastBattery
 	strb r0,lastBattery
 	eor r1,r1,r0
@@ -350,7 +354,7 @@ intEeprom:
 	.space wsEepromSize
 
 #ifdef GBA
-	.section .sbss				;@ For the GBA
+	.section .sbss				;@ This is EWRAM on GBA with devkitARM
 #else
 	.section .bss
 #endif

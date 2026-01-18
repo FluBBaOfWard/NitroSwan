@@ -137,12 +137,11 @@ flashCmdList:
 ;@----------------------------------------------------------------------------
 
 #ifdef NDS
-	.section .itcm						;@ For the NDS ARM9
+	.section .itcm, "ax", %progbits		;@ For the NDS ARM9
 #elif GBA
 	.section .iwram, "ax", %progbits	;@ For the GBA
 #endif
 	.align 2
-
 ;@----------------------------------------------------------------------------
 cpuReadWordUnaligned:		;@ Make sure cpuReadMem20 does not use r3 or r12!
 ;@----------------------------------------------------------------------------

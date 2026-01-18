@@ -34,19 +34,49 @@ char translateDSChar(u16 char16);
 ConfigData cfg;
 
 //---------------------------------------------------------------------------------
-int initSettings() {
-	cfg.config = 0;
-	cfg.palette = 0;
+void applyConfigData(void) {
+	emuSettings   = cfg.emuSettings & ~EMUSPEED_MASK; // Clear speed setting.
+	gBorderEnable = (cfg.config & 1) ^ 1;
+	gPaletteBank  = cfg.palette;
+	gGammaValue   = cfg.gammaValue & 0xF;
+	gContrastValue = (cfg.gammaValue >> 4) & 0xF;
+	sleepTime     = cfg.sleepTime;
+	joyCfg        = (joyCfg & ~0x400) | ((cfg.controller & 1) << 10);
+	joyMapping    = (joyMapping & ~1) | ((cfg.controller & 2) >> 1);
+	gMachineSet   = (cfg.machine >> 1) & 0x7;
+	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
+	if (strlen(cfg.wonderWitchPath) == 0) {
+		strlcpy(cfg.wonderWitchPath, cfg.currentPath, sizeof(cfg.wonderWitchPath));
+	}
+	strlcpy(wwDir, cfg.wonderWitchPath, sizeof(currentDir));
+	if (gMachineSet != HW_AUTO) {
+		gMachine = gMachineSet;
+	}
+	pauseEmulation = emuSettings & AUTOPAUSE_EMULATION;
+}
+
+void updateConfigData(void) {
+	strcpy(cfg.magic, "cfg");
+	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK; // Clear speed setting.
+	cfg.config      = (gBorderEnable & 1) ^ 1;
+	cfg.palette     = gPaletteBank;
+	cfg.gammaValue  = (gGammaValue & 0xF) | (gContrastValue << 4);
+	cfg.sleepTime   = sleepTime;
+	cfg.controller  = ((joyCfg >> 10) & 1) | (joyMapping & 1) << 1;
+	cfg.machine     = (gMachineSet & 7) << 1;
+	strlcpy(cfg.currentPath, currentDir, sizeof(cfg.currentPath));
+	strlcpy(cfg.wonderWitchPath, wwDir, sizeof(cfg.currentPath));
+}
+
+void initSettings() {
+	memset(&cfg, 0, sizeof(ConfigData));
+	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | AUTOSLEEP_OFF | ENABLE_HEADPHONES | ALLOW_REFRESH_CHG;
 	cfg.gammaValue = 0x30;
-	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | AUTOSLEEP_OFF | ENABLE_HEADPHONES;
 	cfg.sleepTime = 60*60*5;
-	cfg.controller = 0;					// Don't swap A/B
 	cfg.birthYear[0] = 0x19;
 	cfg.birthYear[1] = 0x99;
 	cfg.birthMonth = bin2BCD(PersonalData->birthMonth);
 	cfg.birthDay = bin2BCD(PersonalData->birthDay);
-	cfg.sex = 0;
-	cfg.bloodType = 0;
 	cfg.machine = ((PersonalData->language == 0) ? 0 : 1) | (HW_AUTO<<1);
 
 	int i;
@@ -60,7 +90,7 @@ int initSettings() {
 //		cfg.name[i] = translateDSChar(char16);
 //	}
 	cfg.name[i] = 0;
-	return 0;
+	applyConfigData();
 }
 
 char translateDSChar(u16 char16) {
@@ -135,75 +165,48 @@ bool updateSettingsFromWS() {
 
 int loadSettings() {
 	FILE *file;
-	int result = 0;
-
-	if (findFolder(folderName)) {
-		result = 1;
-	}
-	else if ( (file = fopen(settingName, "r")) ) {
-		fread(&cfg, 1, sizeof(ConfigData), file);
+	if (!findFolder(folderName)
+		&& (file = fopen(settingName, "r"))) {
+		int len = fread(&cfg, 1, sizeof(ConfigData), file);
 		fclose(file);
-		if (!strstr(cfg.magic,"cfg")) {
-			infoOutput("Error in settings file.");
-			result = 1;
+		if (strstr(cfg.magic, "cfg") && len == sizeof(ConfigData)) {
+			applyConfigData();
+			infoOutput("Settings loaded.");
+			return 0;
 		}
+		updateConfigData();
+		infoOutput("Error in settings file.");
 	}
 	else {
 		infoOutput("Couldn't open file:");
 		infoOutput(settingName);
-		result = 1;
 	}
-
-	gBorderEnable = (cfg.config & 1) ^ 1;
-	gPaletteBank  = cfg.palette;
-	gGammaValue   = cfg.gammaValue & 0xF;
-	gContrastValue = (cfg.gammaValue>>4) & 0xF;
-	emuSettings   = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
-	sleepTime     = cfg.sleepTime;
-	joyCfg        = (joyCfg & ~0x400)|((cfg.controller & 1)<<10);
-	joyMapping    = (joyMapping & ~1)|((cfg.controller & 2)>>1);
-	gMachineSet   = (cfg.machine>>1) & 0x7;
-	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
-	if (strlen(cfg.wonderWitchPath) == 0) {
-		strlcpy(cfg.wonderWitchPath, cfg.currentPath, sizeof(cfg.wonderWitchPath));
-	}
-	strlcpy(wwDir, cfg.wonderWitchPath, sizeof(currentDir));
-	if (gMachineSet != HW_AUTO) {
-		gMachine = gMachineSet;
-	}
-	pauseEmulation = emuSettings & AUTOPAUSE_EMULATION;
-
-	infoOutput("Settings loaded.");
-	return result;
+	return 1;
 }
 
-void saveSettings() {
+int saveSettings() {
+	updateConfigData();
+
 	FILE *file;
-
-	strcpy(cfg.magic,"cfg");
-	cfg.config      = (gBorderEnable & 1) ^ 1;
-	cfg.palette     = gPaletteBank;
-	cfg.gammaValue  = (gGammaValue & 0xF) | (gContrastValue<<4);
-	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;		// Clear speed setting.
-	cfg.sleepTime   = sleepTime;
-	cfg.controller  = ((joyCfg>>10)&1) | (joyMapping&1)<<1;
-	cfg.machine     = (gMachineSet&7)<<1;
-	strlcpy(cfg.currentPath, currentDir, sizeof(cfg.currentPath));
-	strlcpy(cfg.wonderWitchPath, wwDir, sizeof(cfg.currentPath));
-
-	if (findFolder(folderName)) {
-		return;
-	}
-	if ( (file = fopen(settingName, "w")) ) {
-		fwrite(&cfg, 1, sizeof(ConfigData), file);
+	int result = 1;
+	if (!findFolder(folderName)
+		&& (file = fopen(settingName, "w"))) {
+		int len = fwrite(&cfg, 1, sizeof(ConfigData), file);
 		fclose(file);
-		infoOutput("Settings saved.");
+		if (len == sizeof(ConfigData)) {
+			infoOutput("Settings saved.");
+			result = 0;
+		}
+		else {
+			infoOutput("Couldn't save settings.");
+		}
 	}
 	else {
 		infoOutput("Couldn't open file:");
 		infoOutput(settingName);
 	}
 	saveIntEeproms();
+	return result;
 }
 
 static void loadFlashMem() {
@@ -217,7 +220,7 @@ static void loadFlashMem() {
 	if (findFolder(folderName)) {
 		return;
 	}
-	if ( (flashFile = fopen(flashName, "r")) ) {
+	if ((flashFile = fopen(flashName, "r"))) {
 		if (fread(nvMem, 1, saveSize, flashFile) != saveSize) {
 			infoOutput("Bad Flash file:");
 			infoOutput(flashName);
@@ -254,13 +257,15 @@ void loadNVRAM() {
 	if (findFolder(folderName)) {
 		return;
 	}
-	if ( (wssFile = fopen(nvRamName, "r")) ) {
+	if ((wssFile = fopen(nvRamName, "r"))) {
 		if (fread(nvMem, 1, saveSize, wssFile) != saveSize) {
 			infoOutput("Bad NVRAM file:");
 			infoOutput(nvRamName);
 		}
+		else {
+			infoOutput("Loaded NVRAM.");
+		}
 		fclose(wssFile);
-		infoOutput("Loaded NVRAM.");
 	}
 	else {
 //		memset(nvMem, 0, saveSize);
@@ -283,7 +288,7 @@ static void saveFlashMem() {
 	if (findFolder(folderName)) {
 		return;
 	}
-	if ( (flashFile = fopen(flashName, "w")) ) {
+	if ((flashFile = fopen(flashName, "w"))) {
 		if (fwrite(nvMem, 1, saveSize, flashFile) != saveSize) {
 			infoOutput("Couldn't write Flash file:");
 			infoOutput(flashName);
@@ -323,12 +328,14 @@ void saveNVRAM() {
 	if (findFolder(folderName)) {
 		return;
 	}
-	if ( (wssFile = fopen(nvRamName, "w")) ) {
+	if ((wssFile = fopen(nvRamName, "w"))) {
 		if (fwrite(nvMem, 1, saveSize, wssFile) != saveSize) {
 			infoOutput("Couldn't write correct number of bytes.");
 		}
+		else {
+			infoOutput("Saved NVRAM.");
+		}
 		fclose(wssFile);
-		infoOutput("Saved NVRAM.");
 	}
 	else {
 		infoOutput("Couldn't open NVRAM file:");
@@ -347,7 +354,7 @@ void saveState() {
 //---------------------------------------------------------------------------------
 int loadIntEeprom(const char *name, u8 *dest, int size) {
 	FILE *file;
-	if ( (file = fopen(name, "r")) ) {
+	if ((file = fopen(name, "r"))) {
 		fread(dest, 1, size, file);
 		fclose(file);
 		infoOutput("Internal EEPROM loaded.");
@@ -359,9 +366,9 @@ int loadIntEeprom(const char *name, u8 *dest, int size) {
 	return 1;
 }
 
-int saveIntEeprom(const char *name, u8 *source, int size) {
+int saveIntEeprom(const char *name, const u8 *source, int size) {
 	FILE *file;
-	if ( (file = fopen(name, "w")) ) {
+	if ((file = fopen(name, "w"))) {
 		fwrite(source, 1, size, file);
 		fclose(file);
 		infoOutput("Internal EEPROM saved.");
@@ -399,7 +406,6 @@ static void initIntEepromSC(IntEEPROM *intProm) {
 	splashData->crystalLCD76 = 0xea;
 	splashData->crystalLCD77 = 0xee;
 }
-
 
 static void clearIntEepromWS() {
 	memset(wsEepromMem, 0, sizeof(wsEepromMem));
@@ -565,7 +571,7 @@ static int loadBIOS(void *dest, const char *fPath, const int maxSize) {
 
 	cls(0);
 	strlcpy(tempString, fPath, sizeof(tempString));
-	if ( (sPtr = strrchr(tempString, '/')) ) {
+	if ((sPtr = strrchr(tempString, '/'))) {
 		sPtr[0] = 0;
 		sPtr += 1;
 		chdir("/");

@@ -5,6 +5,10 @@
 extern "C" {
 #endif
 
+#define ALLOW_SPEED_HACKS	(1<<17)
+#define ENABLE_HEADPHONES	(1<<18)
+#define ALLOW_REFRESH_CHG	(1<<19)
+
 typedef struct {				//(config struct)
 	char magic[4];				//="CFG",0
 	int emuSettings;

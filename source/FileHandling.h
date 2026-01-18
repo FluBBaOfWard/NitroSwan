@@ -10,14 +10,12 @@ extern "C" {
 
 #define FILEEXTENSIONS ".ws.wsc.pc2.pcv2"
 
-extern ConfigData cfg;
-
-int initSettings(void);
+void initSettings(void);
 bool updateSettingsFromWS(void);
 /// Load user settings and internal eeprom.
 int loadSettings(void);
 /// Save user settings and internal eeprom.
-void saveSettings(void);
+int saveSettings(void);
 bool loadGame(const char *gameName);
 void checkMachine(void);
 /// Load SRAM, EEPROM and/or Flash if they exist.
