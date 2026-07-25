@@ -1,3 +1,10 @@
+//
+//  Memory.s
+//  NitroSwan
+//
+//  Created by Fredrik Ahlström on 2006-07-23.
+//  Copyright © 2006-2026 Fredrik Ahlström. All rights reserved.
+//
 #ifdef __arm__
 
 #include "ARMV30MZ/ARMV30MZmac.h"

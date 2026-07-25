@@ -18,7 +18,7 @@
 #include "WSCBottom.h"
 #include "SCBottom.h"
 
-#define EMUVERSION "V0.7.6 2026-01-18"
+#define EMUVERSION "V0.7.7 2026-07-25"
 
 void hacksInit(void);
 
@@ -71,7 +71,7 @@ const MItem fileItems[] = {
 	{"Load NVRAM", loadNVRAM},
 	{"Save NVRAM", saveNVRAM},
 	{"Load Patch", selectIPS},
-	{"Save Settings", saveSettings},
+	{"Save Settings", (void(*)(void))saveSettings},
 	{"Eject Game", ejectGame},
 	{"Reset Console", resetGame},
 	{"Quit Emulator", ui9},
@@ -196,7 +196,6 @@ void setupGUI() {
 void enterGUI() {
 	if ((emuSettings & AUTOSAVE_SETTINGS) && updateSettingsFromWS()) {
 		saveSettings();
-		settingsChanged = false;
 	}
 }
 

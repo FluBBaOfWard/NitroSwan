@@ -2,6 +2,7 @@ NitroSwan.xcodeproj/xcuserdata
 NitroSwan.xcodeproj/project.xcworkspace/xcuserdata
 contents.xcworkspacedata
 build
+compile_commands.json
 *.elf
 *.nds
 *.zip

@@ -1,3 +1,10 @@
+//
+//  Sound.h
+//  NitroSwan
+//
+//  Created by Fredrik Ahlström on 2006-07-23.
+//  Copyright © 2006-2026 Fredrik Ahlström. All rights reserved.
+//
 #ifndef SOUND_HEADER
 #define SOUND_HEADER
 
@@ -11,8 +18,8 @@ extern "C" {
 #define buffer_size (640)
 
 void soundInit(void);
-void setMuteSoundGUI(void);
-void setMuteSoundChip(void);
+void soundSetMuteGUI(void);
+void soundSetMuteChip(void);
 mm_word VblSound2(mm_word length, mm_addr dest, mm_stream_formats format);
 
 #ifdef __cplusplus

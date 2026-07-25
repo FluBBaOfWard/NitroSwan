@@ -1,3 +1,10 @@
+//
+//  cpu.s
+//  NitroSwan
+//
+//  Created by Fredrik Ahlström on 2006-07-23.
+//  Copyright © 2006-2026 Fredrik Ahlström. All rights reserved.
+//
 #ifdef __arm__
 
 #include "ARMV30MZ/ARMV30MZ.i"
@@ -37,11 +44,10 @@ run:						;@ Return after X frame(s)
 	bxne lr
 	stmfd sp!,{r4-r11,lr}
 
+	ldr v30ptr,=V30OpTable
 ;@----------------------------------------------------------------------------
 runStart:
 ;@----------------------------------------------------------------------------
-	ldr v30ptr,=V30OpTable
-
 	bl refreshEMUjoypads
 
 	add r1,v30ptr,#v30Flags

@@ -1,3 +1,10 @@
+//
+//  io.h
+//  NitroSwan
+//
+//  Created by Fredrik Ahlström on 2006-07-23.
+//  Copyright © 2006-2026 Fredrik Ahlström. All rights reserved.
+//
 #ifndef IO_HEADER
 #define IO_HEADER
 

@@ -1,3 +1,10 @@
+//
+//  Sound.s
+//  NitroSwan
+//
+//  Created by Fredrik Ahlström on 2006-07-23.
+//  Copyright © 2006-2026 Fredrik Ahlström. All rights reserved.
+//
 #ifdef __arm__
 
 #include "Sphinx/Sphinx.i"
@@ -7,12 +14,12 @@
 	.global soundInit
 	.global soundReset
 	.global VblSound2
-	.global setMuteSoundGUI
-	.global setMuteSoundChip
+	.global soundSetMuteGUI
+	.global soundSetMuteChip
 	.global soundUpdate
 	.global mix8Vol
 
-#define WRITE_BUFFER_SIZE (0x800)
+#define SOUND_BUFFER_SIZE (0x800)
 #define SHIFTVAL (21)
 
 	.syntax unified
@@ -33,7 +40,7 @@ soundInit:
 soundReset:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
-	mov r0,#WRITE_BUFFER_SIZE/2
+	mov r0,#SOUND_BUFFER_SIZE/2
 	str r0,pcmWritePtr
 	mov r0,r0,lsl#SHIFTVAL		;@ Only keep 11 bits
 	str r0,sndWritePtr
@@ -42,23 +49,23 @@ soundReset:
 	strb r0,muteSoundChip
 	ldr spxptr,=sphinx0
 	bl wsAudioReset				;@ sound
-	mov r0,#WRITE_BUFFER_SIZE
+	mov r0,#SOUND_BUFFER_SIZE
 	ldr r1,=WAVBUFFER
 	bl silenceMix
 	ldmfd sp!,{lr}
 	bx lr
 
 ;@----------------------------------------------------------------------------
-setMuteSoundGUI:
-	.type setMuteSoundGUI STT_FUNC
+soundSetMuteGUI:
+	.type soundSetMuteGUI STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldr r1,=pauseEmulation		;@ Output silence when emulation paused.
 	ldrb r0,[r1]
 	strb r0,muteSoundGUI
 	bx lr
 ;@----------------------------------------------------------------------------
-setMuteSoundChip:
-	.type setMuteSoundChip STT_FUNC
+soundSetMuteChip:
+	.type soundSetMuteChip STT_FUNC
 ;@----------------------------------------------------------------------------
 	mov r0,#1
 	strb r0,muteSoundChip
@@ -84,7 +91,7 @@ VblSound2:					;@ r0=length, r1=destination
 	add r0,r0,r2,lsr#SHIFTVAL
 	str r0,pcmWritePtr
 	sub r0,r5,r0
-	add r0,r0,#WRITE_BUFFER_SIZE/2
+	add r0,r0,#SOUND_BUFFER_SIZE/2
 	ldr r2,neededExtra
 	rsb r2,r2,r2,lsl#3			;@ mul 7
 	add r0,r2,r0
@@ -99,7 +106,7 @@ VblSound2:					;@ r0=length, r1=destination
 	ldmfd sp!,{r0,r4,r5,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
-soundCopyBuff:
+soundCopyBuff:				;@ r0=length, r1=destination
 ;@----------------------------------------------------------------------------
 	ldr r2,=WAVBUFFER			;@ Source
 	mov r4,r4,lsl#SHIFTVAL
@@ -173,7 +180,7 @@ muteSoundChip:
 #endif
 	.align 2
 WAVBUFFER:
-	.space WRITE_BUFFER_SIZE*4
+	.space SOUND_BUFFER_SIZE*4
 ;@----------------------------------------------------------------------------
 	.end
 #endif // #ifdef __arm__

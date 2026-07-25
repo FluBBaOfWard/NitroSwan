@@ -1,3 +1,10 @@
+//
+//  Cart.s
+//  NitroSwan
+//
+//  Created by Fredrik Ahlström on 2006-07-23.
+//  Copyright © 2006-2026 Fredrik Ahlström. All rights reserved.
+//
 #ifdef __arm__
 
 #include "Sphinx/Sphinx.i"
@@ -81,7 +88,7 @@ machineInit: 				;@ Called from C
 	ldr r0,=romSpacePtr
 	ldr r1,=ROM_Space
 	str r1,[r0]
-#endif
+#endif // EMBEDDED_ROM
 
 	bl memoryInit
 	bl gfxInit

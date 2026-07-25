@@ -171,6 +171,7 @@ int loadSettings() {
 		fclose(file);
 		if (strstr(cfg.magic, "cfg") && len == sizeof(ConfigData)) {
 			applyConfigData();
+			settingsChanged = false;
 			infoOutput("Settings loaded.");
 			return 0;
 		}
@@ -194,6 +195,7 @@ int saveSettings() {
 		int len = fwrite(&cfg, 1, sizeof(ConfigData), file);
 		fclose(file);
 		if (len == sizeof(ConfigData)) {
+			settingsChanged = false;
 			infoOutput("Settings saved.");
 			result = 0;
 		}
