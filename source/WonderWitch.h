@@ -203,4 +203,4 @@ void handleSerialReceive(u8 value);
 } // extern "C"
 #endif
 
-#endif // WONDERWITCH_HEADER
+#endif // !WONDERWITCH_HEADER

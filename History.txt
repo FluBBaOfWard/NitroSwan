@@ -1,6 +1,10 @@
 NitroSwan revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.7.7 - 2026-07-26 (FluBBa)
+	Fixed sound button behaviour on HW.
+	Ported from devkitARM to BlocksDS, smaller binary.
+
 V0.7.6 - 2026-01-18 (FluBBa)
 	Fixed register 0x14 initialization in built-in BIOS.
 	Optimized sound mixer a tiny bit.

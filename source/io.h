@@ -59,4 +59,4 @@ void setJoyMapping(int type);
 } // extern "C"
 #endif
 
-#endif	// IO_HEADER
+#endif // !IO_HEADER

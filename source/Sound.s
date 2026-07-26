@@ -13,14 +13,14 @@
 
 	.global soundInit
 	.global soundReset
-	.global VblSound2
+	.global soundRender
 	.global soundSetMuteGUI
 	.global soundSetMuteChip
 	.global soundUpdate
 	.global mix8Vol
 
-#define SOUND_BUFFER_SIZE (0x800)
 #define SHIFTVAL (21)
+#define SOUND_BUFFER_SIZE (1<<(32-SHIFTVAL))
 
 	.syntax unified
 	.arm
@@ -71,7 +71,7 @@ soundSetMuteChip:
 	strb r0,muteSoundChip
 	bx lr
 ;@----------------------------------------------------------------------------
-VblSound2:					;@ r0=length, r1=destination
+soundRender:				;@ r0=length, r1=destination
 ;@----------------------------------------------------------------------------
 	ldr r2,muteSound
 	cmp r2,#0
@@ -109,34 +109,17 @@ VblSound2:					;@ r0=length, r1=destination
 soundCopyBuff:				;@ r0=length, r1=destination
 ;@----------------------------------------------------------------------------
 	ldr r2,=WAVBUFFER			;@ Source
-	mov r4,r4,lsl#SHIFTVAL
 	ldrb r3,[spxptr,#wsvSoundOutput]
+	mov r4,r4,lsl#SHIFTVAL
 	tst r3,#0x80				;@ Headphones?
 	beq soundCopyBuffInt
 sndCopyLoop:
 	subs r0,r0,#1
 	ldrpl r3,[r2,r4,lsr#SHIFTVAL-2]
-	add r4,r4,#1<<SHIFTVAL
+	addpl r4,r4,#1<<SHIFTVAL
 	strpl r3,[r1],#4
 	bhi sndCopyLoop
 	bx lr
-;@----------------------------------------------------------------------------
-soundCopyBuffInt:			;@ Internal speaker, 8bit mono. r2=source
-;@----------------------------------------------------------------------------
-	stmfd sp!,{r5,lr}
-	ldr lr,=0x80008000
-	ldr r5,=0xFF00FF00
-sndCpyIntLoop:
-	subs r0,r0,#1
-	ldrpl r3,[r2,r4,lsr#SHIFTVAL-2]
-	add r4,r4,#1<<SHIFTVAL
-	add r3,r3,r3,ror#16
-	and r3,r3,r5
-mix8Vol:
-	eor r3,lr,r3,lsr#0			;@ Volume button shift, updated by wsaSetTotalVolume
-	strpl r3,[r1],#4
-	bhi sndCpyIntLoop
-	ldmfd sp!,{r5,pc}
 ;@----------------------------------------------------------------------------
 silenceMix:
 ;@----------------------------------------------------------------------------
@@ -173,6 +156,28 @@ muteSoundChip:
 	.byte 1
 	.space 2
 
+#ifdef NDS
+	.section .itcm, "ax", %progbits		;@ For the NDS ARM9
+	.align 2
+#endif
+;@----------------------------------------------------------------------------
+soundCopyBuffInt:			;@ Internal speaker, 8bit mono. r2=source
+;@----------------------------------------------------------------------------
+	stmfd sp!,{r5,lr}
+	ldr lr,=0x80008000
+	ldr r5,=0xFF00FF00
+sndCpyIntLoop:
+	subs r0,r0,#1
+	ldrpl r3,[r2,r4,lsr#SHIFTVAL-2]
+	addpl r4,r4,#1<<SHIFTVAL
+	add r3,r3,r3,ror#16
+	and r3,r3,r5
+mix8Vol:
+	eor r3,lr,r3,lsr#0			;@ Volume button shift, updated by wsaSetTotalVolume
+	strpl r3,[r1],#4
+	bhi sndCpyIntLoop
+	ldmfd sp!,{r5,pc}
+
 #ifdef GBA
 	.section .sbss				;@ This is EWRAM on GBA with devkitARM
 #else
@@ -183,4 +188,4 @@ WAVBUFFER:
 	.space SOUND_BUFFER_SIZE*4
 ;@----------------------------------------------------------------------------
 	.end
-#endif // #ifdef __arm__
+#endif // __arm__

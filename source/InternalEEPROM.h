@@ -77,4 +77,4 @@ typedef struct {
 } // extern "C"
 #endif
 
-#endif // INT_EEPROM_HEADER
+#endif // !INT_EEPROM_HEADER

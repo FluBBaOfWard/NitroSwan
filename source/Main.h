@@ -25,4 +25,4 @@ void setupMenuPalette(void);
 } // extern "C"
 #endif
 
-#endif // MAIN_HEADER
+#endif // !MAIN_HEADER

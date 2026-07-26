@@ -20,10 +20,10 @@ extern "C" {
 void soundInit(void);
 void soundSetMuteGUI(void);
 void soundSetMuteChip(void);
-mm_word VblSound2(mm_word length, mm_addr dest, mm_stream_formats format);
+mm_word soundRender(mm_word length, mm_addr dest, mm_stream_formats format);
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // SOUND_HEADER
+#endif // !SOUND_HEADER

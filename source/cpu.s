@@ -175,4 +175,4 @@ cpuReset:					;@ Called by loadCart/resetGame, r0 = type
 	bx lr
 ;@----------------------------------------------------------------------------
 	.end
-#endif // #ifdef __arm__
+#endif // __arm__

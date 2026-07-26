@@ -37,4 +37,4 @@ void cartEject(void);
 } // extern "C"
 #endif
 
-#endif // CART_HEADER
+#endif // !CART_HEADER

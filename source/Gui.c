@@ -117,7 +117,9 @@ const MItem setItems[] = {
 	{"Autopause Game:", autoPauseGameSet, getAutoPauseGameText},
 	{"Powersave 2nd Screen:", powerSaveSet, getPowerSaveText},
 	{"Emulator on Bottom:", screenSwapSet, getScreenSwapText},
-	{"Autosleep:", sleepSet, getSleepText},
+//	{"Show Clock:", showClockSet, getShowClockText},
+//	{"Autosleep:", sleepSet, getSleepText},
+	{"Init Settings", initSettings},
 };
 const MItem debugItems[] = {
 	{"Debug Output:", debugTextSet, getDebugText},
