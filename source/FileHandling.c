@@ -215,7 +215,7 @@ static void loadFlashMem() {
 	FILE *flashFile;
 	char flashName[FILENAME_MAX_LENGTH];
 	int saveSize = gRomSize;
-	void *nvMem = romSpacePtr;
+	void *nvMem = (void *)romSpacePtr;
 
 	setFileExtension(flashName, currentFilename, ".flash", sizeof(flashName));
 
@@ -283,7 +283,7 @@ static void saveFlashMem() {
 	FILE *flashFile;
 	char flashName[FILENAME_MAX_LENGTH];
 	int saveSize = gRomSize;
-	void *nvMem = romSpacePtr;
+	const void *nvMem = romSpacePtr;
 
 	setFileExtension(flashName, currentFilename, ".flash", sizeof(flashName));
 
@@ -501,11 +501,12 @@ bool loadGame(const char *gameName) {
 				romPtr = (u8 *)cartRamUnlock();
 				maxSize = cartRamSize();
 				gRomSize = loadROM(romPtr, gameName, maxSize);
-				enableSlot2Cache();
+				peripheralSlot2EnableCache(true);
 			}
 		}
 		else {
 			cartRamLock();
+			peripheralSlot2DisableCache();
 		}
 
 		if (gRomSize) {
@@ -562,7 +563,7 @@ void checkMachine() {
 //---------------------------------------------------------------------------------
 void ejectCart() {
 	gRomSize = 0x200000;
-	memset(romSpacePtr, -1, gRomSize);
+	memset((void *)romSpacePtr, -1, gRomSize);
 	gameInserted = false;
 }
 
@@ -646,7 +647,7 @@ void selectIPS() {
 	pauseEmulation = true;
 	ui10();
 	const char *ipsName = browseForFileType(".ips");
-	if (ipsName && patchRom(romSpacePtr, ipsName, gRomSize)) {
+	if (ipsName && patchRom((void *)romSpacePtr, ipsName, gRomSize)) {
 		checkMachine();
 		loadCart();
 		setupEmuBackground();
